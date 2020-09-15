@@ -9,7 +9,7 @@ Requirements :
 1) Download the latest release
 2) Run INSTALL.sql on your database 
 3) Configure application/config/config.php (mainly : base_url) and application/config/database.php (hostname, username, password, database)
-4) login at base_url
+4) login at base_url with temporary info : (account) john@doe.no and (password) admin
 
 # Install Linux 
 Requirements : 
