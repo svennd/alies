@@ -25,12 +25,16 @@
 			<div class="card-header">Products</div>
             <div class="card-body">
 				By category :
+				<?php if ($product_types) : ?>
 				<ul>
 				<?php foreach($product_types as $type): ?>
 					<li><a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id']; ?>"><?php echo $type['name']; ?></a> <?php echo (isset($type['products'])) ? '( ' . $type['products'][0]['counted_rows'] . ' )' : '';?></li>
 				<?php endforeach; ?>
 					<li><a href="<?php echo base_url(); ?>products/product_list">List All Products</a></li>
 				</ul>
+				<?php else: ?>
+					No categories defined.
+				<?php endif; ?>
 				<?php if ($this->ion_auth->in_group("admin")): ?>
 				Specific Queries :
 				<ul>
@@ -45,22 +49,30 @@
       <div class="card shadow mb-4">
 			<div class="card-header">Last Modified Products</div>
             <div class="card-body">
+				<?php if ($last_modified) : ?>
 				<ul>
 					<?php foreach($last_modified as $mod): ?>
 					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['updated_at']), time(), 1); ?> Ago)</small></li>
 					<?php endforeach; ?>
 				</ul>
+				<?php else: ?>
+					No Updates.
+				<?php endif; ?>
 			</div>
 		</div>
 		
       <div class="card shadow mb-4">
 			<div class="card-header">Last Created Products</div>
             <div class="card-body">
+				<?php if ($last_created) : ?>
 				<ul>
 					<?php foreach($last_created as $mod): ?>
 					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['created_at']), time(), 1); ?> Ago)</small></li>
 					<?php endforeach; ?>
 				</ul>
+				<?php else: ?>
+					No created.
+				<?php endif; ?>
 			</div>
 		</div>
 

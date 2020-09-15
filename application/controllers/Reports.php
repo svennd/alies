@@ -282,6 +282,8 @@ class Reports extends Admin_Controller {
 
 		$r = array();
 		$locations = array();
+		$result = false;
+		$result_line = false;
 		
 		/* generate 0 values for empty data */
 		foreach($last_6_month as $last6m)
@@ -339,6 +341,7 @@ class Reports extends Admin_Controller {
 		/* generate 0 values for empty data */
 		$r = array();
 		$vets = array();
+		$result = false;
 		
 		foreach ($avg_overview as $avg)
 		{

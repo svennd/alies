@@ -209,21 +209,28 @@ class Stock extends Vet_Controller {
 		# global shortages
 		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
 		
-		foreach ($r as $prod)
+		if ($r)
 		{
-			$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
-			
-			# false if none found
-			if ($stock['sum_vol'] < $prod['limit_stock'])
+			foreach ($r as $prod)
 			{
-				$result[] = array(
-						"id" 				=> $prod['id'],
-						"name" 				=> $prod['name'],
-						"unit_sell" 		=> $prod['unit_sell'],
-						"limit_stock" 		=> $prod['limit_stock'],
-						"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0' ),
-					);
+				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
+				
+				# false if none found
+				if ($stock['sum_vol'] < $prod['limit_stock'])
+				{
+					$result[] = array(
+							"id" 				=> $prod['id'],
+							"name" 				=> $prod['name'],
+							"unit_sell" 		=> $prod['unit_sell'],
+							"limit_stock" 		=> $prod['limit_stock'],
+							"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0' ),
+						);
+				}
 			}
+		}
+		else
+		{
+			$result = false;
 		}
 		
 		$data = array(

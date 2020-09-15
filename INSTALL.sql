@@ -3414,3 +3414,36 @@ ALTER TABLE `users_groups`
   ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 COMMIT;
+
+--
+-- Gegevens worden geëxporteerd voor tabel `groups`
+--
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+(1, 'admin', 'Administrator'),
+(2, 'members', 'General User'),
+(3, 'vet', 'Veterinarian');
+
+
+--
+-- Gegevens worden geëxporteerd voor tabel `users`
+--
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `current_location`, `updated_at`, `created_at`, `image`, `sidebar`) VALUES
+(1, '127.0.0.1', 'administrator', '$2y$08$88sN20bkm4KQ5KO4aaDp2O7AHJab0bICtzrOkobNKjj3B1BJCCn06', '', 'john@doe.no', '', NULL, NULL, NULL, 1268889823, 1600178715, 1, 'John', 'Doe', 'ADMIN', '0', 4, '2020-08-16 21:30:02', NULL, 'user_1_1600186804.png', '');
+
+--
+-- Gegevens worden geëxporteerd voor tabel `users_groups`
+--
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3);
+
+--
+-- Gegevens worden geëxporteerd voor tabel `config`
+--
+INSERT INTO `config` (`id`, `name`, `value`, `updated_at`, `created_at`) VALUES
+(1, 'backup_count', '1', '2020-09-13 09:16:18', '2020-02-08 13:54:27'),
+(2, 'alert_last_backup', '7', NULL, '2020-02-08 13:54:27');
+
+INSERT INTO `migrations` (`version`) VALUES
+(0);

@@ -10,6 +10,8 @@ class Migration_Improve_import extends CI_Migration {
 	protected $up_version = "001";
 	protected $down_version = "000";
 	
+	$r = true;
+	
 	public function up()
 	{
 		return ($r) ? $this->up_version : false;
