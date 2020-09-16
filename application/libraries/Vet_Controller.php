@@ -18,7 +18,7 @@ class Vet_Controller extends MY_Controller {
 		{
 			# this needs 404
 			# if not we can get in a redirect loop
-			show_error("Not part of the correct group;")
+			show_error("Not part of the correct group;");
 			// redirect('/');
 		}
 		
