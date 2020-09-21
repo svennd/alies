@@ -94,10 +94,10 @@
 	  
 	<h5>Stock Requirements</h5>
 
-	<?php if ($product) : ?>
-	<?php $total_1m = 0.0; foreach ($history_1m as $h) { $total_1m += $h['volume']; } ?>
-	<?php $total_6m = 0.0; foreach ($history_6m as $h) { $total_6m += $h['volume']; } ?>
-	<?php $total_1y = 0.0; foreach ($history_1y as $h) { $total_1y += $h['volume']; } ?>
+	<?php if ($product):  ?>
+	<?php $total_1m = 0.0; if ($history_1m) : foreach ($history_1m as $h) { $total_1m += $h['volume']; } endif; ?>
+	<?php $total_6m = 0.0; if ($history_6m) : foreach ($history_6m as $h) { $total_6m += $h['volume']; } endif; ?>
+	<?php $total_1y = 0.0; if ($history_1y) : foreach ($history_1y as $h) { $total_1y += $h['volume']; } endif; ?>
 	<?php endif; ?>
 	<hr />		
 	<div class="form-group">
