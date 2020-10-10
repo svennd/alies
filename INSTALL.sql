@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `owner_id` (`owner_id`),
+  KEY `owner_id` (`owner_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
