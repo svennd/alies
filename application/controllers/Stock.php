@@ -128,6 +128,8 @@ class Stock extends Vet_Controller {
 	
 	public function add_stock()
 	{
+		$error = false; 
+		
 		if ($this->input->post('submit'))
 		{
 			# also generate a barcode here
@@ -139,19 +141,27 @@ class Stock extends Vet_Controller {
 			$barcode = base_convert((time() - 1575158400), 10, 36);
 			$this->barcode->generate($barcode);
 			
-			$this->stock->insert(array(
-									"product_id" 		=> $this->input->post('pid'),
-									"eol" 				=> $this->input->post('eol'),
-									"location" 			=> $this->user->current_location,
-									"in_price" 			=> $this->input->post('in_price'),
-									"lotnr" 			=> $this->input->post('lotnr'),
-									"barcode"			=> $barcode,
-									"volume" 			=> $this->input->post('new_volume'),
-									"state"				=> STOCK_CHECK
-								));
+			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')))
+			{
+				$this->stock->insert(array(
+										"product_id" 		=> $this->input->post('pid'),
+										"eol" 				=> $this->input->post('eol'),
+										"location" 			=> $this->user->current_location,
+										"in_price" 			=> $this->input->post('in_price'),
+										"lotnr" 			=> $this->input->post('lotnr'),
+										"barcode"			=> $barcode,
+										"volume" 			=> $this->input->post('new_volume'),
+										"state"				=> STOCK_CHECK
+									));
+			}
+			else
+			{
+				$error = "Not a valid product, or no volume...";
+			}
 		}
 		
 		$data = array(
+						"error" 	=> $error,
 						"products" 	=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(), 
 						"extra_footer" => '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 					);

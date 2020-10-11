@@ -240,7 +240,7 @@
                 <h6 class="dropdown-header">
                   Alerts Center
                 </h6>
-				<?php if(isset($alerts)) : ?>
+				<?php if(isset($alerts) && $alerts) : ?>
 				<?php foreach ($alerts as $alert): ?>
 					<a class="dropdown-item d-flex align-items-center" href="#">
 					  <div class="mr-3">

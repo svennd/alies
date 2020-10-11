@@ -78,6 +78,15 @@
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / check
 			</div>
 			<div class="card-body">
+			<?php if (isset($error) && $error): ?>
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>Holy guacamole!</strong><br/> 
+				<?php echo $error; ?>
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				  </button>
+			</div>
+			<?php endif; ?>
 			<?php if($products): ?>
 			<table class="table">
 				<tr>
