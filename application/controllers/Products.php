@@ -267,6 +267,25 @@ class Products extends Vet_Controller {
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 	
+	public function gs1_to_product()
+	{
+		$gs1 = $this->input->get('gs1');
+		
+		$result = $this->products
+							->fields('id, name')
+							->limit(2)
+							->where('input_barcode', $gs1)
+							->get();
+		if ($result) 
+		{
+			echo json_encode(array("state" => 1, $result));
+		}
+		else
+		{
+			echo json_encode(array("state" => 0));
+		}
+	}
+	
 	# return an ajax readable object of possible results
 	public function get_product_or_procedure()
 	{

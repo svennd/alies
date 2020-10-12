@@ -8,7 +8,7 @@
 </style>
 
 <div class="row">
-	<div class="col-lg-4 mb-4">
+	<div class="col-lg-5 mb-4">
 		<div class="card shadow mb-4">		
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / Add
@@ -16,9 +16,16 @@
 			<div class="card-body">
 				<form action="<?php echo base_url(); ?>stock/add_stock" method="post" autocomplete="off">
 				  <div class="form-group">
-					<label for="lotnr">product</label>
+					<label for="gs1_datamatrix">GS1 DataMatrix</label>
+					<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" autofocus>
+				  </div>
+				  <div class="form-group">
+					<label for="product">product</label>
 					<input type="text" name="product" class="form-control" id="autocomplete">
 					<input type="hidden" name="pid" id="pid" value="">
+					<input type="hidden" name="new_barcode_input" id="new_barcode_input" value="0">
+					<input type="hidden" name="barcode_gs1" id="barcode_gs1" value="">
+					<small id="product_tip">&nbsp;</small>
 				  </div>
 				  
 					<div class="form-row mb-3">
@@ -72,7 +79,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-8 mb-4">
+	<div class="col-lg-7 mb-4">
 		<div class="card shadow mb-4">		
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / check
@@ -121,17 +128,84 @@
 </div>
 
 <script type="text/javascript">
+function process_datamatrix(barcode) {
+	// console.log(barcode);
+	// console.log(barcode.length);
+	
+	// GS1 data matrix 
+	// 01 05420036903635 17 210400 10 111219
+	// length : ~30 
+	// 01 EAN/GTIN  (14 length)
+	// 17 YY MM DD date (6 length)
+	// 10 barcode (variable length)
+	// 6 + 14 + 6 + x
+	
+	if (barcode.length > 26)
+	{
+		result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
+		if(result)
+		{
+			// console.log(result);
+			var date = result[2];
+			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+			$("#lotnr").val(result[3]);
+			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+			
+			$("#lotnr").prop('disabled', true);
+			$("#date").prop('disabled', true);
+			
+			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + result[1] , function(data, status){
+				// console.log("data:");
+				// console.log(data.state);
+				if (data.state)
+				{
+					// console.log("ok");
+					// console.log(data[0]);
+					// console.log();
+					// console.log(data[0].name);
+					$("#pid").val(data[0].id);
+					$("#autocomplete").val(data[0].name);
+					$("#sell").focus();
+				}
+				else 
+				{ 
+					$("#new_barcode_input").val(1);
+					$("#barcode_gs1").val(result[1]);
+					$("#product_tip").html("unknown gs1, please select product!"); 
+				}
+			});
+		}
+	}
+	else
+	{
+		console.log("code to short not recognized");
+	}	
+}
+
 document.addEventListener("DOMContentLoaded", function(){
+	var _changeInterval = null;
+	var barcode = null;
+	
 	$("#prd").show();
 	$("#products").addClass('active');
 	$("#stock").addClass('active');
 	
+	$("#gs1_datamatrix").keyup(function(){
+		barcode = this.value;
+		clearInterval(_changeInterval)
+		_changeInterval = setInterval(function() {
+		clearInterval(_changeInterval)
+			// console.log(barcode);
+			process_datamatrix(barcode);
+		
+		}, 500);
+	});
 		$('#autocomplete').autocomplete({
 		
 		serviceUrl: '<?php echo base_url(); ?>products/get_product',
 		
 		onSelect: function (suggestion) {
-			console.log(suggestion.data);
+			// console.log(suggestion.data);
 			
 			var res = suggestion.data;
 			$("#pid").val(res.id);

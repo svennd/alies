@@ -153,6 +153,13 @@ class Stock extends Vet_Controller {
 										"volume" 			=> $this->input->post('new_volume'),
 										"state"				=> STOCK_CHECK
 									));
+									
+				if ($this->input->post('new_barcode_input')) 
+				{
+					$this->product
+							->where(array("id" => $this->input->post('pid')))
+							->update(array("input_barcode" => $this->input->post('barcode_gs1')));
+				}
 			}
 			else
 			{
