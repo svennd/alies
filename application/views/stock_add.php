@@ -31,11 +31,11 @@
 					<div class="form-row mb-3">
 					  <div class="col">
 						<label for="lotnr">lot nr</label>
-						<input type="text" name="lotnr" class="form-control" id="lotnr">
+						<input type="text" name="lotnr" class="form-control" id="lotnr" value="">
 					  </div>
 					  <div class="col">
 						<label for="date">End of Life</label>
-						<input type="date" name="eol" class="form-control" id="date">
+						<input type="date" name="eol" class="form-control" id="date" value="">
 					  </div>
 				  </div>
 				  
@@ -151,8 +151,8 @@ function process_datamatrix(barcode) {
 			$("#lotnr").val(result[3]);
 			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
 			
-			$("#lotnr").prop('disabled', true);
-			$("#date").prop('disabled', true);
+			// $("#lotnr").prop('disabled', true);
+			// $("#date").prop('disabled', true);
 			
 			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + result[1] , function(data, status){
 				// console.log("data:");
