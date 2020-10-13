@@ -128,6 +128,8 @@ function get_symbol($type)
 				<?php 
 					$total_dead = 0;
 					$total_lost = 0;
+					$dead_pet = false;
+					$lost_pet = false;
 					foreach ($pets as $pet): 
 						if ($pet['death']) 
 						{
@@ -144,10 +146,16 @@ function get_symbol($type)
 					<?php if($total_dead + $total_lost != 0): ?>
 						<div id="lost_or_passed">
 							<div class="mb-3">
+							<?php if($dead_pet): ?>
 							  <a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#passed" role="button" aria-expanded="false" aria-controls="collapseExample">Passed Away (<?php echo $total_dead; ?>)</a>
+							<?php endif; ?>							  
+							
+							<?php if($lost_pet): ?>
 							  <a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#gone" role="button" aria-expanded="false" aria-controls="collapseExample">Gone / Lost (<?php echo $total_lost; ?>)</a>
+							<?php endif; ?>
 							</div>
 						  
+							<?php if($dead_pet): ?>
 							<div class="collapse" id="passed" data-parent="#lost_or_passed">
 							  <div class="card card-body">
 								<strong>Passed away</strong>
@@ -158,8 +166,10 @@ function get_symbol($type)
 									</a>
 								<?php endforeach; ?>
 							  </div>
-							</div>			
-						
+							</div>		
+							<?php endif; ?>	
+							
+							<?php if($lost_pet): ?>
 							<div class="collapse" id="gone" data-parent="#lost_or_passed">
 							  <div class="card card-body">
 								<strong>Gone / lost</strong>
@@ -171,7 +181,7 @@ function get_symbol($type)
 								<?php endforeach; ?>
 							  </div>
 							</div>
-							
+							<?php endif; ?>
 						</div>
 					<?php endif; ?>	
 				<?php endif; ?>	
