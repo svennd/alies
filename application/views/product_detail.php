@@ -188,7 +188,13 @@
 		  </div>
 		  <div class="form-group">
 			<label for="exampleFormControlInput3">input_barcode</label>
-			<input type="text" name="input_barcode" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
+			<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
+			<small class="form-text text-muted" id="extra_info">&nbsp;</small>
+		  </div>
+		  <div class="form-group">
+			<label for="gs1_datamatrix">Scan barcode</label>
+			<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
+			<small class="form-text text-danger">Will overwrite input_barcode!</small>
 		  </div>
 	  </div>
 	  
@@ -276,10 +282,54 @@
 
 
 <script type="text/javascript">
+
+function process_datamatrix(barcode) {
+	
+	// GS1 data matrix 
+	// 01 05420036903635 17 210400 10 111219
+	// length : ~30 
+	// 01 EAN/GTIN  (14 length)
+	// 17 YY MM DD date (6 length)
+	// 10 barcode (variable length)
+	// 6 + 14 + 6 + x
+	
+	if (barcode.length > 26)
+	{
+		result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
+		if(result)
+		{
+			// console.log(result);
+			var input_barcode = result[1];
+			var date = result[2];
+			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+			
+			$("#input_barcode").val(result[1]);
+			$("#extra_info").html("Scanned LotNR : " + "20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day + " lotnr :" + result[3]);
+		}
+	}
+	else
+	{
+		console.log("code to short not recognized");
+	}	
+}
+
 document.addEventListener("DOMContentLoaded", function(){
+	var _changeInterval = null;
+	var barcode = null;
 	$("#prd").show();
 	$("#products").addClass('active');
 	$("#product_list").addClass('active');
+	
+	$("#gs1_datamatrix").keyup(function(){
+		barcode = this.value;
+		clearInterval(_changeInterval)
+		_changeInterval = setInterval(function() {
+		clearInterval(_changeInterval)
+			process_datamatrix(barcode);
+		
+		}, 500);
+	});
+	
 });
 </script>
   

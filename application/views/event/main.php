@@ -152,15 +152,28 @@ document.addEventListener("DOMContentLoaded", function(){
 					// multiple
 					else
 					{
+						// since this is not sorted take 
+						// current location first
 						for (let i = 0; i < suggestion.data.stock.length; i++) {
 							stock = suggestion.data.stock[i];
 						 
-							var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+							if (<?php echo $u_location; ?> == stock.location)
+							{
+								var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+								$("#stock_select").append(option);
+							}
+						}
+						
+						// other locations
+						for (let i = 0; i < suggestion.data.stock.length; i++) {
+							stock = suggestion.data.stock[i];
+
 							if (<?php echo $u_location; ?> != stock.location)
 							{
+								var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
 								option.setAttribute("class", "bg-warning");
+								$("#stock_select").append(option);
 							}
-							$("#stock_select").append(option);
 						}
 					}
 					
