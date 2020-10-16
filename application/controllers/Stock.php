@@ -143,7 +143,7 @@ class Stock extends Vet_Controller {
 										"lotnr" 		=> $this->input->post('lotnr'),
 										"in_price" 		=> $this->input->post('in_price'),
 										"state" 		=> STOCK_CHECK
-									))->fields('id')->get();
+									))->get();
 									
 				# increase current verify stock 
 				if ($result)
@@ -151,6 +151,7 @@ class Stock extends Vet_Controller {
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
 					$this->db->query($sql);
 					// var_dump($result);
+					echo "reup";
 				}					
 				# create new verify stock
 				else
