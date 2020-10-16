@@ -131,34 +131,57 @@ class Stock extends Vet_Controller {
 		$error = false; 
 		
 		if ($this->input->post('submit'))
-		{
-			# also generate a barcode here
-			$this->load->library('barcode');
-
-			# generate barcode
-				# reduce time with 01/12/2019
-				# move to a base36 (to use letters)
-			$barcode = base_convert((time() - 1575158400), 10, 36);
-			$this->barcode->generate($barcode);
+		{	
 			
 			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')))
 			{
-				$this->stock->insert(array(
-										"product_id" 		=> $this->input->post('pid'),
-										"eol" 				=> $this->input->post('eol'),
-										"location" 			=> $this->user->current_location,
-										"in_price" 			=> $this->input->post('in_price'),
-										"lotnr" 			=> $this->input->post('lotnr'),
-										"barcode"			=> $barcode,
-										"volume" 			=> $this->input->post('new_volume'),
-										"state"				=> STOCK_CHECK
-									));
+				# check if this is already in the verify list
+				$result = $this->stock->where(array(
+										"product_id" 	=> $this->input->post('pid'),
+										"eol" 			=> $this->input->post('eol'),
+										"location" 		=> $this->user->current_location,
+										"lotnr" 		=> $this->input->post('lotnr'),
+										"in_price" 		=> $this->input->post('in_price'),
+										"state" 		=> STOCK_CHECK
+									))->fields('id')->get();
 									
-				if ($this->input->post('new_barcode_input')) 
+				# increase current verify stock 
+				if ($result)
 				{
-					$this->product
-							->where(array("id" => $this->input->post('pid')))
-							->update(array("input_barcode" => $this->input->post('barcode_gs1')));
+					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
+					$this->db->query($sql);
+					// var_dump($result);
+				}					
+				# create new verify stock
+				else
+				{					
+					# also generate a barcode here
+					$this->load->library('barcode');
+					 
+					# generate barcode
+						# reduce time with 01/12/2019
+						# move to a base36 (to use letters)
+					$barcode = base_convert((time() - 1575158400), 10, 36);
+					$this->barcode->generate($barcode);
+				
+
+					$this->stock->insert(array(
+											"product_id" 		=> $this->input->post('pid'),
+											"eol" 				=> $this->input->post('eol'),
+											"location" 			=> $this->user->current_location,
+											"in_price" 			=> $this->input->post('in_price'),
+											"lotnr" 			=> $this->input->post('lotnr'),
+											"barcode"			=> $barcode,
+											"volume" 			=> $this->input->post('new_volume'),
+											"state"				=> STOCK_CHECK
+										));
+										
+					if ($this->input->post('new_barcode_input')) 
+					{
+						$this->product
+								->where(array("id" => $this->input->post('pid')))
+								->update(array("input_barcode" => $this->input->post('barcode_gs1')));
+					}
 				}
 			}
 			else
