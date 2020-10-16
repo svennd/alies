@@ -107,7 +107,7 @@
 				</tr>
 			<?php foreach($products as $prod): ?>
 			<?php
-				$change = round((($prod['in_price']-$prod['products']['buy_price'])/$prod['products']['buy_price'])*100);
+				$change = (isset($prod['in_price'])) ? round((($prod['in_price']-$prod['products']['buy_price'])/$prod['products']['buy_price'])*100) : '';
 			?>
 				<tr>
 					<td><?php echo $prod['products']['name']; ?></td>
