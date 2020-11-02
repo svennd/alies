@@ -65,7 +65,8 @@ class Export extends Admin_Controller {
 			$cust = $Customers->appendChild($cust);
 			
 				$cust->appendChild($domtree->createElement('Prime', $client['id']));
-				$cust->appendChild($domtree->createElement('Name', htmlspecialchars($client['first_name'] . ' ' . $client['last_name'])));
+				// $cust->appendChild($domtree->createElement('Name', htmlspecialchars($client['first_name'] . ' ' . $client['last_name'])));
+				$cust->appendChild($domtree->createElement('Name', htmlspecialchars($client['last_name'])));
 				$cust->appendChild($domtree->createElement('Country','BE'));
 				$cust->appendChild($domtree->createElement('Street', $client['street']));
 				$cust->appendChild($domtree->createElement('HouseNumber', $client['nr']));
