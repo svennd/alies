@@ -195,9 +195,19 @@ class Export extends Admin_Controller {
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 			
+				$factuur_amount = str_replace('.', ',', $factuur['amount']);
 				$detail->appendChild($domtree->createElement('Account', 400000));
-				$detail->appendChild($domtree->createElement('Amount', $total_btw));
+				$detail->appendChild($domtree->createElement('Amount', $factuur_amount));
 				$detail->appendChild($domtree->createElement('DebCre', 1));
+				$detail->appendChild($domtree->createElement('Ventil', 0));
+				
+			$detail = $domtree->createElement("Detail");
+			$detail = $Details->appendChild($detail);
+			
+				$total_btw = str_replace('.', ',', $total_btw);
+				$detail->appendChild($domtree->createElement('Account', 451000));
+				$detail->appendChild($domtree->createElement('Amount', $total_btw));
+				$detail->appendChild($domtree->createElement('DebCre', -1));
 				$detail->appendChild($domtree->createElement('Ventil', 0));
 			
 			# booking codes
@@ -215,8 +225,10 @@ class Export extends Admin_Controller {
 					
 					$detail->appendChild($domtree->createElement('Account', $current_booking_code['code']));
 					// $detail->appendChild($domtree->createElement('Amount', $tally));
-					$detail->appendChild($domtree->createElement('Amount', preg_replace('/\./', ',', $tally)));
-					$detail->appendChild($domtree->createElement('DebCre', 1));
+					
+					$tally = str_replace('.', ',', $tally);
+					$detail->appendChild($domtree->createElement('Amount', $tally));
+					$detail->appendChild($domtree->createElement('DebCre', -1));
 					$detail->appendChild($domtree->createElement('Ventil', $current_btw));
 				
 			}
