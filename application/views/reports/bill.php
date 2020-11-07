@@ -40,7 +40,7 @@ $state = array(
             <div class="card-body">
 
 			<?php if ($bills): ?>
-				<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn <?php echo (count($bills) == $read_limit) ? 'btn-danger' : 'btn-info'; ?> mb-2"><i class="fas fa-file-export"></i> xml export</a>
+				<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn <?php echo (count($bills) == $read_limit) ? 'btn-danger' : 'btn-info'; ?> mb-2" download><i class="fas fa-file-export"></i> xml export</a>
 				<?php if (count($bills) == $read_limit) : ?>
 					<div class="alert alert-danger" role="alert">You can only query <?php echo $read_limit; ?> at once !</div>
 				<?php endif; ?>
