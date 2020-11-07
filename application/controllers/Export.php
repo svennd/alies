@@ -179,7 +179,7 @@ class Export extends Admin_Controller {
 			$Sale->appendChild($domtree->createElement('Customer_Prime', $factuur['owner_id']));
 			$Sale->appendChild($domtree->createElement('DocType', 10));
 			$Sale->appendChild($domtree->createElement('DocNumber', "2020" . str_pad($factuur['id'], 5, "0", STR_PAD_LEFT)));
-			$Sale->appendChild($domtree->createElement('Amount', $factuur['amount']));
+			$Sale->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
 			$Sale->appendChild($domtree->createElement('Status', 0));
 			
 			$Details = $domtree->createElement("Details");
@@ -201,14 +201,14 @@ class Export extends Admin_Controller {
 				$detail->appendChild($domtree->createElement('DebCre', 1));
 				$detail->appendChild($domtree->createElement('Ventil', 1));
 				
-			$detail = $domtree->createElement("Detail");
-			$detail = $Details->appendChild($detail);
+			// $detail = $domtree->createElement("Detail");
+			// $detail = $Details->appendChild($detail);
 			
 				// $total_btw = str_replace('.', ',', $total_btw);
-				$detail->appendChild($domtree->createElement('Account', 451000));
-				$detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
-				$detail->appendChild($domtree->createElement('DebCre', -1));
-				$detail->appendChild($domtree->createElement('Ventil', 11));
+				// $detail->appendChild($domtree->createElement('Account', 451000));
+				// $detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
+				// $detail->appendChild($domtree->createElement('DebCre', -1));
+				// $detail->appendChild($domtree->createElement('Ventil', 11));
 			
 			# booking codes
 			foreach ($event_booking	as $booking => $tally)
