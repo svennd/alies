@@ -208,10 +208,10 @@ class Export extends Admin_Controller {
 				$detail = $domtree->createElement("Detail");
 				$detail = $Details->appendChild($detail);
 			
-					if($current_booking_code['btw'] == 0) { $current_btw = 0; }
-					elseif($current_booking_code['btw'] == 6) { $current_btw = 1; }
-					elseif($current_booking_code['btw'] == 12) { $current_btw = 2; }
-					elseif($current_booking_code['btw'] == 21) { $current_btw = 3; }
+					if($current_booking_code['btw'] == 0) { $current_btw = 1; }
+					elseif($current_booking_code['btw'] == 6) { $current_btw = 2; }
+					elseif($current_booking_code['btw'] == 12) { $current_btw = 3; }
+					elseif($current_booking_code['btw'] == 21) { $current_btw = 4; }
 					
 					$detail->appendChild($domtree->createElement('Account', $current_booking_code['code']));
 					$detail->appendChild($domtree->createElement('Amount', $tally));
