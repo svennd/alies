@@ -214,7 +214,8 @@ class Export extends Admin_Controller {
 					elseif($current_booking_code['btw'] == 21) { $current_btw = 4; }
 					
 					$detail->appendChild($domtree->createElement('Account', $current_booking_code['code']));
-					$detail->appendChild($domtree->createElement('Amount', $tally));
+					// $detail->appendChild($domtree->createElement('Amount', $tally));
+					$detail->appendChild($domtree->createElement('Amount', preg_replace('/\./', ',', $tally)));
 					$detail->appendChild($domtree->createElement('DebCre', 1));
 					$detail->appendChild($domtree->createElement('Ventil', $current_btw));
 				
