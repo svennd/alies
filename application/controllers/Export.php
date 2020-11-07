@@ -195,7 +195,7 @@ class Export extends Admin_Controller {
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 			
-				$factuur_amount = str_replace('.', ',', $factuur['amount']);
+				// $factuur_amount = str_replace('.', ',', $factuur['amount']);
 				$detail->appendChild($domtree->createElement('Account', 400000));
 				$detail->appendChild($domtree->createElement('Amount', round($factuur_amount*100)));
 				$detail->appendChild($domtree->createElement('DebCre', 1));
@@ -204,7 +204,7 @@ class Export extends Admin_Controller {
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 			
-				$total_btw = str_replace('.', ',', $total_btw);
+				// $total_btw = str_replace('.', ',', $total_btw);
 				$detail->appendChild($domtree->createElement('Account', 451000));
 				$detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
 				$detail->appendChild($domtree->createElement('DebCre', -1));
