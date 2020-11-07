@@ -197,7 +197,7 @@ class Export extends Admin_Controller {
 			
 				// $factuur_amount = str_replace('.', ',', $factuur['amount']);
 				$detail->appendChild($domtree->createElement('Account', 400000));
-				$detail->appendChild($domtree->createElement('Amount', round($factuur_amount*100)));
+				$detail->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
 				$detail->appendChild($domtree->createElement('DebCre', 1));
 				$detail->appendChild($domtree->createElement('Ventil', 1));
 				
