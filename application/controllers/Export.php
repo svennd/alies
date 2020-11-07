@@ -192,23 +192,23 @@ class Export extends Admin_Controller {
 				$total_btw += round(($btw/100)*$tally, 2);
 			}
 
-			$detail = $domtree->createElement("Detail");
-			$detail = $Details->appendChild($detail);
-			
-				// $factuur_amount = str_replace('.', ',', $factuur['amount']);
-				$detail->appendChild($domtree->createElement('Account', 400000));
-				$detail->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
-				$detail->appendChild($domtree->createElement('DebCre', 1));
-				$detail->appendChild($domtree->createElement('Ventil', 1));
-				
 			// $detail = $domtree->createElement("Detail");
 			// $detail = $Details->appendChild($detail);
 			
-				// $total_btw = str_replace('.', ',', $total_btw);
-				// $detail->appendChild($domtree->createElement('Account', 451000));
-				// $detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
-				// $detail->appendChild($domtree->createElement('DebCre', -1));
-				// $detail->appendChild($domtree->createElement('Ventil', 11));
+				// $factuur_amount = str_replace('.', ',', $factuur['amount']);
+				// $detail->appendChild($domtree->createElement('Account', 400000));
+				// $detail->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
+				// $detail->appendChild($domtree->createElement('DebCre', 1));
+				// $detail->appendChild($domtree->createElement('Ventil', 1));
+				
+			$detail = $domtree->createElement("Detail");
+			$detail = $Details->appendChild($detail);
+			
+				$total_btw = str_replace('.', ',', $total_btw);
+				$detail->appendChild($domtree->createElement('Account', 451000));
+				$detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
+				$detail->appendChild($domtree->createElement('DebCre', -1));
+				$detail->appendChild($domtree->createElement('Ventil', 11));
 			
 			# booking codes
 			foreach ($event_booking	as $booking => $tally)
