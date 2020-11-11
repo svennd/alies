@@ -53,10 +53,11 @@ class Vet_Controller extends MY_Controller {
 		
 		# required on every page
 		$this->page_data = array(
-								"messages" 	=> $this->msg_participants->get_messages($this->user->id),
-								"user" 		=> $this->user,
-								"location" 	=> $this->_get_compass_locations(),
+								"messages" 			=> $this->msg_participants->get_messages($this->user->id),
+								"user" 				=> $this->user,
+								"location" 			=> $this->_get_compass_locations(),
 								"current_location" 	=> $this->_get_current_location(),
+								"mondal" 			=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
 						);
 						
 		$this->load->model('Alerts_model', 'alerts');
@@ -106,7 +107,6 @@ class Vet_Controller extends MY_Controller {
 		';
 		foreach ($this->location as $location)
 		{
-			// var_dump($location);
 			$compass .= '<a class="dropdown-item" href="' . base_url() . '/welcome/change_location/' . $location['id'] . '">'. $location['name'] .'</a>';
 		}
 		$compass .= "</div></div>";
@@ -138,6 +138,11 @@ class Vet_Controller extends MY_Controller {
 		fclose($fp);
 		
 		force_download(APPPATH . 'cache/' . $file, NULL);
+	}
+	
+	public function _get_mondal()
+	{
+		return $this->load->view('mondal/location', array("location" => $this->location), true);
 	}
 	
 	private function _get_current_location()

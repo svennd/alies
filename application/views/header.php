@@ -26,6 +26,9 @@
 </head>
 <body id="page-top">
 
+  <!-- mondal if required -->
+  <?php echo $mondal; ?>
+  
   <!-- Page Wrapper -->
   <div id="wrapper">
 
