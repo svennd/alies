@@ -176,14 +176,34 @@ class Export extends Admin_Controller {
 		$Sale = $domtree->createElement("Sale");
 		$Sale = $Sales->appendChild($Sale);
 		
-			$Sale->appendChild($domtree->createElement('Customer_Prime', $factuur['owner_id']));
-			$Sale->appendChild($domtree->createElement('DocType', 10));
-			$Sale->appendChild($domtree->createElement('DocNumber', "2020" . str_pad($factuur['id'], 5, "0", STR_PAD_LEFT)));
-			$Sale->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
-			$Sale->appendChild($domtree->createElement('Status', 0));
-			
-			$Details = $domtree->createElement("Details");
-			$Details = $Sale->appendChild($Details);
+			/*
+				meta data about the bill
+				
+				required : 
+					- Customer_Prime : client id
+					- DocType : 10 factuur, 30 creditnota
+					- DocNumber : factuurnr
+					- Amount : , for decimal eg. 11,11
+					- Status : 0 not imported, 1 imported, 2 imported but changed
+				
+				optional and used here : 
+					- DocDate : DD/MM/YYYY
+					- VATAmount	
+				
+				optional :
+					- Journal_Prime (int)
+					- AccountingPeriod (int)
+					- VATMonth (YYYYMM) (?)
+					- Year_Alfa (YYYY)
+					- CurrencyCode EUR
+					- DueDate : DD/MM/YYYY
+					- OurRef
+					- YourRef
+					- Discount
+					- Ventil (?)
+					
+			*/
+			$dt = DateTime::createFromFormat('Y-m-d H:i:s', $factuur['created_at']);
 			
 			# btw account
 			$total_btw = (float) 0.0;
@@ -191,25 +211,48 @@ class Export extends Admin_Controller {
 			{
 				$total_btw += round(($btw/100)*$tally, 2);
 			}
-
+			
+			$Sale->appendChild($domtree->createElement('Customer_Prime', $factuur['owner_id']));
+			$Sale->appendChild($domtree->createElement('DocType', 10));
+			$Sale->appendChild($domtree->createElement('DocNumber', date("Y") . substr(str_pad($factuur['id'], 5, "0", STR_PAD_LEFT), 0, 5)));
+			$Sale->appendChild($domtree->createElement('DocDate', $date->format('d/m/Y')));
+			$Sale->appendChild($domtree->createElement('Amount', $this->amount($factuur['amount'])));
+			$Sale->appendChild($domtree->createElement('VATAmount', $this->amount($total_btw)));
+			$Sale->appendChild($domtree->createElement('Status', 0));
+			
+			/*
+				a line for everything on the bill
+				
+				required : 
+					- account 
+					- amount
+					- DebCre : 1 (for money received) -1 (for money spend)
+					- Ventil : ventil code : 0 : no ventil, 1 : 0%, 2 = 6%, 4 = 21%, 11 = btw
+					
+				optional :
+					- ref
+			*/
+			
+			// group details
+			$Details = $domtree->createElement("Details");
+			$Details = $Sale->appendChild($Details);
+			
+			// element detail : full amount
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 			
-				$factuur_amount = str_replace('.', ',', $factuur['amount']);
-				$detail->appendChild($domtree->createElement('Account', 400000));
-				$detail->appendChild($domtree->createElement('Amount', round($factuur['amount']*100)));
+				$detail->appendChild($domtree->createElement('Account', 400000)); // 400000 == booking of full amount
+				$detail->appendChild($domtree->createElement('Amount', $this->amount($factuur['amount'])));
 				$detail->appendChild($domtree->createElement('DebCre', 1));
-				$detail->appendChild($domtree->createElement('Ventil', 0));
+				$detail->appendChild($domtree->createElement('Ventil', 0)); // for full amount this must be 0
 				
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 			
-				// $total_btw = str_replace('.', ',', $total_btw);
-				$detail->appendChild($domtree->createElement('Account', 451000));
-				// $detail->appendChild($domtree->createElement('Amount', round($total_btw*100)));
-				$detail->appendChild($domtree->createElement('TotaalBTW', round($total_btw*100)));
+				$detail->appendChild($domtree->createElement('Account', 451000)); // 451000 == btw to pay
+				$detail->appendChild($domtree->createElement('Amount', $this->amount($total_btw)));
 				$detail->appendChild($domtree->createElement('DebCre', -1));
-				$detail->appendChild($domtree->createElement('Ventil', 11));
+				$detail->appendChild($domtree->createElement('Ventil', 11)); // btw
 			
 			# booking codes
 			foreach ($event_booking	as $booking => $tally)
@@ -225,17 +268,18 @@ class Export extends Admin_Controller {
 					elseif($current_booking_code['btw'] == 21) { $current_btw = 4; }
 					
 					$detail->appendChild($domtree->createElement('Account', $current_booking_code['code']));
-					// $detail->appendChild($domtree->createElement('Amount', $tally));
-					
-					// $tally = str_replace('.', ',', $tally);
-					$detail->appendChild($domtree->createElement('Amount', round($tally*100)));
+					$detail->appendChild($domtree->createElement('Amount', $this->amount($tally)));
 					$detail->appendChild($domtree->createElement('DebCre', -1));
 					$detail->appendChild($domtree->createElement('Ventil', $current_btw));
-				
 			}
 		}
 		/* get the xml printed */
 		Header('Content-type: text/xml');
 		echo $domtree->saveXML();
+	}
+	
+	private function amount($value)
+	{
+		return number_format($value , 2, ',', '');
 	}
 }
