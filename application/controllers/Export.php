@@ -215,7 +215,7 @@ class Export extends Admin_Controller {
 			$Sale->appendChild($domtree->createElement('Customer_Prime', $factuur['owner_id']));
 			$Sale->appendChild($domtree->createElement('DocType', 10));
 			$Sale->appendChild($domtree->createElement('DocNumber', date("Y") . substr(str_pad($factuur['id'], 5, "0", STR_PAD_LEFT), 0, 5)));
-			$Sale->appendChild($domtree->createElement('DocDate', $date->format('d/m/Y')));
+			$Sale->appendChild($domtree->createElement('DocDate', $dt->format('d/m/Y')));
 			$Sale->appendChild($domtree->createElement('Amount', $this->amount($factuur['amount'])));
 			$Sale->appendChild($domtree->createElement('VATAmount', $this->amount($total_btw)));
 			$Sale->appendChild($domtree->createElement('Status', 0));
