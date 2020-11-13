@@ -76,6 +76,10 @@ document.addEventListener("DOMContentLoaded", function(){
 								return result;
 					}
 				},
+				{ "targets": 2, "data": null, "render": function ( data, type, row ) {
+								return "<a href='<?php echo base_url(); ?>admin/breeds/" + row[0] + "'>" + row[2] + "</a>";
+					}
+				},
 				{ "targets": 3, "data": null, "render": function ( data, type, row ) {
 					var result = "<a href='#' id='"+ row[0] +"' class='btn btn-outline-success btn-sm edit'><i class='fas fa-edit'></i></a>";
 						result +="&nbsp;<a onclick='show_merge("+ row[0] +")' href='javascript:void(0);' id='"+ row[0] +"' class='btn btn-outline-danger btn-sm merge'><i class='fas fa-compress-alt'></i></a>";

@@ -64,34 +64,49 @@ class Admin extends Admin_Controller {
 	}
 	
 	
-	public function breeds()
+	public function breeds($id = false)
 	{
-		if ($this->input->post('submit') == "edit")
+		if ($id) 
 		{
-			
-			$this->breeds->update(array(
-									"name" => $this->input->post('name')
-								), 
-								array(
-									"id" => (int) $this->input->post('id')
-								));
+			$data = array(
+				"breeds" => $this->pets
+									->fields('id, name, death')
+									->with_owners('fields:id, last_name, street, city')
+									->where(array("breed" => (int)$id, "death" => 0))
+									->get_all(),
+			);
+			$this->_render_page('admin/breeds_search', $data);		
 		}
-		if ($this->input->post('submit') == "merge")
+		else
 		{
-			if ($this->input->post('new_breed') == $this->input->post('old_breed_id')) { echo "cannot merge same breeds_id"; exit;}
-			$this->pets->update(array(
-									"breed" => (int) $this->input->post('new_breed')
-								), 
-								array(
-									"breed" => (int) $this->input->post('old_breed_id')
-								));
-			$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));
-		}
-		$data = array(
-						"breeds" => $this->breeds->with_pets('fields:*count*')->get_all(),
-					);
+			if ($this->input->post('submit') == "edit")
+			{
+				
+				$this->breeds->update(array(
+										"name" => $this->input->post('name')
+									), 
+									array(
+										"id" => (int) $this->input->post('id')
+									));
+			}
+			if ($this->input->post('submit') == "merge")
+			{
+				if ($this->input->post('new_breed') == $this->input->post('old_breed_id')) { echo "cannot merge same breeds_id"; exit;}
+				$this->pets->update(array(
+										"breed" => (int) $this->input->post('new_breed')
+									), 
+									array(
+										"breed" => (int) $this->input->post('old_breed_id')
+									));
+				$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));
+			}
+			// note : this should be removed just checking if there is something in a_get_breeds() via ajax
+			$data = array(
+							"breeds" => $this->breeds->get_all(),
+						);
 
-		$this->_render_page('admin_breeds', $data);	
+			$this->_render_page('admin_breeds', $data);	
+		}
 	}
 	
 	public function a_get_breeds()
