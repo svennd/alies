@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -3357,51 +3357,17 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (2674, '2290', 'Vorselaar', 'VORSELAAR', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2675, '1190', 'Vorst', 'VORST', 'BRUSSEL', NULL, '2020-07-22 15:14:25'),
 (2676, '2350', 'Vosselaar', 'VOSSELAAR', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2677, '5550', 'Vresse-Sur-Semois', 'VRESSE-SUR-SEMOIS', 'NAMEN', NULL, '2020-07-22 15:14:25'),
-(2678, '9250', 'Waasmunster', 'WAASMUNSTER', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2679, '9185', 'Wachtebeke', 'WACHTEBEKE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2680, '5650', 'Walcourt', 'WALCOURT', 'NAMEN', NULL, '2020-07-22 15:14:25'),
-(2681, '4520', 'Wanze', 'WANZE', 'LUIK', NULL, '2020-07-22 15:14:25'),
-(2682, '8790', 'Waregem', 'WAREGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2683, '4300', 'Waremme', 'WAREMME', 'LUIK', NULL, '2020-07-22 15:14:25'),
-(2684, '4219', 'Wasseiges', 'WASSEIGES', 'LUIK', NULL, '2020-07-22 15:14:25'),
-(2685, '1410', 'Waterloo', 'WATERLOO', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2686, '1170', 'Watermaal-Bosvoorde', 'WATERMAAL-BOSVOORDE', 'BRUSSEL', NULL, '2020-07-22 15:14:25'),
-(2687, '1300', 'Wavre', 'WAVRE', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2688, '4950', 'Weismes', 'WEISMES', 'LUIK', NULL, '2020-07-22 15:14:25'),
-(2689, '4840', 'Welkenraedt', 'WELKENRAEDT', 'LUIK', NULL, '2020-07-22 15:14:25'),
-(2690, '3830', 'Wellen', 'WELLEN', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
-(2691, '6920', 'Wellin', 'WELLIN', 'LUXEMBURG', NULL, '2020-07-22 15:14:25'),
-(2692, '1780', 'Wemmel', 'WEMMEL', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2693, '8940', 'Wervik', 'WERVIK', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2694, '2260', 'Westerlo', 'WESTERLO', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2695, '9230', 'Wetteren', 'WETTEREN', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2696, '8560', 'Wevelgem', 'WEVELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2697, '1970', 'Wezembeek-Oppem', 'WEZEMBEEK-OPPEM', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2698, '9260', 'Wichelen', 'WICHELEN', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2699, '8710', 'Wielsbeke', 'WIELSBEKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2700, '2110', 'Wijnegem', 'WIJNEGEM', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2701, '2830', 'Willebroek', 'WILLEBROEK', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2702, '8750', 'Wingene', 'WINGENE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2703, '2160', 'Wommelgem', 'WOMMELGEM', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2704, '2990', 'Wuustwezel', 'WUUSTWEZEL', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2705, '5530', 'Yvoir', 'YVOIR', 'NAMEN', NULL, '2020-07-22 15:14:25'),
-(2706, '2240', 'Zandhoven', 'ZANDHOVEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2707, '1930', 'Zaventem', 'ZAVENTEM', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2708, '8210', 'Zedelgem', 'ZEDELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2709, '9240', 'Zele', 'ZELE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2710, '9060', 'Zelzate', 'ZELZATE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2711, '1980', 'Zemst', 'ZEMST', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2712, '2980', 'Zoersel', 'ZOERSEL', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2713, '3520', 'Zonhoven', 'ZONHOVEN', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
-(2714, '8980', 'Zonnebeke', 'ZONNEBEKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2715, '9620', 'Zottegem', 'ZOTTEGEM', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2716, '3440', 'Zoutleeuw', 'ZOUTLEEUW', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
-(2717, '8377', 'Zuienkerke', 'ZUIENKERKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2718, '9870', 'Zulte', 'ZULTE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2719, '3690', 'Zutendaal', 'ZUTENDAAL', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
-(2720, '8550', 'Zwevegem', 'ZWEVEGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
-(2721, '2070', 'Zwijndrecht', 'ZWIJNDRECHT', 'ANTWERPEN', NULL, '2020-07-22 15:14:25');
+CREATE TABLE IF NOT EXISTS `zipcodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `zip` varchar(16) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `main_city` varchar(255) NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `zip` (`zip`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 --
 -- Beperkingen voor geëxporteerde tabellen
@@ -3428,7 +3394,7 @@ INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 -- Gegevens worden geëxporteerd voor tabel `users`
 --
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `current_location`, `updated_at`, `created_at`, `image`, `sidebar`) VALUES
-(1, '127.0.0.1', 'administrator', '$2y$08$88sN20bkm4KQ5KO4aaDp2O7AHJab0bICtzrOkobNKjj3B1BJCCn06', '', 'john@doe.no', '', NULL, NULL, NULL, 1268889823, 1600178715, 1, 'John', 'Doe', 'ADMIN', '0', 4, '2020-08-16 21:30:02', NULL, 'user_1_1600186804.png', '');
+(1, '127.0.0.1', 'admin', '$2y$08$88sN20bkm4KQ5KO4aaDp2O7AHJab0bICtzrOkobNKjj3B1BJCCn06', '', 'admin@dommel.org', '', NULL, NULL, NULL, 1268889823, 1600178715, 1, 'admin', 'dommel', 'ADMIN', '0', 4, '2020-08-16 21:30:02', NULL, 'user_1_1600186804.png', '');
 
 --
 -- Gegevens worden geëxporteerd voor tabel `users_groups`

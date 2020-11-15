@@ -16,6 +16,18 @@ Requirements :
 1) apt-get install git mysql-server nginx php-fpm git php-gd php-mbstring php7.2-xml
 2) chmod 777 assets/public assets/barcode data data/stored
 
+
+# selinux 
+semanage fcontext -a -t httpd_sys_rw_content_t 'assets/barcode'
+semanage fcontext -a -t httpd_sys_rw_content_t 'assets/public'
+semanage fcontext -a -t httpd_sys_rw_content_t 'data'
+semanage fcontext -a -t httpd_sys_rw_content_t 'data/stored'
+
+restorecon -v 'assets/barcode'
+restorecon -v 'assets/public'
+restorecon -v 'data'
+restorecon -v 'data/stored'
+
 # used tools : 
 note : not all dependencies are up-to-date !
 https://select2.org/

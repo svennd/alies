@@ -323,7 +323,7 @@
 					<span style="color:red;">error name</span>
 				<?php endif; ?>
 					</span>
-                <img class="img-profile rounded-circle" src="<?php echo base_url() . 'assets/public/' . $user->image; ?>" />
+                <img class="img-profile rounded-circle" src="<?php echo base_url() . 'assets/public/' . (!empty($user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
