@@ -143,7 +143,7 @@ $state = array(
 					<form action="<?php echo base_url(); ?>invoice/bill_pay/<?php echo $bill_id ?>" method="post" autocomplete="off">
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
-				<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card"><i class="fab fa-cc-visa"></i>&nbsp;Card</a></span>
+				<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-cc-visa"></i>&nbsp;Card</a></span>
 			</div>
 			<input type="text" class="form-control" id="card_value" name="card_value" value="<?php echo ($card != 0) ? $card:'';?>" />
 			<div class="input-group-append">
@@ -153,7 +153,7 @@ $state = array(
 		
 		<div class="input-group mb-3">
 		  <div class="input-group-prepend">
-			<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash"><i class="fas fa-euro-sign"></i>&nbsp; Cash</a></span>
+			<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fas fa-euro-sign"></i>&nbsp; Cash</a></span>
 		  </div>
 		  <input type="text" class="form-control" id="cash_value" name="cash_value" value="<?php echo ($cash != 0) ? $cash:'';?>" />
 		<div class="input-group-append">

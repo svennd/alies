@@ -218,12 +218,12 @@
           <ul class="navbar-nav ml-auto">
 
 
+			<!--
 			<?php if ($this->ion_auth->in_group("admin")): ?>
-            <!-- Nav Item - Alerts -->
+
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
 				<?php $unread = 0; ?>
 				<?php if(isset($alerts)) : ?>
 					<?php if($alerts) : ?>
@@ -238,7 +238,6 @@
 					<?php endif; ?>
 				<?php endif; ?>
               </a>
-              <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
                   Alerts Center
@@ -262,12 +261,11 @@
               </div>
             </li>
 			<?php endif; ?>
-			
-            <!-- Nav Item - Messages -->
+			-->
+			<!--
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
-                <!-- Counter - Messages -->
 				<?php $messages = (isset($messages)) ? $messages : 0; ?>
 				<?php if ($messages > 0):  ?>
 				
@@ -282,7 +280,6 @@
 				<?php endif; ?>
 				<?php endif; ?>
               </a>
-              <!-- Dropdown - Messages -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <h6 class="dropdown-header">
                   Message Center
@@ -310,7 +307,8 @@
                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
               </div>
             </li>
-
+			--> 
+			
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->

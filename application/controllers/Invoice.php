@@ -17,32 +17,29 @@ class Invoice extends Vet_Controller {
 		$this->load->model('Events_products_model', 'events_products');
 	}
 	
-	# show bills of last 2 days;
+	# show bills of last 30 days;
 	public function index()	
 	{
-		if( $this->ion_auth->in_group('admin')) 
-		{
-			$bill_overview = $this->bills
-				->with_location('fields:name')
-				->with_vet('fields:first_name')
-				->with_owner('fields:last_name')
-				->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)
-				->order_by('id', 'ASC')
-				->limit(100)
-				->get_all();
-		}
-		else
-		{
-			$bill_overview = $this->bills
-				->where('created_at > DATE_ADD(NOW(), INTERVAL -7 DAY)', null, null, false, false, true)
-				->with_location('fields:name')
-				->with_vet('fields:first_name')
-				->with_owner('fields:last_name')
-				->limit(100)
-				->get_all();
-		}
+		// TODO VERIFY THIS
+		// the html is not safe!
+		// $search_from = (strtotime('-14 days') > strtotime($this->input->post('search_from'))) ? strtotime('-14 days') : $this->input->post('search_from');
+		$search_from = $this->input->post('search_from');
+		$search_to = $this->input->post('search_to');
+			
+		// ->where('created_at > DATE_ADD(NOW(), INTERVAL -14 DAY)', null, null, false, false, true)
+		$bill_overview = $this->bills
+			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->with_location('fields:name')
+			->with_vet('fields:first_name')
+			->with_owner('fields:last_name')
+			->limit(100)
+			->get_all();
+			
 		$data = array(
-			"bills" 		=> $bill_overview
+			"bills" 		=> $bill_overview,
+			"search_from"	=> (isset($search_from)) ? $search_from : '',
+			"search_to"		=> (isset($search_to)) ? $search_to : '',
 		);
 		$this->_render_page('bill_overview', $data);		
 	}

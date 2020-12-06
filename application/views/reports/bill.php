@@ -6,6 +6,10 @@ $state = array(
 				"PAID",
 				"NON_COLLECTABLE",
 				);
+$now = new DateTime();
+$now->modify('+1 day');
+$cd = new DateTime();
+$cd->modify('-3 month');
 ?>
       <div class="card shadow mb-4">
 			<div class="card-header">
@@ -16,7 +20,7 @@ $state = array(
 
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
-					<input type="date" name="search_from" class="form-control" value="<?php echo (isset($search_from)) ? $search_from : ''; ?>" id="search_from">
+					<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" id="search_from">
 				  </div>
 				  <div class="form-group mb-2">
 					<span class="fa-stack" style="vertical-align: top;">
@@ -26,7 +30,7 @@ $state = array(
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
-					<input type="date" name="search_to" class="form-control" value="<?php echo (isset($search_to)) ? $search_to : ''; ?>" id="search_to">
+					<input type="date" name="search_to" class="form-control" value="<?php echo (!empty($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format($now, 'Y-m-d'); ?>" id="search_to">
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2">Search range</button>
 				</form>
