@@ -44,9 +44,9 @@ class Owners_model extends MY_Model
 			FROM 
 				owners
 			WHERE
-				first_name LIKE '%" . $name . "%' ESCAPE '!'
+				first_name LIKE '" . $name . "%' ESCAPE '!'
 			OR
-				last_name LIKE '%" . $name . "%' ESCAPE '!'	
+				last_name LIKE '" . $name . "%' ESCAPE '!'	
 			ORDER BY
 				last_bill
 			DESC
