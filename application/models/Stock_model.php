@@ -66,7 +66,7 @@ class Stock_model extends MY_Model
 			# check if for this product there is only one stock;
 			$result = $this->stock->where(array("product_id" => $product_id, "location" => $location))->fields('barcode')->get_all();
 			
-			if (count($result) == 1)
+			if ($result && count($result) == 1)
 			{
 				$sql = "UPDATE stock SET volume=volume-" . $volume. " WHERE barcode = '" . $result[0]['barcode'] . "' and location = '" . $location . "' limit 1;";
 				$this->db->query($sql);
