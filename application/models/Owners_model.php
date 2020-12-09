@@ -66,6 +66,8 @@ class Owners_model extends MY_Model
 						pets.owner = " . $owners['id'] . "
 					AND
 						pets.death = 0
+					AND
+						pets.lost = 0
 					LIMIT
 						0,2
 				";
@@ -106,6 +108,8 @@ class Owners_model extends MY_Model
 						pets.owner = " . $owners['id'] . "
 					AND
 						pets.death = 0
+					AND
+						pets.lost = 0
 					LIMIT
 						0,2
 				";
@@ -151,6 +155,8 @@ class Owners_model extends MY_Model
 						pets.owner = " . $owners['id'] . "
 					AND
 						pets.death = 0
+					AND
+						pets.lost = 0
 					LIMIT
 						0,2
 				";
