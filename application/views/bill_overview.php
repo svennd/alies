@@ -23,7 +23,7 @@ $now->modify('+1 day');
 
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
-					<input type="date" name="search_from" class="form-control" value="<?php echo (isset($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" min="<?php echo date_format($cd, 'Y-m-d'); ?>" id="search_from">				
+					<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" min="<?php echo date_format($cd, 'Y-m-d'); ?>" id="search_from">				
 				</div>
 				  <div class="form-group mb-2">
 					<span class="fa-stack" style="vertical-align: top;">
@@ -33,7 +33,7 @@ $now->modify('+1 day');
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
-					<input type="date" name="search_to" class="form-control" value="<?php echo (isset($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format($now, 'Y-m-d'); ?>" id="search_to">
+					<input type="date" name="search_to" class="form-control" value="<?php echo (!empty($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format($now, 'Y-m-d'); ?>" id="search_to">
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2">Search range</button>
 				</form>
