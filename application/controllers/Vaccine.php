@@ -19,7 +19,7 @@ class Vaccine extends Vet_Controller {
 					"pet_info" 	=> $pet_info,
 					"pet_id" 	=> $pet_id,
 					"vaccines" 	=> $this->vacs_pet
-											->with_vets('fields: first_name')
+											->with_vet('fields: first_name')
 											->with_product('fields: name, vaccin_freq')
 											->with_location('fields: name')
 											->where(array('pet' => $pet_id))

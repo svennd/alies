@@ -25,7 +25,7 @@
 				  <td><?php echo $vac['redo']; ?></td>
 				  <td><a href="<?php echo base_url(); ?>events/event/<?php echo $vac['event_id']; ?>"><?php echo $vac['event_id']; ?></a></td>
 				  <td><?php echo $vac['location']['name']; ?></td>
-				  <td><?php echo $vac['vets']['first_name']; ?></td>
+				  <td><?php echo $vac['vet']['first_name']; ?></td>
 				  <td><?php echo $vac['created_at']; ?></td>
 				</tr>
 				<?php endforeach; ?>
