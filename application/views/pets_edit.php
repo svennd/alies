@@ -24,35 +24,35 @@
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios1" value="0" <?php echo ($pet['type'] == 0) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios1">
-				<i class="fas fa-dog"></i> Dog
+				<span style="color:#628395"><i class="fas fa-dog fa-fw"></i></span> Dog
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios2" value="1" <?php echo ($pet['type'] == 1) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios2">
-				<i class="fas fa-cat"></i> Cat
+				<span style="color:#96897B"><i class="fas fa-cat fa-fw"></i></span> Cat
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios3" value="2" <?php echo ($pet['type'] == 2) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios3">
-				<i class="fas fa-horse"></i> Horse
+				<span style="color:#CF995F"><i class="fas fa-horse fa-fw"></i></span> Horse
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios4" value="3" <?php echo ($pet['type'] == 3) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios4">
-				<i class="fas fa-dove"></i> Bird
+				<span style="color:#DBAD6A"><i class="fas fa-dove fa-fw"></i></span> Bird
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios5" value="4" <?php echo ($pet['type'] == 4) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios5">
-				<i class="fas fa-ghost"></i> Other
+				<span style="color:#DFD5A5"><i class="fas fa-ghost fa-fw"></i></span> Other
 			  </label>
 			</div>
 		</div>
@@ -63,34 +63,34 @@
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender1" value="0" <?php echo ($pet['gender'] == 0) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender1">
-				<span style="color:#4c6ef5;"><i class="fas fa-mars"></i></span> Male
+				<span style="color:#4c6ef5;"><i class="fas fa-mars fa-fw"></i></span> Male
 			  </label>
 			</div>
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender1n" value="2" <?php echo ($pet['gender'] == 2) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender1n">
-				<span style="color:#4c6ef5;"><i class="fas fa-neuter"></i></span> Male neutered
+				<span style="color:#4c6ef5;"><i class="fas fa-neuter fa-fw"></i></span> Male neutered
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender2" value="1" <?php echo ($pet['gender'] == 1) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender2">
-				<span style="color:#f783ac;"><i class="fas fa-venus"></i></span> Female
+				<span style="color:#f783ac;"><i class="fas fa-venus fa-fw"></i></span> Female
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender2n" value="3" <?php echo ($pet['gender'] == 3) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender2n">
-				<span style="color:#f783ac;"><i class="fas fa-neuter"></i></span> Female neutered
+				<span style="color:#f783ac;"><i class="fas fa-neuter fa-fw"></i></span> Female neutered
 			  </label>
 			</div>
 			
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender7n" value="4" <?php echo ($pet['gender'] == 4) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender7n">
-				<span style="color:#6cce23;"><i class="fas fa-genderless"></i></span> Other
+				<span style="color:#6cce23;"><i class="fas fa-genderless fa-fw"></i></span> Other
 			  </label>
 			</div>
 		</div>
