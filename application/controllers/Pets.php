@@ -163,9 +163,6 @@ class Pets extends Vet_Controller {
 						"breeds" => $this->breeds->get_all()
 					);
 					
-		$data['extra_header'] = '<link href="'. base_url() .'assets/css/chosen.min.css" rel="stylesheet">';
-		$data['extra_footer'] = '<script src="'. base_url() .'assets/js/chosen.jquery.min.js"></script>';
-		
 		$this->_render_page('pets_edit', $data);
 	}
 	

@@ -108,6 +108,7 @@
 	  <div class="form-group">
 		<label for="birth">birth</label>
 		<input type="date" name="birth" class="form-control" id="birth" value="<?php echo (isset($pet['birth'])) ? $pet['birth']: '' ?>">
+		<small id="birth_info" class="form-text text-muted"></small>
 	  </div>
   </div>
 </div>
@@ -210,7 +211,31 @@
 </div>
 
 <script type="text/javascript">
+function make_date(date)
+{
+	var today = new Date();
+	var birthDate = new Date(date);
+	var years = (today.getFullYear() - birthDate.getFullYear());
+	if (today.getMonth() < birthDate.getMonth() ||
+		today.getMonth() == birthDate.getMonth() && today.getDate() < birthDate.getDate()) {
+		years--;
+	}
+	if (isNaN(years))
+	{
+		$("#birth_info").html("Wrong date!");
+	}
+	else
+	{
+		$("#birth_info").html(years + " years old");
+	}
+}
+
 document.addEventListener("DOMContentLoaded", function(){
 	$("#breeds").select2();
+	$("#birth").change(function() {
+		make_date(this.value);
+	});
+	
+	make_date($("#birth").val());
 });
 </script>

@@ -8,42 +8,88 @@
 
 
 <form action="<?php echo base_url(); ?>pets/add/<?php echo $owner['id']; ?>" method="post" autocomplete="off">
+ <h5>Required</h5>
+  <hr>
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="name">Type</label>
+		<div class="col">
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="type" id="exampleRadios1" value="0">
+			  <label class="form-check-label" for="exampleRadios1">
+				<i class="fas fa-dog"></i> Dog
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="type" id="exampleRadios2" value="1">
+			  <label class="form-check-label" for="exampleRadios2">
+				<i class="fas fa-cat"></i> Cat
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="type" id="exampleRadios3" value="2">
+			  <label class="form-check-label" for="exampleRadios3">
+				<i class="fas fa-horse"></i> Horse
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="type" id="exampleRadios4" value="3">
+			  <label class="form-check-label" for="exampleRadios4">
+				<i class="fas fa-dove"></i> Bird
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="type" id="exampleRadios5" value="4">
+			  <label class="form-check-label" for="exampleRadios5">
+				<i class="fas fa-ghost"></i> Other
+			  </label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group col-md-6">
+		<label for="name">Gender</label>
+		<div class="col">
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="gender" id="gender1" value="0">
+			  <label class="form-check-label" for="gender1">
+				<span style="color:#4c6ef5;"><i class="fas fa-mars"></i></span> Male
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="gender" id="gender1n" value="2">
+			  <label class="form-check-label" for="gender1n">
+				<span style="color:#4c6ef5;"><i class="fas fa-neuter"></i></span> Male neutered
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="gender" id="gender2" value="1">
+			  <label class="form-check-label" for="gender2">
+				<span style="color:#f783ac;"><i class="fas fa-venus"></i></span> Female
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="gender" id="gender2n" value="3">
+			  <label class="form-check-label" for="gender2n">
+				<span style="color:#f783ac;"><i class="fas fa-neuter"></i></span> Female neutered
+			  </label>
+			</div>
+			
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="gender" id="gender7n" value="4">
+			  <label class="form-check-label" for="gender7n">
+				<span style="color:#6cce23;"><i class="fas fa-genderless"></i></span> Other
+			  </label>
+			</div>
+		</div>
+	</div>
+</div>
 
-  <h5>Required</h5>
-  
-  <div class="form-group">
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="type" id="exampleRadios1" value="0">
-  <label class="form-check-label" for="exampleRadios1">
-    <i class="fas fa-dog"></i> Dog
-  </label>
-</div>
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="type" id="exampleRadios2" value="1">
-  <label class="form-check-label" for="exampleRadios2">
-	<i class="fas fa-cat"></i> Cat
-  </label>
-</div>
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="type" id="exampleRadios3" value="2">
-  <label class="form-check-label" for="exampleRadios3">
-	<i class="fas fa-horse"></i> Horse
-  </label>
-</div>
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="type" id="exampleRadios4" value="3">
-  <label class="form-check-label" for="exampleRadios4">
-	<i class="fas fa-dove"></i> Bird
-  </label>
-</div>
-<div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="type" id="exampleRadios5" value="4">
-  <label class="form-check-label" for="exampleRadios5">
-    <i class="fas fa-ghost"></i> Other
-  </label>
-</div>
-
-  </div>
 
 <div class="row">
     <div class="col"> 
@@ -59,52 +105,10 @@
 	  </div>
   </div>
 </div>
-	<hr />
+
+<br/>
   <h5>Details</h5>
-  <div class="form-group">
-    <label for="name">Gender</label>
-		<div class="form-row">
-    <div class="col">
-		<div class="form-check">
-		  <input class="form-check-input" type="radio" name="gender" id="gender1" value="0">
-		  <label class="form-check-label" for="gender1">
-			male
-		  </label>
-		</div>
-		<div class="form-check">
-		  <input class="form-check-input" type="radio" name="gender" id="gender2" value="1">
-		  <label class="form-check-label" for="gender2">
-			female
-		  </label>
-		</div>
-	</div>
-    <div class="col">
-		<div class="form-check">
-		  <input class="form-check-input" type="radio" name="gender" id="gender1n" value="2">
-		  <label class="form-check-label" for="gender1n">
-			male neutered
-		  </label>
-		</div>
-		<div class="form-check">
-		  <input class="form-check-input" type="radio" name="gender" id="gender2n" value="3">
-		  <label class="form-check-label" for="gender2n">
-			female neutered
-		  </label>
-		</div>
-	</div>
-
-    <div class="col">
-		<div class="form-check">
-		  <input class="form-check-input" type="radio" name="gender" id="gender7n" value="4">
-		  <label class="form-check-label" for="gender7n">
-			other
-		  </label>
-		</div>
-	</div>
-
-	</div>
-  </div>
-
+	<hr />
   <div class="form-group">
     <label for="breed">breed</label>
 	<div class="form-row">
