@@ -116,7 +116,7 @@ class Pets extends Vet_Controller {
 					
 					);
 		
-		$this->_render_page('pets_add', $data);
+		$this->_render_page('pets/profile', $data);
 	}
 	
 	public function edit($pet_id)
@@ -163,7 +163,7 @@ class Pets extends Vet_Controller {
 						"breeds" => $this->breeds->get_all()
 					);
 					
-		$this->_render_page('pets_edit', $data);
+		$this->_render_page('pets/profile', $data);
 	}
 	
 	public function fiche($pet_id)
