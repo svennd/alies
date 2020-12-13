@@ -90,5 +90,37 @@ document.addEventListener("DOMContentLoaded", function(){
 		});
    
 	});
+	
+	$('#message').trumbowyg({
+
+    btns: [
+        ['strong', 'em', 'fontsize'],
+        ['undo', 'redo'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['insertImage'],
+        ['unorderedList', 'orderedList'],
+        ['removeformat'],
+        ['fullscreen'],
+		['template'],
+    ],
+
+    plugins: {
+        fontsize: {
+            sizeList: [
+                '14px',
+                '18px',
+                '22px'
+            ],
+            allowCustomSize: false
+        },
+        templates: [
+            {
+                name: 'Full Tooth List',
+                html: '<p>101:<br/>102:<br/>103:<br/>104:<br/>105:<br/>106:<br/>107:<br/>108:<br/>109:<br/>110:<br/>201:<br/>202:<br/>203:<br/>204:<br/>205:<br/>206:<br/>207:<br/>208:<br/>209:<br/>210:<br/>411:<br/>410:<br/>409:<br/>408:<br/>407:<br/>406:<br/>405:<br/>404:<br/>403:<br/>402:<br/>401:<br/>301:<br/>302:<br/>303:<br/>304:<br/>305:<br/>306:<br/>307:<br/>308:<br/>309:<br/>310:<br/>311:<br/></p>'
+            }
+        ]
+    }
+});
 });
 </script>

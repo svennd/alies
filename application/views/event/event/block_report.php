@@ -106,6 +106,44 @@ $("#select_type").select2({
 	templateResult: formatState
 });
 
+$('#anamnese').trumbowyg({
+
+    btns: [
+        ['strong', 'em', 'fontsize'],
+        ['undo', 'redo'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['insertImage'],
+        ['unorderedList', 'orderedList'],
+        ['removeformat'],
+        ['fullscreen'],
+		['template'],
+    ],
+
+    plugins: {
+        fontsize: {
+            sizeList: [
+                '14px',
+                '18px',
+                '22px'
+            ],
+            allowCustomSize: false
+        },
+        templates: [
+            {
+                name: 'Anamnese_Onderzoek_Behandeling',
+                html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE::</b><br/><br/><br/><br/><b>BEHANDELING:</b><br/><br/><br/><br/>'
+            },
+			/*
+            {
+                name: 'Template 2',
+                html: '<p>I am a different template!</p>'
+            }
+			*/
+        ]
+    }
+});
+
 <?php if (!empty($event_info['type'])): ?>
 $('#select_type').val('<?php echo $event_info["type"]; ?>');
 $('#select_type').trigger('change'); 

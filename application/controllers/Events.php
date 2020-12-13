@@ -75,7 +75,16 @@ class Events extends Vet_Controller {
 			"other_pets"	=> $other_pets,
 			"u_location"	=> $this->user->current_location,
 			"procedures_d"	=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
-			"extra_footer" => '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
+			"extra_header" => 
+				'<link href="'. base_url() .'assets/css/trumbowyg.min.css" rel="stylesheet">'
+				,
+			"extra_footer" => 
+				'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' . 
+				'<script src="'. base_url() .'assets/js/trumbowyg.min.js"></script>' .
+				'<script src="'. base_url() .'assets/js/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>' .
+				'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
+				'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
+
 		);
 
 		$this->_render_page('event/main', $data);
