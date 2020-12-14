@@ -55,3 +55,23 @@
 # version : 27/08/2020
 - added caching to charts
 - removed client charts
+
+# version : 14/12/2020
+- add support for GS-1 DataMatrix scanning (on many veternarien products QR like code)
+- header alert on empty set
+- adding stock of a non existing product
+- added support for Kluwer book keeping (export format : xml)
+- fix lotnr (not an int)
+- add support for lookup/search per breed
+- simplify code
+- rough selection of invoices
+- improved admin invoice screen (default : 3M, until: today)
+- hidden non functional messages & alerts from header
+- change search behaviour, only search right side
+- fix bug where name of a vet resulted in error
+- small fix for owner model : now owners will only list 'active pets' (no dead or lost)
+- bugfix : added result check in stock_model
+- auto add month date in invoice list
+- added support for nutrition advice
+- designed create/edit pet page
+- wysiwyg editor on report & tooth view
