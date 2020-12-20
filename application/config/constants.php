@@ -119,6 +119,7 @@ define('CAT', 1);
 define('HORSE', 2);
 define('BIRD', 3);
 define('OTHER', 4);
+define('RABBIT', 5);
 
 # stock states
 define('STOCK_CHECK', 0);
