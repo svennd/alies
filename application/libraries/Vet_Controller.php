@@ -7,6 +7,12 @@ class Vet_Controller extends MY_Controller {
 	{
 		parent::__construct();
 		
+		# check if install is fine
+		if(empty($this->config->item('install')))
+		{
+			redirect('install/start', 'refresh');
+		}
+		
 		# check if they are logged in
 		if (!$this->ion_auth->logged_in())
 		{

@@ -37,6 +37,7 @@ spl_autoload_register(function ($class)
 | a PHP script and you can easily do that on your own.
 |
 */
+// $config['base_url'] = 'http://localhost/alies';
 $config['base_url'] = '';
 
 /*
@@ -392,7 +393,7 @@ $config['encryption_key'] = '';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ci_session';
+$config['sess_cookie_name'] = 'alies_demo_root';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
@@ -535,3 +536,8 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/*
+	install script
+*/
+$config['install'] = false;
