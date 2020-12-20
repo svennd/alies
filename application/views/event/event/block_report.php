@@ -92,14 +92,13 @@ function formatState (state) {
 };
 
 var data = [
-		{ id: 0, text: "Algemene Controle", title:"fas fa-user-md"},
-		{ id: 1, text: "Vaccinatie", title:"fas fa-syringe"},
-		{ id: 2, text: "Tanden", title:"fas fa-tooth"},
-		{ id: 3, text: "Hospitalisatie", title:"fas fa-hospital"},
-		{ id: 4, text: "Operatie", title:"fas fa-hammer"},
-		{ id: 5, text: "EKG", title:"fas fa-heartbeat"},
+		{ id: 0, text: "Ziekten", title:"fas fa-fw fa-file-medical"},
+		{ id: 1, text: "Vaccinatie", title:"fas fa-fw fa-syringe"},
+		{ id: 2, text: "Tanden", title:"fas fa-fw fa-tooth"},
+		{ id: 4, text: "Operatie", title:"fas fa-fw fa-hammer"},
+		{ id: 5, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
 	];
-
+	
 $("#select_type").select2({
 	placeholder: 'Select type',
 	data: data,

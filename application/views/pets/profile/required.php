@@ -35,7 +35,7 @@
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="type" id="exampleRadios6" value="5" <?php echo ($edit_mode && $pet['type'] == RABBIT) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="exampleRadios6">
-				<span style="color:#DBAD6A"><i class="fas fa-paw fa-fw"></i></span> Rabbit
+				<span style="color:#dec5a1"><i class="fas fa-paw fa-fw"></i></span> Rabbit
 			  </label>
 			</div>
 			

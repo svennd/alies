@@ -163,7 +163,7 @@ function get_symbol($type)
 							  <div class="card card-body">
 								<strong>Passed away</strong>
 								<?php foreach ($dead_pet as $pet): ?>
-									<a href="<?php echo base_url(); ?>pets/edit/<?php echo $pet['id'] ?>">
+									<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>">
 											<?php echo get_symbol($pet['type']); ?>
 									<?php echo $pet['name']; ?>
 									</a>
@@ -177,7 +177,7 @@ function get_symbol($type)
 							  <div class="card card-body">
 								<strong>Gone / lost</strong>
 								<?php foreach ($lost_pet as $pet): ?>
-									<a href="<?php echo base_url(); ?>pets/edit/<?php echo $pet['id'] ?>">
+									<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>">
 											<?php echo get_symbol($pet['type']); ?>
 									<?php echo $pet['name']; ?>
 									</a>

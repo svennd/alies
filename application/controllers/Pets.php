@@ -251,25 +251,61 @@ class Pets extends Vet_Controller {
 		redirect('owners/detail/' . $new_owner, 'refresh');
 	}
 	
-	public function history($pet_id, $show_no_history = false)
+	/*
+		no_show_or_type =
+			- if int : int-1 on field type
+			- else : no_history (bool)
+	*/
+	public function history($pet_id, $no_show_or_type = false)
 	{
 		$pet_info = $this->pets->get($pet_id);
-		$pet_history = $this->
+		
+		$type = false;
+		if ((int)$no_show_or_type)
+		{
+			$type = (int)$no_show_or_type - 1;
+		}
+		
+		// var_dump($type);
+		
+		if (is_int($type))
+		{
+			// var_dump($type);
+			$pet_history = $this->
+							events->
+							with_products('fields:events_products.volume, unit_sell, name')->
+							with_procedures('fields:events_procedures.amount, name')->
+							with_vet('fields:first_name')->
+							with_location('fields:name')->
+							where(array(
+											"pet" => $pet_id, 
+											"type" => $type
+										))->
+							order_by('created_at', 'DESC')->
+							get_all();
+		}
+		else
+		{
+			$pet_history = $this->
 									events->
 									with_products('fields:events_products.volume, unit_sell, name')->
 									with_procedures('fields:events_procedures.amount, name')->
 									with_vet('fields:first_name')->
 									with_location('fields:name')->
-									where(array("pet" => $pet_id, "no_history" => (bool) $show_no_history))->
+									where(array(
+													"pet" => $pet_id, 
+													"no_history" => (bool) $no_show_or_type
+												))->
 									order_by('created_at', 'DESC')->
 									get_all();
+		}
 		
 		$data = array(
-			"pet"			=> $pet_info,
-			"owner" 		=> $this->owners->get($pet_info['owner']),
-			"pet_history"	=> $pet_history,
-			"show_no_history"	=> $show_no_history,
-			"full_history"	=> true
+			"pet"				=> $pet_info,
+			"owner" 			=> $this->owners->get($pet_info['owner']),
+			"pet_history"		=> $pet_history,
+			"show_no_history"	=> $no_show_or_type,
+			"full_history"		=> true
 		);
 		
 		$this->_render_page('pets/fiche/event_history', $data);

@@ -25,21 +25,30 @@
 			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
 			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> / History
 		</div>
-		
-		 <div class="dropdown no-arrow">
-			<?php if($show_no_history == 1): ?>
-			<a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>" role="button" id="dropdownMenuLink">
-				<i class="fas fa-eye"></i>
-			</a>
-			<?php else: ?>
-			<a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/1" role="button" id="dropdownMenuLink">
-				<i class="fas fa-eye-slash"></i>
-			</a>
-			<?php endif; ?>
-		  </div>
 	</div>
 	<?php endif; ?>
 	<div class="card-body">
+		
+		<?php if (isset($full_history)): ?>
+			<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/1" role="button"><i class="fas fa-fw fa-file-medical"></i></a>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/2" role="button"><i class="fas fa-fw fa-syringe"></i></a>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/3" role="button"><i class="fas fa-fw fa-tooth"></i></a>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/4" role="button"><i class="fas fa-fw fa-hammer"></i></a>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/5" role="button"><i class="fas fa-fw fa-heartbeat"></i></a>
+				<?php if($show_no_history == 'no_history'): ?>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>">
+					<i class="fas fa-eye"></i>
+				</a>
+				<?php else: ?>
+				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/no_history">
+					<i class="fas fa-eye-slash"></i>
+				</a>
+				<?php endif; ?>
+			</div>
+			<br/>
+			<br/>
+		<?php endif; ?>
 		
 		<?php if ($pet_history): ?>
 		<table class="table table-hover mb-0">
