@@ -1,0 +1,31 @@
+language: php
+os: linux
+dist: xenial
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4
+
+env:
+  - DB=mysql
+  - DB=pdo/mysql
+
+services:
+  - mysql
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+jobs:
+  allow_failures:
+    - php: hhvm-3.30
+  include:
+    - php: hhvm-3.30
+      dist: trusty
+      env: DB=pdo/mysql
+
+branches:
+  only:
+    - master
