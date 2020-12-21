@@ -8,6 +8,6 @@ jobs:
       - uses: overtrue/phplint@master
         with:
           path: .
-          options: --exclude=*.log
+          options: --exclude=system
           
 
