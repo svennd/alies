@@ -105,7 +105,8 @@ class CI_Profiler {
 		{
 			if ( ! isset($config[$section]))
 			{
-				$this->_compile_{$section} = TRUE;
+				// $this->_compile_{$section} = TRUE;
+				$this->{'_compile_'.$section} = TRUE;
 			}
 		}
 
