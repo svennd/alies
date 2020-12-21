@@ -7,11 +7,11 @@
 			</div>
 			<div class="card-body">
 				<?php if($pet_info['type'] == DOG): ?>
-					<?php include "tooth/dog.php"; ?>
+					<?php include "tooth/dog.xml"; ?>
 				<?php elseif($pet_info['type'] == CAT): ?>
-					<?php include "tooth/cat.php"; ?>
+					<?php include "tooth/cat.xml"; ?>
 				<?php elseif($pet_info['type'] == HORSE):?>
-					<?php include "tooth/horse.php"; ?>
+					<?php include "tooth/horse.xml"; ?>
 				<?php else : ?>
 					No tooth records known;
 				<?php endif; ?>
