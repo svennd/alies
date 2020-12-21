@@ -1,7 +1,7 @@
 on: [push, pull_request]
 name: Main
 jobs:
-- name: PHP CS Fixer
-  uses: StephaneBour/actions-php-cs-fixer@1.0
-  with:
-    dir: './'
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: StephaneBour/actions-php-cs-fixer@1.0
