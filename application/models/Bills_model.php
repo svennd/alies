@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Bills_model extends MY_Model
 {
-    public $table = 'bills';
-    public $primary_key = 'id';
+	public $table = 'bills';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -25,7 +27,7 @@ class Bills_model extends MY_Model
 					'foreign_table' => 'stock_location',
 					'foreign_key' => 'id',
 					'local_key' => 'location'
-				);		
+				);
 		parent::__construct();
 	}
 	

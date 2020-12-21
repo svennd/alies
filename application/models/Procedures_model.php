@@ -1,11 +1,13 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Procedures_model extends MY_Model
 {
-    public $table = 'procedures';
-    public $primary_key = 'id';
-	public $delete_cache_on_save = TRUE;
+	public $table = 'procedures';
+	public $primary_key = 'id';
+	public $delete_cache_on_save = true;
 	
 	public function __construct()
 	{

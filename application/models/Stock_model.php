@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Stock_model extends MY_Model
 {
-    public $table = 'stock';
-    public $primary_key = 'id';
+	public $table = 'stock';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -30,8 +32,10 @@ class Stock_model extends MY_Model
 	*/
 	public function reduce_stock($product_id, $volume, $location = false, $barcode = false)
 	{
-		# we aint doing that 
-		if ($volume == 0) { return false; }
+		# we aint doing that
+		if ($volume == 0) {
+			return false;
+		}
 		
 		# get product offset
 		# this is a amount/volume that is lost every
@@ -41,8 +45,7 @@ class Stock_model extends MY_Model
 		$volume += $product['offset'];
 		
 		# if we get a barcode and a location, we can substract easy
-		if ($barcode && $location)
-		{
+		if ($barcode && $location) {
 			$sql = "UPDATE stock SET volume=volume-" . $volume. " WHERE barcode = '" . $barcode . "' and location = '" . $location . "' limit 1;";
 			$this->db->query($sql);
 			
@@ -50,35 +53,28 @@ class Stock_model extends MY_Model
 			
 			# TODO : what if there is no stock there ! (this would pass) testing ...
 			# woops there was no barcode here (it must have been from somewhere else)
-			if ($affected == 0) 
-			{ 
+			if ($affected == 0) {
 				$this->stock->insert(array(
-							"product_id" 	=> $product['id'], 
-							"location" 		=> $location, 
+							"product_id" 	=> $product['id'],
+							"location" 		=> $location,
 							"volume" 		=>	-$volume,
 							"barcode" 		=> $barcode,
 							"state"			=> STOCK_ERROR
-						)); 
+						));
 			}
-		}
-		elseif ($location)
-		{
+		} elseif ($location) {
 			# check if for this product there is only one stock;
 			$result = $this->stock->where(array("product_id" => $product_id, "location" => $location))->fields('barcode')->get_all();
 			
-			if ($result && count($result) == 1)
-			{
+			if ($result && count($result) == 1) {
 				$sql = "UPDATE stock SET volume=volume-" . $volume. " WHERE barcode = '" . $result[0]['barcode'] . "' and location = '" . $location . "' limit 1;";
 				$this->db->query($sql);
-			}
-			else
-			{
+			} else {
 				$this->insert(array("product_id" => $product_id, "volume" => -$volume, "location" => $location, "state" => STOCK_ERROR));
 			}
 		}
-		# no location 
-		else
-		{
+		# no location
+		else {
 			$this->insert(array("product_id" => $product_id, "volume" => -$volume, "state" => STOCK_ERROR));
 		}
 		
@@ -91,7 +87,7 @@ class Stock_model extends MY_Model
 		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . " WHERE product_id='" . $product_id . "' AND state = '1' AND volume = '0';";
 		$this->db->query($sql);
 		
-		# check for issues 
+		# check for issues
 		$sql = "UPDATE stock SET state = " . STOCK_ERROR . " WHERE product_id='" . $product_id . "' AND volume < '0';";
 		$this->db->query($sql);
 	}
@@ -107,23 +103,20 @@ class Stock_model extends MY_Model
 		# check if there is already stock there, if so increase
 		# else add new
 		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
-		if ($product_on_to)
-		{
+		if ($product_on_to) {
 			// var_dump($product_on_to);
 			// $product_on_to['id']
 			$sql = "UPDATE stock SET volume=volume+" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
 			$this->db->query($sql);
-		}
-		else
-		{
+		} else {
 			$from_info = $this->where(array("barcode" => $barcode, "location" => $from))->get();
 			$this->insert(array(
-								"product_id" 	=> $from_info['product_id'], 
-								"eol" 			=> $from_info['eol'], 
-								"location" 		=> $to, 
-								"in_price" 		=> $from_info['in_price'], 
-								"lotnr" 		=> $from_info['lotnr'], 
-								"volume" 		=> $value, 
+								"product_id" 	=> $from_info['product_id'],
+								"eol" 			=> $from_info['eol'],
+								"location" 		=> $to,
+								"in_price" 		=> $from_info['in_price'],
+								"lotnr" 		=> $from_info['lotnr'],
+								"volume" 		=> $value,
 								"barcode" 		=> $barcode,
 								"state"			=> STOCK_IN_USE
 								));

@@ -1,14 +1,15 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Reports extends Admin_Controller {
+class Reports extends Admin_Controller
+{
 
 	# constructor
 	public function __construct()
 	{
 		parent::__construct();
 		
-		# models		
+		# models
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Products_model', 'products');
@@ -35,7 +36,7 @@ class Reports extends Admin_Controller {
 
 		/* cache this for 5 minutes */
 		$this->output->cache(5);
-		$this->_render_page('reports/graphs', $data);	
+		$this->_render_page('reports/graphs', $data);
 	}
 	
 	public function products()
@@ -44,8 +45,7 @@ class Reports extends Admin_Controller {
 		$search_from 	= $this->input->post('search_from');
 		$search_to 		= $this->input->post('search_to');
 		
-		if ($this->input->post('submit') == "usage" && $search_from && $search_to)
-		{
+		if ($this->input->post('submit') == "usage" && $search_from && $search_to) {
 			$usage = $this->eprod
 						->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 						->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
@@ -55,30 +55,23 @@ class Reports extends Admin_Controller {
 						->get_all();
 						
 			$product = array();
-			foreach ($usage as $us)
-			{
+			foreach ($usage as $us) {
 				$pid = $us['product_id'];
-				$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1' );
+				$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1');
 				
-				if(isset($product[$pid])) 
-				{
+				if (isset($product[$pid])) {
 					$pos = array_search($in_stock_price, $product[$pid]['in_price']);
 					
 					# check if we already got this value
-					if($pos !== false)
-					{
+					if ($pos !== false) {
 						$product[$pid]['net_price'][$pos] += $us['net_price'];
 						$product[$pid]['volume'][$pos] += $us['volume'];
-					}
-					else
-					{
+					} else {
 						$product[$pid]['net_price'][] 	= $us['net_price'];
 						$product[$pid]['volume'][] 		= $us['volume'];
 						$product[$pid]['in_price'][]	= $in_stock_price;
 					}
-				}
-				else
-				{
+				} else {
 					$product[$pid] = array(
 											"net_price" 	=> array($us['net_price']),
 											"volume" 		=> array($us['volume']),
@@ -89,7 +82,7 @@ class Reports extends Admin_Controller {
 			}
 		}
 		$data = array(
-			"search"	=> ($this->input->post('submit') == "search_product") ? 
+			"search"	=> ($this->input->post('submit') == "search_product") ?
 											$this->
 											products->
 											group_start()->
@@ -117,35 +110,28 @@ class Reports extends Admin_Controller {
 			->with_product('fields:name, unit_sell')
 			->get_all();
 		
-		/* 
-			format to $product's array 
+		/*
+			format to $product's array
 			copied from products()
 		*/
 		$product = array();
-		foreach ($usage as $us)
-		{
+		foreach ($usage as $us) {
 			$pid = $us['product_id'];
-			$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1' );
+			$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1');
 			
-			if(isset($product[$pid])) 
-			{
+			if (isset($product[$pid])) {
 				$pos = array_search($in_stock_price, $product[$pid]['in_price']);
 				
 				# check if we already got this value
-				if($pos !== false)
-				{
+				if ($pos !== false) {
 					$product[$pid]['net_price'][$pos] += $us['net_price'];
 					$product[$pid]['volume'][$pos] += $us['volume'];
-				}
-				else
-				{
+				} else {
 					$product[$pid]['net_price'][] 	= $us['net_price'];
 					$product[$pid]['volume'][] 		= $us['volume'];
 					$product[$pid]['in_price'][]	= $in_stock_price;
 				}
-			}
-			else
-			{
+			} else {
 				$product[$pid] = array(
 										"net_price" 	=> array($us['net_price']),
 										"volume" 		=> array($us['volume']),
@@ -154,13 +140,10 @@ class Reports extends Admin_Controller {
 									);
 			}
 		}
-		if ($csv)
-		{
+		if ($csv) {
 			$csv_data[] = array('Product Name', 'net_price', 'volume', 'unit', 'in_price');
-			foreach ($product as $p)
-			{
-				for($i = 0; $i < count($p['in_price']); $i++)
-				{
+			foreach ($product as $p) {
+				for ($i = 0; $i < count($p['in_price']); $i++) {
 					$csv_data[] = array(
 									$p['product']['name'],
 									$p['net_price'][$i],
@@ -183,7 +166,7 @@ class Reports extends Admin_Controller {
 										products->
 										fields('name')->
 										with_stock('fields:barcode,state,volume,lotnr,in_price,location,updated_at,created_at|where:`state`=\'2\' or `state` = \'3\'|join:true')->
-										order_by('stock.state','asc')->
+										order_by('stock.state', 'asc')->
 										order_by('stock.created_at', 'desc')->
 										get_all($product_id),
 				"eprod" => $this->
@@ -192,7 +175,7 @@ class Reports extends Admin_Controller {
 							where(array("product_id" => $product_id))->
 							get_all(),
 			);
-		$this->_render_page('reports/product_detail', $data);	
+		$this->_render_page('reports/product_detail', $data);
 	}
 	
 	public function bills()
@@ -200,8 +183,7 @@ class Reports extends Admin_Controller {
 		$read_limit = 500;
 		$bill_overview = array();
 		
-		if ($this->input->post('search_from') && $this->input->post('search_to'))
-		{
+		if ($this->input->post('search_from') && $this->input->post('search_to')) {
 			$search_from = $this->input->post('search_from');
 			$search_to = $this->input->post('search_to');
 			
@@ -225,7 +207,7 @@ class Reports extends Admin_Controller {
 			"search_to"		=> (isset($search_to)) ? $search_to : '',
 			"read_limit"	=> $read_limit,
 		);
-		$this->_render_page('reports/bill', $data);	
+		$this->_render_page('reports/bill', $data);
 	}
 	
 	
@@ -233,8 +215,7 @@ class Reports extends Admin_Controller {
 	{
 		$vaccines = false;
 		
-		if ($this->input->post('search_from') && $this->input->post('search_to'))
-		{
+		if ($this->input->post('search_from') && $this->input->post('search_to')) {
 			$search_from = $this->input->post('search_from');
 			$search_to = $this->input->post('search_to');
 			
@@ -251,13 +232,13 @@ class Reports extends Admin_Controller {
 				->with_pet('fields:id, owner, name')
 				->order_by('redo', 'asc')
 				->get_all();
-		}	
+		}
 		$data = array(
 			"vaccines" 		=> $vaccines,
 			"search_from"	=> (isset($search_from)) ? $search_from : '',
 			"search_to"		=> (isset($search_to)) ? $search_to : ''
 		);
-		$this->_render_page('reports/vaccine', $data);	
+		$this->_render_page('reports/vaccine', $data);
 	}
 
 	
@@ -286,20 +267,17 @@ class Reports extends Admin_Controller {
 		$result_line = false;
 		
 		/* generate 0 values for empty data */
-		foreach($last_6_month as $last6m)
-		{
+		foreach ($last_6_month as $last6m) {
 			$r[$last6m['y'] . '.' . sprintf('%02d', $last6m['m']) . '.' . $last6m['name']] = $last6m['p'];
 			$locations[$last6m['name']] = 1;
 		}
 		
 		// var_dump($r);
-		for($i = -$months; $i <= 0; $i++)
-		{
+		for ($i = -$months; $i <= 0; $i++) {
 			$d = date("Y.m", strtotime($i . " months"));
 			
 			$y_total = 0;
-			foreach ($locations as $l => $dummy)
-			{
+			foreach ($locations as $l => $dummy) {
 				$y = isset($r[$d . "." . $l]) ? $r[$d . "." . $l] : 0;
 				$result[$l][] = array("t" => $d, "y" => $y);
 				
@@ -323,8 +301,7 @@ class Reports extends Admin_Controller {
 		$values = array();
 		$vets 	= array();
 		
-		foreach ($income_overview as $vet)
-		{
+		foreach ($income_overview as $vet) {
 			$values[] 	= $vet['p'];
 			$vets[] 	= $vet['first_name'];
 		}
@@ -343,21 +320,18 @@ class Reports extends Admin_Controller {
 		$vets = array();
 		$result = false;
 		
-		foreach ($avg_overview as $avg)
-		{
+		foreach ($avg_overview as $avg) {
 			$r[$avg['y'] . '.' . sprintf('%02d', $avg['m']) . '.' . $avg['first_name']] = $avg['avg'];
 			$vets[$avg['first_name']] = 1;
 		}
 		
 		/* drop in nice array */
-		for($i = -$months; $i <= 0; $i++)
-		{
+		for ($i = -$months; $i <= 0; $i++) {
 			$d = date("Y.m", strtotime($i . " months"));
 			
 			$y_total = 0;
-			foreach ($vets as $vet => $dummy)
-			{
-				$y = isset($r[$d . "." . $vet]) ? $r[$d . "." . $vet] : 0; 
+			foreach ($vets as $vet => $dummy) {
+				$y = isset($r[$d . "." . $vet]) ? $r[$d . "." . $vet] : 0;
 				$result[$vet][] = array("t" => $d, "y" => round($y, 2));
 				$y_total += $y;
 			}
@@ -375,36 +349,32 @@ class Reports extends Admin_Controller {
 		$total_last_bill = array();
 		$result = array();
 		
-		// total can be made 
+		// total can be made
 		// for init_vet we need to deal with 0 values
-		foreach ($last_bill as $lb)
-		{
+		foreach ($last_bill as $lb) {
 			# clients with no last bill
-			if (is_null($lb['y'])) { continue; } 
+			if (is_null($lb['y'])) {
+				continue;
+			}
 			
 			$total_last_bill[$lb['y']] = (isset($total_last_bill[$lb['y']])) ? $total_last_bill[$lb['y']] + $lb['total'] : $lb['total'];
 			
 			
 			$years[$lb['y']][$lb['first_name']] = $lb['total'];
 			$vets_list[$lb['first_name']] = 1;
-			
 		}
 		
 		
 		// fix the 0 issue
-		foreach ($years as $year => $data)
-		{
-			foreach($vets_list as $vet => $dummy)
-			{
+		foreach ($years as $year => $data) {
+			foreach ($vets_list as $vet => $dummy) {
 				$years[$year][$vet] = (isset($years[$year][$vet])) ? $years[$year][$vet] : 0;
 			}
 		}
 		
 		// format
-		foreach ($years as $year => $data)
-		{
-			foreach ($data as $vet => $value)
-			{
+		foreach ($years as $year => $data) {
+			foreach ($data as $vet => $value) {
 				$result[$vet][] = array("t" => (string)$year, "y" => $value);
 			}
 		}
@@ -412,8 +382,7 @@ class Reports extends Admin_Controller {
 		// var_dump($result);
 
 		$line = array();
-		foreach ($total_last_bill as $year => $total)
-		{
+		foreach ($total_last_bill as $year => $total) {
 			$line[] = array("t" => (string)$year, "y" => $total);
 		}
 		

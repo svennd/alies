@@ -1,12 +1,13 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Alerts extends Admin_Controller {
+class Alerts extends Admin_Controller
+{
 
 	# constructor
 	public function __construct()
 	{
-		parent::__construct();		
+		parent::__construct();
 	}
 	
 	public function index()

@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Owners_model extends MY_Model
 {
-    public $table = 'owners';
-    public $primary_key = 'id';
+	public $table = 'owners';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -27,17 +29,17 @@ class Owners_model extends MY_Model
 					'foreign_table' => 'users',
 					'foreign_key' => 'id',
 					'local_key' => 'initial_vet'
-				);						
+				);
 		parent::__construct();
 	}
 	
 	# needs improvement !!
 	# probably 1 query should suffice
-	function search_by_name($name)
+	public function search_by_name($name)
 	{
 		$result = array();
 		
-		$name = $this->db->escape_like_str($name);			
+		$name = $this->db->escape_like_str($name);
 		$sql = "
 			SELECT 
 				* 
@@ -53,10 +55,8 @@ class Owners_model extends MY_Model
 		";
 		
 		$prime = $this->db->query($sql)->result_array();
-		if ($prime)
-		{
-			foreach ($prime as $owners)
-			{
+		if ($prime) {
+			foreach ($prime as $owners) {
 				$pets_sql = "
 					SELECT
 					*
@@ -78,7 +78,7 @@ class Owners_model extends MY_Model
 		return $result;
 	}
 	
-	function search_by_street($street)
+	public function search_by_street($street)
 	{
 		$result = array();
 		$sql = "
@@ -95,10 +95,8 @@ class Owners_model extends MY_Model
 		";
 		
 		$prime = $this->db->query($sql)->result_array();
-		if ($prime)
-		{
-			foreach ($prime as $owners)
-			{
+		if ($prime) {
+			foreach ($prime as $owners) {
 				$pets_sql = "
 					SELECT
 					*
@@ -120,7 +118,7 @@ class Owners_model extends MY_Model
 		return $result;
 	}
 
-	function search_by_phone($phone)
+	public function search_by_phone($phone)
 	{
 		$result = array();
 		$sql = "
@@ -142,10 +140,8 @@ class Owners_model extends MY_Model
 		";
 		
 		$prime = $this->db->query($sql)->result_array();
-		if ($prime)
-		{
-			foreach ($prime as $owners)
-			{
+		if ($prime) {
+			foreach ($prime as $owners) {
 				$pets_sql = "
 					SELECT
 					*
@@ -218,5 +214,4 @@ class Owners_model extends MY_Model
 			
 		return $this->db->query($sql)->result_array();
 	}
-	
 }

@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Events_procedures_model extends MY_Model
 {
-    public $table = 'events_procedures';
-    public $primary_key = 'id';
+	public $table = 'events_procedures';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{

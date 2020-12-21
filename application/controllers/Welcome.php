@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Welcome extends Vet_Controller {
+class Welcome extends Vet_Controller
+{
 	
 	# constructor
 	public function __construct()
@@ -19,8 +20,7 @@ class Welcome extends Vet_Controller {
 		# if none = true
 		# if error = false
 		$version = $this->migration->latest();
-		if ($version === FALSE)
-		{
+		if ($version === false) {
 			show_error($this->migration->error_string());
 		}
 		$data = array("locations" => $this->location, "update_to_version" => $version);

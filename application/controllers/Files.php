@@ -1,8 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Files extends Vet_Controller {
-
+class Files extends Vet_Controller
+{
 	private $upload_dir = "./data/";
 	private $accepted_mime_type;
 	
@@ -12,7 +12,7 @@ class Files extends Vet_Controller {
 		parent::__construct();
 		
 		# load librarys
-		$this->load->helper('url');	
+		$this->load->helper('url');
 		$this->load->helper('download');
 		
 		# models
@@ -28,7 +28,7 @@ class Files extends Vet_Controller {
 											// office files
 											'doc', 'docx', 'ods', 'odt',
 											'xls', 'xlsx',
-											'pdf', 
+											'pdf',
 											'text', 'txt', 'rtf',
 											
 											// video files
@@ -40,21 +40,16 @@ class Files extends Vet_Controller {
 		$all_mimes = get_mimes(); # codeigniter function
 		$accepted_mime_type = array();
 		
-		foreach ($upload_mimetype as $type)
-		{
-			if (is_array($all_mimes[$type]))
-			{
-				foreach ($all_mimes[$type] as $t)
-				{
+		foreach ($upload_mimetype as $type) {
+			if (is_array($all_mimes[$type])) {
+				foreach ($all_mimes[$type] as $t) {
 					$accepted_mime_type[] = $t;
 				}
-			}
-			else			
-			{
+			} else {
 				$accepted_mime_type[] = $all_mimes[$type];
 			}
 		}
-		$this->accepted_mime_type = array_unique ($accepted_mime_type);
+		$this->accepted_mime_type = array_unique($accepted_mime_type);
 	}
 	
 
@@ -69,7 +64,7 @@ class Files extends Vet_Controller {
 		as this is called async
 	*/
 	public function new_file_event($event_id)
-	{	
+	{
 		$content = file_get_contents($_FILES['data']['tmp_name']);
 		return file_put_contents("./data/e" . $event_id . "_" . $this->input->post('file_name'), $content, FILE_APPEND | LOCK_EX);
 	}
@@ -77,30 +72,33 @@ class Files extends Vet_Controller {
 	
 	/*
 		This is definitly insecure need to verify input more securely
-		right now I check only mimetype 
+		right now I check only mimetype
 	*/
 	public function new_file_event_complete($event_id)
-	{	
+	{
 		$file_name 		= $this->input->post('file_name');
 		$current_file 	= $this->upload_dir . "/e" . $event_id . "_" . $file_name;
 		$mimetype		= $this->get_mime_type($current_file);
 		
 		# sanity check
-		if (!file_exists($current_file)) {echo json_encode(array('success' => false, 'error' => 'no file')); return false; }
+		if (!file_exists($current_file)) {
+			echo json_encode(array('success' => false, 'error' => 'no file'));
+			return false;
+		}
 		
 		# check against allowed_mimetype
-		if (!in_array($mimetype, $this->accepted_mime_type)) 
-		{
-			# remove it 
-			unlink ($current_file);
-			echo json_encode(array('success' => false, 'error' => 'wrong mime type'));  
-			return false; 
+		if (!in_array($mimetype, $this->accepted_mime_type)) {
+			# remove it
+			unlink($current_file);
+			echo json_encode(array('success' => false, 'error' => 'wrong mime type'));
+			return false;
 		}
 		
 		// move it from staging to finished
 		rename(
-					$current_file,
-					$this->upload_dir . "/stored/e" . $event_id . "_" . $file_name);
+			$current_file,
+			$this->upload_dir . "/stored/e" . $event_id . "_" . $file_name
+		);
 		
 		$this->events_upload->insert(array(
 					"event" 		=> $event_id,
@@ -117,19 +115,19 @@ class Files extends Vet_Controller {
 	{
 		$file_info = $this->events_upload->get($id);
 		force_download(
-					$file_info['filename'], 
-					file_get_contents($this->upload_dir . "/stored/e" . $file_info['event'] . "_" . $file_info['filename']), 
-					$file_info['mime']);
+			$file_info['filename'],
+			file_get_contents($this->upload_dir . "/stored/e" . $file_info['event'] . "_" . $file_info['filename']),
+			$file_info['mime']
+		);
 	}
 	
 	private function get_mime_type($file)
 	{
-		$finfo = new finfo(FILEINFO_MIME_TYPE); 
+		$finfo = new finfo(FILEINFO_MIME_TYPE);
 		if (!$finfo) {
 			echo "Opening fileinfo database failed";
 			return false;
 		}
 		return $finfo->file($file);
 	}
-	
 }

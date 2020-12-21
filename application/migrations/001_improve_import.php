@@ -3,10 +3,10 @@
 	Dummy migrations to set up the system
 */
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Migration_Improve_import extends CI_Migration {
-
+class Migration_Improve_import extends CI_Migration
+{
 	protected $up_version = "001";
 	protected $down_version = "000";
 	

@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Vaccine extends Vet_Controller {
+class Vaccine extends Vet_Controller
+{
 	
 	# constructor
 	public function __construct()
@@ -12,7 +13,7 @@ class Vaccine extends Vet_Controller {
 	}
 		
 	public function fiche($pet_id)
-	{	
+	{
 		$pet_info = $this->pets->with_owners('fields:first_name,last_name')->fields('id, type, name')->get($pet_id);
 
 		$data = array(
@@ -28,5 +29,4 @@ class Vaccine extends Vet_Controller {
 		;
 		$this->_render_page('vaccine_overview', $data);
 	}
-	
 }

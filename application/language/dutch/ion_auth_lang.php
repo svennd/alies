@@ -1,18 +1,20 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 /**
 * Name:  Ion Auth Lang - Dutch
-* 
+*
 * Author: Jeroen van der Gulik
 *         jeroen@isset.nl
 *
 * Adjustments by Dieter
-* 
+*
 * Location: http://github.com/benedmunds/CodeIgniter-Ion-Auth
-*          
-* Created:  05.01.2010 
-* 
+*
+* Created:  05.01.2010
+*
 * Description:  Dutch language file for Ion Auth messages and errors
-* 
+*
 */
 
 // Account Creation

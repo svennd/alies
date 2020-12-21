@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Events_model extends MY_Model
 {
-    public $table = 'events';
-    public $primary_key = 'id';
+	public $table = 'events';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -92,15 +94,13 @@ class Events_model extends MY_Model
 				ON
 					product_id = products.id
 				WHERE `events_products`.`event_id` = " . $event_id . "
-		";	
+		";
 		$product_array = $this->db->query($sql)->result_array();
-		if ($product_array)
-		{
-			foreach ($product_array as $product)
-			{
+		if ($product_array) {
+			foreach ($product_array as $product) {
 				$products[] = $product;
-				$tally[$product['btw']] = (isset($tally[$product['btw']])) ? ( $tally[$product['btw']] + $product['net_price'] ) : $product['net_price'];
-				$booking[$product['booking']] = (isset($tally[$product['booking']])) ? ( (float) $tally[$product['booking']] + $product['net_price'] ) : (float) $product['net_price'];
+				$tally[$product['btw']] = (isset($tally[$product['btw']])) ? ($tally[$product['btw']] + $product['net_price']) : $product['net_price'];
+				$booking[$product['booking']] = (isset($tally[$product['booking']])) ? ((float) $tally[$product['booking']] + $product['net_price']) : (float) $product['net_price'];
 			}
 		}
 		
@@ -113,20 +113,18 @@ class Events_model extends MY_Model
 				ON
 					procedures_id = procedures.id
 				WHERE `events_procedures`.`event_id` = " . $event_id . "
-		";	
+		";
 		$procedure_array = $this->db->query($sql)->result_array();
-		if ($procedure_array)
-		{
-			foreach ($procedure_array as $proc)
-			{
+		if ($procedure_array) {
+			foreach ($procedure_array as $proc) {
 				$procedures[] = $proc;
-				$tally[$proc['btw']] = (isset($tally[$proc['btw']])) ? (float) ( $tally[$proc['btw']] + $proc['net_price'] ) : (float) $proc['net_price'];
-				$booking[$proc['booking']] = (isset($tally[$proc['booking']])) ? ( (float) $tally[$proc['booking']] + $proc['net_price'] ) : (float) $proc['net_price'];
+				$tally[$proc['btw']] = (isset($tally[$proc['btw']])) ? (float) ($tally[$proc['btw']] + $proc['net_price']) : (float) $proc['net_price'];
+				$booking[$proc['booking']] = (isset($tally[$proc['booking']])) ? ((float) $tally[$proc['booking']] + $proc['net_price']) : (float) $proc['net_price'];
 			}
 		}
 		
 		return array(
-					"prod" 		=> $products, 
+					"prod" 		=> $products,
 					"proc" 		=> $procedures,
 					"tally"		=> $tally,
 					"booking"	=> $booking

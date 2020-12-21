@@ -1,12 +1,11 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Logs extends Admin_Controller {
-
+class Logs extends Admin_Controller
+{
 	public function __construct()
 	{
 		parent::__construct();
-
 	}
 
 	public function index()
@@ -42,7 +41,7 @@ class Logs extends Admin_Controller {
 	/* usefull for debuggin */
 	public function software_version()
 	{
-		$changelog = (file_exists("CHANGELOG.md")) ? nl2br (file_get_contents("CHANGELOG.md")) : "No CHANGELOG.md file;";
+		$changelog = (file_exists("CHANGELOG.md")) ? nl2br(file_get_contents("CHANGELOG.md")) : "No CHANGELOG.md file;";
 		
 		$data = array(
 						"database_version"	=> $this->db->query("SELECT * FROM `migrations`")->result_array(),

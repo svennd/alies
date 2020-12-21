@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Pets extends Vet_Controller {
+class Pets extends Vet_Controller
+{
 
 	# constructor
 	public function __construct()
@@ -20,15 +21,13 @@ class Pets extends Vet_Controller {
 	public function index()
 	{
 		$data = array();
-		if ($this->input->post('submit') == 1)
-		{
+		if ($this->input->post('submit') == 1) {
 			$chip = $this->input->post('chip');
 			$data['card'] = (!empty($chip)) ? $this->pets->with_breeds('fields:name')->with_owners()->where(array("chip" => $chip))->get() : false;
 			$data['chip'] = $chip;
 		}
 		
-		if ($this->input->post('submit') == 2)
-		{
+		if ($this->input->post('submit') == 2) {
 			$name = $this->input->post('name');
 			$data['pets'] = (!empty($name)) ? $this->pets
 												->with_breeds('fields:name')
@@ -45,25 +44,26 @@ class Pets extends Vet_Controller {
 	
 	# input new weight on weight page
 	public function add_weight($pet_id)
-	{		
-		if ($this->input->post('submit') && $this->input->post("weight") > 0)
-		{
+	{
+		if ($this->input->post('submit') && $this->input->post("weight") > 0) {
 			$this->pets_weight->insert(array(
-												"pets" => $pet_id, 
+												"pets" => $pet_id,
 												"weight" => $this->input->post("weight")
 											));
-			$this->pets->update(array(
-										"last_weight" => $this->input->post("weight")), 
-										$pet_id);
+			$this->pets->update(
+				array(
+										"last_weight" => $this->input->post("weight")),
+				$pet_id
+			);
 		}
-		redirect( '/pets/history_weight/' . (int) $pet_id, 'refresh');
+		redirect('/pets/history_weight/' . (int) $pet_id, 'refresh');
 	}
 	
 	public function history_weight($pet_id)
 	{
 		$data = array(
 						"pets"				=> $this->pets->with_owners('fields:last_name, id')->fields('name, id')->where(array("id" => $pet_id))->get(),
-						"weight_history" 	=> $this->pets_weight->where(array("pets" => $pet_id))->order_by("created_at", "asc")->get_all(), 
+						"weight_history" 	=> $this->pets_weight->where(array("pets" => $pet_id))->order_by("created_at", "asc")->get_all(),
 						"extra_footer"  	=> '<script src="'. base_url() .'assets/js/Chart.min.js"></script>',
 					);
 					
@@ -72,25 +72,22 @@ class Pets extends Vet_Controller {
 	
 	public function add($owner)
 	{
-		
-		if ($this->input->post('submit'))
-		{
+		if ($this->input->post('submit')) {
 			$breed = $this->input->post('breed');
-			if (!empty($this->input->post('breed_custom')))
-			{
+			if (!empty($this->input->post('breed_custom'))) {
 				$breed = $this->breeds->insert(array("name" => $this->input->post('breed_custom')));
 			}
 		
 			$pet_id = $this->pets->insert(array(
-											"type" 			=> (int) $this->input->post('type'), 
-											"name" 			=> $this->input->post('name'), 
-											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender') ), 
+											"type" 			=> (int) $this->input->post('type'),
+											"name" 			=> $this->input->post('name'),
+											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender')),
 											"birth" 		=> $this->input->post('birth'),
 											"breed" 		=> $breed,
-											"color" 		=> $this->input->post('color'), 
-											"chip" 			=> $this->input->post('chip'), 
-											"last_weight" 	=> $this->input->post('weight'), 
-											"nr_vac_book" 	=> $this->input->post('vacbook'), 
+											"color" 		=> $this->input->post('color'),
+											"chip" 			=> $this->input->post('chip'),
+											"last_weight" 	=> $this->input->post('weight'),
+											"nr_vac_book" 	=> $this->input->post('vacbook'),
 											"nutritional_advice" => $this->input->post('nutritional_advice'),
 											"note" 			=> $this->input->post('msg'),
 											"lost" 			=> (is_null($this->input->post('lost'))) ? 0 : $this->input->post('lost'),
@@ -99,9 +96,9 @@ class Pets extends Vet_Controller {
 											"location"		=> $this->user->current_location,
 											"init_vet"		=> $this->user->id
 										));
-			# add weight to history	
+			# add weight to history
 			$this->pets_weight->insert(array(
-									"pets" => $pet_id, 
+									"pets" => $pet_id,
 									"weight" => $this->input->post("weight")
 								));
 
@@ -121,35 +118,33 @@ class Pets extends Vet_Controller {
 	
 	public function edit($pet_id)
 	{
-		
-		if ($this->input->post('submit'))
-		{
+		if ($this->input->post('submit')) {
 			$breed = $this->input->post('breed');
-			if (!empty($this->input->post('breed_custom')))
-			{
+			if (!empty($this->input->post('breed_custom'))) {
 				$new_breed = $this->breeds->insert(array("name" => $this->input->post('breed_custom'), "type" => (int) $this->input->post('type')));
 			}
 		
-			$return = $this->pets->update(array(
-											"type" 			=> (int) $this->input->post('type'), 
-											"name" 			=> $this->input->post('name'), 
-											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender') ), 
+			$return = $this->pets->update(
+				array(
+											"type" 			=> (int) $this->input->post('type'),
+											"name" 			=> $this->input->post('name'),
+											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender')),
 											"birth" 		=> $this->input->post('birth'),
 											"breed" 		=> $breed,
-											"color" 		=> $this->input->post('color'), 
-											"chip" 			=> $this->input->post('chip'), 
-											"last_weight" 	=> $this->input->post('weight'), 
-											"nr_vac_book" 	=> $this->input->post('vacbook'), 
+											"color" 		=> $this->input->post('color'),
+											"chip" 			=> $this->input->post('chip'),
+											"last_weight" 	=> $this->input->post('weight'),
+											"nr_vac_book" 	=> $this->input->post('vacbook'),
 											"nutritional_advice" => $this->input->post('nutritional_advice'),
 											"note" 			=> $this->input->post('msg'),
 											"lost" 			=> (is_null($this->input->post('lost'))) ? 0 : $this->input->post('lost'),
 											"death" 		=> (is_null($this->input->post('dead'))) ? 0 : $this->input->post('dead'),
 										),
-										$pet_id
-										);
-			# add weight to history	
+				$pet_id
+			);
+			# add weight to history
 			$this->pets_weight->insert(array(
-									"pets" 		=> $pet_id, 
+									"pets" 		=> $pet_id,
 									"weight" 	=> $this->input->post("weight")
 								));
 								
@@ -181,11 +176,10 @@ class Pets extends Vet_Controller {
 									limit(3)->
 									get_all();
 		
-		# only check for larger numbers if we hit the 
+		# only check for larger numbers if we hit the
 		# limit on the complex query
 		$history_count = ($pet_history) ? count($pet_history) : 0;
-		if($history_count == 3)
-		{
+		if ($history_count == 3) {
 			$history_count = $this->events->where(array("pet" => $pet_id))->count_rows();
 		}
 		
@@ -194,7 +188,7 @@ class Pets extends Vet_Controller {
 		$data = array(
 			"pet"			=> $pet_info,
 			"owner" 		=> $this->owners->get($pet_info['owner']),
-			"pet_history"	=> $pet_history,	
+			"pet_history"	=> $pet_history,
 			"history_count"	=> $history_count,
 			"vaccines" 		=> $this->vacs_pet->view($pet_id),
 			"other_pets"	=> $other_pets,
@@ -211,20 +205,17 @@ class Pets extends Vet_Controller {
 		$client = null;
 		$result = null;
 		
-		if ($this->input->post('submit') == "name")
-		{
+		if ($this->input->post('submit') == "name") {
 			$name = $this->input->post('name');
 			$result = (!empty($name)) ? $this->owners->search_by_name($name) : false;
 		}
 		
-		if ($this->input->post('submit') == "street")
-		{
+		if ($this->input->post('submit') == "street") {
 			$street = $this->input->post('street');
 			$result = (!empty($street)) ? $this->owners->search_by_street($street) : false;
 		}
 		
-		if ($this->input->post('submit') == "client")
-		{
+		if ($this->input->post('submit') == "client") {
 			$client = $this->input->post('client');
 			$result = (!empty($client)) ? $this->owners->where(array("id" => $client))->get_all() : false;
 		}
@@ -261,15 +252,13 @@ class Pets extends Vet_Controller {
 		$pet_info = $this->pets->get($pet_id);
 		
 		$type = false;
-		if ((int)$no_show_or_type)
-		{
+		if ((int)$no_show_or_type) {
 			$type = (int)$no_show_or_type - 1;
 		}
 		
 		// var_dump($type);
 		
-		if (is_int($type))
-		{
+		if (is_int($type)) {
 			// var_dump($type);
 			$pet_history = $this->
 							events->
@@ -278,14 +267,12 @@ class Pets extends Vet_Controller {
 							with_vet('fields:first_name')->
 							with_location('fields:name')->
 							where(array(
-											"pet" => $pet_id, 
+											"pet" => $pet_id,
 											"type" => $type
 										))->
 							order_by('created_at', 'DESC')->
 							get_all();
-		}
-		else
-		{
+		} else {
 			$pet_history = $this->
 									events->
 									with_products('fields:events_products.volume, unit_sell, name')->
@@ -293,7 +280,7 @@ class Pets extends Vet_Controller {
 									with_vet('fields:first_name')->
 									with_location('fields:name')->
 									where(array(
-													"pet" => $pet_id, 
+													"pet" => $pet_id,
 													"no_history" => (bool) $no_show_or_type
 												))->
 									order_by('created_at', 'DESC')->

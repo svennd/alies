@@ -1,18 +1,21 @@
 <?php
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 /*	based on https://github.com/davidscotttufts/php-barcode
  *	only support code39
- 
- * usage : 
- 	$this->load->library('barcode');
-		
+
+ * usage :
+	$this->load->library('barcode');
+
 	$barcode_key = str_pad($id, 5, 0, STR_PAD_LEFT);
 	$barcode = $this->barcode->generate('por-' . $barcode_key);
  */
 
-class Barcode {
+class Barcode
+{
 	# publics
 	public $text 	= 'ABC-12345'; 	# text to encode in the barcode
 	public $height 	= '40'; 		# image height
@@ -46,15 +49,11 @@ class Barcode {
 		$text = strtoupper('*' . $this->text . '*');
 		$code = '';
 		
-		for ( $i = 1; $i <= $string_length; $i++ )
-		{
-			$current_char = substr( $text, ($i-1), 1);
-			if (isset($this->code_array[$current_char]))
-			{
+		for ($i = 1; $i <= $string_length; $i++) {
+			$current_char = substr($text, ($i-1), 1);
+			if (isset($this->code_array[$current_char])) {
 				$code .= $this->code_array[$current_char] . "1";
-			}
-			else
-			{
+			} else {
 				# if you get this error, a char is used that isn't in the code_array
 				die("can't find code representing this char : ". $current_char);
 			}
@@ -66,8 +65,7 @@ class Barcode {
 	
 	public function generate($text = false)
 	{
-		if ($text)
-		{
+		if ($text) {
 			$this->text = $text;
 		}
 		$this->destination = $this->barcode_dir . $this->text . ".png";
@@ -78,9 +76,8 @@ class Barcode {
 		# adapt the dimensions
 		$key_length = strlen($this->key);
 		$code_length = 0;
-		for ( $i = 1; $i <= $key_length; $i++ )
-		{
-			$code_length += (int)(substr($this->key,($i-1),1));
+		for ($i = 1; $i <= $key_length; $i++) {
+			$code_length += (int)(substr($this->key, ($i-1), 1));
 		}
 		
 		# dimensions
@@ -91,24 +88,24 @@ class Barcode {
 		$image = imagecreate($img_width, $img_height);
 		
 		# define the colors
-		$black = imagecolorallocate ($image, 0, 0, 0);
-		$white = imagecolorallocate ($image, 255, 255, 255);
+		$black = imagecolorallocate($image, 0, 0, 0);
+		$white = imagecolorallocate($image, 255, 255, 255);
 		
 		# background
-		imagefill( $image, 0, 0, $white );
+		imagefill($image, 0, 0, $white);
 		
 		# draw barcode
 		$location = 10;
-		for ( $position = 1 ; $position <= $key_length; $position++ ) {
-			$cur_size = $location + ( substr($this->key, ($position-1), 1) * $this->bar_width);
-			imagefilledrectangle( 
-									$image, 
-									$location, 		# x1
+		for ($position = 1 ; $position <= $key_length; $position++) {
+			$cur_size = $location + (substr($this->key, ($position-1), 1) * $this->bar_width);
+			imagefilledrectangle(
+				$image,
+				$location, 		# x1
 									0, 				# y1
 									$cur_size, 		# x2
 									$img_height, 	# y2
 									($position % 2 == 0 ? $white : $black)
-								);
+			);
 			$location = $cur_size;
 		}
 		

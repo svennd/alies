@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Products extends Vet_Controller {
+class Products extends Vet_Controller
+{
 
 	# constructor
 	public function __construct()
@@ -34,13 +35,9 @@ class Products extends Vet_Controller {
 	
 	public function product_price($id = false)
 	{
-		if ($id)
-		{
-			
-			if ($this->input->post('submit'))
-			{
-				if ($this->input->post('submit') == "edit")
-				{
+		if ($id) {
+			if ($this->input->post('submit')) {
+				if ($this->input->post('submit') == "edit") {
 					$this->pprice
 							->where(array(
 											"id" 	=> $this->input->post('price_id')
@@ -48,12 +45,10 @@ class Products extends Vet_Controller {
 							->update(array(
 											"price" => $this->input->post('price'),
 									));
-				}
-				else
-				{
+				} else {
 					$this->pprice->insert(array(
-												'volume' 		=> $this->input->post('volume'), 
-												'price' 		=> $this->input->post('price'), 
+												'volume' 		=> $this->input->post('volume'),
+												'price' 		=> $this->input->post('price'),
 												'product_id' 	=> $id
 										));
 				}
@@ -67,9 +62,7 @@ class Products extends Vet_Controller {
 													->get($id)
 						);
 			$this->_render_page('product_price_edit', $data);
-		}
-		else
-		{
+		} else {
 			$data = array(
 							"products" 		=> $this->products
 													->with_prices('fields:volume, price')
@@ -92,23 +85,19 @@ class Products extends Vet_Controller {
 	}
 	
 	public function product_list($id_or_product = false)
-	{		
+	{
 		// defaults
 		$products = false;
 		
-		if ($id_or_product)
-		{
-			if ($id_or_product == "other")
-			{
+		if ($id_or_product) {
+			if ($id_or_product == "other") {
 				$products = $this->products
 									->with_prices('fields:volume, price')
 									->with_booking_code()
 									->with_type('fields:name')
 									->where('type', '0')
 									->get_all();
-			}
-			elseif ($id_or_product)
-			{
+			} elseif ($id_or_product) {
 				$products = $this->products
 									->with_prices('fields:volume, price')
 									->with_booking_code()
@@ -118,22 +107,21 @@ class Products extends Vet_Controller {
 			}
 		}
 		$data = array(
-						"products" 		=> $products, 
+						"products" 		=> $products,
 						"types" 		=> $this->prod_type->get_all()
 					);
 			
 		$this->_render_page('products_list', $data);
-	}	
+	}
 	
 	public function product($id = false)
 	{
 		$update = false;
-		if ($this->input->post('submit'))
-		{
+		if ($this->input->post('submit')) {
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
 			// var_dump($booking);
 			
-			$input = array (
+			$input = array(
 								"name" 				=> $this->input->post('name'),
 								"short_name" 		=> $this->input->post('short_name'),
 								"producer" 			=> $this->input->post('producer'),
@@ -159,13 +147,10 @@ class Products extends Vet_Controller {
 								"limit_stock" 		=> $this->input->post('limit_stock')
 							);
 							
-			if ($this->input->post('submit') == "add")
-			{
+			if ($this->input->post('submit') == "add") {
 				$id = $this->products->insert($input);
 				$update = $id;
-			}
-			elseif ($this->input->post('submit') == "edit")
-			{
+			} elseif ($this->input->post('submit') == "edit") {
 				$update = $this->products->update($input, $id);
 			}
 		}
@@ -232,27 +217,23 @@ class Products extends Vet_Controller {
 		
 		$return = array();
 		
-		if (strlen($query) > 1)
-		{
+		if (strlen($query) > 1) {
 			# products
 			$result = $this->products
 								->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 								->with_type()
-								->where('name','like', $query, true)
+								->where('name', 'like', $query, true)
 								->limit(10)
 								->order_by("type", "ASC")
 								->get_all();
 
 			# in case no results
-			if ($result)
-			{				
-				foreach ($result as $r)
-				{
-					
+			if ($result) {
+				foreach ($result as $r) {
 					$return[] = array(
 								"value" => $r['name'],
 								"data" 	=> array(
-													"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"), 
+													"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
 													"id" 				=> $r['id'],
 													"buy_volume"		=> $r['buy_volume'],
 													"unit_buy"			=> $r['unit_buy'],
@@ -276,12 +257,9 @@ class Products extends Vet_Controller {
 							->limit(2)
 							->where('input_barcode', $gs1)
 							->get();
-		if ($result) 
-		{
+		if ($result) {
 			echo json_encode(array("state" => 1, $result));
-		}
-		else
-		{
+		} else {
 			echo json_encode(array("state" => 0));
 		}
 	}
@@ -297,59 +275,52 @@ class Products extends Vet_Controller {
 			Searching for a :
 				- product w/ stock
 				- procedure
-			
+
 		*/
-		if (strlen($query) > 1)
-		{
+		if (strlen($query) > 1) {
 			# products
 			$result = $this->products
 								->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
 								->with_type()
 								->with_prices('fields: volume, price')
 								->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
-								->where('name','like', $query, true)
+								->where('name', 'like', $query, true)
 								->where('sellable', '1')
 								->limit(10)
 								->order_by("type", "ASC")
 								->get_all();
 
 			# in case no results
-			if ($result)
-			{				
-				foreach ($result as $r)
-				{
+			if ($result) {
+				foreach ($result as $r) {
 					$stock = array();
 					$prices = array();
 					
 					# there is stock
-					if (isset($r['stock'])) 
-					{
-						foreach ($r['stock'] as $s)
-						{
+					if (isset($r['stock'])) {
+						foreach ($r['stock'] as $s) {
 							$stock[] = array(
-												"location" 	=> $s['location'], 
-												"lotnr" 	=> $s['lotnr'], 
-												"volume" 	=> $s['volume'], 
-												"barcode" 	=> $s['barcode'], 
+												"location" 	=> $s['location'],
+												"lotnr" 	=> $s['lotnr'],
+												"volume" 	=> $s['volume'],
+												"barcode" 	=> $s['barcode'],
 												"eol" 		=> $s['eol']
 												);
 						}
 					}
 					# there are prices
-					if ($r['prices']) 
-					{
-						foreach ($r['prices'] as $s)
-						{
+					if ($r['prices']) {
+						foreach ($r['prices'] as $s) {
 							$prices[] = array(
-												"volume" 	=> $s['volume'], 
-												"price" 	=> $s['price'], 
+												"volume" 	=> $s['volume'],
+												"price" 	=> $s['price'],
 												);
 						}
 					}
 					$return[] = array(
 								"value" => $r['name'],
 								"data" 	=> array(
-													"type" 		=> (isset($r['type']['name']) ? $r['type']['name'] : "other"), 
+													"type" 		=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
 													"id" 		=> $r['id'],
 													"stock"		=> $stock,
 													"prices"	=> $prices,
@@ -367,17 +338,15 @@ class Products extends Vet_Controller {
 			# procedures
 			$result = $this->procedures
 								->fields('id, name, price, booking_code')
-								->where('name','like', $query, true)
+								->where('name', 'like', $query, true)
 								->get_all();
 						
-			if ($result)
-			{				
-				foreach ($result as $r)
-				{
-						$return[] = array(
+			if ($result) {
+				foreach ($result as $r) {
+					$return[] = array(
 										"value" => $r['name'],
 										"data" 	=> array(
-														"type" 		=> "Proc", 
+														"type" 		=> "Proc",
 														"id" 		=> $r['id'],
 														"price"		=> $r['price'],
 														"btw"		=> "21",
@@ -385,9 +354,8 @@ class Products extends Vet_Controller {
 														"prod"		=> 0
 													)
 									);
-											
-				}			
-			}			
+				}
+			}
 		}
 	
 		echo json_encode(array("query" => $query, "suggestions" => $return));

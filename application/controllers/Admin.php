@@ -1,14 +1,15 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Admin extends Admin_Controller {
+class Admin extends Admin_Controller
+{
 
 	# constructor
 	public function __construct()
 	{
 		parent::__construct();
 				
-		# models		
+		# models
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
@@ -24,21 +25,16 @@ class Admin extends Admin_Controller {
 
 	public function index()
 	{
-		
 		$name = array("dog", "cat", "horse", "bird", "other");
 		# returns per city per stat
 		$city_stat = $this->owners->get_per_city();
 		
 		$r = array("Other" => 0);
-		foreach ($city_stat as $city)
-		{
-			if ($city['amount'] < 50)
-			{
+		foreach ($city_stat as $city) {
+			if ($city['amount'] < 50) {
 				$r['Other'] += $city['amount'];
 				$other[] = $city['city'];
-			}
-			else
-			{	
+			} else {
 				$r[$city['city']] = $city['amount'];
 			}
 		}
@@ -46,16 +42,15 @@ class Admin extends Admin_Controller {
 		$type_pets = $this->pets->get_per_type();
 		
 		$p = array();
-		foreach ($type_pets as $pet)
-		{
+		foreach ($type_pets as $pet) {
 			$p['type'][] = $name[$pet['type']];
 			$p['amount'][] = $pet['amount'];
 		}
 		
 		$data = array(
-						"per_pet_type"	=> $p, 
-						"per_city" 		=> $r, 
-						"other" 		=> $other, 
+						"per_pet_type"	=> $p,
+						"per_city" 		=> $r,
+						"other" 		=> $other,
 						"oldest_ages"	=> $this->pets->with_breeds()->where("death", 0)->order_by('birth')->limit(100)->get_all(),
 						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/Chart.min.js"></script>',
 					);
@@ -66,8 +61,7 @@ class Admin extends Admin_Controller {
 	
 	public function breeds($id = false)
 	{
-		if ($id) 
-		{
+		if ($id) {
 			$data = array(
 				"breeds" => $this->pets
 									->fields('id, name, death')
@@ -75,29 +69,31 @@ class Admin extends Admin_Controller {
 									->where(array("breed" => (int)$id, "death" => 0))
 									->get_all(),
 			);
-			$this->_render_page('admin/breeds_search', $data);		
-		}
-		else
-		{
-			if ($this->input->post('submit') == "edit")
-			{
-				
-				$this->breeds->update(array(
+			$this->_render_page('admin/breeds_search', $data);
+		} else {
+			if ($this->input->post('submit') == "edit") {
+				$this->breeds->update(
+					array(
 										"name" => $this->input->post('name')
-									), 
-									array(
+									),
+					array(
 										"id" => (int) $this->input->post('id')
-									));
+									)
+				);
 			}
-			if ($this->input->post('submit') == "merge")
-			{
-				if ($this->input->post('new_breed') == $this->input->post('old_breed_id')) { echo "cannot merge same breeds_id"; exit;}
-				$this->pets->update(array(
+			if ($this->input->post('submit') == "merge") {
+				if ($this->input->post('new_breed') == $this->input->post('old_breed_id')) {
+					echo "cannot merge same breeds_id";
+					exit;
+				}
+				$this->pets->update(
+					array(
 										"breed" => (int) $this->input->post('new_breed')
-									), 
-									array(
+									),
+					array(
 										"breed" => (int) $this->input->post('old_breed_id')
-									));
+									)
+				);
 				$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));
 			}
 			// note : this should be removed just checking if there is something in a_get_breeds() via ajax
@@ -105,15 +101,14 @@ class Admin extends Admin_Controller {
 							"breeds" => $this->breeds->get_all(),
 						);
 
-			$this->_render_page('admin_breeds', $data);	
+			$this->_render_page('admin_breeds', $data);
 		}
 	}
 	
 	public function a_get_breeds()
 	{
 		$breeds = $this->breeds->with_pets('fields:*count*')->get_all();
-		foreach ($breeds as $breed)
-		{			
+		foreach ($breeds as $breed) {
 			$count_rows = (isset($breed['pets'][0]['counted_rows'])) ? $breed['pets'][0]['counted_rows'] : 0;
 			$return [] = array($breed['id'], $breed['name'], $count_rows);
 		}
@@ -123,8 +118,7 @@ class Admin extends Admin_Controller {
 	# proc
 	public function proc()
 	{
-		if ($this->input->post('submit') == "add_proc")
-		{
+		if ($this->input->post('submit') == "add_proc") {
 			$this->proc->insert(array(
 									"name" 			=> $this->input->post('name'),
 									"booking_code" 	=> $this->input->post('booking_code'),
@@ -132,16 +126,17 @@ class Admin extends Admin_Controller {
 									));
 		}
 		
-		if ($this->input->post('submit') == "edit_proc")
-		{
-			$this->proc->update(array(
+		if ($this->input->post('submit') == "edit_proc") {
+			$this->proc->update(
+				array(
 									"name" 			=> $this->input->post('name'),
 									"booking_code" 	=> $this->input->post('booking_code'),
 									"price"			=> $this->input->post('price'),
-								), 
-								array(
+								),
+				array(
 									"id" => (int) $this->input->post('id')
-								));
+								)
+			);
 		}
 		
 		$data = array(
@@ -150,7 +145,7 @@ class Admin extends Admin_Controller {
 					);
 	
 
-		$this->_render_page('admin/procedures', $data);	
+		$this->_render_page('admin/procedures', $data);
 	}
 
 	# change producedures
@@ -161,25 +156,24 @@ class Admin extends Admin_Controller {
 				"booking" 	=> $this->book->get_all()
 			);
 			
-		$this->_render_page('admin/procedures_edit', $data);	
+		$this->_render_page('admin/procedures_edit', $data);
 	}
 
 	public function locations()
 	{
-		if ($this->input->post('submit') == "add_location")
-		{
+		if ($this->input->post('submit') == "add_location") {
 			$this->stock_location->insert(array("name" => $this->input->post('name')));
 		}
 		
-		if ($this->input->post('submit') == "update_location_name")
-		{
-			
-			$this->stock_location->update(array(
+		if ($this->input->post('submit') == "update_location_name") {
+			$this->stock_location->update(
+				array(
 									"name" 	=> $this->input->post('name')
-								), 
-								array(
+								),
+				array(
 									"id" => (int) $this->input->post('id')
-								));
+								)
+			);
 		}
 		
 		# race condition
@@ -189,15 +183,14 @@ class Admin extends Admin_Controller {
 						"locations" => $this->location,
 					);
 					
-		$this->_render_page('admin_locations', $data);	
+		$this->_render_page('admin_locations', $data);
 	}
 	
 	# managing of booking codes
 	# for products and procedures
 	public function booking()
-	{		
-		if ($this->input->post('submit') == "add_booking_code")
-		{
+	{
+		if ($this->input->post('submit') == "add_booking_code") {
 			$this->book->insert(array(
 										"category" 	=> $this->input->post('category'),
 										"code" 		=> $this->input->post('code'),
@@ -209,7 +202,7 @@ class Admin extends Admin_Controller {
 						"booking" => $this->book->get_all()
 					);
 					
-		$this->_render_page('admin/booking_codes', $data);	
+		$this->_render_page('admin/booking_codes', $data);
 	}
 	
 	# remove booking code
@@ -222,20 +215,19 @@ class Admin extends Admin_Controller {
 	
 	public function product_types()
 	{
-		if ($this->input->post('submit') == "add_product_type")
-		{
+		if ($this->input->post('submit') == "add_product_type") {
 			$this->prod_type->insert(array("name" => $this->input->post('name')));
 		}
 		
-		if ($this->input->post('submit') == "update_product_type")
-		{
-			
-			$this->prod_type->update(array(
+		if ($this->input->post('submit') == "update_product_type") {
+			$this->prod_type->update(
+				array(
 									"name" 	=> $this->input->post('name')
-								), 
-								array(
+								),
+				array(
 									"id" => (int) $this->input->post('id')
-								));
+								)
+			);
 		}
 		
 		$data = array(
@@ -243,11 +235,11 @@ class Admin extends Admin_Controller {
 					);
 	
 
-		$this->_render_page('admin_product_types', $data);	
+		$this->_render_page('admin_product_types', $data);
 	}
 	
 	# remove type
-	public function delete_prod ($id)
+	public function delete_prod($id)
 	{
 		// remove type
 		$this->prod_type->delete($id);
@@ -259,20 +251,20 @@ class Admin extends Admin_Controller {
 	}
 	
 	# remove location (soft delete)
-	public function delete_location ($id)
+	public function delete_location($id)
 	{
 		$this->stock_location->delete($id);
 		redirect('admin/locations', 'refresh');
 	}
 	# remove proc (soft delete)
-	public function delete_proc ($id)
+	public function delete_proc($id)
 	{
 		$this->proc->delete($id);
 		redirect('admin/proc', 'refresh');
 	}
 	
 	# remove proc (soft delete)
-	public function delete_vac ($id)
+	public function delete_vac($id)
 	{
 		$this->vac->delete($id);
 		redirect('admin/vacs', 'refresh');

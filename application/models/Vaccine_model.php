@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Vaccine_model extends MY_Model
 {
-    public $table = 'vaccine_pet';
-    public $primary_key = 'id';
+	public $table = 'vaccine_pet';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -52,7 +54,6 @@ class Vaccine_model extends MY_Model
 		);
 		
 		parent::__construct();
-		
 	}
 	
 	public function view($pet_id)

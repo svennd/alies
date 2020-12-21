@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Games extends Vet_Controller {
+class Games extends Vet_Controller
+{
 
 	# constructor
 	public function __construct()
@@ -15,7 +16,7 @@ class Games extends Vet_Controller {
 	
 
 	public function index()
-	{	
+	{
 		$data = array();
 		$this->_render_page('game_index', $data);
 	}
@@ -35,9 +36,8 @@ class Games extends Vet_Controller {
 			->get_all();
 		
 		$data = array(
-						"result" => $result[rand(0,2)]
+						"result" => $result[rand(0, 2)]
 					);
 		$this->_render_page('game_stock', $data);
 	}
-
 }

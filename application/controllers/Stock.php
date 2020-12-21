@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Stock extends Vet_Controller {
+class Stock extends Vet_Controller
+{
 
 	# constructor
 	public function __construct()
@@ -18,15 +19,11 @@ class Stock extends Vet_Controller {
 	
 	public function index($filter = false, $success = false)
 	{
-		$products = array();	
-		if ($filter)
-		{
-			if ($filter == "all")
-			{
+		$products = array();
+		if ($filter) {
+			if ($filter == "all") {
 				$products = $this->stock->where(array('state' => STOCK_IN_USE))->get_all_products();
-			}
-			else
-			{
+			} else {
 				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
 			}
 		}
@@ -36,7 +33,7 @@ class Stock extends Vet_Controller {
 					"filter" 	=> $filter,
 					"success" 	=> $success,
 					"products" 	=> $products,
-					);		
+					);
 					
 		$this->_render_page('stock_index', $data);
 	}
@@ -56,23 +53,19 @@ class Stock extends Vet_Controller {
 	
 	public function move_stock($success = false)
 	{
-		if ($this->input->post('submit') == "barcode")
-		{	
+		if ($this->input->post('submit') == "barcode") {
 			$warnings = array();
 			$new_location = $this->input->post('location');
 			$barcodes 	  = (empty($this->input->post('barcodes'))) ? array() : preg_split("/\r\n|\n|\r/", $this->input->post('barcodes'));
 			$stock_list	  = array();
 			
-			if (count($barcodes) > 0)
-			{	
-				foreach($barcodes as $barcode)
-				{
+			if (count($barcodes) > 0) {
+				foreach ($barcodes as $barcode) {
 					# a stock can be split so multiple results could be generated
 					$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location))->get();
 					
 					# its a known stock product
-					if ($stock_product)
-					{
+					if ($stock_product) {
 						# index : safety check for doubles
 						$stock_list[$barcode] = array(
 												"name" 		=> $stock_product['products']['name'],
@@ -81,10 +74,9 @@ class Stock extends Vet_Controller {
 												"volume" 	=> $stock_product['volume'],
 												"sell_unit" => $stock_product['products']['unit_sell']
 											);
-					}		
+					}
 					# unknown barcode
-					else
-					{
+					else {
 						$this->logs->insert(array(
 													"event" => "unknown_stock_move",
 													"level" => INFO,
@@ -93,31 +85,26 @@ class Stock extends Vet_Controller {
 						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
 					}
 				}
-			}
-			else
-			{
+			} else {
 				$warnings[] = "no barcodes provided.";
 			}
 			
 			$data = array(
-							"locations" => $this->location, 
+							"locations" => $this->location,
 							"warnings" 	=> $warnings,
 							"move_list" => $stock_list,
 							"new_location" => $new_location
-						);		
+						);
 
 			$this->_render_page('stock_move_quantities', $data);
-		}
-		elseif ($this->input->post('submit') == "quantities")
-		{
+		} elseif ($this->input->post('submit') == "quantities") {
 			// var_dump($this->input->post());
 			
 			$from 			= $this->user->current_location;
 			$to 			= $this->input->post('location');
 			$move_volumes 	= $this->input->post('move_volume');
 			
-			foreach ($this->input->post('move_volume') as $barcode => $value) 
-			{
+			foreach ($this->input->post('move_volume') as $barcode => $value) {
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}
@@ -128,13 +115,10 @@ class Stock extends Vet_Controller {
 	
 	public function add_stock()
 	{
-		$error = false; 
+		$error = false;
 		
-		if ($this->input->post('submit'))
-		{	
-			
-			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')))
-			{
+		if ($this->input->post('submit')) {
+			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume'))) {
 				# check if this is already in the verify list
 				$result = $this->stock->where(array(
 										"product_id" 	=> $this->input->post('pid'),
@@ -145,23 +129,21 @@ class Stock extends Vet_Controller {
 										"state" 		=> STOCK_CHECK
 									))->get();
 									
-				# increase current verify stock 
-				if ($result)
-				{
+				# increase current verify stock
+				if ($result) {
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
 					$this->db->query($sql);
 					// var_dump($result);
 					echo "reup";
-				}					
+				}
 				# create new verify stock
-				else
-				{					
+				else {
 					# also generate a barcode here
 					$this->load->library('barcode');
 					 
 					# generate barcode
-						# reduce time with 01/12/2019
-						# move to a base36 (to use letters)
+					# reduce time with 01/12/2019
+					# move to a base36 (to use letters)
 					$barcode = base_convert((time() - 1575158400), 10, 36);
 					$this->barcode->generate($barcode);
 				
@@ -177,27 +159,24 @@ class Stock extends Vet_Controller {
 											"state"				=> STOCK_CHECK
 										));
 										
-					if ($this->input->post('new_barcode_input')) 
-					{
+					if ($this->input->post('new_barcode_input')) {
 						$this->product
 								->where(array("id" => $this->input->post('pid')))
 								->update(array("input_barcode" => $this->input->post('barcode_gs1')));
 					}
 				}
-			}
-			else
-			{
+			} else {
 				$error = "Not a valid product, or no volume...";
 			}
 		}
 		
 		$data = array(
 						"error" 	=> $error,
-						"products" 	=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(), 
+						"products" 	=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(),
 						"extra_footer" => '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 					);
 		$this->_render_page('stock_add', $data);
-	}	
+	}
 	
 	public function delete_stock($stock_id)
 	{
@@ -214,8 +193,7 @@ class Stock extends Vet_Controller {
 	public function write_off()
 	{
 		# return the details of the selected product
-		if ($this->input->post('submit') == "writeoff")
-		{
+		if ($this->input->post('submit') == "writeoff") {
 			$product = $this->stock->with_products('fields:name, unit_sell')
 							->where(array("barcode" => $this->input->post('barcode'), "location" => $this->input->post("location")))
 							->get();
@@ -224,12 +202,9 @@ class Stock extends Vet_Controller {
 							"product"	=> $product
 						);
 			$this->_render_page('stock_write_off_quantities', $data);
-		}
-		else
-		{
+		} else {
 			# reduce stock as requested
-			if ($this->input->post('submit') == "write_off_q")
-			{
+			if ($this->input->post('submit') == "write_off_q") {
 				$t = $this->stock->reduce_product($this->input->post("barcode"), $this->input->post("location"), $this->input->post("volume"));
 				$this->stock_write_off_log->insert(array(
 												"product_id" 	=> $this->input->post("product_id"),
@@ -250,27 +225,22 @@ class Stock extends Vet_Controller {
 		# global shortages
 		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
 		
-		if ($r)
-		{
-			foreach ($r as $prod)
-			{
+		if ($r) {
+			foreach ($r as $prod) {
 				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
 				
 				# false if none found
-				if ($stock['sum_vol'] < $prod['limit_stock'])
-				{
+				if ($stock['sum_vol'] < $prod['limit_stock']) {
 					$result[] = array(
 							"id" 				=> $prod['id'],
 							"name" 				=> $prod['name'],
 							"unit_sell" 		=> $prod['unit_sell'],
 							"limit_stock" 		=> $prod['limit_stock'],
-							"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0' ),
+							"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0'),
 						);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$result = false;
 		}
 		
@@ -284,8 +254,7 @@ class Stock extends Vet_Controller {
 	
 	public function stock_limit()
 	{
-		if ($this->input->post('submit') == "add")
-		{
+		if ($this->input->post('submit') == "add") {
 			$added = $this->stock_limit->insert(array(
 									"product_id" 		=> $this->input->post('product_id'),
 									"stock" 			=> $this->input->post('location'),
@@ -308,6 +277,6 @@ class Stock extends Vet_Controller {
 	}
 	
 	public function stock_list($filter = false)
-	{	
-	}	
+	{
+	}
 }

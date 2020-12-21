@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Pets_model extends MY_Model
 {
-    public $table = 'pets';
-    public $primary_key = 'id';
+	public $table = 'pets';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -27,7 +29,7 @@ class Pets_model extends MY_Model
 						
 		/*
 			has_many
-		*/		
+		*/
 		$this->has_many['pets_weight'] = array(
 							'foreign_model' => 'Pets_weight_model',
 							'foreign_table' => 'Pets_weight',
@@ -51,7 +53,7 @@ class Pets_model extends MY_Model
 		parent::__construct();
 	}
 	
-	function search_by_chip($chip)
+	public function search_by_chip($chip)
 	{
 		$sql = "
 			SELECT 
@@ -63,10 +65,8 @@ class Pets_model extends MY_Model
 		";
 		
 		$prime = $this->db->query($sql)->result_array();
-		if ($prime)
-		{
-			foreach ($prime as $owners)
-			{
+		if ($prime) {
+			foreach ($prime as $owners) {
 				$pets_sql = "
 					SELECT
 					*

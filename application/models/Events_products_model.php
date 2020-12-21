@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Events_products_model extends MY_Model
 {
-    public $table = 'events_products';
-    public $primary_key = 'id';
+	public $table = 'events_products';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{
@@ -41,7 +43,7 @@ class Events_products_model extends MY_Model
 				
 		/*
 			has_many
-		*/	
+		*/
 		$this->has_many['prices'] = array(
 					'foreign_model' => 'Product_price_model',
 					'foreign_table' => 'products_price',

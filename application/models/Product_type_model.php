@@ -1,10 +1,12 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Product_type_model extends MY_Model
 {
-    public $table = 'products_type';
-    public $primary_key = 'id';
+	public $table = 'products_type';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{

@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Backup extends Admin_Controller {
+class Backup extends Admin_Controller
+{
 
 	# constructor
 	public function __construct()
@@ -44,31 +45,28 @@ class Backup extends Admin_Controller {
 		$this->load->dbutil();
 		
 		# in case we want a full backup;
-		if ($table == 'all')
-		{
+		if ($table == 'all') {
 			$table = false;
 		}
 		
 		# let compression be done on client side
-		$prefs = array(     
-			'format'      => ($zip) ? 'zip' : 'txt',   
+		$prefs = array(
+			'format'      => ($zip) ? 'zip' : 'txt',
 			'filename'    => ($table) ? 'db_' .  $table . '_' . date("Y-m-d-H-i-s"). '.sql' : 'db_full_' . date("Y-m-d-H-i-s"). '.sql',
 		);
 	
 		# if specific table
-		if ($table)
-		{
-			$prefs['tables'] = array($table); 
+		if ($table) {
+			$prefs['tables'] = array($table);
 		}
 		
 		# hacky way to add .zip to name
-		if ($zip)
-		{
+		if ($zip) {
 			$prefs['filename'] = $prefs['filename']. ".zip";
 		}
 		
 		$this->settings->update(array("value" => '1'), array("name" => "backup_count"));
-        $backup = $this->dbutil->backup($prefs); 
+		$backup = $this->dbutil->backup($prefs);
 		force_download($prefs['filename'], $backup);
 	}
 }

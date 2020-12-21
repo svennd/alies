@@ -1,53 +1,46 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Vet_Controller extends MY_Controller {
-	
+class Vet_Controller extends MY_Controller
+{
 	public function __construct()
 	{
 		parent::__construct();
 		
 		# check if install is fine
-		if(empty($this->config->item('install')))
-		{
+		if (empty($this->config->item('install'))) {
 			redirect('install/start', 'refresh');
 		}
 		
 		# check if they are logged in
-		if (!$this->ion_auth->logged_in())
-		{
+		if (!$this->ion_auth->logged_in()) {
 			redirect('auth/login', 'refresh');
 		}
 		
 		# check if they are part of the vet group
-		if (!$this->ion_auth->in_group('vet') && !$this->ion_auth->in_group('admin'))
-		{
+		if (!$this->ion_auth->in_group('vet') && !$this->ion_auth->in_group('admin')) {
 			# this needs 404
 			# if not we can get in a redirect loop
 			show_error("Not part of the correct group;");
 			// redirect('/');
 		}
 		
-		$this->load->model('Stock_location_model', 'stock_location');		
+		$this->load->model('Stock_location_model', 'stock_location');
 		$this->load->model('Logs_model', 'logs');
 		$this->load->model('Config_model', 'settings');
 		
 		// $conf = $this->settings->set_cache('all_config')->get_all();
 		$conf = $this->settings->get_all();
-		if ($conf)
-		{
-			foreach ($conf as $c)
-			{
+		if ($conf) {
+			foreach ($conf as $c) {
 				$this->conf[$c['name']] = array(
 												"value" 		=> $c['value'],
 												"updated_at" 	=> $c['updated_at'],
 												"created_at" 	=> $c['created_at']
 											);
 			}
-		}
-		else
-		{
-				$this->conf = array();
+		} else {
+			$this->conf = array();
 		}
 		// $this->load->model('msg_messages_model', 'msg');
 		$this->load->model('msg_participants_model', 'msg_participants');
@@ -72,8 +65,8 @@ class Vet_Controller extends MY_Controller {
 		$this->page_data['alerts'] = $this->alerts->limit(5)->get_all();
 		
 		// $sections = array(
-        // 'config'  => TRUE,
-        // 'queries' => TRUE,
+		// 'config'  => TRUE,
+		// 'queries' => TRUE,
 		// 'query_toggle_count' => 250
 		// );
 
@@ -87,8 +80,7 @@ class Vet_Controller extends MY_Controller {
 	{
 		$last_backup = date_create($this->conf['backup_count']['updated_at']);
 		$diff = date_diff($last_backup, date_create("now"));
-		if ($diff->format('%a') >= $this->conf['alert_last_backup']['value'])
-		{
+		if ($diff->format('%a') >= $this->conf['alert_last_backup']['value']) {
 			# warn the user
 			$this->alerts->insert(array(
 										"level" 	=> WARN,
@@ -111,8 +103,7 @@ class Vet_Controller extends MY_Controller {
 			</a>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 		';
-		foreach ($this->location as $location)
-		{
+		foreach ($this->location as $location) {
 			$compass .= '<a class="dropdown-item" href="' . base_url() . '/welcome/change_location/' . $location['id'] . '">'. $location['name'] .'</a>';
 		}
 		$compass .= "</div></div>";
@@ -137,13 +128,12 @@ class Vet_Controller extends MY_Controller {
 		$file = $name . '_' . date('y_m_d') . '.csv';
 
 		$fp = fopen(APPPATH . 'cache/' . $file, 'w');
-		foreach ($data as $line)
-		{
+		foreach ($data as $line) {
 			fputcsv($fp, $line, ';', '"');
 		}
 		fclose($fp);
 		
-		force_download(APPPATH . 'cache/' . $file, NULL);
+		force_download(APPPATH . 'cache/' . $file, null);
 	}
 	
 	public function _get_mondal()
@@ -153,10 +143,10 @@ class Vet_Controller extends MY_Controller {
 	
 	private function _get_current_location()
 	{
-		$current = ($this->user->current_location != 0) ? 
+		$current = ($this->user->current_location != 0) ?
 			$this->stock_location->get($this->user->current_location)['name']
 			:
 			"none";
 		return $current;
-	}	
+	}
 }

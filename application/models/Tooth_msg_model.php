@@ -1,12 +1,14 @@
 <?php
 // used to store emails for offline mutation database
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 
 class Tooth_msg_model extends MY_Model
 {
-    public $table = 'tooth_msg';
-    public $primary_key = 'id';
+	public $table = 'tooth_msg';
+	public $primary_key = 'id';
 	
 	public function __construct()
 	{

@@ -1,18 +1,19 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 	Restore accidental deletes;
 */
 
-class Restore extends Admin_Controller {
+class Restore extends Admin_Controller
+{
 
 	# constructor
 	public function __construct()
 	{
 		parent::__construct();
 				
-		# models		
+		# models
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
@@ -28,9 +29,8 @@ class Restore extends Admin_Controller {
 	# booking codes can't be removed
 	# as they are linked on sales (perhaps not active anymore)
 	public function booking($restore_id = false)
-	{	
-		if($restore_id)
-		{
+	{
+		if ($restore_id) {
 			$this->book->restore($restore_id);
 		}
 		
@@ -38,29 +38,27 @@ class Restore extends Admin_Controller {
 						"booking" => $this->book->only_trashed()->get_all()
 					);
 					
-		$this->_render_page('restore/booking_codes', $data);	
+		$this->_render_page('restore/booking_codes', $data);
 	}
 	
-	# due to how locations are linked we can't and don't want to 
+	# due to how locations are linked we can't and don't want to
 	# remove it; so here is a restore option viable;
 	public function locations($restore_id = false)
 	{
-		if($restore_id)
-		{
+		if ($restore_id) {
 			$this->stock_location->restore($restore_id);
 		}
 		$data = array(
 						"locations" => $this->stock_location->only_trashed()->get_all(),
 					);
 					
-		$this->_render_page('restore/locations', $data);	
+		$this->_render_page('restore/locations', $data);
 	}
 	
 	# procedures
 	public function procedures($restore_id = false)
 	{
-		if($restore_id)
-		{
+		if ($restore_id) {
 			$this->proc->restore($restore_id);
 		}
 		
@@ -68,7 +66,6 @@ class Restore extends Admin_Controller {
 						"proc" => $this->proc->only_trashed()->get_all(),
 					);
 					
-		$this->_render_page('restore/procedures', $data);	
+		$this->_render_page('restore/procedures', $data);
 	}
-	
 }

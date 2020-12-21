@@ -1,20 +1,20 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Owners extends Vet_Controller {
+class Owners extends Vet_Controller
+{
 
 	# constructor
 	public function __construct()
 	{
 		parent::__construct();
 		
-		# models		
+		# models
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Zipcodes_model', 'zipcode');
-
 	}
 	
 	public function index()
@@ -30,26 +30,22 @@ class Owners extends Vet_Controller {
 		$client = null;
 		$result = null;
 		
-		if ($this->input->post('submit') == "name")
-		{
+		if ($this->input->post('submit') == "name") {
 			$name = $this->input->post('name');
 			$result = (!empty($name)) ? $this->owners->search_by_name($name) : false;
 		}
 		
-		if ($this->input->post('submit') == "street")
-		{
+		if ($this->input->post('submit') == "street") {
 			$street = $this->input->post('street');
 			$result = (!empty($street)) ? $this->owners->search_by_street($street) : false;
 		}
 		
-		if ($this->input->post('submit') == "phone")
-		{
+		if ($this->input->post('submit') == "phone") {
 			$phone = $this->input->post('phone');
 			$result = (!empty($phone)) ? $this->owners->search_by_phone($phone) : false;
 		}
 		
-		if ($this->input->post('submit') == "client")
-		{
+		if ($this->input->post('submit') == "client") {
 			$client = $this->input->post('client');
 			$result = (!empty($client)) ? $this->owners->where(array("id" => $client))->get_all() : false;
 		}
@@ -66,9 +62,7 @@ class Owners extends Vet_Controller {
 	
 	public function add()
 	{
-		if ($this->input->post('submit'))
-		{
-			
+		if ($this->input->post('submit')) {
 			$new_id = $this->owners->insert(array(
 									"first_name" 		=> $this->input->post('first_name'),
 									"last_name" 		=> $this->input->post('last_name'),
@@ -103,9 +97,9 @@ class Owners extends Vet_Controller {
 	
 	public function edit($owner_id)
 	{
-		if ($this->input->post('submit'))
-		{
-			$return = $this->owners->update(array(
+		if ($this->input->post('submit')) {
+			$return = $this->owners->update(
+				array(
 									"first_name" 		=> $this->input->post('first_name'),
 									"last_name" 		=> $this->input->post('last_name'),
 									"street" 			=> $this->input->post('street'),
@@ -126,8 +120,8 @@ class Owners extends Vet_Controller {
 									"debts" 			=> (is_null($this->input->post('debts'))) ? 0 : 1,
 									"msg" 				=> $this->input->post('msg')
 							),
-							$owner_id
-							);
+				$owner_id
+			);
 			redirect('/owners/detail/' . (int) $owner_id, 'refresh');
 		}
 		
@@ -141,7 +135,9 @@ class Owners extends Vet_Controller {
 	public function detail($id = false, $update = false)
 	{
 		# todo : improve error
-		if (!$id) { exit; }
+		if (!$id) {
+			exit;
+		}
 		
 		$open_bill = $this->bills
 					->where("owner_id", "=", $id)
