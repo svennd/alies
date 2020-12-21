@@ -1,7 +1,7 @@
 on: [push, pull_request]
 name: Main
 jobs:
-  build-test:
+  php-cs-fixer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
