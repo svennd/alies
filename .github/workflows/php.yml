@@ -4,7 +4,11 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: StephaneBour/actions-php-cs-fixer@1.0
+      - uses: docker://oskarstark/php-cs-fixer-ga
+        with:
+          args: --diff --dry-run
       - uses: overtrue/phplint@master
         with:
           path: .
