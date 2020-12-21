@@ -5,7 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://oskarstark/php-cs-fixer-ga
+      - uses: overtrue/phplint@master
         with:
-          args: --diff --dry-run       
+          path: .
+          options: --exclude=*.log
+          
 
