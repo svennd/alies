@@ -1,10 +1,7 @@
 on: [push, pull_request]
 name: Main
 jobs:
-  phpinsights:
-    name: PHP-Insights
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: PHP-Insights
-      uses: docker://tienvx/phpinsights-action
+- name: PHP CS Fixer
+  uses: StephaneBour/actions-php-cs-fixer@1.0
+  with:
+    dir: './'
