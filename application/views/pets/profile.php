@@ -102,6 +102,7 @@ var country_code = [];
 	
 function make_date(date)
 {
+	if($("#dead").prop("checked") == true) { return false; }
 	if (!date) {return false;}
 	var today = new Date();
 	var birthDate = new Date(date);
@@ -156,6 +157,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		get_chip_info(this.value);
 	});
 	
+	$("dead").change(function(event) {
+		var checkbox = event.target;
+		if (checkbox.checked) {
+		} else {
+			
+		}
+	});
+
 	make_date($("#birth").val());
 	get_chip_info($("#chip").val());
 });

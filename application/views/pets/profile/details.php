@@ -67,14 +67,14 @@
   <hr>
 	<div class="form-group">
 		<div class="form-check">
-		<input class="form-check-input" name="dead" type="checkbox" value="1" id="gridCheck" <?php echo ($edit_mode && isset($pet['death']) && $pet['death'] == 1) ? 'checked': ''; ?>>
-			<label class="form-check-label" for="gridCheck">
+		<input class="form-check-input" name="dead" type="checkbox" value="1" id="dead" <?php echo ($edit_mode && isset($pet['death']) && $pet['death'] == 1) ? 'checked': ''; ?>>
+			<label class="form-check-label" for="dead">
 			Dead
 			</label>
 		</div>
 		<div class="form-check">
-		<input class="form-check-input" name="lost" type="checkbox" value="1" id="gridCheck2" <?php echo ($edit_mode && isset($pet['lost']) && $pet['lost'] == 1) ? 'checked': ''; ?>>
-		  <label class="form-check-label" for="gridCheck2">
+		<input class="form-check-input" name="lost" type="checkbox" value="1" id="lost" <?php echo ($edit_mode && isset($pet['lost']) && $pet['lost'] == 1) ? 'checked': ''; ?>>
+		  <label class="form-check-label" for="lost">
 			Lost
 		  </label>
 		</div>

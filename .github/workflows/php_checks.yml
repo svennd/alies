@@ -30,6 +30,8 @@ jobs:
         uses: actions/checkout@v2
       - name: PhpMetrics Scan
         uses: umutphp/phpmetrics-action@v1
+        with:
+          folder: application
       - name: Upload HTML Report
         uses: actions/upload-artifact@v1
         with:
