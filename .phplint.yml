@@ -1,9 +1,7 @@
-path: ./src
+path: .
 jobs: 10
 extensions:
   - php
 exclude:
-  - assets
-  - data
   - system
 warning: true
