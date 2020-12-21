@@ -15,16 +15,16 @@
 	<td><?php 
 	switch($pet['gender'])
 	{
-		case 0: 
+		case MALE: 
 			echo "male";
 		break;
-		case 1:
+		case FEMALE:
 			echo "female";
 		break;
-		case 2: 
+		case MALE_NEUTERED: 
 			echo "male neutered";
 		break;
-		case 3:
+		case FEMALE_NEUTERED:
 			echo "female neutered";
 		break;
 		default:

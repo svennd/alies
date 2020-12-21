@@ -16,6 +16,12 @@ class Pets extends Vet_Controller
 		$this->load->model('Breeds_model', 'breeds');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vacs_pet');
+		
+		/*
+			max amount of history we will load 
+			on complex pages
+		*/
+		$this->max_history = 5;
 	}
 	
 	public function index()
@@ -173,13 +179,13 @@ class Pets extends Vet_Controller
 									with_location('fields:name')->
 									where(array("pet" => $pet_id, "no_history" => 0))->
 									order_by('created_at', 'DESC')->
-									limit(3)->
+									limit($this->max_history)->
 									get_all();
 		
 		# only check for larger numbers if we hit the
 		# limit on the complex query
 		$history_count = ($pet_history) ? count($pet_history) : 0;
-		if ($history_count == 3) {
+		if ($history_count == $this->max_history) {
 			$history_count = $this->events->where(array("pet" => $pet_id))->count_rows();
 		}
 		

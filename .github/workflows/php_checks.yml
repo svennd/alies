@@ -19,7 +19,7 @@ jobs:
         uses: umutphp/php-var-dump-check-action@v1
         with:
           extensions: 'php'
-      - uses: umutphp/php-magic-number-check-action@v1
+      - uses: svennd/php-magic-number-check-action@v1
       - uses: svennd/actions-php-cs-fixer@master
   
   phpmetrics-action:

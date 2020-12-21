@@ -121,6 +121,12 @@ define('BIRD', 3);
 define('OTHER', 4);
 define('RABBIT', 5);
 
+# biological genders
+define('MALE', 0);
+define('FEMALE', 1);
+define('MALE_NEUTERED', 2);
+define('FEMALE_NEUTERED', 3);
+
 # stock states
 define('STOCK_CHECK', 0);
 define('STOCK_IN_USE', 1);
