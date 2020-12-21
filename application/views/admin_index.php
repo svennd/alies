@@ -57,8 +57,7 @@ function get_type($type)
 			</tr>
 			<?php endforeach; ?>
 </table>
-			<?php var_dump($oldest_ages); ?>
-			<?php var_dump($other); ?>
+
 <script>
 <?php 
 	$group_names = json_encode(array_keys($per_city));

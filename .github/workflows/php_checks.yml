@@ -1,3 +1,4 @@
+# https://github.com/umutphp/php-docker-images-for-ci
 on: [push, pull_request]
 name: Main
 jobs:
@@ -6,6 +7,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - uses: svennd/actions-php-lint@7.3
+      - uses: svennd/actions-php-lint@7.4
+      - uses: svennd/actions-php-lint@8.0
       - name: phplint
         uses: overtrue/phplint@master
         with:
@@ -16,7 +20,8 @@ jobs:
         with:
           extensions: 'php'
       - uses: umutphp/php-magic-number-check-action@v1
-      
+      - uses: svennd/actions-php-cs-fixer@master
+  
   phpmetrics-action:
     runs-on: ubuntu-latest
     name: PhpMetrics Action
@@ -30,13 +35,3 @@ jobs:
         with:
           name: HTML Report
           path: phpmetrics.html
-      - name: Upload XML Report
-        uses: actions/upload-artifact@v1
-        with:
-          name: HTML Report
-          path: phpmetrics.xml
-      - name: Upload Violations Report
-        uses: actions/upload-artifact@v1
-        with:
-          name: HTML Report
-          path: violations.xml
