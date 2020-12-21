@@ -14,4 +14,4 @@ jobs:
         uses: chindit/actions-phpstan@master
         with:
           # Arguments to add to PHPStan
-          arguments: 'analyse application/ --level=7'
+          arguments: 'analyse ./ --level=7'
