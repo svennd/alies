@@ -73,9 +73,9 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="type">Type</label>
+			<label for="type">Type <?php var_dump($type); ?></label>
 			<select name="type" class="form-control" id="type">
-				<?php foreach($type as $t): ?>
+				<?php foreach($type as $t):?>
 					<option value="<?php echo $t['id']; ?>" <?php echo ($t['id'] == $product['type']) ? "selected='selected'":"";?>><?php echo $t['name']; ?></option>
 				<?php endforeach; ?>
 				<option value="0">Other</option>
