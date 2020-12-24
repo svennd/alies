@@ -139,17 +139,53 @@ function process_datamatrix(barcode) {
 	// 17 YY MM DD date (6 length)
 	// 10 barcode (variable length)
 	// 6 + 14 + 6 + x
-	
+	/**
+0: "0105060249176305109947450-2 172209302124100317851583 "
+1: "05060249176305"
+2: "109947450-2 172209302124100317851583 "
+3: "9947450-2 "
+4: "220930"
+5: "24100317851583 "
+6: undefined
+7: undefined
+
+0: "01040072210261671722050010KP0EDBR"
+1: "04007221026167"
+2: "1722050010KP0EDBR"
+3: undefined
+4: undefined
+5: undefined
+6: "220500"
+7: "KP0EDBR"
+	*/
 	if (barcode.length > 26)
 	{
-		result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
+		console.log("ok");
+		// result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
+		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
 		if(result)
 		{
+			// if first match (non vet) or second match (vet)
+			if (typeof(result[3]) === 'undefined') {
+				// vet
+				var date = result[6];
+				var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+				$("#lotnr").val(result[7]);
+				$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+			} else {
+				
+				console.log(result[4]);
+				var date = result[4];
+				
+				var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+				$("#lotnr").val(result[3]);
+				$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+			}
+			console.log(result);
+			// console.log(result.length);
+			// return;
 			// console.log(result);
-			var date = result[2];
-			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
-			$("#lotnr").val(result[3]);
-			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+
 			
 			// $("#lotnr").prop('disabled', true);
 			// $("#date").prop('disabled', true);
