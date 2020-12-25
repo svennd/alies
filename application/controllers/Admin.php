@@ -29,6 +29,8 @@ class Admin extends Admin_Controller
 		# returns per city per stat
 		$city_stat = $this->owners->get_per_city();
 		
+		$other = array();
+		
 		$r = array("Other" => 0);
 		foreach ($city_stat as $city) {
 			if ($city['amount'] < 50) {
@@ -108,6 +110,8 @@ class Admin extends Admin_Controller
 	public function a_get_breeds()
 	{
 		$breeds = $this->breeds->with_pets('fields:*count*')->get_all();
+		$return = array();
+		
 		foreach ($breeds as $breed) {
 			$count_rows = (isset($breed['pets'][0]['counted_rows'])) ? $breed['pets'][0]['counted_rows'] : 0;
 			$return [] = array($breed['id'], $breed['name'], $count_rows);

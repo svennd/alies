@@ -13,14 +13,6 @@ class Tooth extends Vet_Controller
 		$this->load->model('Pets_model', 'pets');
 	}
 	
-	public function index()
-	{
-		$data = array();
-		
-		// $this->_render_page('tooth_test', $data);
-		// $this->_render_page('tooth_canine_upper', $data);
-	}
-	
 	public function fiche($pet_id, $update_text = false)
 	{
 		// this could go in 1 query

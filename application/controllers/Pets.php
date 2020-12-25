@@ -127,10 +127,10 @@ class Pets extends Vet_Controller
 		if ($this->input->post('submit')) {
 			$breed = $this->input->post('breed');
 			if (!empty($this->input->post('breed_custom'))) {
-				$new_breed = $this->breeds->insert(array("name" => $this->input->post('breed_custom'), "type" => (int) $this->input->post('type')));
+				$this->breeds->insert(array("name" => $this->input->post('breed_custom'), "type" => (int) $this->input->post('type')));
 			}
 		
-			$return = $this->pets->update(
+			$this->pets->update(
 				array(
 											"type" 			=> (int) $this->input->post('type'),
 											"name" 			=> $this->input->post('name'),
@@ -205,7 +205,6 @@ class Pets extends Vet_Controller
 	
 	public function change_owner($pet_id, $new_owner = false)
 	{
-		$data = array();
 		$name = null;
 		$street = null;
 		$client = null;
