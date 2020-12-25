@@ -20,4 +20,3 @@ jobs:
         with:
           extensions: 'php'
       - uses: svennd/php-magic-number-check-action@v1
-      - uses: svennd/actions-php-cs-fixer@master
