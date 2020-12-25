@@ -59,7 +59,7 @@
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender1n" value="2" <?php echo ($edit_mode && $pet['gender'] == MALE_NEUTERED) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender1n">
-				<span style="color:#4c6ef5;"><i class="fas fa-neuter fa-fw"></i></span> Male neutered
+				<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered
 			  </label>
 			</div>
 			
@@ -73,7 +73,7 @@
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="gender" id="gender2n" value="3" <?php echo ($edit_mode && $pet['gender'] == FEMALE_NEUTERED) ? 'checked' : ''; ?>>
 			  <label class="form-check-label" for="gender2n">
-				<span style="color:#f783ac;"><i class="fas fa-neuter fa-fw"></i></span> Female neutered
+				<span style="color:#000;"><i class="fas fa-venus fa-fw"></i></span> Female neutered
 			  </label>
 			</div>
 			

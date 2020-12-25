@@ -55,8 +55,8 @@
 						<span class="input-group-text" id="basic-addon2"><?php echo $product['products']['unit_sell']; ?></span>
 					  </div>
 					</div>
-				</div>	
-					<input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+				</div>
+					<input type="hidden" name="product_id" value="<?php echo $product['products']['id']; ?>">
 					<input type="hidden" name="location" value="<?php echo $product['location']; ?>">
 					<input type="hidden" name="barcode" value="<?php echo $product['barcode']; ?>">
 				  <button type="submit" name="submit" value="write_off_q" class="btn btn-primary">Submit</button>

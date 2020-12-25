@@ -120,7 +120,7 @@ class Stock extends Vet_Controller
 				# check if this is already in the verify list
 				$result = $this->stock->where(array(
 										"product_id" 	=> $this->input->post('pid'),
-										"eol" 			=> $this->input->post('eol'),
+										"eol" 			=> (empty($this->input->post('eol')) ? null : $this->input->post('eol')),
 										"location" 		=> $this->user->current_location,
 										"lotnr" 		=> $this->input->post('lotnr'),
 										"in_price" 		=> $this->input->post('in_price'),
@@ -131,8 +131,6 @@ class Stock extends Vet_Controller
 				if ($result) {
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
 					$this->db->query($sql);
-					// var_dump($result);
-					echo "reup";
 				}
 				# create new verify stock
 				else {
