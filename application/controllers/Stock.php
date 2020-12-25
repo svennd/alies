@@ -228,9 +228,10 @@ class Stock extends Vet_Controller
 		if ($r) {
 			foreach ($r as $prod) {
 				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
+				$result = array();
 				
 				# false if none found
-				if ($stock['sum_vol'] < $prod['limit_stock']) {
+				if ($stock && $stock['sum_vol'] < $prod['limit_stock']) {
 					$result[] = array(
 							"id" 				=> $prod['id'],
 							"name" 				=> $prod['name'],
