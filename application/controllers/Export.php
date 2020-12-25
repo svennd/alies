@@ -279,7 +279,7 @@ class Export extends Admin_Controller
 					$current_btw = 2;
 				} elseif ($current_booking_code['btw'] == 12) {
 					$current_btw = 3;
-				} elseif ( == 21) {
+				} elseif ($current_booking_code['btw'] == 21) {
 					$current_btw = 4;
 				} else {
 					$current_btw = -1;
