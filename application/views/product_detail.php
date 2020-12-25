@@ -73,10 +73,11 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="type">Type <?php var_dump($type); ?></label>
+			<label for="type">Type</label>
 			<select name="type" class="form-control" id="type">
 				<?php foreach($type as $t):?>
-					<option value="<?php echo $t['id']; ?>" <?php echo ($t['id'] == $product['type']) ? "selected='selected'":"";?>><?php echo $t['name']; ?></option>
+					<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['type']) ? "selected='selected'" : ""; ?>>
+					<?php echo $t['name']; ?></option>
 				<?php endforeach; ?>
 				<option value="0">Other</option>
 			</select>
@@ -127,7 +128,7 @@
 	  	<h5>Transaction info</h5>
 	<hr />				  
 	  <div class="form-group form-check">
-		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product['sellable']) ? "checked" : ""; ?>>
+		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product && $product['sellable']) ? "checked" : ""; ?>>
 		<label class="form-check-label" for="exampleCheck1">verkoopbaar</label>
 	  </div>	  
 	  
@@ -174,7 +175,7 @@
 			<div class="input-group mb-3">
 				<select name="booking_code" class="form-control" id="type">
 					<?php foreach($booking as $t): ?>
-						<option value="<?php echo $t['id']; ?>" <?php echo ($t['id'] == $product['booking_code']) ? "selected='selected'":"";?>><?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?></option>
+						<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['booking_code']) ? "selected='selected'":"";?>><?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>
@@ -200,7 +201,7 @@
 	  
       <div class="tab-pane fade" id="v-pills-vaccine" role="tabpanel" aria-labelledby="v-pills-vaccine-tab">
 		  <div class="form-group form-check">
-			<input type="checkbox" class="form-check-input" name="vaccin" value="1" id="exampleCheck1" <?php echo ($product['vaccin']) ? "checked" : ""; ?>>
+			<input type="checkbox" class="form-check-input" name="vaccin" value="1" id="exampleCheck1" <?php echo ($product && $product['vaccin']) ? "checked" : ""; ?>>
 			<label class="form-check-label" for="exampleCheck1">Vaccin</label>
 		  </div>	
 			<div class="form-group">
@@ -210,9 +211,9 @@
 			</div>
 	  </div>	
 	  
-	  
-      <div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
-		<?php 
+  		<?php if ($product) : ?>
+			<div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
+			<?php 
 			if (count($product['prices']) > 1)
 			{
 				echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['unit_sell'];
@@ -227,9 +228,11 @@
 			{
 				echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['unit_sell'];
 			}
-		?><br/>
-		<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" target="_blank" class="btn btn-success">Edit Price</a>
-	  </div>
+			?><br/>
+			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" target="_blank" class="btn btn-success">Edit Price</a>
+
+			</div>
+		<?php endif; ?>
 	  
 	  
 	  
@@ -255,10 +258,13 @@
 		  </div>
 	  </div>
 	  
-      <div class="tab-pane fade" id="v-pills-danger" role="tabpanel" aria-labelledby="v-pills-danger-tab">
+	  
+		<?php if ($product) : ?>
+		<div class="tab-pane fade" id="v-pills-danger" role="tabpanel" aria-labelledby="v-pills-danger-tab">
 			<a href="<?php echo base_url(); ?>products/delete_product/<?php echo $product['id']; ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i> Remove Product</a><br/>
 			<small>Note: product won't be removed from database, for accountancy reasons; But won't be available any longer.</small>
-	  </div>
+		</div>
+		<?php endif; ?>
     </div>
   </div>
 </div>

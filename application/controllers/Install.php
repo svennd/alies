@@ -15,8 +15,15 @@ class Install extends Frontend_Controller {
 	
 	public function start()
 	{
+		if (is_file)
+		{
+			if(is_writable('application/config/config.php') && is_writable('application/config/database.php'))
+			{
+				
+			}
+		}
 		$data = array(
-						"writable" => (bool) (is_writable('application/config/config.php') && is_writable('application/config/database.php')),
+						"writable" => (bool) (),
 					);
 		$this->_render_page("first", $data);
 	}
@@ -26,7 +33,7 @@ class Install extends Frontend_Controller {
 	}
 	public function third()
 	{
-		var_dump($this->input->post());
+		// var_dump($this->input->post());
 		
 		$this->_render_page("third", array());
 	}

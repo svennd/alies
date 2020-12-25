@@ -43,7 +43,7 @@
 			</p>
 			<?php if($writable): ?>
 				<div class="alert alert-warning" role="alert">
-				  A simple danger alert—check it out!
+				please make sure 
 				</div>
 			<?php endif; ?>
 			<a href="<?php echo base_url() . 'install/second'; ?>" class="btn btn-primary">Ok, Let's go !</a>
