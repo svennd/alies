@@ -55,29 +55,33 @@ class Reports extends Admin_Controller
 						->get_all();
 						
 			$product = array();
-			foreach ($usage as $us) {
-				$pid = $us['product_id'];
-				$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1');
-				
-				if (isset($product[$pid])) {
-					$pos = array_search($in_stock_price, $product[$pid]['in_price']);
+			
+			if ($usage)
+			{
+				foreach ($usage as $us) {
+					$pid = $us['product_id'];
+					$in_stock_price = (isset($us['stock']['in_price']) ? $us['stock']['in_price'] : '-1');
 					
-					# check if we already got this value
-					if ($pos !== false) {
-						$product[$pid]['net_price'][$pos] += $us['net_price'];
-						$product[$pid]['volume'][$pos] += $us['volume'];
+					if (isset($product[$pid])) {
+						$pos = array_search($in_stock_price, $product[$pid]['in_price']);
+						
+						# check if we already got this value
+						if ($pos !== false) {
+							$product[$pid]['net_price'][$pos] += $us['net_price'];
+							$product[$pid]['volume'][$pos] += $us['volume'];
+						} else {
+							$product[$pid]['net_price'][] 	= $us['net_price'];
+							$product[$pid]['volume'][] 		= $us['volume'];
+							$product[$pid]['in_price'][]	= $in_stock_price;
+						}
 					} else {
-						$product[$pid]['net_price'][] 	= $us['net_price'];
-						$product[$pid]['volume'][] 		= $us['volume'];
-						$product[$pid]['in_price'][]	= $in_stock_price;
+						$product[$pid] = array(
+												"net_price" 	=> array($us['net_price']),
+												"volume" 		=> array($us['volume']),
+												"in_price" 		=> array($in_stock_price),
+												"product"		=> array('name' => $us['product']['name'], 'unit_sell' => $us['product']['unit_sell'])
+											);
 					}
-				} else {
-					$product[$pid] = array(
-											"net_price" 	=> array($us['net_price']),
-											"volume" 		=> array($us['volume']),
-											"in_price" 		=> array($in_stock_price),
-											"product"		=> array('name' => $us['product']['name'], 'unit_sell' => $us['product']['unit_sell'])
-										);
 				}
 			}
 		}
