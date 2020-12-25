@@ -98,7 +98,7 @@ class Owners extends Vet_Controller
 	public function edit($owner_id)
 	{
 		if ($this->input->post('submit')) {
-			$return = $this->owners->update(
+			$this->owners->update(
 				array(
 									"first_name" 		=> $this->input->post('first_name'),
 									"last_name" 		=> $this->input->post('last_name'),

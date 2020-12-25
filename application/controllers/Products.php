@@ -268,7 +268,7 @@ class Products extends Vet_Controller
 	public function get_product_or_procedure()
 	{
 		$query = $this->input->get('query');
-		$location = $this->input->get('loc');
+		// $location = $this->input->get('loc'); // unused
 		$return = array();
 		
 		/*

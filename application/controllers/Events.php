@@ -301,12 +301,14 @@ class Events extends Vet_Controller
 		
 		# get all prices in a sortable array
 		$all_prices = $this->prices->fields('volume, price')->where(array("product_id" => $pid))->get_all();
+		$prices = array();
 		foreach ($all_prices as $price) {
 			$prices[] = $price['price'];
 			$volumes[] = $price['volume'];
 		}
 		
 		# determ the price to use per volume
+		$to_use_price = array();
 		if (count($all_prices) == 1) {
 			$to_use_price = $prices[0];
 		} else {

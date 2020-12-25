@@ -140,22 +140,6 @@ class Reports extends Admin_Controller
 									);
 			}
 		}
-		if ($csv) {
-			$csv_data[] = array('Product Name', 'net_price', 'volume', 'unit', 'in_price');
-			foreach ($product as $p) {
-				for ($i = 0; $i < count($p['in_price']); $i++) {
-					$csv_data[] = array(
-									$p['product']['name'],
-									$p['net_price'][$i],
-									$p['volume'][$i],
-									$p['product']['unit_sell'],
-									$p['in_price'][$i]
-								);
-				}
-			}
-			
-			$this->_get_csv('product_usage', $csv_data);
-		}
 	}
 	
 	
@@ -348,6 +332,7 @@ class Reports extends Admin_Controller
 		$years = array();
 		$total_last_bill = array();
 		$result = array();
+		$vets_list = array();
 		
 		// total can be made
 		// for init_vet we need to deal with 0 values
