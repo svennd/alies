@@ -21,19 +21,3 @@ jobs:
           extensions: 'php'
       - uses: svennd/php-magic-number-check-action@v1
       - uses: svennd/actions-php-cs-fixer@master
-  
-  phpmetrics-action:
-    runs-on: ubuntu-latest
-    name: PhpMetrics Action
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: PhpMetrics Scan
-        uses: umutphp/phpmetrics-action@v1
-        with:
-          folder: application
-      - name: Upload HTML Report
-        uses: actions/upload-artifact@v1
-        with:
-          name: HTML Report
-          path: phpmetrics.html
