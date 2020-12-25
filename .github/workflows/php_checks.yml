@@ -10,11 +10,6 @@ jobs:
       - uses: svennd/actions-php-lint@7.3
       - uses: svennd/actions-php-lint@7.4
       - uses: svennd/actions-php-lint@8.0
-      - name: phplint
-        uses: overtrue/phplint@master
-        with:
-          path: .
-          options: --exclude=system
       - name: php-var-dump-check
         uses: umutphp/php-var-dump-check-action@v1
         with:
