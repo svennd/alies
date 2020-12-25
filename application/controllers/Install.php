@@ -22,9 +22,7 @@ class Install extends Frontend_Controller {
 				
 			}
 		}
-		$data = array(
-						"writable" => (bool) (),
-					);
+		$data = array();
 		$this->_render_page("first", $data);
 	}
 	public function second()
