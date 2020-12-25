@@ -219,6 +219,10 @@ class Invoice extends Vet_Controller
 		# get all pets
 		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
 		
+		$pet_id_array = array();
+		$print_bill = array();
+		$event_info = array();
+		
 		foreach ($pets as $pet) {
 			# for easy access
 			$pet_id = $pet['id'];
@@ -258,8 +262,9 @@ class Invoice extends Vet_Controller
 			}
 			
 			# for making a printable bill
-			$pet_id_array [$pet_id] = $pet;
+			$pet_id_array[$pet_id] = $pet;
 		}
+		
 		$data = array(
 				"owner" 		=> $this->owners->get($owner_id),
 				"pets" 			=> $pet_id_array,
