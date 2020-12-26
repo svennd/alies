@@ -160,7 +160,7 @@ class Events extends Vet_Controller
 				$new_net_price = $prod['net_price'] * ((100 - $reduction) / 100);
 			}
 			
-			$r = $this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
+			$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
 							"net_price" 		=> $new_net_price,
 							"price" 			=> $new_net_price * ((100 + $prod['btw'])/100),
 							"calc_net_price"	=> ($prod['calc_net_price'] != 0) ? $prod['calc_net_price'] : $prod['net_price']
@@ -174,7 +174,7 @@ class Events extends Vet_Controller
 			} else {
 				$new_net_price = $proc['net_price'] * ((100 - $reduction) / 100);
 			}
-			$r = $this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
+			$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
 							"net_price" 		=> $new_net_price,
 							"price" 			=> $new_net_price * ((100 + $proc['btw'])/100),
 							"calc_net_price"	=> ($proc['calc_net_price'] != 0) ? $proc['calc_net_price'] : $proc['net_price']
@@ -389,7 +389,7 @@ class Events extends Vet_Controller
 			redirect('/events/event/' . $event_id);
 		} else {
 			echo "no post data";
-			exit;
+			return false;
 		}
 	}
 	

@@ -5,19 +5,14 @@ function get_symbol($type)
 	{
 		case DOG:
 			return '<span style="color:#628395"><i class="fas fa-fw fa-dog"></i></span>';
-		break;
 		case CAT:
 			return '<span style="color:#96897B"><i class="fas fa-fw fa-cat"></i></span>';
-		break;
 		case HORSE:
 			return '<span style="color:#CF995F"><i class="fas fa-fw fa-horse"></i></span>';
-		break;
 		case BIRD:
 			return '<span style="color:#DBAD6A"><i class="fas fa-fw fa-dove"></i></span>';
-		break;
 		case RABBIT:
 			return '<span style="color:#dec5a1"><i class="fas fa-paw fa-fw"></i></span>';
-		break;
 		default:
 			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>';
 	}						

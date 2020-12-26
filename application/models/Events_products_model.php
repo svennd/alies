@@ -53,10 +53,4 @@ class Events_products_model extends MY_Model
 				
 		parent::__construct();
 	}
-	
-	public function update_volume($event_id, $event_product_id, $product_id, $data)
-	{
-		# was incorrect should not be used
-		exit;
-	}
 }

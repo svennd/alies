@@ -167,19 +167,11 @@ class Invoice extends Vet_Controller
 		
 		# partial is tricky can remove products if not enough money
 		# but then we need to recalculate if there was enough payed
-		// var_dump($bill['status']);
 		if (in_array($bill['status'], array(PAYMENT_OPEN, PAYMENT_UNPAID, PAYMENT_PARTIALLY))) {
-			// var_dump(round($bill_total,2) - (float) $bill['amount'] > 0.0001 || (float) $bill['amount'] - round($bill_total,2) > 0.0001  );
-			// var_dump(round($bill_total,2) > (float) $bill['amount']);
-			// var_dump($bill['amount']);
-			// var_dump($bill_total - (float) $bill['amount']);
-			// var_dump( (float) $bill['amount'] - $bill_total);
 			
 			# update the bill in case something changed
 			# hack for float comparison
-			// if (round($bill_total,2) - (float) $bill['amount'] > 0.0001 || (float) $bill['amount'] - round($bill_total,2) > 0.0001)
 			if (round($bill_total, 2) != (float) $bill['amount']) {
-				// echo round($bill_total, 2) . "!=" . (float) $bill['amount'] . "<br>";
 				$this->bills->update(array("status" => PAYMENT_UNPAID, "amount" => round($bill_total, 2)), $bill_id);
 			}
 		}
@@ -214,7 +206,7 @@ class Invoice extends Vet_Controller
 	{
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
-		$bill_total = 0.0;
+		// $bill_total = 0.0;
 		
 		# get all pets
 		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();

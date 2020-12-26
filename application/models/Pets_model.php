@@ -65,6 +65,7 @@ class Pets_model extends MY_Model
 		";
 		
 		$prime = $this->db->query($sql)->result_array();
+		$result = array();
 		if ($prime) {
 			foreach ($prime as $owners) {
 				$pets_sql = "
