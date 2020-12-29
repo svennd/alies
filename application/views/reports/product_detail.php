@@ -1,8 +1,7 @@
 <div class="row">
       <div class="col-lg-12 mb-4">
-	
 		<div class="card shadow mb-4">
-			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info) ?? $product_info[0]['name']; ?> / Stock</div>
+			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info[0]['name']) ?? $product_info[0]['name']; ?> / Stock</div>
             <div class="card-body">
 			<?php if($product_info): ?>
 				<table class="table">
@@ -34,7 +33,7 @@
 		</div>
 		
 		<div class="card shadow mb-4">
-			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info) ?? $product_info[0]['name']; ?> / Use</div>
+			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info[0]['name']) ?? $product_info[0]['name']; ?> / Use</div>
 			<div class="card-body">
 			<?php if($eprod): ?>
 				<table class="table">

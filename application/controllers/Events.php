@@ -25,11 +25,6 @@ class Events extends Vet_Controller
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Vaccine_model', 'vaccine');
 	}
-	
-
-	public function index()
-	{
-	}
 
 	public function new_event($pet)
 	{

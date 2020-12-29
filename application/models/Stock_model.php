@@ -84,7 +84,7 @@ class Stock_model extends MY_Model
 	private function maintain_stock_state($product_id)
 	{
 		# check for empty bottles
-		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . " WHERE product_id='" . $product_id . "' AND state = '1' AND volume = '0';";
+		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . " WHERE product_id='" . $product_id . "' AND state = " . STOCK_IN_USE . " AND volume = '0';";
 		$this->db->query($sql);
 		
 		# check for issues
