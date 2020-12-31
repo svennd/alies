@@ -41,7 +41,7 @@ class Member extends Admin_Controller
 				!empty($this->input->post('password'))
 							&&
 							$this->input->post('password') == $this->input->post('password_confirm')
-			) ? $this->input->post('email') : false;
+			) ? $this->input->post('password') : false;
 			
 			# not fine
 			if (!$email || !$password) {
@@ -85,4 +85,64 @@ class Member extends Admin_Controller
 					);
 		$this->_render_page('member/create_user', $data);
 	}
+	
+	# edit user
+	public function edit_user(int $id)
+	{
+		$warning = false;
+		$registered = false;
+		
+		if ($this->input->post('submit') == "create_user") {
+			// var_dump($this->input->post());
+			$email 		= (!empty($this->input->post('email'))) ? $this->input->post('email') : false;
+			$password 	= (
+				!empty($this->input->post('password'))
+							&&
+							$this->input->post('password') == $this->input->post('password_confirm')
+			) ? $this->input->post('password') : false;
+			
+			# not fine
+			if (!$email || !$password) {
+				$warning = "email or password not correct;";
+			}
+			# fine
+			else {
+				$username = $this->input->post('first_name'). " " . $this->input->post('last_name');
+				$additional_data = array(
+					'first_name' => $this->input->post('first_name'),
+					'last_name'  => $this->input->post('last_name'),
+					'phone'      => $this->input->post('phone')
+				);
+				$registration_result = $this->ion_auth->register($username, $password, $email, $additional_data);
+				
+				// var_dump($registration_result);
+				if ($registration_result) {
+					# add user to groups
+					$groupData = $this->input->post('groups');
+
+					if (isset($groupData) && !empty($groupData)) {
+						# remove all groups
+						$this->ion_auth->remove_from_group('', $registration_result);
+
+						# add selected groups
+						foreach ($groupData as $grp) {
+							$this->ion_auth->add_to_group($grp, $registration_result);
+						}
+					}
+					$registered = true;
+				} else {
+					$warning = "registration failed" . $registration_result;
+				}
+			}
+		}
+		
+		$data = array(
+						"groups" => $this->ion_auth->groups()->result_array(),
+						"warning" => $warning,
+						"registered" => $registered,
+						"user" => $this->ion_auth->
+					);
+		$this->_render_page('member/edit_user', $data);
+	}
+	
 }

@@ -1,6 +1,5 @@
-<?php  if (! defined('BASEPATH')) {
-	exit('No direct script access allowed');
-}
+<?php
+
 /**
 * Name:  Ion Auth
 *
@@ -22,6 +21,19 @@
 * Requirements: PHP5 or above
 *
 */
+
+defined('BASEPATH') or exit('No direct script access allowed');
+
+/*
+ | -------------------------------------------------------------------------
+ | Database group name option.
+ | -------------------------------------------------------------------------
+ | Allows to select a specific group for the database connection
+ |
+ | Default is empty: uses default group defined in CI's configuration
+ | (see application/config/database.php, $active_group variable)
+ */
+$config['database_group_name'] = '';
 
 /*
 | -------------------------------------------------------------------------
@@ -45,34 +57,66 @@ $config['join']['groups'] = 'group_id';
 
 /*
  | -------------------------------------------------------------------------
- | Hash Method (sha1 or bcrypt)
+ | Hash Method (bcrypt or argon2)
  | -------------------------------------------------------------------------
  | Bcrypt is available in PHP 5.3+
+ | Argon2 is available in PHP 7.2
  |
- | IMPORTANT: Based on the recommendation by many professionals, it is highly recommended to use
- | bcrypt instead of sha1.
+ | Argon2 is recommended by expert (it is actually the winner of the Password Hashing Competition
+ | for more information see https://password-hashing.net). So if you can (PHP 7.2), go for it.
  |
- | NOTE: If you use bcrypt you will need to increase your password column character limit to (80)
+ | Bcrypt specific:
+ | 		bcrypt_default_cost settings:  This defines how strong the encryption will be.
+ | 		However, higher the cost, longer it will take to hash (CPU usage) So adjust
+ | 		this based on your server hardware.
  |
- | Below there is "default_rounds" setting.  This defines how strong the encryption will be,
- | but remember the more rounds you set the longer it will take to hash (CPU usage) So adjust
- | this based on your server hardware.
+ | 		You can (and should!) benchmark your server. This can be done easily with this little script:
+ | 		https://gist.github.com/Indigo744/24062e07477e937a279bc97b378c3402
  |
- | If you are using Bcrypt the Admin password field also needs to be changed in order login as admin:
- | $2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36
+ | 		With bcrypt, an example hash of "password" is:
+ | 		$2y$08$200Z6ZZbp3RAEXoaWcMA6uJOFicwNZaqk4oDhqTUiFXFe63MG.Daa
  |
- | Be careful how high you set max_rounds, I would do your own testing on how long it takes
- | to encrypt with x rounds.
+ |		A specific parameter bcrypt_admin_cost is available for user in admin group.
+ |		It is recommended to have a stronger hashing for administrators.
  |
- | salt_prefix: Used for bcrypt. Versions of PHP before 5.3.7 only support "$2a$" as the salt prefix
- | Versions 5.3.7 or greater should use the default of "$2y$".
+ | Argon2 specific:
+ | 		argon2_default_params settings:  This is an array containing the options for the Argon2 algorithm.
+ | 		You can define 3 differents keys:
+ | 			memory_cost (default 4096 kB)
+ |				Maximum memory (in kBytes) that may be used to compute the Argon2 hash
+ |				The spec recommends setting the memory cost to a power of 2.
+ | 			time_cost (default 2)
+ |				Number of iterations (used to tune the running time independently of the memory size).
+                This defines how strong the encryption will be.
+ | 			threads (default 2)
+ |				Number of threads to use for computing the Argon2 hash
+ |				The spec recommends setting the number of threads to a power of 2.
+ |
+ | 		You can (and should!) benchmark your server. This can be done easily with this little script:
+ | 		https://gist.github.com/Indigo744/e92356282eb808b94d08d9cc6e37884c
+ |
+ | 		With argon2, an example hash of "password" is:
+ | 		$argon2i$v=19$m=1024,t=2,p=2$VEFSSU4wSzh3cllVdE1JZQ$PDeks/7JoKekQrJa9HlfkXIk8dAeZXOzUxLBwNFbZ44
+ |
+ |		A specific parameter argon2_admin_params is available for user in admin group.
+ |		It is recommended to have a stronger hashing for administrators.
+ |
+ | For more information, check the password_hash function help: http://php.net/manual/en/function.password-hash.php
+ |
  */
-$config['hash_method']    = 'bcrypt';	// sha1 or bcrypt, bcrypt is STRONGLY recommended
-$config['default_rounds'] = 8;		// This does not apply if random_rounds is set to true
-$config['random_rounds']  = false;
-$config['min_rounds']     = 5;
-$config['max_rounds']     = 9;
-$config['salt_prefix']    = '$2y$';
+$config['hash_method']				= 'argon2';	// bcrypt or argon2
+$config['bcrypt_default_cost']		= 10;		// Set cost according to your server benchmark - but no lower than 10 (default PHP value)
+$config['bcrypt_admin_cost']		= 12;		// Cost for user in admin group
+$config['argon2_default_params']	= [
+	'memory_cost'	=> 1 << 12,	// 4MB
+	'time_cost'		=> 2,
+	'threads'		=> 2
+];
+$config['argon2_admin_params']		= [
+	'memory_cost'	=> 1 << 14,	// 16MB
+	'time_cost'		=> 4,
+	'threads'		=> 2
+];
 
 /*
  | -------------------------------------------------------------------------
@@ -100,6 +144,19 @@ $config['track_login_ip_address']     = true;                // Track login atte
 $config['maximum_login_attempts']     = 3;                   // The maximum number of failed login attempts.
 $config['lockout_time']               = 600;                 // The number of seconds to lockout an account due to exceeded attempts
 $config['forgot_password_expiration'] = 0;                   // The number of milliseconds after which a forgot password request will expire. If set to 0, forgot password requests will not expire.
+$config['recheck_timer']              = 0;                   /* The number of seconds after which the session is checked again against database to see if the user still exists and is active.
+																Leave 0 if you don't want session recheck. if you really think you need to recheck the session against database, we would
+																recommend a higher value, as this would affect performance */
+																
+/*
+ | -------------------------------------------------------------------------
+ | Login session hash
+ | -------------------------------------------------------------------------
+ | session_hash Default: sha1()
+ |
+ | Please customize
+ */
+$config['session_hash'] = '557b333944ba5de926e0864e89e301c09ca20e8221a8261dc535d860799b3d2afa4109ba7bb6343d8068acda41bc526d13ce0606f498b7c18ef235608f43abc8';
 
 /*
  | -------------------------------------------------------------------------
@@ -109,7 +166,7 @@ $config['forgot_password_expiration'] = 0;                   // The number of mi
  | identity_cookie_name Default: identity
  */
 $config['remember_cookie_name'] = 'remember_code';
-$config['identity_cookie_name'] = 'identity';
+// $config['identity_cookie_name'] = 'identity';
 
 /*
  | -------------------------------------------------------------------------
@@ -151,14 +208,6 @@ $config['email_forgot_password'] = 'forgot_password.tpl.php';
 
 /*
  | -------------------------------------------------------------------------
- | Forgot Password Complete Email Template
- | -------------------------------------------------------------------------
- | Default: new_password.tpl.php
- */
-$config['email_forgot_password_complete'] = 'new_password.tpl.php';
-
-/*
- | -------------------------------------------------------------------------
  | Salt options
  | -------------------------------------------------------------------------
  | salt_length Default: 22
@@ -181,6 +230,3 @@ $config['message_start_delimiter'] = '<p>'; 	// Message start delimiter
 $config['message_end_delimiter']   = '</p>'; 	// Message end delimiter
 $config['error_start_delimiter']   = '<p>';		// Error mesage start delimiter
 $config['error_end_delimiter']     = '</p>';	// Error mesage end delimiter
-
-/* End of file ion_auth.php */
-/* Location: ./application/config/ion_auth.php */
