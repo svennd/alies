@@ -104,8 +104,6 @@ class Stock_model extends MY_Model
 		# else add new
 		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
 		if ($product_on_to) {
-			// var_dump($product_on_to);
-			// $product_on_to['id']
 			$sql = "UPDATE stock SET volume=volume+" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
 			$this->db->query($sql);
 		} else {
@@ -130,22 +128,22 @@ class Stock_model extends MY_Model
 					stock_limit.stock as location,
 					stock_limit.volume as required_volume, 
 					sum(stock.volume) as available_volume, 
+					stock_limit.product_id as product_detail,
+					(select sum(stock.volume) from stock where product_id = stock_limit.product_id) as all_volume,
 					products.name,
 					products.unit_sell
-				from 
-					stock_limit 
-
+				FROM
+					stock_limit
 				LEFT JOIN 
 					stock 
-				on 
+				ON 
 					stock.product_id = stock_limit.product_id 
 					and 
 					stock.location = stock_limit.stock 
 				JOIN 
 					products 
-				on 
+				ON 
 					stock_limit.product_id = products.id
-
 				GROUP BY
 					stock.product_id,
 					stock.location

@@ -60,6 +60,7 @@ foreach ($locations as $l)
 					<th>Location</th>
 					<th>Limit</th>
 					<th>Stock (local)</th>
+					<th>Stock (global)</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -69,6 +70,7 @@ foreach ($locations as $l)
 					<td><?php echo $loc[$product['location']]; ?></td>
 					<td><?php echo $product['required_volume']; ?> <?php echo $product['unit_sell']; ?></td>
 					<td><?php echo (is_null($product['available_volume'])) ? "0" : $product['available_volume']; ?> <?php echo $product['unit_sell']; ?></td>
+					<td><a href="<?php echo base_url() . 'stock/stock_detail/' . $product['product_detail'];?>"><?php echo $product['all_volume']; ?> <?php echo $product['unit_sell']; ?></a></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
