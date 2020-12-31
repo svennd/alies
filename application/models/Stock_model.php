@@ -126,14 +126,15 @@ class Stock_model extends MY_Model
 	# return stock limits
 	public function get_local_stock_shortages()
 	{
-		$sql = "select 
+		$sql = "SELECT 
 					stock_limit.stock as location,
 					stock_limit.volume as required_volume, 
-					stock.volume as available_volume, 
+					sum(stock.volume) as available_volume, 
 					products.name,
 					products.unit_sell
 				from 
 					stock_limit 
+
 				LEFT JOIN 
 					stock 
 				on 
@@ -144,13 +145,12 @@ class Stock_model extends MY_Model
 					products 
 				on 
 					stock_limit.product_id = products.id
-					
-				where 
-					(
-					stock_limit.volume > stock.volume
-					or
-					stock.volume is null
-					)
+
+				GROUP BY
+					stock.product_id,
+					stock.location
+				HAVING
+					available_volume < required_volume
 				";
 					
 		return $this->db->query($sql)->result_array();
