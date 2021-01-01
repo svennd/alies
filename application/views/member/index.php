@@ -26,7 +26,7 @@
 				<td>
 					<?php echo ($user['active']) ? anchor("auth/deactivate/". $user['id'], '<i class="fas fa-lock"></i>') : anchor("auth/activate/". $user['id'], '<i class="fas fa-lock-open"></i>');?>
 					&nbsp;
-					<?php echo anchor("auth/edit_user/" . $user['id'], '<i class="fas fa-edit"></i>') ;?>
+					<a href="<?php echo base_url(). 'member/edit_user/' . $user['id']; ?>"><i class="fas fa-edit"></i></a>
 				</td>
 			</tr>
 			<?php endforeach;?>

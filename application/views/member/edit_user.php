@@ -1,10 +1,11 @@
 <div class="card shadow mb-4">
-	<div class="card-header py-3">
-	  <h6 class="m-0 font-weight-bold text-primary">Update user</h6>
+	<div class="card-header">
+		<a href="<?php echo base_url(); ?>member">Users</a> /
+		Edit User / <?php echo (isset($user_edit->username)) ? $user_edit->username :  $user_edit->id; ?>
 	</div>
+	
 	<div class="card-body">
-
-<?php if($registered): ?>
+<?php if($update): ?>
 <div class="alert alert-success alert-dismissible fade show" role="alert">
 	<p class="mb-0">Updated !</p>
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -17,12 +18,12 @@
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 </div>
 <?php endif; ?>
-	<form action="<?php echo base_url() ?>member/create_user" method="post" accept-charset="utf-8">
+	<form action="<?php echo base_url() ?>member/edit_user/<?php echo $user_edit->id; ?>" method="post" accept-charset="utf-8">
 	<h5>Login info</h5>
 	<hr>
 	<div class="form-group">
 		<label for="email">Email</label>
-		<input type="mail" name="email" class="form-control" id="email" autocomplete="username">
+		<input type="mail" name="email" class="form-control" id="email" value="<?php echo $user_edit->email; ?>" disabled>
 	</div>	 
 	 <div class="form-row">
 		<div class="form-group col-md-6">
@@ -40,16 +41,16 @@
 	  <div class="form-row">
 		<div class="form-group col-md-6">
 		  <label for="first_name">First Name</label>
-		  <input type="text" name="first_name" class="form-control" id="first_name">
+		  <input type="text" name="first_name" class="form-control" id="first_name" value="<?php echo $user_edit->first_name; ?>">
 		</div>
 		<div class="form-group col-md-6">
 		  <label for="last_name">Last Name</label>
-		  <input type="text" name="last_name" class="form-control" id="last_name">
+		  <input type="text" name="last_name" class="form-control" id="last_name" value="<?php echo $user_edit->last_name; ?>">
 		</div>
 	  </div>
 		<div class="form-group">
 			<label for="phone">Phone</label>
-			<input type="text" name="phone" class="form-control" id="phone">
+			<input type="text" name="phone" class="form-control" id="phone" value="<?php echo $user_edit->phone; ?>">
 		</div>
 	  <br/>
 	<h5>Permissions</h5>
@@ -59,9 +60,13 @@
     <div class="row">
       <legend class="col-form-label col-sm-2 pt-0">Groups</legend>
       <div class="col-sm-10">
-	   <?php foreach ($groups as $group):?>
+	   <?php foreach ($groups_edit as $group):?>
         <div class="form-check">
-			<input type="checkbox" class="form-check-input" name="groups[]" id="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>">
+			<input type="checkbox" class="form-check-input" name="groups[]" id="<?php echo $group['name']; ?>" value="<?php echo $group['id']; ?>"
+			<?php foreach($current_groups_edit as $cgroup) : ?>
+				<?php if ($cgroup->id == $group['id']): ?>checked="checked"<?php endif; ?>
+			<?php endforeach; ?>
+			>
 			<label class="form-check-label" for="<?php echo $group['name']; ?>"><?php echo $group['name']; ?></label>
         </div>
        <?php endforeach?>
@@ -70,7 +75,7 @@
   </fieldset>		
   
 <br/>
-	  <button type="submit" name="submit" value="create_user" class="btn btn-primary">Create user</button>
+	  <button type="submit" name="submit" value="edit_user" class="btn btn-primary">Edit user</button>
 	</form>
 	</div>
 </div>
@@ -79,6 +84,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#usermanagement").show();
 	$("#usermgm").addClass('active');
-	$("#createuser").addClass('active');
+	$("#userlist").addClass('active');
 });
 </script>
