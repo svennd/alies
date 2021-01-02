@@ -74,9 +74,7 @@
 					<label for="redo<?php echo $product['vaccine']['id']; ?>" class="sr-only">Redo</label>
 					<input type="date" name="redo" class="form-control" value="<?php echo $product['vaccine']['redo']; ?>" id="redo<?php echo $product['vaccine']['id']; ?>">
 				  </div>
-				<?php if ($event_state != STATUS_CLOSED): ?>
 				  <button type="submit" class="btn btn-success mb-2 btn-sm">Change Expiry</button>
-				<?php endif; ?>
 				</form>
 			</td>
 		</tr>
