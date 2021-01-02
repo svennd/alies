@@ -8,7 +8,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>A <a href="https://www.svennd.be">SvennD</a> Creation</span>
+            <span>A <a href="https://www.svennd.be" target="_blank">SvennD</a> Creation; <a href="https://github.com/svennd/alies/issues" target="_blank">Issues</a> & <a href="https://docs.google.com/document/d/1xZcrtoC5dQdrqQb-Q0UNQrPTMVbtqWo6GumkxTh9Lxc/edit?usp=sharing" target="_blank">Docs</a></span>
           </div>
         </div>
       </footer>
