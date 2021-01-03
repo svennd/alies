@@ -221,8 +221,10 @@ class Stock extends Vet_Controller
 		# global shortages
 		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
 		
+		$result = array();
+		
 		if ($r) {
-			$result = array();
+			
 			foreach ($r as $prod) {
 				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
 		
@@ -237,8 +239,6 @@ class Stock extends Vet_Controller
 						);
 				}
 			}
-		} else {
-			$result = false;
 		}
 		
 		$data = array(
