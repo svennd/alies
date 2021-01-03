@@ -79,6 +79,12 @@ class Vet_Controller extends MY_Controller
 	public function is_backup_cron()
 	{
 		$last_backup = date_create($this->conf['backup_count']['updated_at']);
+		
+		# in case badly configurated
+		if (!$last_backup) {
+			return false;
+		}
+		
 		$diff = date_diff($last_backup, date_create("now"));
 		if ($diff->format('%a') >= $this->conf['alert_last_backup']['value']) {
 			# warn the user
@@ -128,6 +134,11 @@ class Vet_Controller extends MY_Controller
 		$file = $name . '_' . date('y_m_d') . '.csv';
 
 		$fp = fopen(APPPATH . 'cache/' . $file, 'w');
+		if(!$fp) {
+			fclose ($fp);
+			return false;
+		}
+		
 		foreach ($data as $line) {
 			fputcsv($fp, $line, ';', '"');
 		}

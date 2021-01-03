@@ -93,8 +93,6 @@ class Member extends Admin_Controller
 		$update = false;
 		
 		$user_edit = $this->ion_auth->user($id)->row();
-		$groups_edit = $this->ion_auth->groups()->result_array();
-		$currentGroups_edit = $this->ion_auth->get_users_groups($id)->result();
 		
 		if ($this->input->post('submit') == "edit_user" && $user_edit) {
 		
@@ -137,6 +135,7 @@ class Member extends Admin_Controller
 		}
 		
 		$user_edit = $this->ion_auth->user($id)->row();
+		$groups_edit = $this->ion_auth->groups()->result_array();
 		$currentGroups_edit = $this->ion_auth->get_users_groups($id)->result();
 		
 		# in case of error id

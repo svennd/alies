@@ -112,12 +112,24 @@ class Vet extends Vet_Controller
 			// create image from it
 			$ori_img = imagecreatefromstring($raw_decoded);
 			
+			// unrecognized format
+			if(!$ori_img) {
+				redirect('vet/profile', 'refresh');
+				return false;
+			}
+			
 			// determ size for resampling & resizing
 			$ori_size = getimagesizefromstring($raw_decoded);
 			list($org_w, $org_h) = ($ori_size);
 			
 			// create new image background
 			$resized_img = imagecreatetruecolor($upload_size['width'], $upload_size['height']);
+			
+			// resize fails 
+			if(!$ori_img) {
+				redirect('vet/profile', 'refresh');
+				return false;
+			}
 			
 			// resample & resize
 			imagecopyresampled($resized_img, $ori_img, 0, 0, 0, 0, $upload_size['width'], $upload_size['height'], $org_w, $org_h);

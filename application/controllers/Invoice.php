@@ -46,7 +46,7 @@ class Invoice extends Vet_Controller
 	}
 	
 	# generate a bill if thre is no open or unpaid one for this owner
-	public function bill($owner_id, $print = false)
+	public function bill($owner_id)
 	{
 		# before we create a new bill check if there is already an unpaid bill
 		$check_bill = $this->bills
