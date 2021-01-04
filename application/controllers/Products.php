@@ -253,7 +253,7 @@ class Products extends Vet_Controller
 		$gs1 = $this->input->get('gs1');
 		
 		$result = $this->products
-							->fields('id, name')
+							->fields('id, name, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 							->limit(2)
 							->where('input_barcode', $gs1)
 							->get();

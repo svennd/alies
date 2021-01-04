@@ -143,7 +143,6 @@ class Stock extends Vet_Controller
 					$barcode = base_convert((time() - 1575158400), 10, 36);
 					$this->barcode->generate($barcode);
 				
-
 					$this->stock->insert(array(
 											"product_id" 		=> $this->input->post('pid'),
 											"eol" 				=> $this->input->post('eol'),
