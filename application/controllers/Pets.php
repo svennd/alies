@@ -21,7 +21,7 @@ class Pets extends Vet_Controller
 			max amount of history we will load 
 			on complex pages
 		*/
-		$this->max_history = 5;
+		$this->max_history = 10;
 	}
 	
 	public function index()
@@ -177,7 +177,12 @@ class Pets extends Vet_Controller
 									with_procedures('fields:events_procedures.amount, name')->
 									with_vet('fields:first_name')->
 									with_location('fields:name')->
-									where(array("pet" => $pet_id, "no_history" => 0))->
+									where(
+										array(
+												"pet" 			=> $pet_id, 
+												"no_history" 	=> 0,
+												"type !=" 		=> 1,
+												))->
 									order_by('created_at', 'DESC')->
 									limit($this->max_history)->
 									get_all();

@@ -98,7 +98,7 @@
 	  <div class="form-group">
 		<label for="birth"><b>Birth</b>*</label>
 		<input type="date" name="birth" class="form-control" id="birth" value="<?php echo ($edit_mode && isset($pet['birth'])) ? $pet['birth']: '' ?>">
-		<i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i>
+		<?php if($edit_mode && !$pet['death']): ?><i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i><?php endif; ?>
 	  </div>
   </div>
 </div>

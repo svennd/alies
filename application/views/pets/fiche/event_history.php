@@ -30,7 +30,8 @@
 	<div class="card-body">
 		
 		<?php if (isset($full_history)): ?>
-			<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
 				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/1" role="button"><i class="fas fa-fw fa-file-medical"></i></a>
 				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/2" role="button"><i class="fas fa-fw fa-syringe"></i></a>
 				<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>/3" role="button"><i class="fas fa-fw fa-tooth"></i></a>
@@ -46,12 +47,21 @@
 				</a>
 				<?php endif; ?>
 			</div>
+			
+			<div class="input-group input-group-sm">
+				<div class="input-group-prepend">
+					<div class="input-group-text" id="btnGroupAddon"><i class="fas fa-search"></i></div>
+				</div>
+				<input type="text" class="form-control" id="title_search" onkeyup="search_history()" value="" placeholder="Search Titles">
+			</div>
+		</div>
+			
 			<br/>
 			<br/>
 		<?php endif; ?>
 		
 		<?php if ($pet_history): ?>
-		<table class="table table-hover mb-0">
+		<table class="table table-hover mb-0" id="pet_history">
 		<thead>
 			<tr class="align-self-center">
 				<th>Type</th>
@@ -64,10 +74,9 @@
 		</thead>
 	<?php
 	$symbols = array(
-			"fas fa-user-md",
+			"fas fa-file-medical",
 			"fas fa-syringe",
 			"fas fa-tooth",
-			"fas fa-hospital",
 			"fas fa-hammer",
 			"fas fa-heartbeat",
 		);
@@ -78,7 +87,7 @@
 			$products = (isset($pet_history[$i]['products'])) ? $pet_history[$i]['products']: array();
 			$procs = (isset($pet_history[$i]['procedures'])) ? $pet_history[$i]['procedures']: array();
 	?>
-	<tr>
+	<tr class="searchable">
 		<td><div class="humb-sm rounded-circle mr-2"><i class="<?php echo $symbols[$history['type']]; ?>"></i></div></td>
 		<td><?php echo $history['title']; ?></td>
 		<td><?php echo substr($history['created_at'], 0, 10); ?></td>
@@ -117,12 +126,38 @@
 </div>
 
 <script type="text/javascript">
+	// no datatable possible due to hidden anamnese & sold products;
+	// source : https://www.w3schools.com/howto/howto_js_filter_table.asp
+	function search_history() {
+	  // Declare variables
+	  var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("title_search");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("pet_history");
+	  tr = table.getElementsByClassName("searchable");
 
+	  // Loop through all table rows, and hide those who don't match the search query
+	  for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[1]; // title
+		if (td) {
+		  txtValue = td.textContent || td.innerText;
+		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			tr[i].style.display = "";
+		  } else {
+			tr[i].style.display = "none";
+		  }
+		}
+	  }
+	}	
+	
 document.addEventListener("DOMContentLoaded", function(){
-// history anamnese
-$(".ana").click(function(){	
-	$("#" + this.id + "_text").toggle();
-});
+	// history anamnese
+	$(".ana").click(function(){	
+		$("#" + this.id + "_text").toggle();
+	});
+	
+	
+
 
 });
 </script>
