@@ -76,9 +76,15 @@ class Vet extends Vet_Controller
 		}
 	}
 	
-	public function change_sidebar()
+	public function profile_change()
 	{
-		$this->users->update(array('sidebar' => $this->input->post('color')), $this->user->id);
+		$this->users->update(
+								array(
+											'sidebar' 		=> $this->input->post('color'),
+											'first_name' 	=> $this->input->post('first_name'),
+											'last_name' 	=> $this->input->post('last_name'),
+											'phone' 		=> $this->input->post('phone'),
+									), $this->user->id);
 		redirect('vet/profile', 'refresh');
 	}
 	
@@ -168,6 +174,6 @@ class Vet extends Vet_Controller
 			}
 		}
 		
-		$this->_render_page('profile', $data);
+		$this->_render_page('member/profile', $data);
 	}
 }

@@ -18,6 +18,7 @@
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 </div>
 <?php endif; ?>
+
 	<form action="<?php echo base_url() ?>member/edit_user/<?php echo $user_edit->id; ?>" method="post" accept-charset="utf-8">
 	<h5>Login info</h5>
 	<hr>

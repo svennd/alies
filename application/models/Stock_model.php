@@ -121,8 +121,15 @@ class Stock_model extends MY_Model
 		}
 	}
 	
+	# check for stock that is going to become bad soonish
+	public function get_bad_products($location = false, $days = 90)
+	{
+		$sql = "";
+		return $this->db->query($sql)->result_array();
+	}
+	
 	# return stock limits
-	public function get_local_stock_shortages()
+	public function get_local_stock_shortages($location = false)
 	{
 		$sql = "SELECT 
 					stock_limit.stock as location,
@@ -150,7 +157,38 @@ class Stock_model extends MY_Model
 				HAVING
 					available_volume < required_volume
 				";
-					
+			
+		if ($location)
+		{
+			$sql = "SELECT 
+						stock_limit.stock as location,
+						stock_limit.volume as required_volume, 
+						sum(stock.volume) as available_volume, 
+						stock_limit.product_id as product_detail,
+						(select sum(stock.volume) from stock where product_id = stock_limit.product_id) as all_volume,
+						products.name,
+						products.unit_sell
+					FROM
+						stock_limit
+					LEFT JOIN 
+						stock 
+					ON 
+						stock.product_id = stock_limit.product_id 
+						and 
+						stock.location = stock_limit.stock 
+					JOIN 
+						products 
+					ON 
+						stock_limit.product_id = products.id
+					GROUP BY
+						stock.product_id,
+						stock.location
+					HAVING
+						available_volume < required_volume
+					and
+						stock_limit.stock = '" . (int) $location . "'
+					";
+		}
 		return $this->db->query($sql)->result_array();
 	}
 	
