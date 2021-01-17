@@ -5,7 +5,7 @@
 
 <div class="row">
 	<div class="col-xl-3 col-md-5 mb-4">
-		<?php if (count($local_stock) > 0): ?>
+		<?php if ($local_stock && count($local_stock) > 0): ?>
 		<div class="card border-left-danger shadow h-100 py-2">
 			<div class="card-body">
 				<div class="row no-gutters align-items-center">
@@ -54,7 +54,7 @@
 	</div>
 	<?php endif; ?>
 	
-	<?php if (count($bad_products) > 0): ?>
+	<?php if ($bad_products && count($bad_products) > 0): ?>
 	<div class="col-xl-3 col-md-5 mb-4">
 		<div class="card border-left-info shadow h-100 py-2">
 			<div class="card-body">
