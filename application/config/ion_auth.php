@@ -110,12 +110,12 @@ $config['bcrypt_admin_cost']		= 12;		// Cost for user in admin group
 $config['argon2_default_params']	= [
 	'memory_cost'	=> 1 << 12,	// 4MB
 	'time_cost'		=> 2,
-	'threads'		=> 2
+	'threads'		=> 1
 ];
 $config['argon2_admin_params']		= [
 	'memory_cost'	=> 1 << 14,	// 16MB
 	'time_cost'		=> 4,
-	'threads'		=> 2
+	'threads'		=> 1
 ];
 
 /*
