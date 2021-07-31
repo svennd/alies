@@ -62,7 +62,7 @@ class Welcome extends Vet_Controller
 													->get_all()
 												: false,
 							);
-		
+
 		$this->_render_page('welcome_message', $data);
 	}
 

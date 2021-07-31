@@ -159,21 +159,15 @@ function process_datamatrix(barcode) {
 		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
 		if(result)
 		{
-			// if first match (non vet) or second match (vet)
-			if (typeof(result[3]) === 'undefined') {
-				// vet
-				var date = result[6];
-				var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
-				$("#lotnr").val(result[7]);
-				$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
-			} else {
-				var date = result[4];
-				var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
-				$("#lotnr").val(result[3]);
-				$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
-			}
+			var gsbarcode = result[1];
+			var date = (typeof(result[3]) === 'undefined') ? result[6] : result[4];
+			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
+			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
 			
-			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + result[1] , function(data, status){
+			$("#lotnr").val(lotnr);
+			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+			
+			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
 				if (data.state)
 				{
 					$("#pid").val(data[0].id);
@@ -191,11 +185,15 @@ function process_datamatrix(barcode) {
 				else 
 				{ 
 					$("#new_barcode_input").val(1);
-					$("#barcode_gs1").val(result[1]);
+					$("#barcode_gs1").val(gsbarcode);
 					$("#product_tip").html("unknown gs1, please select product!"); 
 					$("#autocomplete").focus();
 				}
 			});
+		}
+		else 
+		{
+			$("#product_tip").html("invalid code not recognized"); 
 		}
 	}
 	else

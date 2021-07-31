@@ -33,6 +33,89 @@ class Owners_model extends MY_Model
 		parent::__construct();
 	}
 	
+	public function search_by_first_name($name)
+	{
+		$name = $this->db->escape_like_str($name);
+		$sql = "
+			SELECT 
+				*
+			FROM 
+				owners
+			WHERE
+				first_name LIKE '" . $name . "%' ESCAPE '!'
+			ORDER BY
+				last_bill
+			DESC
+			LIMIT 250
+		";
+		return $this->db->query($sql)->result_array();
+	}
+	
+	public function search_by_last_name($name)
+	{
+		$name = $this->db->escape_like_str($name);
+		$sql = "
+			SELECT 
+				* 
+			FROM 
+				owners
+			WHERE
+				last_name LIKE '" . $name . "%' ESCAPE '!'
+			ORDER BY
+				last_bill
+			DESC
+			LIMIT 250
+		";
+		return $this->db->query($sql)->result_array();
+	}
+	
+	public function search_by_street_ex($street)
+	{
+		$street = $this->db->escape_like_str($street);
+		$result = array();
+		$sql = "
+			SELECT 
+				*
+			FROM 
+				owners
+			WHERE
+				street LIKE '%" . $this->db->escape_like_str($street) . "%' ESCAPE '!'
+			ORDER BY
+				last_bill
+			DESC
+			LIMIT 250
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
+	
+	public function search_by_phone_ex($phone)
+	{
+		$street = $this->db->escape_like_str($phone);
+		$result = array();
+
+		$sql = "
+			SELECT 
+				*
+			FROM 
+				owners
+			WHERE
+				telephone LIKE '" . $phone . "%' ESCAPE '!'
+				OR
+				mobile LIKE '" . $phone . "%' ESCAPE '!'
+				OR
+				phone2 LIKE '" . $phone . "%' ESCAPE '!'
+				OR
+				phone3 LIKE '" . $phone . "%' ESCAPE '!'
+			ORDER BY
+				last_bill
+			DESC
+			LIMIT 250
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
+	
 	# needs improvement !!
 	# probably 1 query should suffice
 	public function search_by_name($name)

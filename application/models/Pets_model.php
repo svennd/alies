@@ -53,6 +53,84 @@ class Pets_model extends MY_Model
 		parent::__construct();
 	}
 	
+	public function search_by_name($query)
+	{
+		$query = $this->db->escape_like_str($query);
+		$result = array();
+		$sql = "
+			SELECT 
+				pets.name, owners.*
+			FROM 
+				pets
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			WHERE
+				name LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+			AND
+				death = 0
+			ORDER BY
+				owners.last_bill
+			DESC
+			LIMIT 250
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
+	
+	public function search_by_chip_ex($chip)
+	{
+		$query = $this->db->escape_like_str($query);
+		$result = array();
+		$sql = "
+			SELECT 
+				pets.name, owners.*
+			FROM 
+				pets
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			WHERE
+				chip LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+			AND
+				death = 0
+			ORDER BY
+				owners.last_bill
+			DESC
+			LIMIT 250
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
+	
+	public function search_by_id($id)
+	{
+		$result = array();
+		$sql = "
+			SELECT 
+				pets.name, owners.*
+			FROM 
+				pets
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			WHERE
+				pets.id = '" . (int) $id . "'
+			AND
+				death = 0
+			ORDER BY
+				owners.last_bill
+			DESC
+			LIMIT 250
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
+	
+	# deprecated - in use by manual chip search
 	public function search_by_chip($chip)
 	{
 		$sql = "

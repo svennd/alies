@@ -11,7 +11,9 @@
 
 	<title>Alies - Dashboard</title>
 
+	<link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/sb-admin-2.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/custom.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/dataTables.bootstrap4.min.css" rel="stylesheet"> <!-- datatables -->
 	<link href="<?php echo base_url(); ?>assets/css/all.min.css" rel="stylesheet"> <!-- font awesome -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -93,6 +95,11 @@
       </li>
 	  <?php endif; ?>
 
+
+      <div class="sidebar-heading">
+        Products
+      </div>
+	  
       <li class="nav-item" id="products">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#prd" aria-expanded="true" aria-controls="prd">
           <i class="fas fa-fw fa-shopping-cart"></i>
@@ -149,31 +156,16 @@
       <div class="sidebar-heading">
         Veterinary
       </div>
-
       <li class="nav-item" id="clients">
-        <a class="nav-link collapsed" href="<?php echo base_url(); ?>owners" data-toggle="collapse" data-target="#owners" aria-expanded="true" aria-controls="owners">
+        <a class="nav-link" href="<?php echo base_url(); ?>owners">
           <i class="fas fa-fw fa-user"></i>
           <span>Clients</span></a>
-		  
-		  <div id="owners" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Clients :</h6>
-            <a class="collapse-item" href="<?php echo base_url(); ?>owners/search" id="client_search">Client Search</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>owners/add" id="new_client">New Client</a>
-          </div>
-      </li>
-
-      <li class="nav-item" id="pets">
-        <a class="nav-link" href="<?php echo base_url(); ?>pets">
-          <i class="fas fa-fw fa-dog"></i>
-          <span>Pets</span></a>
       </li>
       <li class="nav-item" id="invoice">
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
-          <i class="fas fa-file-invoice-dollar"></i>
+          <i class="fas fa-fw fa-file-invoice-dollar"></i>
           <span>Invoice</span></a>
       </li>
-
 		<!--
       <hr class="sidebar-divider">
 
@@ -262,53 +254,7 @@
             </li>
 			<?php endif; ?>
 			-->
-			<!--
-            <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>
-				<?php $messages = (isset($messages)) ? $messages : 0; ?>
-				<?php if ($messages > 0):  ?>
-				
-				<?php $unread = 0; ?>
-				<?php foreach($messages as $message): ?>
-					<?php if ($message['status'] == MSG_UNREAD):  ?>
-						<?php $unread++; ?>
-					<?php endif; ?>
-				<?php endforeach; ?>
-				<?php if($unread > 0): ?>
-					<span class="badge badge-danger badge-counter"><?php echo $unread; ?></span>
-				<?php endif; ?>
-				<?php endif; ?>
-              </a>
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                  Message Center
-                </h6>
-				<?php if ($messages > 0):  ?>
-				<?php foreach($messages as $message): ?>
-                <a class="dropdown-item d-flex align-items-center" href="<?php echo base_url(); ?>messages/<?php echo $message['msg_id']; ?>">
-                  <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="<?php echo base_url(); ?>assets/img/temp/alies.jpeg" alt="">
-					<?php if ($message['status'] == MSG_UNREAD):  ?>
-						<div class="status-indicator bg-success"></div>
-					<?php elseif ($message['status'] == MSG_READ):  ?>
-						<div class="status-indicator bg-primary"></div>
-					<?php endif; ?>
-				</div>
-                  <div class="font-weight-bold">
-                    <div class="text-truncate"><?php echo $message['body']; ?></div>
-                    <div class="small text-gray-500"><?php echo $message['first_name'] . " " . $message['last_name']; ?> · <?php echo timespan(strtotime($message['created_at']), time(), 1); ?></div>
-                  </div>
-                </a>
-				<?php endforeach; ?>
-				<?php else : ?>
-					No Messages yet.
-				<?php endif; ?>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-              </div>
-            </li>
-			--> 
-			
+						
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->

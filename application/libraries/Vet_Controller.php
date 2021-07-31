@@ -42,17 +42,12 @@ class Vet_Controller extends MY_Controller
 		} else {
 			$this->conf = array();
 		}
-		// $this->load->model('msg_messages_model', 'msg');
-		$this->load->model('msg_participants_model', 'msg_participants');
-		// $this->load->model('msg_state_model', 'msg_state');
-
 		
 		$this->user = $this->ion_auth->user()->row();
 		$this->location = $this->stock_location->get_all();
 		
 		# required on every page
 		$this->page_data = array(
-								"messages" 			=> $this->msg_participants->get_messages($this->user->id),
 								"user" 				=> $this->user,
 								"location" 			=> $this->_get_compass_locations(),
 								"current_location" 	=> $this->_get_current_location(),
@@ -118,10 +113,7 @@ class Vet_Controller extends MY_Controller
 	
 	public function _render_page($page, $data = array())
 	{
-		// var_dump($data);
-		// var_dump($this->page_data);
 		$data = array_merge($data, $this->page_data);
-		// var_dump($data);
 		$this->load->view('header', $data);
 		$this->load->view($page, $data);
 		$this->load->view('footer', $data);

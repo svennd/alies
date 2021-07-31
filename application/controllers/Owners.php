@@ -19,47 +19,17 @@ class Owners extends Vet_Controller
 	
 	public function index()
 	{
-		redirect('owners/search', 'refresh');
+		// redirect('owners_index', 'refresh');
+		$data = array();
+		$this->_render_page('search', $data);
 	}
 	
+	# legacy - please remove links to here
 	public function search()
 	{
-		$name = null;
-		$street = null;
-		$phone = null;
-		$client = null;
-		$result = null;
-		
-		if ($this->input->post('submit') == "name") {
-			$name = $this->input->post('name');
-			$result = (!empty($name)) ? $this->owners->search_by_name($name) : false;
-		}
-		
-		if ($this->input->post('submit') == "street") {
-			$street = $this->input->post('street');
-			$result = (!empty($street)) ? $this->owners->search_by_street($street) : false;
-		}
-		
-		if ($this->input->post('submit') == "phone") {
-			$phone = $this->input->post('phone');
-			$result = (!empty($phone)) ? $this->owners->search_by_phone($phone) : false;
-		}
-		
-		if ($this->input->post('submit') == "client") {
-			$client = $this->input->post('client');
-			$result = (!empty($client)) ? $this->owners->where(array("id" => $client))->get_all() : false;
-		}
-		
-		$data = array(
-					"name" 		=> $name,
-					"street" 	=> $street,
-					"phone"		=> $phone,
-					"client" 	=> $client,
-					"result" 	=> $result,
-				);
-		$this->_render_page('owners_search', $data);
+		redirect('owners', 'refresh');
 	}
-	
+		
 	public function add()
 	{
 		if ($this->input->post('submit')) {

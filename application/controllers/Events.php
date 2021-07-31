@@ -210,7 +210,7 @@ class Events extends Vet_Controller
 			return false;
 		}
 		
-		$pid = $this->input->post('pid');
+		$pid = (int) $this->input->post('pid');
 		$btw = $this->input->post('btw');
 		$booking = $this->input->post('booking_default');
 		

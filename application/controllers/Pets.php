@@ -26,26 +26,7 @@ class Pets extends Vet_Controller
 	
 	public function index()
 	{
-		$data = array();
-		if ($this->input->post('submit') == 1) {
-			$chip = $this->input->post('chip');
-			$data['card'] = (!empty($chip)) ? $this->pets->with_breeds('fields:name')->with_owners()->where(array("chip" => $chip))->get() : false;
-			$data['chip'] = $chip;
-		}
-		
-		if ($this->input->post('submit') == 2) {
-			$name = $this->input->post('name');
-			$data['pets'] = (!empty($name)) ? $this->pets
-												->with_breeds('fields:name')
-												->with_owners('fields:last_name, street, nr, city, last_bill')
-												->like("name", $name, "both")
-												->where(array("death" => 0, "lost" => 0))->get_all() : false;
-			$data['name'] = $name;
-			$this->_render_page('pets_search_list', $data);
-			return true;
-		}
-		
-		$this->_render_page('pets_search', $data);
+		redirect('owners', 'refresh');
 	}
 	
 	# input new weight on weight page
