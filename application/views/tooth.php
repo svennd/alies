@@ -51,7 +51,7 @@
 				<form action="<?php echo base_url(); ?>tooth/store/<?php echo $pet_id; ?>" method="post" autocomplete="off">  
 				  <div class="form-group">
 					<label for="message">Info</label>
-					<textarea class="form-control" name="message" id="message" rows="6"><?php echo ($tooth_msg['msg']) ? $tooth_msg['msg'] : ''; ?></textarea>
+					<textarea class="form-control" name="message" id="message" rows="6"><?php echo (isset($tooth_msg['msg'])) ? $tooth_msg['msg'] : ''; ?></textarea>
 				  </div>
 				  <button type="submit" name="submit" value="update" class="btn btn-primary">Update</button>
 				</form>
