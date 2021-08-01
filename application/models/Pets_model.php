@@ -56,7 +56,6 @@ class Pets_model extends MY_Model
 	public function search_by_name($query)
 	{
 		$query = $this->db->escape_like_str($query);
-		$result = array();
 		$sql = "
 			SELECT 
 				pets.name, owners.*
@@ -82,7 +81,7 @@ class Pets_model extends MY_Model
 	public function search_by_chip_ex($chip)
 	{
 		$query = $this->db->escape_like_str($query);
-		$result = array();
+
 		$sql = "
 			SELECT 
 				pets.name, owners.*
@@ -107,7 +106,6 @@ class Pets_model extends MY_Model
 	
 	public function search_by_id($id)
 	{
-		$result = array();
 		$sql = "
 			SELECT 
 				pets.name, owners.*

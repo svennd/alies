@@ -72,7 +72,6 @@ class Owners_model extends MY_Model
 	public function search_by_street_ex($street)
 	{
 		$street = $this->db->escape_like_str($street);
-		$result = array();
 		$sql = "
 			SELECT 
 				*
@@ -92,7 +91,6 @@ class Owners_model extends MY_Model
 	public function search_by_phone_ex($phone)
 	{
 		$street = $this->db->escape_like_str($phone);
-		$result = array();
 
 		$sql = "
 			SELECT 
