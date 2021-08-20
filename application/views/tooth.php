@@ -3,7 +3,7 @@
 			<div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $pet_info['owners']['id']; ?>"><?php echo $pet_info['owners']['last_name'] ?></a> / 
-				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / tooth
+				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / teeth
 			</div>
 			<div class="card-body">
 				<?php if($pet_info['type'] == DOG): ?>
@@ -13,7 +13,7 @@
 				<?php elseif($pet_info['type'] == HORSE):?>
 					<?php include "tooth/horse.xml"; ?>
 				<?php else : ?>
-					No tooth records known;
+					No teeth records known;
 				<?php endif; ?>
 				<br/>
 				<br/>
@@ -37,7 +37,7 @@
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
 			<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  Tooth Report
+                  Teeth Report
                   <div class="dropdown no-arrow">
                     <a  href="<?php echo base_url(); ?>tooth/history/<?php echo $pet_id; ?>" role="button" id="dropdownMenuLink">
                       <i class="fas fa-history"></i>
@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     btns: [
         ['strong', 'em', 'fontsize'],
-        ['undo', 'redo'],
         ['superscript', 'subscript'],
         ['link'],
         ['insertImage'],

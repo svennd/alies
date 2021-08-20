@@ -2,10 +2,12 @@
 
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">
+			<div class="card-header">
+				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $pet_info['owners']['id']; ?>"><?php echo $pet_info['owners']['last_name'] ?></a> / 
+				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / 
+				<a href="<?php echo base_url(); ?>tooth/fiche/<?php echo $pet_info['id']; ?>">teeth</a> / 
 				history
-            </div>
+			</div>
             <div class="card-body">
 				<?php if ($history): ?> 
 					<table class="table">

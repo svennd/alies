@@ -40,8 +40,11 @@ class Tooth extends Vet_Controller
 	
 	public function history($pet_id)
 	{
+		
+		$pet_info = $this->pets->with_tooths()->with_owners()->fields('id, type, name')->get($pet_id);
 		$history = $this->toot_msg->with_vet('fields:first_name')->with_location('fields:name')->where(array("pet" => $pet_id))->order_by('id', 'DESC')->get_all();
 		$data = array(
+							"pet_info" 	=> $pet_info,
 							"history" => $history
 						);
 		$this->_render_page('tooth_history', $data);
