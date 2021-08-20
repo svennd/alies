@@ -1,6 +1,6 @@
 <div class="card shadow mb-4">
 	<div class="card-header">
-		<a href="<?php echo base_url(); ?>report">Report</a> / Vaccine / search expire
+		<a href="<?php echo base_url(); ?>reports">Reports</a> / Vaccine / search expire
 	</div>
 	<div class="card-body">
 		<form action="<?php echo base_url(); ?>reports/vaccine/" method="post" autocomplete="off" class="form-inline">
