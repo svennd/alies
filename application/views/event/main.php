@@ -128,83 +128,90 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 			else
 			{
-				// product
-				$('#unit_sell').html(suggestion.data.unit);
-				$('#stock_select').prop('disabled', false);
-				$("#stock_select").children().remove();
-				$('#product_or_proc').val(1);
-				$('#vaccin_or_no').val(suggestion.data.vaccin);
-				$('#vaccin_freq').val(suggestion.data.vaccin_freq);
-			
-				// check if there is stock
-				if (suggestion.data.stock != null)
-				{
-					var stock = "";
-					
-					// only 1 (preselect)
-					if (suggestion.data.stock.length == 1) 
-					{
-						stock = suggestion.data.stock[0];
-						$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
-						
-						$('#unit_sell').html("/ " + stock.volume + " " + suggestion.data.unit);
-					}
-					// multiple
-					else
-					{
-						// since this is not sorted take 
-						// current location first
-						for (let i = 0; i < suggestion.data.stock.length; i++) {
-							stock = suggestion.data.stock[i];
-						 
-							if (<?php echo $u_location; ?> == stock.location)
-							{
-								var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
-								$("#stock_select").append(option);
-							}
-						}
-						
-						// other locations
-						for (let i = 0; i < suggestion.data.stock.length; i++) {
-							stock = suggestion.data.stock[i];
-
-							if (<?php echo $u_location; ?> != stock.location)
-							{
-								var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
-								option.setAttribute("class", "bg-warning");
-								$("#stock_select").append(option);
-							}
-						}
-					}
-					
-			
+				if(suggestion.data.type == "barcode") {
+					// to late (this is after click)
+					console.log("FIRE");
 				}
-				// check if there are prices (products)
-				if (suggestion.data.prices != null)
-				{
-					// only 1
-					if (suggestion.data.prices.length == 1) 
+				else {
+					// product
+					$('#unit_sell').html(suggestion.data.unit);
+					$('#stock_select').prop('disabled', false);
+					$("#stock_select").children().remove();
+					$('#product_or_proc').val(1);
+					$('#vaccin_or_no').val(suggestion.data.vaccin);
+					$('#vaccin_freq').val(suggestion.data.vaccin_freq);
+				
+					// check if there is stock
+					if (suggestion.data.stock != null)
 					{
-						prices = suggestion.data.prices[0];
-						$("#price_ajax_request").html(prices.price + " &euro; / " + prices.volume + " " + suggestion.data.unit);
-					}
-					// multiple
-					else
-					{
-						var min = parseFloat(suggestion.data.prices[0].price);
-						var max = parseFloat(suggestion.data.prices[0].price);
-						var loop = "<div class='collapse' id='collapseSELECT'><table class='small'>";
+						var stock = "";
 						
-						for (let i = 0; i < suggestion.data.prices.length; i++) {
-							current_price = suggestion.data.prices[i];
-							loop += "<tr><td>" + current_price.volume + " " + suggestion.data.unit + "</td><td>" + current_price.price + " &euro;</td></tr>";
-							if (min > parseFloat(current_price.price)) { min = current_price.price; }
-							if (max < parseFloat(current_price.price)) { max = current_price.price; }
+						// only 1 (preselect)
+						if (suggestion.data.stock.length == 1) 
+						{
+							stock = suggestion.data.stock[0];
+							$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
+							
+							$('#unit_sell').html("/ " + stock.volume + " " + suggestion.data.unit);
 						}
-						loop += "</table></div>"
+						// multiple
+						else
+						{
+							// since this is not sorted take 
+							// current location first
+							for (let i = 0; i < suggestion.data.stock.length; i++) {
+								stock = suggestion.data.stock[i];
+							 
+								if (<?php echo $u_location; ?> == stock.location)
+								{
+									var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+									$("#stock_select").append(option);
+								}
+							}
+							
+							// other locations
+							for (let i = 0; i < suggestion.data.stock.length; i++) {
+								stock = suggestion.data.stock[i];
+
+								if (<?php echo $u_location; ?> != stock.location)
+								{
+									var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+									option.setAttribute("class", "bg-warning");
+									$("#stock_select").append(option);
+								}
+							}
+						}
 						
-						$("#price_ajax_request").html("<a data-toggle='collapse' href='#collapseSELECT' role='button' aria-expanded='false' aria-controls='collapseSELECT'>" + min + " ~ " + max + " &euro;</a>" + loop);
+				
 					}
+					// check if there are prices (products)
+					if (suggestion.data.prices != null)
+					{
+						// only 1
+						if (suggestion.data.prices.length == 1) 
+						{
+							prices = suggestion.data.prices[0];
+							$("#price_ajax_request").html(prices.price + " &euro; / " + prices.volume + " " + suggestion.data.unit);
+						}
+						// multiple
+						else
+						{
+							var min = parseFloat(suggestion.data.prices[0].price);
+							var max = parseFloat(suggestion.data.prices[0].price);
+							var loop = "<div class='collapse' id='collapseSELECT'><table class='small'>";
+							
+							for (let i = 0; i < suggestion.data.prices.length; i++) {
+								current_price = suggestion.data.prices[i];
+								loop += "<tr><td>" + current_price.volume + " " + suggestion.data.unit + "</td><td>" + current_price.price + " &euro;</td></tr>";
+								if (min > parseFloat(current_price.price)) { min = current_price.price; }
+								if (max < parseFloat(current_price.price)) { max = current_price.price; }
+							}
+							loop += "</table></div>"
+							
+							$("#price_ajax_request").html("<a data-toggle='collapse' href='#collapseSELECT' role='button' aria-expanded='false' aria-controls='collapseSELECT'>" + min + " ~ " + max + " &euro;</a>" + loop);
+						}
+					}
+					
 				}
 			}
 		},

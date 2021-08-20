@@ -90,7 +90,7 @@ $state = array(
 	                <div class="row px-5 py-3">
                         <div class="col-md-12">
 							<?php 
-							$full_total = 0.0;
+							// $full_total = 0.0;
 							foreach ($print_bill as $pet_id => $event): 
 								# resolve name, chip
 								$pet_info = $pets[$pet_id];
@@ -98,7 +98,7 @@ $state = array(
 								foreach ($event as $event_id => $vbill):
 									list($event_id, $event_location, $payment_bill, $created_at, $updated_at) = array_values($event_info[$pet_id][$event_id]);
 									list($prod, $proc, $total) = array_values($vbill);
-									// $full_total += $total;
+									
 									# skip if no products or services
 									if (count($prod) + count($proc) == 0) continue;
 							?>

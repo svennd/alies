@@ -82,7 +82,7 @@ class Invoice extends Vet_Controller
 	#		--> for each event there are 1) proc's and 2) prod's
 	# 	-> for the full bill create a line and add the events to bill_events
 	#		so we don't create 2 bills for 1 (or more) event
-	public function get_bill($bill_id)
+	public function get_bill($bill_id, $pdf = false)
 	{
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
@@ -198,78 +198,17 @@ class Invoice extends Vet_Controller
 					"location_i"	=> $this->location,
 					"bill"			=> $this->bills->get($bill_id) // can't remove for race condition on calculation
 				);
+				
+		if ($pdf)
+		{
+			$this->load->library('pdf'); // change to pdf_ssl for ssl
+			$date = date_create_from_format ('Y-m-d H:i:s', $data['bill']['created_at']);
+			$filename = "bill_" . date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT);
+			$html = $this->load->view('bill_report_print', $data, true);
+			$this->pdf->create($html, $filename);
+		}
 		$this->_render_page('bill_report', $data);
 	}
-	
-	/* stripped & copied from get_bill() */
-	public function print_bill($bill_id)
-	{
-		$bill = $this->bills->get($bill_id);
-		$owner_id = $bill['owner_id'];
-		// $bill_total = 0.0;
-		
-		# get all pets
-		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
-		
-		$pet_id_array = array();
-		$print_bill = array();
-		$event_info = array();
-		
-		foreach ($pets as $pet) {
-			# for easy access
-			$pet_id = $pet['id'];
-			
-			# get all events for this pet that have an open payment
-			# this could be multiple (consult + op) for example
-			$pet_events = $this->events
-									->where(array(
-													"pet" => $pet['id'],
-													"payment" => $bill_id
-													))
-									->fields("id, location, payment, created_at, updated_at")
-									->get_all();
-				
-			# no event for this pet, skip all togheter
-			if (!$pet_events) {
-				continue;
-			}
-			
-			# create array if there is going to be
-			# events linked to this animal
-			$print_bill[$pet_id] = array();
-			
-			# should generally only be 1 event
-			# but in case of open events
-			# could be more
-			foreach ($pet_events as $event) {
-				# get the calculated bill
-				# for all procedures and products for this pet
-				$event_bill = $this->events->get_products_and_procedures($event['id']);
-					
-				# printable
-				$print_bill[$pet_id][$event['id']] = $event_bill;
-				
-				# a list with event description
-				$event_info[$pet_id][$event['id']] = $event;
-			}
-			
-			# for making a printable bill
-			$pet_id_array[$pet_id] = $pet;
-		}
-		
-		$data = array(
-				"owner" 		=> $this->owners->get($owner_id),
-				"pets" 			=> $pet_id_array,
-				"print_bill"	=> $print_bill,
-				"bill_id"		=> $bill_id,
-				"event_info"	=> $event_info,
-				"location_i"	=> $this->location,
-				"bill"			=> $bill
-			);
-		// $this->_render_page('', $data);
-		$this->load->view('bill_report_print', $data);
-	}
-	
 	
 	# in case the client does not pay
 	public function bill_unpay($bill_id)

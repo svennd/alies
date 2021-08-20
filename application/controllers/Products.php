@@ -119,7 +119,6 @@ class Products extends Vet_Controller
 		$update = false;
 		if ($this->input->post('submit')) {
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
-			// var_dump($booking);
 			
 			$input = array(
 								"name" 				=> $this->input->post('name'),
@@ -248,19 +247,20 @@ class Products extends Vet_Controller
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 	
-	public function gs1_to_product()
+	public function gs1_to_product($gls = false, $return = false)
 	{
-		$gs1 = $this->input->get('gs1');
+		$gs1 = ($gls) ? $gls : $this->input->get('gs1');
 		
 		$result = $this->products
 							->fields('id, name, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 							->limit(2)
 							->where('input_barcode', $gs1)
 							->get();
-		if ($result) {
-			echo json_encode(array("state" => 1, $result));
+							
+		if (!$return) {
+			echo ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
 		} else {
-			echo json_encode(array("state" => 0));
+			return ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
 		}
 	}
 	
@@ -268,16 +268,54 @@ class Products extends Vet_Controller
 	public function get_product_or_procedure()
 	{
 		$query = $this->input->get('query');
-		// $location = $this->input->get('loc'); // unused
 		$return = array();
 		
 		/*
+			if string is 32 chars long its most likely GS1 barcode
+			
 			Searching for a :
 				- product w/ stock
 				- procedure
+				- product on barcode
 
 		*/
-		if (strlen($query) > 1) {
+		if (strlen($query) == 32)
+		{
+			$gsl = $this->parse_gs1($query);
+			
+			if (!$gsl) { return false; }
+			
+			$stck = $this->stock->gs1_lookup($gsl['pid'], $gsl['lotnr'], $gsl['date'], $this->user->current_location);
+			
+			if ($stck)
+			{
+				# should only return a single result
+				$result = $stck['0'];
+				
+				
+				$query_prices = $this->pprice->get_all($result['pid']);
+				$prices = array();
+				foreach ($query_prices as $s) {
+					$prices[] = array(
+										"volume" 	=> $s['volume'],
+										"price" 	=> $s['price'],
+										);
+				}
+				
+				$return[] = array(
+								"value" => $result['pname'],
+								"data" => array(
+										"type" 		=> "barcode",
+										"lotnr"		=> $gsl['lotnr'],
+										"id" 		=> $result['pid'],
+										"price" 	=> $prices,
+										"btw" 		=> $result['btw_sell'],
+										"booking" 	=> $result['booking_code'],
+										"prod" 		=> 1,
+									));
+			}
+		}
+		elseif (strlen($query) > 1) {
 			# products
 			$result = $this->products
 								->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
@@ -359,5 +397,29 @@ class Products extends Vet_Controller
 		}
 	
 		echo json_encode(array("query" => $query, "suggestions" => $return));
+	}
+	
+	
+	# based on the gs1 code we can get information on the product from the database
+	# even if not we can get date & lotnr and "product id" (not internal product_id)
+	private function parse_gs1($barcode)
+	{
+		# this accepts 2 formats of gs1 code
+		if (preg_match('/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/', $barcode, $result))
+		{
+			$pid = $result[1];
+			$date = (!$result[3]) ? $result[6] : $result[4];
+			$lotnr = (!$result[3]) ? $result[7] : $result[3];
+			
+			$day = (substr($date, 4, 2) == "00") ? "01" : substr($date, 4, 2);
+				
+			return array(
+						'date' 	=> "20" . substr($date, 0, 2) . "-" . substr($date, 2,2) . "-" . $day,
+						'lotnr' => $lotnr,
+						'pid' 	=> $pid
+					);	
+		}
+		
+		return false;
 	}
 }

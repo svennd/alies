@@ -212,4 +212,34 @@ class Stock_model extends MY_Model
 					
 		return $this->db->query($sql)->result_array();
 	}
+	
+	public function gs1_lookup($input_barcode, $lotnr, $eol, $location)
+	{
+		$sql = "SELECT 
+						p.id as pid, 
+						p.name as pname, 
+						btw_sell, 
+						booking_code, 
+						p.input_barcode, 
+						s.eol,
+						s.lotnr,
+						s.barcode,
+						s.id as stock_id
+					FROM `products` as p 
+					LEFT JOIN stock as s ON 
+						p.id = s.product_id
+					WHERE 
+						p.input_barcode = '" . $input_barcode . "' and 
+						s.lotnr = '" . $lotnr . "' and 
+						s.eol = '" . $eol . "' and
+						s.location = '" . $location . "' and 
+						s.state = ". STOCK_IN_USE ."
+					ORDER BY
+						s.in_price
+					LIMIT
+						1
+				";
+				
+		return $this->db->query($sql)->result_array();
+	}
 }
