@@ -34,3 +34,6 @@ application/config/database.php
 /tests/tests/
 /tests/results/
 /assets/barcode/*.png
+
+# ignore custom
+/application/views/custom/bill_header.php
