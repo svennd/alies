@@ -70,6 +70,7 @@
 	<a href="<?php echo base_url(); ?>stock/add_stock" class="btn btn-success btn-lg mb-3"><i class="fas fa-shopping-cart"></i> Add Stock</a>
 	<a href="<?php echo base_url(); ?>stock/limit" class="btn btn-warning btn-lg mb-3"><i class="fas fa-exclamation-triangle"></i> Shortages</a>
 	<a href="<?php echo base_url(); ?>stock/stock_limit" class="btn btn-info btn-lg mb-3"><i class="fas fa-tasks"></i> Local Limits</a>
+	<a href="<?php echo base_url(); ?>stock/expired_stock" class="btn btn-danger btn-lg mb-3"> <i class="fas fa-prescription-bottle"></i> Bad Stock</a>
     
 	<div class="card shadow mb-4">
 		<div class="card-header">

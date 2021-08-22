@@ -51,6 +51,27 @@ class Stock extends Vet_Controller
 		$this->_render_page('stock_detail', $data);
 	}
 	
+	/*
+		stock that is close to or has expired.
+	*/
+	public function expired_stock()
+	{
+		$expired = $this->stock
+			->fields('eol, lotnr, volume, barcode')
+			->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
+			->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true)
+			->where(array('location' => $this->user->current_location))
+			->with_products('fields: name, unit_buy')
+			->with_stock_locations('fields: name')
+			->order_by('eol', 'ASC')
+			->get_all();
+			
+		$data = array(
+						"stock_gone_bad" => $expired
+						);
+		$this->_render_page('stock_bad', $data);
+	}
+	
 	public function move_stock()
 	{
 		if ($this->input->post('submit') == "barcode") {
