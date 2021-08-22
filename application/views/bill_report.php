@@ -28,6 +28,7 @@ $state = array(
 		</div>
 		<div class="card-body">
 			<div class="card-body p-0">		
+			<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>/print" target="_blank" class="btn btn-success"><i class="fas fa-print"></i> print</a>
 	<?php if ($bill['status'] != PAYMENT_PAID): ?>
 					<p class="lead">Payment : <?php echo $state[$bill['status']]; ?></p>
 					<?php 
