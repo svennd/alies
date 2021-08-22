@@ -134,7 +134,7 @@ class Products extends Vet_Controller
 								"buy_price"			=> $this->input->post('buy_price'),
 								"unit_buy" 			=> $this->input->post('unit_buy'),
 								"unit_sell" 		=> $this->input->post('unit_sell'),
-								"input_barcode" 	=> $this->input->post('input_barcode'),
+								"input_barcode" 	=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
 								"btw_buy" 			=> $this->input->post('btw_buy'),
 								"btw_sell" 			=> $booking['btw'],
 								"vaccin" 			=> (is_null($this->input->post('vaccin')) ? 0 : 1),
