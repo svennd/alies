@@ -35,7 +35,7 @@
   <table width="100%">
     <tr>
         <td>
-			<strong>Client</strong><br/>
+			<strong>Client</strong> (#<?php echo $owner['id'] ?>)<br/>
 			<?php echo $owner['last_name'] . " &nbsp;" . $owner['first_name']; ?><br>
 			<?php echo $owner['street'] . ' ' . $owner['nr']; ?><br>
 			<?php echo $owner['city'] . ' ' . $owner['zip']; ?><br>

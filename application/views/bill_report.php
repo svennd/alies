@@ -88,6 +88,7 @@ $state = array(
 			<h4>Bill #<?php
 				$date = date_create_from_format ('Y-m-d H:i:s', $bill['created_at']); 
 					echo date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT); ?></h4>
+					client id : #<?php echo $owner['id'] ?>
 	                <div class="row px-5 py-3">
                         <div class="col-md-12">
 							<?php 
@@ -106,7 +107,7 @@ $state = array(
 							<div class="row">
 								<div class="col-md-6">
 									<h4><?php echo ucfirst(strtolower($pet_info['name'])); ?></h4>
-									<small><i><?php echo $pet_info['chip']; ?></i></small>
+									<small>chipnr : <i><?php echo $pet_info['chip']; ?></i></small>
 									<small>
 									<a href="<?php echo base_url(); ?>events/event/<?php echo $event_id; ?>">consult</a>, <?php echo $l[$event_location]; ?><br/>
 									created_at : <?php echo $created_at; ?><br/>
