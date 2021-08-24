@@ -58,7 +58,7 @@ class Products extends Vet_Controller
 													->with_prices('fields:volume, price, id')
 													//->with_type()
 													->where(array("sellable" => 1))
-													->fields('name, updated_at, unit_sell')
+													->fields('id, name, updated_at, unit_sell')
 													->get($id)
 						);
 			$this->_render_page('product_price_edit', $data);

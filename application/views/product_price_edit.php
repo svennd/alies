@@ -3,7 +3,9 @@
 
 		    <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> / <a href="<?php echo base_url(); ?>products/product_price">List</a> / edit price
+				<a href="<?php echo base_url(); ?>products">Products</a> / 
+				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> / 
+				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a>
 			</div>
             <div class="card-body">
 			<br/>
@@ -34,7 +36,7 @@
 						</div>
 					</div>
 						<input type="hidden" name="price_id" value="<?php echo $price['id']; ?>" />
-						<button type="submit" name="submit" value="store" class="btn btn-primary mb-2">Store</button>
+						<button type="submit" name="submit" value="edit" class="btn btn-primary mb-2">Store</button>
 						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger mx-3 mb-2">remove</a>
 					</form>
 				<?php endforeach; ?>

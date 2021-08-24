@@ -9,7 +9,6 @@ jobs:
         uses: actions/checkout@v2
       - uses: svennd/actions-php-lint@7.3
       - uses: svennd/actions-php-lint@7.4
-      - uses: svennd/actions-php-lint@8.0
       - name: php-var-dump-check
         uses: umutphp/php-var-dump-check-action@v1
         with:

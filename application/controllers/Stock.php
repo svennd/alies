@@ -132,7 +132,7 @@ class Stock extends Vet_Controller
 		}
 	}
 	
-	public function add_stock()
+	public function add_stock($preselected = false)
 	{
 		$error = false;
 		
@@ -187,7 +187,8 @@ class Stock extends Vet_Controller
 		}
 		
 		$data = array(
-						"error" 	=> $error,
+						"error" 		=> $error,
+						"preselected"	=> ($preselected) ? $this->product->fields('id, name, unit_buy')->get($preselected) : false,
 						"products" 	=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(),
 						"extra_footer" => '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 					);

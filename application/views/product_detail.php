@@ -12,7 +12,7 @@
 	<div class="card-body">
 		<?php if (isset($update) && $update) : ?>
 			<div class="alert alert-success alert-dismissible fade show" role="alert">
-			  Product updated!
+			  Product updated! Want to <a href="<?php echo base_url(); ?>stock/add_stock/<?php echo $product['id']; ?>">add stock</a> ?
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -129,7 +129,7 @@
 	<hr />				  
 	  <div class="form-group form-check">
 		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product && $product['sellable']) ? "checked" : ""; ?>>
-		<label class="form-check-label" for="exampleCheck1">verkoopbaar</label>
+		<label class="form-check-label" for="exampleCheck1">saleable</label>
 	  </div>	  
 	  
 		<div class="form-row">
@@ -213,6 +213,7 @@
 	  
   		<?php if ($product) : ?>
 			<div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
+			<?php if($product['sellable']): ?>
 			<?php 
 			if (!isset($product['prices']))
 			{
@@ -236,8 +237,10 @@
 				}
 			}
 			?><br/>
-			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" target="_blank" class="btn btn-success">Edit Price</a>
-
+			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-success">Edit Price</a>
+			<?php else: ?>
+				<span style='color:red;'><b>Product is set as non-can't be sold.</b></span>
+			<?php endif; ?>
 			</div>
 		<?php endif; ?>
 	  

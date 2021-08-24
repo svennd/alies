@@ -6,7 +6,6 @@
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 </style>
-
 <div class="row">
 	<div class="col-lg-5 mb-4">
 		<div class="card shadow mb-4">		
@@ -21,8 +20,8 @@
 				  </div>
 				  <div class="form-group">
 					<label for="product">product</label>
-					<input type="text" name="product" class="form-control" id="autocomplete">
-					<input type="hidden" name="pid" id="pid" value="">
+					<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>">
+					<input type="hidden" name="pid" id="pid" value="<?php echo ($preselected) ? $preselected['id']: '' ?>">
 					<input type="hidden" name="new_barcode_input" id="new_barcode_input" value="0">
 					<input type="hidden" name="barcode_gs1" id="barcode_gs1" value="">
 					<small id="product_tip">&nbsp;</small>
@@ -45,7 +44,7 @@
 							<div class="input-group mb-3">
 							  <input type="text" class="form-control" name="new_volume" id="sell" value="">
 							  <div class="input-group-append">
-								<span class="input-group-text" id="unit_sell">fl</span>
+								<span class="input-group-text" id="unit_sell"><?php echo ($preselected) ? $preselected['unit_buy']: 'fl' ?></span>
 							  </div>
 							</div>
 							<small id="tip">&nbsp;</small>
