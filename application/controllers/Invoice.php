@@ -24,9 +24,14 @@ class Invoice extends Vet_Controller
 		// TODO VERIFY THIS
 		// the html is not safe!
 		// $search_from = (strtotime('-14 days') > strtotime($this->input->post('search_from'))) ? strtotime('-14 days') : $this->input->post('search_from');
-		$search_from = $this->input->post('search_from');
-		$search_to = $this->input->post('search_to');
-			
+		
+		$today = new DateTime();
+		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $today->format('Y-m-d');
+		
+		$today->modify('-3 day');
+		
+		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $today->format('Y-m-d');
+	
 		// ->where('created_at > DATE_ADD(NOW(), INTERVAL -14 DAY)', null, null, false, false, true)
 		$bill_overview = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)

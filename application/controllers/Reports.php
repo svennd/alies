@@ -170,23 +170,25 @@ class Reports extends Admin_Controller
 	{
 		$read_limit = 500;
 		$bill_overview = array();
+
+		$today = new DateTime();
+		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $today->format('Y-m-d');
+		$today->modify('-30 day');
+		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $today->format('Y-m-d');
 		
 		if ($this->input->post('search_from') && $this->input->post('search_to')) {
 			$search_from = $this->input->post('search_from');
 			$search_to = $this->input->post('search_to');
-			
-			// $search_from = "2018-01-17";
-			// $search_to = "2018-01-18";
-			
-			$bill_overview = $this->bills
-				->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-				->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-				->with_location('fields:name')
-				->with_vet('fields:first_name')
-				->order_by('created_at', 'asc')
-				->limit($read_limit)
-				->get_all();
 		}
+		
+		$bill_overview = $this->bills
+			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->with_location('fields:name')
+			->with_vet('fields:first_name')
+			->order_by('created_at', 'asc')
+			->limit($read_limit)
+			->get_all();
 		
 		// var_dump();
 		$data = array(
