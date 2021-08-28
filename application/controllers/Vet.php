@@ -80,10 +80,11 @@ class Vet extends Vet_Controller
 	{
 		$this->users->update(
 								array(
-											'sidebar' 		=> $this->input->post('color'),
-											'first_name' 	=> $this->input->post('first_name'),
-											'last_name' 	=> $this->input->post('last_name'),
-											'phone' 		=> $this->input->post('phone'),
+										'sidebar' 		=> $this->input->post('color'),
+										'first_name' 	=> $this->input->post('first_name'),
+										'last_name' 	=> $this->input->post('last_name'),
+										'search_config' => $this->input->post('search_config'),
+										'phone' 		=> $this->input->post('phone'),
 									), $this->user->id);
 		redirect('vet/profile', 'refresh');
 	}

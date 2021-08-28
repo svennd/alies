@@ -43,7 +43,7 @@
 							 <div class="input-group">
 								<input type="text" class="form-control <?php echo (isset($query)) ? 'is-valid' :''?>" name="search_query" placeholder="search" value="<?php echo (isset($query)) ? $query :''?>">
 								<div class="input-group-append">
-								  <button class="btn btn-primary" type="button">
+								  <button class="btn btn-primary" type="submit" type="button">
 									Search
 								  </button>
 								</div>
@@ -56,12 +56,38 @@
 				</form>
 				<?php if (isset($query)) : ?>
 					<nav class="nav nav-borders">
-					  <?php if(count($last_name)): ?><a href="#" class="nav-link filter_type" id="last_name">Last Name <?php echo (count($last_name)) ? '<span class="badge badge-primary">' . count($last_name) . '</span>' : ''; ?></a><?php endif; ?>
-					  <?php if(count($first_name)): ?><a href="#" class="nav-link filter_type" id="first_name">First Name <?php echo (count($first_name)) ? '<span class="badge badge-primary">' . count($first_name) . '</span>' : ''; ?></a><?php endif; ?>
-					  <?php if(count($street)): ?><a href="#" class="nav-link filter_type" id="street">Street <?php echo (count($street)) ? '<span class="badge badge-primary">' . count($street) . '</span>' : ''; ?></a><?php endif; ?>
-					  <?php if(count($pets)): ?><a href="#" class="nav-link filter_type" id="pets">Pets <?php echo (count($pets)) ? '<span class="badge badge-primary">' . count($pets) . '</span>' : ''; ?></a><?php endif; ?>
-					  <?php if(count($phone)): ?><a href="#" class="nav-link filter_type" id="phone">Phone <?php echo (count($phone)) ? '<span class="badge badge-primary">' . count($phone) . '</span>' : ''; ?></a><?php endif; ?>
-					  <a href="#" class="nav-link active reset" id="reset_filter">All <span class="badge badge-primary"><?php echo count($last_name) + count($first_name) + count($pets) + count($street) + count($phone); ?></span></a>
+						<?php 
+							$results = array(
+													array($last_name, 'Last Name', 'last_name'), 
+													array($first_name, 'First Name', 'first_name'), 
+													array($street, 'Street', 'street'), 
+													array($pets, 'Pets', 'pets'), 
+													array($phone, 'Phone', 'phone')
+													);
+							$active_switch = false;
+							$total_count = 0;
+							
+							foreach ($results as $key => $value) 
+							{
+								$current_count = count($value[0]);
+								$total_count += $current_count;
+								
+								$current_key = $key + 1; // 0 --> all
+								
+								if (!$current_count) {continue;}
+								
+								if ($user->search_config == $current_key)
+								{
+									$active_switch = true;
+									echo '<a href="#" class="nav-link filter_type active" id="' . $value[2] . '">' . $value[1] . ' <span class="badge badge-primary">' . $current_count . '</span></a>';
+								}
+								else
+								{
+									echo '<a href="#" class="nav-link filter_type" id="' . $value[2] . '">' . $value[1] . ' <span class="badge badge-primary">' . $current_count . '</span></a>';
+								}
+							}
+							echo '<a href="#" class="nav-link ' . ((!$active_switch) ? "active" : "") .' reset" id="reset_filter">All <span class="badge badge-primary">' . $total_count . '</span></a>';
+						?>
 					</nav>
 				<?php endif; ?>
 			</div>
@@ -254,7 +280,17 @@ document.addEventListener("DOMContentLoaded", function(){
 	dt
     .order( [ 0, 'asc' ] )
     .draw();	
-
+	
+	// initial filter if required
+	if($('.filter_type.active')) {
+		console.log('filter');
+		console.log($('.filter_type.active').attr('id'));
+		dt
+		.column(0)
+        .search($('.filter_type.active').attr('id'))
+        .draw();
+	}
+	
     $('.filter_type').on('click', function() {
 	  // remove color from filter
 	  $('#reset_filter').removeClass('active');

@@ -77,6 +77,17 @@
 						<input type="text" name="phone" class="form-control" id="phone" value="<?php echo $user->phone; ?>">
 					</div>
 					<div class="form-group">
+						<label for="search_config">Default search result</label>
+						<select class="form-control" name="search_config" id="search_config">
+							<option value="1" <?php echo ($user->search_config == 1) ? 'selected' : ''; ?>>Last name</option>
+							<option value="2" <?php echo ($user->search_config == 2) ? 'selected' : ''; ?>>First name</option>
+							<option value="3" <?php echo ($user->search_config == 3) ? 'selected' : ''; ?>>Street name</option>
+							<option value="4" <?php echo ($user->search_config == 4) ? 'selected' : ''; ?>>Pet name</option>
+							<option value="5" <?php echo ($user->search_config == 5) ? 'selected' : ''; ?>>Phone</option>
+							<option value="0" <?php echo ($user->search_config == 0) ? 'selected' : ''; ?>>All</option>
+						</select>
+					</div>
+					<div class="form-group">
 						<label for="head">SideBar</label>
 						<input type="color" id="head" class="form-control" name="color" value="<?php echo $user->sidebar; ?>">
 					</div>
