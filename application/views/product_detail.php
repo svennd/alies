@@ -184,7 +184,7 @@
 		</div>
 		
 		  <div class="form-group">
-			<label for="exampleFormControlInput3">buy price</label>
+			<label for="exampleFormControlInput3">Catalog Price</label>
 			<input type="text" name="buy_price" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?>">
 		  </div>
 		  <div class="form-group">
