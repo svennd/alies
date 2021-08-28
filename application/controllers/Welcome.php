@@ -58,7 +58,7 @@ class Welcome extends Vet_Controller
 													->fields('eol, id, product_id, location')
 													->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 													->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true) // remove 0000-00-00
-													->where(array('location' => $this->user->current_location)) // remove 0000-00-00
+													->where(array('location' => $this->user->current_location, 'state' => STOCK_IN_USE))
 													->get_all()
 												: false,
 							);

@@ -60,7 +60,7 @@ class Stock extends Vet_Controller
 			->fields('eol, lotnr, volume, barcode')
 			->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 			->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true)
-			->where(array('location' => $this->user->current_location))
+			->where(array('location' => $this->user->current_location, 'state' => STOCK_IN_USE))
 			->with_products('fields: name, unit_buy')
 			->with_stock_locations('fields: name')
 			->order_by('eol', 'ASC')
