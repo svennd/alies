@@ -189,6 +189,47 @@ class Pets extends Vet_Controller
 		$this->_render_page('pets/fiche', $data);
 	}
 	
+	public function export($pet_id)
+	{
+		$pet_info = $this->pets->with_breeds('fields: name')->get($pet_id);
+		$pet_history = $this->
+							events->
+							with_products('fields:events_products.volume, unit_sell, name')->
+							with_procedures('fields:events_procedures.amount, name')->
+							with_vet('fields:first_name, last_name')->
+							with_location('fields:name')->
+							where(
+								array(
+										"pet" 			=> $pet_id, 
+										"no_history" 	=> 0,
+										"type !=" 		=> 1,
+										))->
+							order_by('created_at', 'DESC')->
+							get_all();
+		
+		$data = array(
+			"pet_info"		=> $pet_info,
+			"owner" 		=> $this->owners->get($pet_info['owner']),
+			"pet_history"	=> $pet_history,
+			"vaccines" 		=> $this->vacs_pet->where(array('pet' => $pet_id))->get_all()
+		);
+		
+		# submit generate pdf
+		if ($this->input->post('submit')) {
+			$data['history_to_take'] = $this->input->post('history_to_take');
+			$this->load->library('pdf'); // change to pdf_ssl for ssl
+			
+			$filename = "export_" . $pet_id . "_".  date("m.d.y");
+			
+			$html = $this->load->view('export_pdf', $data, true);
+			
+			# content, filename, provide as download
+			$this->pdf->create($html, $filename, true);
+		}
+		
+		$this->_render_page('pets/export', $data);
+	}
+	
 	public function change_owner($pet_id, $new_owner = false)
 	{
 		$name = null;

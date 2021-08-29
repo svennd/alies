@@ -18,7 +18,7 @@ use Dompdf\Options;
 
 class Pdf
 {
-	public function create($html,$filename)
+	public function create($html, $filename, $download = false)
     {
 		
 		$options    =   new Options();
@@ -28,6 +28,6 @@ class Pdf
 	    $dompdf = new Dompdf($options);
 	    $dompdf->loadHtml($html);
 	    $dompdf->render();
-	    $dompdf->stream($filename.'.pdf', array("Attachment" => false));
+	    $dompdf->stream($filename.'.pdf', array("Attachment" => $download));
   }
 }

@@ -19,7 +19,6 @@ class Owners extends Vet_Controller
 	
 	public function index()
 	{
-		// redirect('owners_index', 'refresh');
 		$data = array();
 		$this->_render_page('search', $data);
 	}

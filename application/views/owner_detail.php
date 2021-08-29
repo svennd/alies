@@ -17,6 +17,22 @@ function get_symbol($type)
 			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>';
 	}						
 }
+function get_gender($gender)
+{
+	switch($gender)
+	{
+		case MALE:
+			return '<span style="color:#4c6ef5;"><i class="fas fa-mars fa-fw"></i></span> Male';
+		case FEMALE:
+			return '<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered';
+		case MALE_NEUTERED:
+			return '<span style="color:#f783ac;"><i class="fas fa-venus fa-fw"></i></span> Female';
+		case FEMALE_NEUTERED:
+			return '<span style="color:#000;"><i class="fas fa-venus fa-fw"></i></span> Female neutered';
+		default:
+			return '<span style="color:#6cce23;"><i class="fas fa-genderless fa-fw"></i></span> Other';
+	}						
+}
 ?>
 <div class="row">
 
@@ -72,27 +88,7 @@ function get_symbol($type)
 								#<?php echo $pet['id']; ?>
 							</div>
 								<div class="col">
-							<?php if ($pet['gender']): ?>
-							<?php 
-									switch($pet['gender'])
-									{
-										case MALE: 
-											echo "male";
-										break;
-										case FEMALE:
-											echo "female";
-										break;
-										case MALE_NEUTERED: 
-											echo "male neutered";
-										break;
-										case FEMALE_NEUTERED:
-											echo "female neutered";
-										break;
-										default:
-											echo "other";
-									}
-									?>
-							<?php endif; ?>
+								<?php echo get_gender($pet['gender']); ?>
 								</div>
 								<div class="col">
 									<?php if (isset($pet['breeds'])): ?>
