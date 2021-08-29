@@ -1,5 +1,5 @@
 <?php 
-function get_symbol($type)
+function get_pet_type($type)
 {
 	switch($type)
 	{
@@ -17,7 +17,7 @@ function get_symbol($type)
 			return 'Other';
 	}						
 }
-function get_gender($gender)
+function get_pet_gender($gender)
 {
 	switch($gender)
 	{
@@ -154,11 +154,11 @@ blockquote {
 			<table class="table">
 				<tr>
 					<td>Type</td>
-					<td><?php echo get_symbol($pet_info['type']); ?></td>
+					<td><?php echo get_pet_type($pet_info['type']); ?></td>
 				</tr>
 				<tr>
 					<td>Gender</td>
-					<td><?php echo get_gender($pet_info['gender']); ?></td>
+					<td><?php echo get_pet_gender($pet_info['gender']); ?></td>
 				</tr>
 				<tr>
 					<td>Name</td>
