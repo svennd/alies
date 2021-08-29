@@ -37,3 +37,4 @@ application/config/database.php
 
 # ignore custom
 /application/views/custom/bill_header.php
+/import/
