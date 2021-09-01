@@ -99,10 +99,10 @@ class Stock_model extends MY_Model
 	}
 	
 	public function add_product_to_stock($barcode, $from, $to, $value)
-	{
+	{		
 		# check if there is already stock there, if so increase
 		# else add new
-		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
+		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to, "state" => STOCK_IN_USE))->get();
 		if ($product_on_to) {
 			$sql = "UPDATE stock SET volume=volume+" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
 			$this->db->query($sql);
