@@ -13,19 +13,26 @@
 			</td>
 			<td>
 				<?php 
-					if (count($product['prices']) > 1)
+					if ($product['prices'])
 					{
-						echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['product']['unit_sell'];
-						echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
-						foreach ($product['prices'] as $price)
+						if (count($product['prices']) > 1)
 						{
-							echo "<tr><td>". $price['volume'] ." ". $product['product']['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
+							echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['product']['unit_sell'];
+							echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
+							foreach ($product['prices'] as $price)
+							{
+								echo "<tr><td>". $price['volume'] ." ". $product['product']['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
+							}
+							echo "</table></div>";
 						}
-						echo "</table></div>";
+						else
+						{
+							echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['product']['unit_sell'];
+						}
 					}
 					else
 					{
-						echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['product']['unit_sell'];
+						echo "no price set";
 					}
 				?>
 				</td>
