@@ -94,7 +94,7 @@ class Stock_model extends MY_Model
 	
 	public function reduce_product($barcode, $from, $value)
 	{
-		$sql = "UPDATE stock SET volume=volume-" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $from . "' limit 1;";
+		$sql = "UPDATE stock SET volume=volume-" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $from . "' and state = '" . STOCK_IN_USE . "' limit 1;";
 		$this->db->query($sql);
 	}
 	
@@ -102,10 +102,12 @@ class Stock_model extends MY_Model
 	{		
 		# check if there is already stock there, if so increase
 		# else add new
-		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to, "state" => STOCK_IN_USE))->get();
+		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
+		
 		if ($product_on_to) {
-			$sql = "UPDATE stock SET volume=volume+" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
+			$sql = "UPDATE stock SET volume=volume+" . $value. ", state='" . STOCK_IN_USE . "' WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
 			$this->db->query($sql);
+			
 		} else {
 			$from_info = $this->where(array("barcode" => $barcode, "location" => $from))->get();
 			$this->insert(array(
