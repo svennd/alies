@@ -128,7 +128,7 @@
 	  	<h5>Transaction info</h5>
 	<hr />				  
 	  <div class="form-group form-check">
-		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product && $product['sellable']) ? "checked" : ""; ?>>
+		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product) ? (($product['sellable']) ? "checked" : "" ) : "checked"; ?>>
 		<label class="form-check-label" for="exampleCheck1">saleable</label>
 	  </div>	  
 	  
