@@ -1,3 +1,26 @@
+<?php 
+
+function stock_state($stock_state) {
+	switch ($stock_state) {
+		case 0:
+			echo "check";
+			break;
+		case 1:
+			echo "in_use";
+			break;
+		case 2:
+			echo "history";
+			break;
+		case 3:
+			echo "error";
+			break;
+	}
+}
+foreach ($locations as $loc)
+{
+	$lookup_loc[$loc['id']] = $loc['name'];
+}
+?>
 <div class="row">
       <div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
@@ -10,6 +33,7 @@
 						<td>state</td>
 						<td>volume</td>
 						<td>lotnr</td>
+						<td>eol</td>
 						<td>in_price</td>
 						<td>location</td>
 						<td>updated_at</td>
@@ -18,11 +42,12 @@
 				<?php foreach ($product_info as $key => $stock): ?>
 					<tr>
 						<td><?php echo $stock['stock_barcode']; ?></td>
-						<td><?php echo $stock['stock_state']; ?></td>
+						<td><?php echo stock_state($stock['stock_state']); ?></td>
 						<td><?php echo $stock['stock_volume']; ?></td>
 						<td><?php echo $stock['stock_lotnr']; ?></td>
+						<td><?php echo $stock['stock_eol']; ?></td>
 						<td><?php echo $stock['stock_in_price']; ?></td>
-						<td><?php echo $stock['stock_location']; ?></td>
+						<td><?php echo $lookup_loc[$stock['stock_location']]; ?></td>
 						<td><?php echo $stock['stock_updated_at']; ?></td>
 						<td><?php echo $stock['stock_created_at']; ?></td>
 					</tr>

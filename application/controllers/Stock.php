@@ -118,13 +118,14 @@ class Stock extends Vet_Controller
 						);
 
 			$this->_render_page('stock_move_quantities', $data);
+			
 		} elseif ($this->input->post('submit') == "quantities") {
 						
 			$from 			= $this->user->current_location;
 			$to 			= $this->input->post('location');
-			// $move_volumes 	= $this->input->post('move_volume'); // unused
+			$move_volumes 	= $this->input->post('move_volume');
 			
-			foreach ($this->input->post('move_volume') as $barcode => $value) {
+			foreach ($move_volumes as $barcode => $value) {
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}

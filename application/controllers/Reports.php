@@ -85,6 +85,7 @@ class Reports extends Admin_Controller
 				}
 			}
 		}
+		
 		$data = array(
 			"search"	=> ($this->input->post('submit') == "search_product") ?
 											$this->
@@ -153,10 +154,11 @@ class Reports extends Admin_Controller
 				"product_info" => $this->
 										products->
 										fields('name')->
-										with_stock('fields:barcode,state,volume,lotnr,in_price,location,updated_at,created_at|where:`state`=\'2\' or `state` = \'3\'|join:true')->
+										with_stock('fields:barcode,state,volume,lotnr,eol,in_price,location,updated_at,created_at|where:`state`=\'2\' or `state` = \'3\'|join:true')->
 										order_by('stock.state', 'asc')->
 										order_by('stock.created_at', 'desc')->
 										get_all($product_id),
+				"locations"	=> $this->stock_location->get_all(),
 				"eprod" => $this->
 							eprod->
 							with_event()->
@@ -190,7 +192,6 @@ class Reports extends Admin_Controller
 			->limit($read_limit)
 			->get_all();
 		
-		// var_dump();
 		$data = array(
 			"bills" 		=> $bill_overview,
 			"search_from"	=> (isset($search_from)) ? $search_from : '',
