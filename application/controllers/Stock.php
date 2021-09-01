@@ -83,7 +83,7 @@ class Stock extends Vet_Controller
 			if ($barcodes && count($barcodes) > 0) {
 				foreach ($barcodes as $barcode) {
 					# a stock can be split so multiple results could be generated
-					$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location))->get();
+					$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location, "state" => STOCK_IN_USE))->get();
 					
 					# its a known stock product
 					if ($stock_product) {
