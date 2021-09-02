@@ -282,9 +282,7 @@ document.addEventListener("DOMContentLoaded", function(){
     .draw();	
 	
 	// initial filter if required
-	if($('.filter_type.active')) {
-		console.log('filter');
-		console.log($('.filter_type.active').attr('id'));
+	if($('.filter_type.active').attr('id')) {
 		dt
 		.column(0)
         .search($('.filter_type.active').attr('id'))
