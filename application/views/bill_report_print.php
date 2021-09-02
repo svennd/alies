@@ -29,8 +29,7 @@
 </head>
 <body>
 
-<?php include "custom/bill_header.php"; ?>
-  
+<?php if (file_exists(dirname(__FILE__) . "/custom/bill_header.php")) { include dirname(__FILE__) . "/custom/bill_header.php"; }  ?>  
 	<hr>
   <table width="100%">
     <tr>

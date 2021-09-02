@@ -103,7 +103,7 @@ class Invoice extends Vet_Controller
 		
 		# no pets on this owner
 		if (!$pets) {
-			$this->_render_page('bill_invalid', array());
+			$this->_render_page('bill_invalid', array('bill' => $bill));
 			return 0;
 		}
 		
@@ -210,7 +210,7 @@ class Invoice extends Vet_Controller
 			$date = date_create_from_format ('Y-m-d H:i:s', $data['bill']['created_at']);
 			$filename = "bill_" . date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT);
 			$html = $this->load->view('bill_report_print', $data, true);
-			$this->pdf->create($html, $filename);
+			$this->pdf->create($html, $filename, true);
 		}
 		$this->_render_page('bill_report', $data);
 	}
