@@ -4,7 +4,7 @@
 
 <div class="row">
 
-	<div class="col-lg-8">
+	<div class="col-xl-9 col-lg-8">
 
 		<div class="card mb-4">
 			<div class="card-header">
@@ -58,11 +58,11 @@
  				<?php foreach($vets as $vet): ?>
 				<div class="d-flex align-items-center justify-content-between mb-4">
 					<div class="d-flex align-items-center flex-shrink-0 mr-3">
-					<div class="avatar avatar-xl mr-3 bg-gray-200">
-						<img class="rounded-circle" style="height: 2.5rem;width: 2.5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
-					</div>
+						<div class="avatar avatar-xl mr-3 bg-gray-200">
+							<img class="rounded img-fluid" style="max-width: 5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
+						</div>
 						<div class="d-flex flex-column font-weight-bold">
-						<a class="text-dark line-height-normal mb-1" href=""><?php echo $vet['first_name']; ?> <?php echo $vet['last_name']; ?></a>
+						<a class="text-dark line-height-normal mb-1" href="<?php echo base_url(); ?>vet/pub/<?php echo $vet['id']; ?>"><?php echo $vet['first_name']; ?> <?php echo $vet['last_name']; ?></a>
 							<div class="small text-muted line-height-normal">Last login <?php echo timespan($vet['last_login'], time(), 1); ?></div>
 						</div>
 					</div>

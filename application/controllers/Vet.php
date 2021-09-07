@@ -15,6 +15,16 @@ class Vet extends Vet_Controller
 		$this->load->model('Users_model', 'users');
 	}
 
+	# show profile
+	public function pub($id)
+	{
+		$data = array( 
+				'profile' => $this->users->fields('email, last_login, first_name, last_name, phone, updated_at, image, sidebar')->get( (int) $id)
+		);
+		
+		$this->_render_page('member/public_profile', $data);
+	}
+	
 	# change password
 	public function change_password()
 	{
@@ -76,6 +86,29 @@ class Vet extends Vet_Controller
 		}
 	}
 	
+	public function avatar($pict_id = false)
+	{
+		if (!$pict_id) { redirect('vet/profile', 'refresh'); }
+		$img_list = $this->get_pictures($this->user->id);
+		
+		$chosen_img = false;
+		// var_dump($img_list['user']);
+		foreach($img_list['user'] as $img)
+		{
+			if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
+		}
+		if (!$chosen_img)
+		{
+			foreach($img_list['pre'] as $img)
+			{
+				if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
+			}
+		}
+		
+		$this->users->update(array('image' => basename($chosen_img)), $this->user->id);
+		redirect('vet/profile', 'refresh');
+	}
+	
 	public function profile_change()
 	{
 		$this->users->update(
@@ -96,7 +129,7 @@ class Vet extends Vet_Controller
 								"width" => 250,
 								"height" => 250,
 								);
-								
+		
 		// setup
 		$data = array(
 			'user' => $this->user,
@@ -175,6 +208,30 @@ class Vet extends Vet_Controller
 			}
 		}
 		
+		$data['preselected'] = $this->get_pictures($this->user->id);
 		$this->_render_page('member/profile', $data);
+	}
+	
+	private function get_pictures($user_id = false)
+	{
+		$image_list = array();
+		$i = 0;
+		
+		# get images user uploaded previously 
+		if($user_id) {
+			foreach (glob("assets/public/user_" . (int) $user_id . "_*.png") as $filename) {
+				if(substr($filename, -9, 9) == "check.png") { continue; }
+				$image_list['user'][] = array( 'img' => $filename, 'id' => $i );
+				$i++;
+			}
+		}
+		
+		# get all premade images
+		foreach (glob("assets/public/pre_*.png") as $filename) {
+			$image_list['pre'][] = array( 'img' => $filename, 'id' => $i );
+			$i++;
+		}
+		
+		return $image_list;
 	}
 }

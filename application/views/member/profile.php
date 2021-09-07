@@ -1,5 +1,23 @@
+<style>
+.playfull:hover {
+  /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 0.7s;
+
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  30% { transform: translate(-1px, -2px) rotate(-1deg); }
+  50% { transform: translate(-3px, 0px) rotate(1deg); }
+  70% { transform: translate(3px, 2px) rotate(0deg); }
+  90% { transform: translate(1px, -1px) rotate(1deg); }
+  100% { transform: translate(-1px, 2px) rotate(-1deg); }
+}
+</style>
 <div class="row">
-	<div class="col-lg-4">
+	<div class="col-lg-6">
 		<div class="card mb-4">
 			<div class="card-header">Profile Picture</div>
 			
@@ -43,8 +61,10 @@
 						</form>	
 				</div>
 				<button class="form_submit btn btn-primary">Store</button>
-				<button class="vanilla-rotate btn btn-info" data-deg="-90">Rotate Left</button>
-				<button class="vanilla-rotate btn btn-info" data-deg="90">Rotate Right</button>			
+				<div class="btn-group" role="group">
+					<button class="vanilla-rotate btn btn-info" data-deg="-90"><i class="fas fa-undo fa-flip-horizontal"></i></button>
+					<button class="vanilla-rotate btn btn-info" data-deg="90"><i class="fas fa-undo "></i></button>		
+				</div>
 			<?php endif; ?>
 			</div>
 		</div>
@@ -94,6 +114,28 @@
 					<br/>
 					<button type="submit" name="submit" value="Accept" class="btn btn-primary">Store</button>
 				</form>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-12">
+		<div class="card mb-4">
+			<div class="card-header">Quick pick</div>
+			
+			<div class="card-body">
+				<p>Click image to change avatar.</p>
+				
+				<h4>User</h4>
+				<hr/>
+				<?php foreach ($preselected['user'] as $pre): ?>
+					<a href="<?php echo base_url(); ?>vet/avatar/<?php echo $pre['id']; ?>"><img class="img-profile img-fluid rounded playfull" style="max-width:100px;" src="<?php echo base_url() . $pre['img']; ?>" /></a>
+				<?php endforeach; ?>
+				<br/>
+				<br/>
+				<h4>Pre installed</h4>
+				<hr/>
+				<?php foreach ($preselected['pre'] as $pre): ?>
+					<a href="<?php echo base_url(); ?>vet/avatar/<?php echo $pre['id']; ?>"><img class="img-profile img-fluid rounded playfull" style="max-width:100px;" src="<?php echo base_url() . $pre['img']; ?>" /></a>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>
