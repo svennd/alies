@@ -1,55 +1,53 @@
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
-	<div class="card shadow mb-4">
-		<div class="card-header">
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
-			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
-		</div>
-		<div class="card-body">
-			<?php
-				$total = 0;
-			?>
-			<table class="table">
-			<thead>
-				<tr class="thead-light">
-					<th>Name</th>
-					<th>Barcode/LotNr</th>
-					<th>Price</th>
-					<th>Volume</th> 
-					<th>btw</th>
-					<th>Price</th>
-					<th>Options</th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php include "event/block_procedures.php"; ?>
-			<?php include "event/block_consumables.php"; ?>
-			
-			<?php if ($event_state != STATUS_CLOSED): ?>
+	
+	<?php if ($event_state != STATUS_CLOSED): ?>
+		<div class="card shadow mb-4">
+			<div class="card-header">
+				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
+				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
+			</div>
+			<div class="card-body">
+				<?php $total = 0; ?>
+				<table class="table">
+				<thead>
+					<tr class="thead-light">
+						<th>Name</th>
+						<th>Barcode/LotNr</th>
+						<th>Price</th>
+						<th>Volume</th> 
+						<th>btw</th>
+						<th>Price</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php include "event/block_procedures.php"; ?>
+				<?php include "event/block_consumables.php"; ?>
 				<?php include "event/block_add_prod_proc.php"; ?>
 				<?php include "event/block_add_barcode.php"; ?>
-			<?php endif; ?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><i>Sum</i></td>
-					<td><i><?php echo $total; ?></i></td>
-					<td>&nbsp;</td>
-				</tr>
-			</tfoot>
-			</table>
-			
-			<?php if($event_info['payment'] == 0) : ?>
-				<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
-			<?php else: ?>
-				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Show bill</a>
-			<?php endif; ?>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td><i>Sum</i></td>
+						<td><i><?php echo $total; ?></i></td>
+						<td>&nbsp;</td>
+					</tr>
+				</tfoot>
+				</table>
+				
+				<?php if($event_info['payment'] == 0) : ?>
+					<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
+				<?php else: ?>
+					<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Show bill</a>
+				<?php endif; ?>
+			</div>
 		</div>
-	</div>
+	<?php endif; ?>
 		<?php include "event/block_report.php"; ?>
 	</div>
 	<div class="col-lg-5 col-xl-2">
@@ -57,6 +55,10 @@
 		<?php include "event/block_other_pets.php"; ?>
 		<?php include "event/block_birthday.php"; ?>
 		<?php include "event/block_event_controller.php"; ?>
+		
+		<?php if ($event_state == STATUS_CLOSED): ?>
+			<?php include "event/block_closed_bill.php"; ?>
+		<?php endif; ?>
 	</div>
 </div>
 

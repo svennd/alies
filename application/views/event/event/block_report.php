@@ -95,8 +95,8 @@ var data = [
 		{ id: 0, text: "Ziekten", title:"fas fa-fw fa-file-medical"},
 		{ id: 1, text: "Vaccinatie", title:"fas fa-fw fa-syringe"},
 		{ id: 2, text: "Tanden", title:"fas fa-fw fa-tooth"},
-		{ id: 4, text: "Operatie", title:"fas fa-fw fa-hammer"},
-		{ id: 5, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
+		{ id: 3, text: "Operatie", title:"fas fa-fw fa-hammer"},
+		{ id: 4, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
 	];
 	
 $("#select_type").select2({
