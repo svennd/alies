@@ -24,9 +24,9 @@ function get_gender($gender)
 		case MALE:
 			return '<span style="color:#4c6ef5;"><i class="fas fa-mars fa-fw"></i></span> Male';
 		case FEMALE:
-			return '<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered';
-		case MALE_NEUTERED:
 			return '<span style="color:#f783ac;"><i class="fas fa-venus fa-fw"></i></span> Female';
+		case MALE_NEUTERED:
+			return '<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered';
 		case FEMALE_NEUTERED:
 			return '<span style="color:#000;"><i class="fas fa-venus fa-fw"></i></span> Female neutered';
 		default:
