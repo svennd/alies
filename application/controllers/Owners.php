@@ -103,13 +103,12 @@ class Owners extends Vet_Controller
 
 	public function detail($id = false, $update = false)
 	{
-		# todo : improve error
 		if (!$id) {
-			exit;
+			redirect('/search', 'refresh');
 		}
 		
 		$open_bill = $this->bills
-					->where("owner_id", "=", $id)
+					->where("owner_id", "=", (int) $id)
 					->group_start()
 						->where("status", "=", PAYMENT_UNPAID)
 						->where("status", "=", PAYMENT_PARTIALLY, true)
@@ -119,7 +118,7 @@ class Owners extends Vet_Controller
 		$data = array(
 						"owner" 	=> $this->owners->get($id),
 						"open_bill"	=> $open_bill,
-						"pets" 		=> $this->pets->with_breeds()->with_pets_weight()->where(array("owner" =>$id))->order_by(array("birth, death"), "desc")->get_all(),
+						"pets" 		=> $this->pets->with_breeds()->with_pets_weight()->where(array("owner" => (int) $id))->order_by(array("birth, death"), "desc")->get_all(),
 						"update" 	=> $update
 					);
 					

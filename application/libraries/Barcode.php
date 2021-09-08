@@ -54,8 +54,8 @@ class Barcode
 			if (isset($this->code_array[$current_char])) {
 				$code .= $this->code_array[$current_char] . "1";
 			} else {
-				# if you get this error, a char is used that isn't in the code_array
-				die("can't find code representing this char : ". $current_char);
+				# catch bad chars and map them to *
+				$code .= $this->code_array['*'] . "1";
 			}
 		}
 		

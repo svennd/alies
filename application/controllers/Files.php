@@ -51,12 +51,6 @@ class Files extends Vet_Controller
 		}
 		$this->accepted_mime_type = array_unique($accepted_mime_type);
 	}
-	
-
-	public function index()
-	{
-		// var_dump($this->accepted_mime_type);
-	}
 
 	/*
 		store the temp file in our data structure by appending

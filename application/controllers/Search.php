@@ -66,6 +66,8 @@ class Search extends Vet_Controller
 		$street = null;
 		$phone = null;
 		$client = null;
+		$chip = null;
+		$pet_name = null;
 		$result = null;
 		
 		if ($this->input->post('submit') == "name") {

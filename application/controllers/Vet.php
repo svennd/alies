@@ -86,13 +86,16 @@ class Vet extends Vet_Controller
 		}
 	}
 	
+	# change avatar to preselected one
 	public function avatar($pict_id = false)
 	{
-		if (!$pict_id) { redirect('vet/profile', 'refresh'); }
+		# if no valid id is given
+		if ($pict_id === false) { redirect('vet/profile', 'refresh'); }
 		$img_list = $this->get_pictures($this->user->id);
 		
+		
+		# check what image the vet has selected
 		$chosen_img = false;
-		// var_dump($img_list['user']);
 		foreach($img_list['user'] as $img)
 		{
 			if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
@@ -105,7 +108,11 @@ class Vet extends Vet_Controller
 			}
 		}
 		
-		$this->users->update(array('image' => basename($chosen_img)), $this->user->id);
+		# only if valid image is selected
+		if($chosen_img)
+		{
+			$this->users->update(array('image' => basename($chosen_img)), $this->user->id);
+		}
 		redirect('vet/profile', 'refresh');
 	}
 	

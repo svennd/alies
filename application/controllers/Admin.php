@@ -84,26 +84,29 @@ class Admin extends Admin_Controller
 				);
 			}
 			if ($this->input->post('submit') == "merge") {
-				if ($this->input->post('new_breed') == $this->input->post('old_breed_id')) {
-					echo "cannot merge same breeds_id";
-					exit;
+				
+				# don't merge same breed
+				if ($this->input->post('new_breed') != $this->input->post('old_breed_id')) {
+					
+					$this->pets->update(
+						array(
+											"breed" => (int) $this->input->post('new_breed')
+										),
+						array(
+											"breed" => (int) $this->input->post('old_breed_id')
+										)
+					);
+					$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));		
 				}
-				$this->pets->update(
-					array(
-										"breed" => (int) $this->input->post('new_breed')
-									),
-					array(
-										"breed" => (int) $this->input->post('old_breed_id')
-									)
-				);
-				$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));
 			}
-			// note : this should be removed just checking if there is something in a_get_breeds() via ajax
+			
+			# this should be needed we can load this with ajax / search field
+			# https://github.com/svennd/alies/issues/30
 			$data = array(
 							"breeds" => $this->breeds->get_all(),
 						);
 
-			$this->_render_page('admin_breeds', $data);
+			$this->_render_page('admin/breeds', $data);
 		}
 	}
 	

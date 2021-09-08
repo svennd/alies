@@ -3,17 +3,13 @@
 function stock_state($stock_state) {
 	switch ($stock_state) {
 		case 0:
-			echo "check";
-			break;
+			return "check";
 		case 1:
-			echo "in_use";
-			break;
+			return "in_use";
 		case 2:
-			echo "history";
-			break;
+			return "history";
 		case 3:
-			echo "error";
-			break;
+			return "error";
 	}
 }
 foreach ($locations as $loc)

@@ -122,8 +122,8 @@ function get_gender($gender)
 				<?php 
 					$total_dead = 0;
 					$total_lost = 0;
-					$dead_pet = false;
-					$lost_pet = false;
+					$dead_pet = array();
+					$lost_pet = array();
 					foreach ($pets as $pet): 
 						if ($pet['death']) 
 						{

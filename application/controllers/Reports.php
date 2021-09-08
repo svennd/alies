@@ -171,7 +171,6 @@ class Reports extends Admin_Controller
 	public function bills()
 	{
 		$read_limit = 500;
-		$bill_overview = array();
 
 		$today = new DateTime();
 		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $today->format('Y-m-d');
