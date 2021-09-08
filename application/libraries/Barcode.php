@@ -18,10 +18,10 @@ class Barcode
 {
 	# publics
 	public $text 	= 'ABC-12345'; 	# text to encode in the barcode
-	public $height 	= '40'; 		# image height
-	public $border	= '20';			# horizontal border for image
+	public $height 	= 40; 		# image height
+	public $border	= 20;			# horizontal border for image
 	public $barcode_dir = 'assets/barcode/';
-	public $bar_width = '2';	# bar width multiplier!
+	public $bar_width = 2;	# bar width multiplier!
 	
 	# privates
 	private $key = ''; # converted code

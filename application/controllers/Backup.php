@@ -36,7 +36,7 @@ class Backup extends Admin_Controller
 						"tables" => $tables,
 					);
 
-		$this->_render_page('admin_backup', $data);
+		$this->_render_page('admin/backup', $data);
 	}
 	
 	public function sql($table = false, $zip = false)

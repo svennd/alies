@@ -21,46 +21,7 @@ class Admin extends Admin_Controller
 		$this->load->model('Vaccine_model', 'vac');
 		$this->load->model('Booking_code_model', 'book');
 	}
-	
-
-	public function index()
-	{
-		$name = array("dog", "cat", "horse", "bird", "other");
-		# returns per city per stat
-		$city_stat = $this->owners->get_per_city();
 		
-		$other = array();
-		
-		$r = array("Other" => 0);
-		foreach ($city_stat as $city) {
-			if ($city['amount'] < 50) {
-				$r['Other'] += $city['amount'];
-				$other[] = $city['city'];
-			} else {
-				$r[$city['city']] = $city['amount'];
-			}
-		}
-		
-		$type_pets = $this->pets->get_per_type();
-		
-		$p = array();
-		foreach ($type_pets as $pet) {
-			$p['type'][] = $name[$pet['type']];
-			$p['amount'][] = $pet['amount'];
-		}
-		
-		$data = array(
-						"per_pet_type"	=> $p,
-						"per_city" 		=> $r,
-						"other" 		=> $other,
-						"oldest_ages"	=> $this->pets->with_breeds()->where("death", 0)->order_by('birth')->limit(100)->get_all(),
-						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/Chart.min.js"></script>',
-					);
-	
-		$this->_render_page('admin_index', $data);
-	}
-	
-	
 	public function breeds($id = false)
 	{
 		if ($id) {
@@ -190,7 +151,7 @@ class Admin extends Admin_Controller
 						"locations" => $this->location,
 					);
 					
-		$this->_render_page('admin_locations', $data);
+		$this->_render_page('admin/locations', $data);
 	}
 	
 	# managing of booking codes
@@ -242,7 +203,7 @@ class Admin extends Admin_Controller
 					);
 	
 
-		$this->_render_page('admin_product_types', $data);
+		$this->_render_page('admin/product_types', $data);
 	}
 	
 	# remove type
