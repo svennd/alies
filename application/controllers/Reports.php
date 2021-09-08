@@ -262,7 +262,6 @@ class Reports extends Admin_Controller
 			$locations[$last6m['name']] = 1;
 		}
 		
-		// var_dump($r);
 		for ($i = -$months; $i <= 0; $i++) {
 			$d = date("Y.m", strtotime($i . " months"));
 			
@@ -276,8 +275,7 @@ class Reports extends Admin_Controller
 			
 			$result_line[] = array("t" => $d, "y" => round($y_total, 2));
 		}
-		// ksort($r);
-		// var_dump($result_line);
+		
 		return array("line" => $result_line, "bar" => $result);
 	}
 	

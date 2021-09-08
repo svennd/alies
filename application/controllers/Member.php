@@ -35,7 +35,7 @@ class Member extends Admin_Controller
 		$registered = false;
 		
 		if ($this->input->post('submit') == "create_user") {
-			// var_dump($this->input->post());
+
 			$email 		= (!empty($this->input->post('email'))) ? $this->input->post('email') : false;
 			$password 	= (
 				!empty($this->input->post('password'))
@@ -57,7 +57,6 @@ class Member extends Admin_Controller
 				);
 				$registration_result = $this->ion_auth->register($username, $password, $email, $additional_data);
 				
-				// var_dump($registration_result);
 				if ($registration_result) {
 					# add user to groups
 					$groupData = $this->input->post('groups');

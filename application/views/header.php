@@ -208,53 +208,7 @@
 			
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-
-
-			<!--
-			<?php if ($this->ion_auth->in_group("admin")): ?>
-
-            <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-				<?php $unread = 0; ?>
-				<?php if(isset($alerts)) : ?>
-					<?php if($alerts) : ?>
-						<?php foreach($alerts as $a): ?>
-							<?php if ($a['user_accepted'] == 0):  ?>
-								<?php $unread++; ?>
-							<?php endif; ?>
-						<?php endforeach; ?>
-						<?php if ($unread > 0): ?>
-							<span class="badge badge-danger badge-counter"><?php echo $unread; ?></span>
-						<?php endif; ?>
-					<?php endif; ?>
-				<?php endif; ?>
-              </a>
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                  Alerts Center
-                </h6>
-				<?php if(isset($alerts) && $alerts) : ?>
-				<?php foreach ($alerts as $alert): ?>
-					<a class="dropdown-item d-flex align-items-center" href="#">
-					  <div class="mr-3">
-						<div class="icon-circle bg-warning">
-						  <i class="fas fa-exclamation-triangle text-white"></i>
-						</div>
-					  </div>
-					  <div>
-						<div class="small text-gray-500"><?php echo timespan(strtotime($alert['created_at']), time(), 1); ?></div>
-						<span class="font-weight-bold"><?php echo $alert['msg']; ?></span>
-					  </div>
-					</a>
-				<?php endforeach; ?>
-				<?php endif; ?>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-              </div>
-            </li>
-			<?php endif; ?>
-			-->
-						
+		  
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
