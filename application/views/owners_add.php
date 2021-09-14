@@ -11,10 +11,11 @@
 				<div class="col-md-6">
 					<h5>Personal info</h5>
 					<hr>
+					<?php if($invalid): ?><div class="alert alert-danger" role="alert">Required : Last Name</div><?php endif; ?>
 					  <div class="form-row">
 						<div class="form-group col-md-6">
-						  <label for="last_name">Last Name</label>
-						  <input type="text" class="form-control" id="last_name" name="last_name"  autocomplete="dezzd">
+						  <label for="last_name"><b>Last Name*</b></label>
+						  <input type="text" class="form-control" id="last_name" name="last_name"  autocomplete="dezzd" required>
 						</div>
 						<div class="form-group col-md-6">
 						  <label for="first_name">First Name</label>

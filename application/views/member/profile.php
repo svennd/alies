@@ -126,9 +126,9 @@
 				
 				<h4>User</h4>
 				<hr/>
-				<?php foreach ($preselected['user'] as $pre): ?>
+				<?php if(isset($preselected['user'])): foreach ($preselected['user'] as $pre): ?>
 					<a href="<?php echo base_url(); ?>vet/avatar/<?php echo $pre['id']; ?>"><img class="img-profile img-fluid rounded playfull" style="max-width:100px;" src="<?php echo base_url() . $pre['img']; ?>" /></a>
-				<?php endforeach; ?>
+				<?php endforeach; else : echo "No user avatars"; endif; ?>
 				<br/>
 				<br/>
 				<h4>Pre installed</h4>

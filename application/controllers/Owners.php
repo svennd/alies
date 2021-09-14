@@ -31,37 +31,41 @@ class Owners extends Vet_Controller
 		
 	public function add()
 	{
+		$invalid_input = false;
 		if ($this->input->post('submit')) {
-			$new_id = $this->owners->insert(array(
-									"first_name" 		=> $this->input->post('first_name'),
-									"last_name" 		=> $this->input->post('last_name'),
-									"street" 			=> $this->input->post('street'),
-									"nr" 				=> $this->input->post('nr'),
-									"zip"	 			=> $this->input->post('zip'),
-									"city" 				=> $this->input->post('city'),
-									"telephone" 		=> $this->input->post('phone'),
-									"mobile" 			=> $this->input->post('mobile'),
-									"main_city" 		=> $this->input->post('main_city'),
-									"province" 			=> $this->input->post('province'),
-									"mail" 				=> $this->input->post('mail'),
-									"btw_nr" 			=> $this->input->post('btw_nr'),
-									"invoice_addr" 		=> $this->input->post('invoice_addr'),
-									"invoice_contact"	=> $this->input->post('invoice_contact'),
-									"invoice_tel" 		=> $this->input->post('invoice_tel'),
-									"low_budget" 		=> (is_null($this->input->post('low_budget'))) ? 0 : 1,
-									"debts" 			=> (is_null($this->input->post('debts'))) ? 0 : 1,
-									"contact" 			=> (is_null($this->input->post('contact'))) ? 0 : 1,
-									"msg" 				=> $this->input->post('msg'),
-									"initial_vet"		=> $this->user->id,
-									"initial_loc"		=> $this->user->current_location,
-								));
-								
-			$this->logs->logger($this->user->id, INFO, "add_client", "Added client " . $this->input->post('last_name') . " (". $new_id . ")");
-			
-			redirect('/owners/detail/' . (int) $new_id, 'refresh');
+			if ( (!empty($this->input->post('last_name'))) ) {
+				$new_id = $this->owners->insert(array(
+										"first_name" 		=> $this->input->post('first_name'),
+										"last_name" 		=> $this->input->post('last_name'),
+										"street" 			=> $this->input->post('street'),
+										"nr" 				=> $this->input->post('nr'),
+										"zip"	 			=> $this->input->post('zip'),
+										"city" 				=> $this->input->post('city'),
+										"telephone" 		=> $this->input->post('phone'),
+										"mobile" 			=> $this->input->post('mobile'),
+										"main_city" 		=> $this->input->post('main_city'),
+										"province" 			=> $this->input->post('province'),
+										"mail" 				=> $this->input->post('mail'),
+										"btw_nr" 			=> $this->input->post('btw_nr'),
+										"invoice_addr" 		=> $this->input->post('invoice_addr'),
+										"invoice_contact"	=> $this->input->post('invoice_contact'),
+										"invoice_tel" 		=> $this->input->post('invoice_tel'),
+										"low_budget" 		=> (is_null($this->input->post('low_budget'))) ? 0 : 1,
+										"debts" 			=> (is_null($this->input->post('debts'))) ? 0 : 1,
+										"contact" 			=> (is_null($this->input->post('contact'))) ? 0 : 1,
+										"msg" 				=> $this->input->post('msg'),
+										"initial_vet"		=> $this->user->id,
+										"initial_loc"		=> $this->user->current_location,
+									));
+									
+				$this->logs->logger($this->user->id, INFO, "add_client", "Added client " . $this->input->post('last_name') . " (". $new_id . ")");
+				
+				redirect('/owners/detail/' . (int) $new_id, 'refresh');
+			}
+			$invalid_input = true;
 		}
-
-		$this->_render_page('owners_add');
+		
+		$this->_render_page('owners_add', array('invalid' => $invalid_input));
 	}
 	
 	public function edit($owner_id)
