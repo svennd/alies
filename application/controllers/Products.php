@@ -222,7 +222,7 @@ class Products extends Vet_Controller
 								->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 								->with_type()
 								->where('name', 'like', $query, true)
-								->limit(10)
+								->limit(20)
 								->order_by("type", "ASC")
 								->get_all();
 

@@ -214,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		clearInterval(_changeInterval)
 		_changeInterval = setInterval(function() {
 		clearInterval(_changeInterval)
-			// console.log(barcode);
 			process_datamatrix(barcode);
 		
 		}, 500);
