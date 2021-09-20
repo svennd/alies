@@ -108,6 +108,16 @@
 						</select>
 					</div>
 					<div class="form-group">
+						<label for="user_date">Default date format</label>
+						<select class="form-control" name="user_date" id="user_date">
+							<option value="d-m-Y" <?php echo ($user->user_date == 'd-m-Y') ? 'selected' : ''; ?>><?php echo date('d-m-Y'); ?></option>
+							<option value="d M, Y" <?php echo ($user->user_date == 'd M, Y') ? 'selected' : ''; ?>><?php echo date('d M, Y'); ?></option>
+							<option value="Y-m-d" <?php echo ($user->user_date == 'Y-m-d') ? 'selected' : ''; ?>><?php echo date('Y-m-d'); ?></option>
+							<option value="d/m" <?php echo ($user->user_date == 'd/m') ? 'selected' : ''; ?>><?php echo date('d/m'); ?></option>
+							<option value="l jS F Y" <?php echo ($user->user_date == 'l jS F Y') ? 'selected' : ''; ?>><?php echo date('l jS F Y'); ?></option>
+						</select>
+					</div>
+					<div class="form-group">
 						<label for="head">SideBar</label>
 						<input type="color" id="head" class="form-control" name="color" value="<?php echo $user->sidebar; ?>">
 					</div>

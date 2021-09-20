@@ -46,7 +46,8 @@ class Stock extends Vet_Controller
 									->get_all();
 		
 		$data = array(
-						"stock_detail" => $stock_detail
+						"stock_detail" => $stock_detail,
+						"stock_usage" => $this->stock->get_usage($pid)
 						);
 		$this->_render_page('stock_detail', $data);
 	}

@@ -62,7 +62,7 @@ $now->modify('+1 day');
 				<?php foreach ($bills as $bill): ?>
 				<tr>
 					<td>
-						<?php echo date('m/d', strtotime($bill['created_at'])); ?><br/>
+						<?php echo date_format(date_create($bill['created_at']), $user->user_date); ?><br/>
 						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
 					</td>
 					<td><?php echo $bill['owner']['last_name']; ?></td>

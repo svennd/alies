@@ -244,4 +244,26 @@ class Stock_model extends MY_Model
 				
 		return $this->db->query($sql)->result_array();
 	}
+	
+	/*
+		used on stock/stock_detail to show the usage
+	*/
+	public function get_usage($product_id)
+	{
+		$sql = "select  
+					month(created_at) as month, 
+					year(created_at) as year,
+					product_id, 
+					count(volume) as volume
+				from 
+					events_products 
+				where 
+					created_at >= (NOW() - INTERVAL 6 MONTH)
+				and
+					product_id = '" . $product_id . "'
+				GROUP BY 
+					month(created_at);
+			";
+		return ($this->db->query($sql)->result_array());
+	}
 }

@@ -1,6 +1,6 @@
 <div class="card shadow mb-4">
 	<div class="card-header">
-		<a href="<?php echo base_url(); ?>stock/all">Stock</a> / Stock Detail : <?php echo $stock_detail[0]['products']['name']; ?>
+		<a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $stock_detail[0]['products']['name']; ?> / detail
 	</div>
 	<div class="card-body">
 	<?php if ($stock_detail): ?>
@@ -25,7 +25,7 @@
 			<td><?php echo $detail['products']['name']; ?></td>
 			<td><?php echo $detail['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
 			<td><?php echo $detail['lotnr']; ?></td>
-			<td><?php echo $detail['eol']; ?></td>
+			<td><?php echo date_format(date_create($detail['eol']), $user->user_date); ?></td>
 			<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 			<td><?php echo $detail['barcode']; ?></td>
 			<td><?php echo $detail['stock_locations']['name']; ?></td>
@@ -35,12 +35,41 @@
 		</tbody>
 		</table>
 	<?php else: ?>
-		No limits on products
+		no entries
 	<?php endif; ?>
 		</div>
 </div>
 
-
+<div class="card shadow mb-4">
+	<div class="card-header">
+		<a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $stock_detail[0]['products']['name']; ?> / usage last 6m
+	</div>
+	<div class="card-body">
+	<?php if ($stock_usage): ?>
+	
+		<table class="table" id="dataTable">
+		<thead>
+		<tr>
+			<th>Volume</th>
+			<th>Month</th>
+			<th>Year</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($stock_usage as $usage): ?>
+		<tr>
+			<td><?php echo $usage['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
+			<td><?php echo $usage['month']; ?></td>
+			<td><?php echo $usage['year']; ?></td>
+		</tr>
+		<?php endforeach; ?>
+		</tbody>
+		</table>
+	<?php else: ?>
+		no usage known.
+	<?php endif; ?>
+		</div>
+</div>
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#prd").show();

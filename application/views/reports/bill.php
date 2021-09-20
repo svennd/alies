@@ -68,8 +68,8 @@ $cd->modify('-3 month');
 					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 					<td><?php echo $bill['amount']; ?> &euro;</td>
 					<td><?php echo $state[$bill['status']]; ?></td>
-					<td><?php echo timespan(strtotime($bill['updated_at']), time(), 1); ?> Ago</td>
-					<td><?php echo $bill['created_at']; ?></td>
+					<td><?php echo (is_null($bill['updated_at'])) ? '-' : timespan(strtotime($bill['updated_at']), time(), 1) . ' ago'; ?></td>
+					<td><?php echo date_format(date_create($bill['created_at']), $user->user_date); ?></td>
 					<!-- <td><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago</td> -->
 				</tr>
 				<?php endforeach; ?>
