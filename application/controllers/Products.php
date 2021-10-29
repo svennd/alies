@@ -35,8 +35,14 @@ class Products extends Vet_Controller
 	
 	public function product_price($id = false)
 	{
+		# only admins have access here
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+		
+		# product specific
 		if ($id) {
+			# new price
 			if ($this->input->post('submit')) {
+				# modification
 				if ($this->input->post('submit') == "edit") {
 					$this->pprice
 							->where(array(
@@ -45,6 +51,7 @@ class Products extends Vet_Controller
 							->update(array(
 											"price" => $this->input->post('price'),
 									));
+				# new price
 				} else {
 					$this->pprice->insert(array(
 												'volume' 		=> $this->input->post('volume'),
@@ -53,22 +60,28 @@ class Products extends Vet_Controller
 										));
 				}
 			}
+		
 			$data = array(
 							"product" 		=> $this->products
 													->with_prices('fields:volume, price, id')
-													//->with_type()
 													->where(array("sellable" => 1))
-													->fields('id, name, updated_at, unit_sell')
-													->get($id)
+													->fields('id, name, buy_price, updated_at, unit_sell')
+													->get($id),
+													
+							"stock_price"	=> $this->stock
+													->where(array("product_id" => $id, "state <" => STOCK_HISTORY, "volume >" => 0))
+													->fields('in_price, volume, created_at')
+													->get_all()
 						);
 			$this->_render_page('product_price_edit', $data);
+		
+		# full list of products
 		} else {
 			$data = array(
 							"products" 		=> $this->products
 													->with_prices('fields:volume, price')
-													//->with_type()
+													->fields('name, buy_price, sellable, updated_at, unit_sell')
 													->where(array("sellable" => 1))
-													->fields('name, updated_at, unit_sell')
 													->get_all()
 						);
 					
@@ -78,6 +91,9 @@ class Products extends Vet_Controller
 	
 	public function remove_product_price($id)
 	{
+		# only admins have access here
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+		
 		$to_remove_price = $this->pprice->get($id);
 		$this->pprice->delete($id);
 		

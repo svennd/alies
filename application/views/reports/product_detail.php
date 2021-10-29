@@ -20,9 +20,9 @@ foreach ($locations as $loc)
 <div class="row">
       <div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
-			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info[0]['name']) ?? $product_info[0]['name']; ?> / Stock</div>
+			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <a href="<?php echo base_url(); ?>reports/products">Products</a> / <?php echo (isset($product_info[0]) && $product_info[0]['name']) ? $product_info[0]['name'] : ''; ?> / Stock</div>
             <div class="card-body">
-			<?php if($product_info): ?>
+			<?php  if($product_info): ?>
 				<table class="table">
 					<tr>
 						<td>barcode</td>
@@ -54,7 +54,7 @@ foreach ($locations as $loc)
 		</div>
 		
 		<div class="card shadow mb-4">
-			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo ($product_info[0]['name']) ?? $product_info[0]['name']; ?> / Use</div>
+			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo (isset($product_info[0]) && $product_info[0]['name']) ? $product_info[0]['name'] : ''; ?> / Use</div>
 			<div class="card-body">
 			<?php if($eprod): ?>
 				<table class="table">

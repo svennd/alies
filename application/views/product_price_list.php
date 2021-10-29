@@ -12,7 +12,10 @@
 				<thead>
 				<tr>
 					<th>Name</th>
-					<th>Price</th>
+					<th>Unit</th>
+					<th>Catalog Price</th>
+					<th>Sell Price</th>
+					<th>Margin</th>
 					<th>Modify</th>
 				</tr>
 				</thead>
@@ -23,32 +26,81 @@
 						<?php echo $product['name']; ?>
 					</td>
 					<td>
+						<?php echo $product['prices']['0']['volume'] . " ". $product['unit_sell']; ?>
+					</td>
+					<td>
+						<?php echo $product['buy_price']. "&euro;"; ?>
+					</td>
+					<td>
 					<?php
 						if (!isset($product['prices']))
 						{
 							echo "<span style='color:red;'><b>no price</b></span>";
 						}
+						elseif(!$product['sellable'])
+						{
+							echo "---";
+						}
 						else
 						{
 							if (count($product['prices']) > 1)
 							{
-								echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['unit_sell'];
+								echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a>';
 								echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
 								foreach ($product['prices'] as $price)
 								{
-									echo "<tr><td>". $price['volume'] ." ". $product['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
+									$change = round((($product['buy_price']-$price['price'])/$product['buy_price'])*100*-1);
+									echo "<tr>
+												<td>". $price['volume'] ." ". $product['unit_sell']."</td>
+												<td>". $price['price'] ."&euro;</td>
+												<td>". (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) ."%</td>
+												
+										<tr>";
 								}
 								echo "</table></div>";
 							}
 							else
 							{
-								echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['unit_sell'];
+								echo $product['prices']['0']['price'] . "&euro;";
 							}
 						}
 					?>
 					</td>
 
 					
+					<td>
+						<?php 
+							if (!isset($product['prices']))
+							{
+								echo "<span style='color:red;'><b>no price</b></span>";
+							}
+							elseif(!$product['sellable'])
+							{
+								echo "---";
+							}
+							else
+							{
+								if (count($product['prices']) > 1)
+								{
+									$first_change = round((($product['buy_price']-$product['prices'][0]['price'])/$product['buy_price'])*100*-1);
+									$last_change = round((($product['buy_price']-$product['prices'][sizeof($product['prices']) - 1]['price'])/$product['buy_price'])*100*-1);
+									echo (($first_change > 0) ? '<span style="color:green;">+' . $first_change : '<span style="color:red;">' . $first_change) . ' ~ ' . (($last_change > 0) ? '<span style="color:green;">+' . $last_change : '<span style="color:red;">' . $last_change) . '%';
+								}
+								else
+								{
+									if ($product['prices']['0']['price'] == 0) 
+									{
+										echo "---";
+									}
+									else 
+									{
+										$change = round((($product['buy_price']-$product['prices'][0]['price'])/$product['buy_price'])*100*-1);
+										echo  (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) . "%";
+									}
+								}
+							}
+						?>
+					</td>
 					<td>
 						<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>"><i class="fas fa-edit"></i></a>
 					</td>

@@ -1,18 +1,20 @@
 <div class="row">
-      <div class="col-lg-12 mb-4">
+
+      <div class="col-lg-8 mb-4">
 
 		    <div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>products">Products</a> / 
 				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> / 
-				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a>
+				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a> / pricing
 			</div>
             <div class="card-body">
-			<br/>
 			<?php if ($product): ?>
-				<h3><?php echo $product['name']; ?></h3>
+			<h4>Current Price</h4>
 				<?php if (!is_null($product['prices'])): ?>
-				<?php foreach($product['prices'] as $price): ?>
+				<?php foreach($product['prices'] as $price):
+					$change = round((($product['buy_price']-$price['price'])/$product['buy_price'])*100*-1);
+				?>
 					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
 					
 					<label class="sr-only" for="volume">volume</label>
@@ -26,7 +28,7 @@
 						</div>
 					</div>
 					<p class="mb-2">
-					drops to  &nbsp;
+					drops to &nbsp;
 					</p>
 					<label class="sr-only" for="price">price</label>
 					<div class="input-group mb-2 mr-sm-2">
@@ -35,6 +37,11 @@
 							<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
 						</div>
 					</div>
+					margin :
+					<div class="input-group mb-2 mr-sm-2 col-md-1">
+						<input class="form-control <?php echo ($change > 0) ? 'is-valid' : 'is-invalid' ?>" type="text" placeholder="<?php echo $change; ?>%" readonly>
+					</div>
+					
 						<input type="hidden" name="price_id" value="<?php echo $price['id']; ?>" />
 						<button type="submit" name="submit" value="edit" class="btn btn-primary mb-2">Store</button>
 						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger mx-3 mb-2">remove</a>
@@ -91,6 +98,42 @@
 		</div>	
 
 	</div>
+	<div class="col-lg-4 mb-4">
+		<div class="card shadow mb-4">
+			<div class="card-header">
+				<a href="<?php echo base_url(); ?>products">Products</a> / 
+				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> / 
+				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a> / info
+			</div>
+            <div class="card-body">
+				<table class="table">
+					<tr>
+						<td>Catalog Price</td>
+						<td><?php echo $product['buy_price']; ?> &euro;</td>
+					</tr>
+				</table>
+				<h4>Current stock :</h4>
+				<?php if($stock_price): ?>
+				<table class="table">
+					<tr>
+						<th>Price</td>
+						<th>Volume</td>
+						<th>Date</td>
+					</tr>
+					<?php foreach($stock_price as $stock): ?>
+					<tr>
+						<td><?php echo $stock['in_price']; ?> &euro; </td>
+						<td><?php echo $stock['volume']; ?> <?php echo $product['unit_sell']; ?></td>
+						<td><?php echo date_format(date_create($stock['created_at']), $user->user_date); ?></td>
+					</tr>
+					<?php endforeach; ?>
+				</table>
+				<?php else: ?>
+					no stock found.
+				<?php endif; ?>
+			</div>
+		</div>
+	  </div>
       
 </div>
 

@@ -122,7 +122,6 @@
         </a>
         <div id="rep" class="collapse" aria-labelledby="rep" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Reports :</h6>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/graphs" id="charts_report">Charts</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/bills" id="invoice_report">Invoices</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a>
@@ -139,8 +138,10 @@
         </a>
         <div id="res" class="collapse" aria-labelledby="res" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Backup & Restore :</h6>
+            <h6 class="collapse-header">Backup :</h6>
             <a class="collapse-item" href="<?php echo base_url(); ?>backup" id="backup">Backup</a>
+			
+            <h6 class="collapse-header">Restore :</h6>
             <a class="collapse-item" href="<?php echo base_url(); ?>restore/booking" id="restore_book">Restore Booking</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>restore/locations" id="restore_loc">Restore Locations</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>restore/procedures" id="restore_proc">Restore Procedures</a>

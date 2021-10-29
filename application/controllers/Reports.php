@@ -157,7 +157,8 @@ class Reports extends Admin_Controller
 										with_stock('fields:barcode,state,volume,lotnr,eol,in_price,location,updated_at,created_at|where:`state`=\'2\' or `state` = \'3\'|join:true')->
 										order_by('stock.state', 'asc')->
 										order_by('stock.created_at', 'desc')->
-										get_all($product_id),
+										where(array("product_id" => $product_id))->
+										get_all(),
 				"locations"	=> $this->stock_location->get_all(),
 				"eprod" => $this->
 							eprod->
