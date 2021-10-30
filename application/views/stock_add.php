@@ -81,6 +81,10 @@
 			<div class="card-body">
 			<?php if (isset($error) && $error): ?>
 			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<!-- i want to see the world burn -->
+				<script>
+				o=(A=new AudioContext()).createOscillator();o.connect(A.destination);o.start(0);setTimeout('o.stop(0)',500)
+				</script>
 				<strong>Holy guacamole!</strong><br/> 
 				<?php echo $error; ?>
 				  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
