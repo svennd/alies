@@ -221,6 +221,10 @@ class Invoice extends Vet_Controller
 	# in case the client does not pay
 	public function bill_unpay($bill_id)
 	{
+		
+		# make this traceable
+		$this->logs->logger($this->user->id, INFO, "bill_unpay", "bill_id: " . $bill_id);
+		
 		$bill = $this->bills->get($bill_id);
 		
 		if ($bill['status'] != PAYMENT_PARTIALLY) {
@@ -260,6 +264,9 @@ class Invoice extends Vet_Controller
 			# if it was open->partial->done this could be ran twice, generating another stock reduction
 			if ($bill['status'] != PAYMENT_PARTIALLY) {
 				$this->remove_from_stock($bill_id);
+			} else {
+				# make this traceable - payment is done only partially
+				$this->logs->logger($this->user->id, INFO, "bill_pay_incomplete", "bill_id: " . $bill_id . " current_state:" . $bill['status'] );
 			}
 			
 			# set all the events linked to this bill to closed so we can't add anything anymore
