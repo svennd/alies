@@ -10,7 +10,7 @@
 			</div>
             <div class="card-body">
 			<?php if ($product): ?>
-			<h4>Current Price</h4>
+			<h4>Current Sell Price</h4>
 				<?php if (!is_null($product['prices'])): ?>
 				<?php foreach($product['prices'] as $price):
 					$unit_price = ($product['buy_price']/$product['buy_volume']);
@@ -117,7 +117,7 @@
 				<?php if($stock_price): ?>
 				<table class="table">
 					<tr>
-						<th>Price</td>
+						<th>buy price</td>
 						<th>Volume</td>
 						<th>Date</td>
 					</tr>

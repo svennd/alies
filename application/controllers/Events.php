@@ -148,32 +148,38 @@ class Events extends Vet_Controller
 	public function edit_event_price($event_id, $reduction)
 	{
 		$eprod = $this->eprod->where(array("event_id" => $event_id))->get_all();
-		foreach ($eprod as $prod) {
-			if ($prod['calc_net_price'] != 0) {
-				$new_net_price = $prod['calc_net_price'] * ((100 - $reduction) / 100);
-			} else {
-				$new_net_price = $prod['net_price'] * ((100 - $reduction) / 100);
+		if ($eprod)
+		{
+			foreach ($eprod as $prod) {
+				if ($prod['calc_net_price'] != 0) {
+					$new_net_price = $prod['calc_net_price'] * ((100 - $reduction) / 100);
+				} else {
+					$new_net_price = $prod['net_price'] * ((100 - $reduction) / 100);
+				}
+				
+				$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
+								"net_price" 		=> $new_net_price,
+								"price" 			=> $new_net_price * ((100 + $prod['btw'])/100),
+								"calc_net_price"	=> ($prod['calc_net_price'] != 0) ? $prod['calc_net_price'] : $prod['net_price']
+							));
 			}
-			
-			$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
-							"net_price" 		=> $new_net_price,
-							"price" 			=> $new_net_price * ((100 + $prod['btw'])/100),
-							"calc_net_price"	=> ($prod['calc_net_price'] != 0) ? $prod['calc_net_price'] : $prod['net_price']
-						));
 		}
 		
 		$eproc = $this->eproc->where(array("event_id" => $event_id))->get_all();
-		foreach ($eproc as $proc) {
-			if ($proc['calc_net_price'] != 0) {
-				$new_net_price = $proc['calc_net_price'] * ((100 - $reduction) / 100);
-			} else {
-				$new_net_price = $proc['net_price'] * ((100 - $reduction) / 100);
+		if ($eproc)
+		{
+			foreach ($eproc as $proc) {
+				if ($proc['calc_net_price'] != 0) {
+					$new_net_price = $proc['calc_net_price'] * ((100 - $reduction) / 100);
+				} else {
+					$new_net_price = $proc['net_price'] * ((100 - $reduction) / 100);
+				}
+				$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
+								"net_price" 		=> $new_net_price,
+								"price" 			=> $new_net_price * ((100 + $proc['btw'])/100),
+								"calc_net_price"	=> ($proc['calc_net_price'] != 0) ? $proc['calc_net_price'] : $proc['net_price']
+							));
 			}
-			$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
-							"net_price" 		=> $new_net_price,
-							"price" 			=> $new_net_price * ((100 + $proc['btw'])/100),
-							"calc_net_price"	=> ($proc['calc_net_price'] != 0) ? $proc['calc_net_price'] : $proc['net_price']
-						));
 		}
 		redirect('events/edit_price/' . $event_id, 'refresh');
 	}

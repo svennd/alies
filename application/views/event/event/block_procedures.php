@@ -1,5 +1,5 @@
 <?php if ($procedures_d) : ?>
-<?php foreach ($procedures_d as $done):?>
+<?php foreach ($procedures_d as $done): ?>
 	<tr style="background-color: <?php echo ($done['price'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
 		<td><?php echo $done['procedures']['name']; ?></td>
 		<td>&nbsp;</td>

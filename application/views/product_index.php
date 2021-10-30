@@ -45,8 +45,11 @@
 		</div>
 	</div>
       <div class="col-lg-4 mb-4">
-	<a href="<?php echo base_url(); ?>products/product" class="btn btn-success btn-lg mb-3"><i class="fas fa-cart-plus"></i> New Product</a>
-      <div class="card shadow mb-4">
+		
+	  <?php if ($this->ion_auth->in_group("admin")): ?>
+		<a href="<?php echo base_url(); ?>products/product" class="btn btn-success btn-lg mb-3"><i class="fas fa-cart-plus"></i> New Product</a>
+		<?php endif; ?>
+	  <div class="card shadow mb-4">
 			<div class="card-header">Last Modified Products</div>
             <div class="card-body">
 				<?php if ($last_modified) : ?>

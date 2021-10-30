@@ -17,6 +17,7 @@ class Products extends Vet_Controller
 		$this->load->model('Procedures_model', 'procedures');
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Events_products_model', 'eprod');
+		$this->load->model('Logs_model', 'logs');
 	}
 	
 	public function index()
@@ -340,10 +341,10 @@ class Products extends Vet_Controller
 								->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
 								->where('name', 'like', $query, true)
 								->where('sellable', '1')
-								->limit(10)
+								->limit(250) # this will count both products + prices + stock (somehow)
 								->order_by("type", "ASC")
 								->get_all();
-
+								
 			# in case no results
 			if ($result) {
 				foreach ($result as $r) {

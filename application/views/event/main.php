@@ -40,10 +40,12 @@
 				</tfoot>
 				</table>
 				
-				<?php if($event_info['payment'] == 0) : ?>
-					<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
-				<?php else: ?>
-					<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Show bill</a>
+				<?php if($consumables || $procedures_d): ?>
+					<?php if($event_info['payment'] == 0) : ?>
+						<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
+					<?php else: ?>
+						<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Show bill</a>
+					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</div>

@@ -99,11 +99,7 @@ class Stock extends Vet_Controller
 					}
 					# unknown barcode
 					else {
-						$this->logs->insert(array(
-													"event" => "unknown_stock_move",
-													"level" => INFO,
-													"msg" 	=> "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)"
-												));
+						$this->logs->logger($this->user->id, INFO, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
 						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
 					}
 				}
@@ -139,7 +135,7 @@ class Stock extends Vet_Controller
 		$error = false;
 		
 		if ($this->input->post('submit')) {
-			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume'))) {
+			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')) && $this->input->post('new_volume') < 5000) {
 				# check if this is already in the verify list
 				$result = $this->stock->where(array(
 										"product_id" 	=> $this->input->post('pid'),
@@ -184,7 +180,7 @@ class Stock extends Vet_Controller
 					}
 				}
 			} else {
-				$error = "Not a valid product, or no volume...";
+				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
 			}
 		}
 		

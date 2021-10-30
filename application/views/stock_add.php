@@ -53,9 +53,9 @@
 					
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="exampleFormControlInput3">Current Price</label>
+							<label for="current_buy_price">Current Buy Price</label>
 							<div class="input-group mb-3">
-							  <input type="text" class="form-control" name="in_price" id="buy" value="">
+							  <input type="text" class="form-control" name="in_price" id="current_buy_price" value="">
 							  <div class="input-group-append">
 								<span class="input-group-text">&euro;</span>
 							  </div>
@@ -179,7 +179,7 @@ function process_datamatrix(barcode) {
 					$("#tip").html("Min buy volume, " + data[0].buy_volume + " " + data[0].unit_buy + " => sell volume, " + data[0].sell_volume + " " + data[0].unit_sell);
 			
 					$("#catalog_price").val(data[0].buy_price + " € / " + data[0].buy_volume + " " + data[0].unit_sell);
-
+					$("#current_buy_price").val(data[0].buy_price);
 				}
 				else 
 				{ 
@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			var res = suggestion.data;
 			$("#pid").val(res.id);
 			$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_sell);
+			$("#current_buy_price").val(res.buy_price);
 
 			$("#unit_buy").html(res.unit_buy);
 			$("#unit_sell").html(res.unit_sell);
