@@ -89,6 +89,9 @@ class Invoice extends Vet_Controller
 	#		so we don't create 2 bills for 1 (or more) event
 	public function get_bill($bill_id, $pdf = false)
 	{
+		# make this traceable
+		$this->logs->logger($this->user->id, INFO, "generate_bill", "bill_id: " . $bill_id . " pdf:" . $pdf);
+			
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
 		$bill_total_tally = array();

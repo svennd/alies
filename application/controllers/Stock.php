@@ -99,7 +99,7 @@ class Stock extends Vet_Controller
 					}
 					# unknown barcode
 					else {
-						$this->logs->logger($this->user->id, INFO, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
+						$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
 						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
 					}
 				}
@@ -181,6 +181,9 @@ class Stock extends Vet_Controller
 				}
 			} else {
 				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
+				
+				# log this
+				$this->logs->logger($this->user->id, WARN, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
 			}
 		}
 		
@@ -200,8 +203,13 @@ class Stock extends Vet_Controller
 	}
 	
 	public function verify_stock()
-	{
-		$this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
+	{		
+		# all products currently in check state are now considered in use
+		$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
+		
+		# verify the stock
+		$this->logs->logger($this->user->id, INFO, "stock_verify", "products verified: " . $total);
+		
 		redirect('stock/add_stock', 'refresh');
 	}
 	
@@ -300,7 +308,11 @@ class Stock extends Vet_Controller
 	# if some remaining data is still visible this can be used to hide it
 	public function stock_clean()
 	{
+		
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 		echo "archived " . $r . " lines; <a href='" . base_url('stock') . "'> return</a>";
+		
+		# make this traceable
+		$this->logs->logger($this->user->id, INFO, "stock_clean", "archived: " . $r);
 	}
 }

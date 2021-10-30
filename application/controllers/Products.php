@@ -164,8 +164,13 @@ class Products extends Vet_Controller
 							);
 							
 			if ($this->input->post('submit') == "add") {
+				# new product
 				$id = $this->products->insert($input);
 				$update = $id;
+				
+				# log this
+				$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $id);
+				
 			} elseif ($this->input->post('submit') == "edit") {
 				$update = $this->products->update($input, $id);
 			}

@@ -33,7 +33,7 @@ class Logs extends Admin_Controller
 		$this->load->model('Logs_model', 'nlog');
 		
 		$data = array(
-						"logs" 		=> $this->nlog->with_vet('fields:first_name')->get_all(),
+						"logs" 		=> $this->nlog->with_vet('fields:first_name')->order_by(array('id', 'desc'))->get_all(),
 		);
 		$this->_render_page('logs/global', $data);
 	}

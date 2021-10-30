@@ -36,8 +36,12 @@ class Events extends Vet_Controller
 		if ($result > 0) {
 			$event_id = $result[0]['id'];
 			$this->events->update(array(), $event_id);
+			
+			$this->logs->logger($this->user->id, INFO, "update_restart_event", "event_id: " . $event_id);
 		} else {
 			$event_id = $this->events->insert(array('pet' => $pet, "location" => $this->user->current_location, "vet" => $this->user->id));
+			
+			$this->logs->logger($this->user->id, INFO, "new_event", "event_id: " . $event_id);
 		}
 		redirect('/events/event/' . $event_id);
 	}
