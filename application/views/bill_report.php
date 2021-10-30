@@ -45,7 +45,7 @@ $state = array(
 						$cash = round((float) $bill['cash'], 2);
 						$card = round((float) $bill['card'], 2);
 						if ($card + $cash != 0) :
-							$total_short = round( (float) $bill['amount'], 2) - ($card + $cash);
+							$total_short = round( (float) $bill['amount'] - ($card + $cash) , 2);
 							?>
 								<p>
 									Short : <?php echo $total_short; ?> &euro; (card : <?php echo $card; ?> &euro;, cash : <?php echo $cash; ?> &euro;)
