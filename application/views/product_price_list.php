@@ -49,7 +49,8 @@
 								echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
 								foreach ($product['prices'] as $price)
 								{
-									$change = round((($product['buy_price']-$price['price'])/$product['buy_price'])*100*-1);
+									$unit_price = ($product['buy_price']/$product['buy_volume']);
+									$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 									echo "<tr>
 												<td>". $price['volume'] ." ". $product['unit_sell']."</td>
 												<td>". $price['price'] ."&euro;</td>
@@ -82,8 +83,9 @@
 							{
 								if (count($product['prices']) > 1)
 								{
-									$first_change = round((($product['buy_price']-$product['prices'][0]['price'])/$product['buy_price'])*100*-1);
-									$last_change = round((($product['buy_price']-$product['prices'][sizeof($product['prices']) - 1]['price'])/$product['buy_price'])*100*-1);
+									$unit_price = ($product['buy_price']/$product['buy_volume']);
+									$first_change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
+									$last_change = round((($unit_price-$product['prices'][sizeof($product['prices']) - 1]['price'])/$unit_price)*100*-1);
 									echo (($first_change > 0) ? '<span style="color:green;">+' . $first_change : '<span style="color:red;">' . $first_change) . ' ~ ' . (($last_change > 0) ? '<span style="color:green;">+' . $last_change : '<span style="color:red;">' . $last_change) . '%';
 								}
 								else
@@ -94,7 +96,8 @@
 									}
 									else 
 									{
-										$change = round((($product['buy_price']-$product['prices'][0]['price'])/$product['buy_price'])*100*-1);
+										$unit_price = ($product['buy_price']/$product['buy_volume']);
+										$change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
 										echo  (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) . "%";
 									}
 								}

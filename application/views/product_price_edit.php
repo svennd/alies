@@ -13,7 +13,8 @@
 			<h4>Current Price</h4>
 				<?php if (!is_null($product['prices'])): ?>
 				<?php foreach($product['prices'] as $price):
-					$change = round((($product['buy_price']-$price['price'])/$product['buy_price'])*100*-1);
+					$unit_price = ($product['buy_price']/$product['buy_volume']);
+					$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 				?>
 					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
 					

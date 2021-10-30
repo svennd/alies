@@ -65,7 +65,7 @@ class Products extends Vet_Controller
 							"product" 		=> $this->products
 													->with_prices('fields:volume, price, id')
 													->where(array("sellable" => 1))
-													->fields('id, name, buy_price, updated_at, unit_sell')
+													->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
 													->get($id),
 													
 							"stock_price"	=> $this->stock
@@ -80,7 +80,7 @@ class Products extends Vet_Controller
 			$data = array(
 							"products" 		=> $this->products
 													->with_prices('fields:volume, price')
-													->fields('name, buy_price, sellable, updated_at, unit_sell')
+													->fields('name, buy_volume, buy_price, sellable, updated_at, unit_sell')
 													->where(array("sellable" => 1))
 													->get_all()
 						);
