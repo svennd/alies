@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function(){
 							 
 								if (<?php echo $u_location; ?> == stock.location)
 								{
-									var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+									var option = new Option(stock.barcode +" - " + stock.lotnr + " (" + parseFloat(stock.volume).toPrecision() + ")", stock.barcode);
 									$("#stock_select").append(option);
 								}
 							}
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 								if (<?php echo $u_location; ?> != stock.location)
 								{
-									var option = new Option(stock.barcode +" // " + stock.lotnr, stock.barcode);
+									var option = new Option(stock.barcode +" - " + stock.lotnr + " (" + parseFloat(stock.volume).toPrecision() + ")", stock.barcode);
 									option.setAttribute("class", "bg-warning");
 									$("#stock_select").append(option);
 								}
