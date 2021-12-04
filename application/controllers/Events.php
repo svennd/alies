@@ -113,7 +113,7 @@ class Events extends Vet_Controller
 											"net_price" 		=> $this->input->post('price'),
 											"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
 											"calc_net_price"	=> $this->input->post('ori_net_price')
-										), $this->input->post('event_proc_id'));
+										), array("id" => $this->input->post('event_proc_id'), "procedures_id" => $this->input->post('pid'), "event_id" => $event_id));
 			}
 		} elseif ($this->input->post('submit') == 'store_prod_price') {
 			if ($this->input->post('price') != $this->input->post('ori_net_price')) {
@@ -121,7 +121,7 @@ class Events extends Vet_Controller
 											"net_price" 		=> $this->input->post('price'),
 											"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
 											"calc_net_price"	=> $this->input->post('ori_net_price')
-										), $this->input->post('event_prod_id'));
+										), array("id" => $this->input->post('event_product_id'), "product_id" => $this->input->post('pid'), "event_id" => $event_id));
 			}
 		}
 		
