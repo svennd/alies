@@ -432,7 +432,7 @@ class Reports extends Admin_Controller
 		// open the "output" stream
 		$f = fopen('php://output', 'w');
 		foreach (explode("\n", $array) as $line) {
-			fwrite($f, $line);
+			fwrite($f, $line . "\n");
 		}
 	}   
 	
