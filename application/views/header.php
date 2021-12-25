@@ -108,7 +108,11 @@
         <div id="prd" class="collapse" aria-labelledby="prd" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Inventory management :</h6>
+			
+			<?php if ($this->ion_auth->in_group("admin")): ?>
             <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
+			<?php endif; ?>
+			
             <a class="collapse-item" href="<?php echo base_url(); ?>stock" id="stock">Stock</a>
           </div>
         </div>
@@ -122,11 +126,12 @@
         </a>
         <div id="rep" class="collapse" aria-labelledby="rep" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/graphs" id="charts_report">Charts</a>
+           <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/graphs" id="charts_report">Charts</a> -->
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/bills" id="invoice_report">Invoices</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/vaccine" id="vaccine_report">Vaccine</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a>
           </div>
         </div>
       </li>
@@ -164,9 +169,16 @@
       </li>
       <li class="nav-item" id="invoice">
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
-          <i class="fas fa-fw fa-file-invoice-dollar"></i>
+          <i class="fas fa-fw fa-euro-sign"></i>
           <span>Invoice</span></a>
       </li>
+	  <?php if (!$this->ion_auth->in_group("admin")): ?>
+      <li class="nav-item" id="product_list">
+        <a class="nav-link" href="<?php echo base_url(); ?>products/info">
+         <i class="fas fa-fw fa-shopping-cart"></i>
+          <span>Products</span></a>
+      </li>
+	  <?php endif; ?>
 		<!--
       <hr class="sidebar-divider">
 

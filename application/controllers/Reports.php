@@ -13,8 +13,10 @@ class Reports extends Admin_Controller
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Products_model', 'products');
+		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Users_model', 'users');
 		$this->load->model('Events_products_model', 'eprod');
+		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vaccine');
 	}
 	
@@ -26,17 +28,41 @@ class Reports extends Admin_Controller
 	
 	public function graphs()
 	{
+		# this no longer works due to upgrade of chart.min.js
+		# need to look into better options
+		return false;
 		$data = array(
-			"last_6_month"		=> $this->get_last_x_month_chart(12),
-			"income_per_vet"	=> $this->get_income_overview_chart(12),
-			"avg_per_vet"		=> $this->get_avg_per_consult(12),
+			"last_6_month"		=> $this->get_last_x_month_chart(3),
+			"income_per_vet"	=> $this->get_income_overview_chart(3),
+			"avg_per_vet"		=> $this->get_avg_per_consult(3),
 			"last_bill_chart"	=> $this->last_bill_by_year_month_init_vet(),
-			"extra_footer" 		=> '<script src="'. base_url() .'assets/js/Chart.min.js"></script>',
+			"extra_footer" 		=> '',
+			//<script src="'. base_url() .'assets/js/Chart.min.js"></script>
+									
 		);
 
 		/* cache this for 5 minutes */
-		$this->output->cache(5);
+		// $this->output->cache(5);
 		$this->_render_page('reports/graphs', $data);
+	}
+	
+	public function stock_list($location = false)
+	{
+		if (!$location) 
+		{
+			$data = array(
+							"locations"		=> $this->location,
+						);
+						
+			$this->_render_page('reports/stock_list_overview', $data);
+		}
+		else
+		{
+			$stock = $this->stock->get_stock_list($location);
+			
+			$csv = $this->load->view('reports/stock_list', array("stock_list" => $stock), true);
+			$this->array_to_csv_download($csv, 'stocklist_' . (int) $location . '.csv');
+		}
 	}
 	
 	public function products()
@@ -147,7 +173,7 @@ class Reports extends Admin_Controller
 		}
 	}
 	
-	
+	# detailed view of product info
 	public function product($product_id)
 	{
 		$data = array(
@@ -167,6 +193,26 @@ class Reports extends Admin_Controller
 							get_all(),
 			);
 		$this->_render_page('reports/product_detail', $data);
+	}
+	
+	# show used products for the defined range
+	public function product_range($range)
+	{
+		$accepted_ranges = array('day' => 1, 'week' => 7, 'month' => 31, 'quarter' => 90, 'halfyear' => 182, 'year' => 365);
+
+		if (!array_key_exists($range, $accepted_ranges))
+		{
+			redirect('reports/products');
+		}
+		
+		$result = $this->events->get_all_event_products($accepted_ranges[$range]);
+		
+		
+		$data = array(
+						'results' => $result,
+						);
+						
+		$this->_render_page('reports/product_range', $data);
 	}
 	
 	public function bills()
@@ -331,9 +377,7 @@ class Reports extends Admin_Controller
 	private function last_bill_by_year_month_init_vet()
 	{
 		$last_bill = $this->owners->last_bill_by_year_month_init_vet();
-		
-		// var_dump($last_bill);
-		
+			
 		$years = array();
 		$total_last_bill = array();
 		$result = array();
@@ -365,17 +409,31 @@ class Reports extends Admin_Controller
 		// format
 		foreach ($years as $year => $data) {
 			foreach ($data as $vet => $value) {
-				$result[$vet][] = array("t" => (string)$year, "y" => $value);
+				$result[$vet][] = array("t" => (string)$year, "y" => (int)$value);
 			}
 		}
 		
-		// var_dump($result);
-
 		$line = array();
 		foreach ($total_last_bill as $year => $total) {
-			$line[] = array("t" => (string)$year, "y" => $total);
+			$line[] = array("t" => (string)$year, "y" => (int)$total);
 		}
 		
 		return array("line" => $line, "bar" => $result, "ori_line" => $total_last_bill);
 	}
+	
+	
+	/*
+		generate a csv file for stock list
+	*/
+	private function array_to_csv_download($array, $filename = "export.csv") {
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="'.$filename.'";');
+
+		// open the "output" stream
+		$f = fopen('php://output', 'w');
+		foreach (explode("\n", $array) as $line) {
+			fwrite($f, $line);
+		}
+	}   
+	
 }

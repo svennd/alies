@@ -260,9 +260,39 @@ class Stock_model extends MY_Model
 				where 
 					created_at >= (NOW() - INTERVAL 6 MONTH)
 				and
-					product_id = '" . $product_id . "'
+					product_id = '" . (int) $product_id . "'
 				GROUP BY 
 					month(created_at);
+			";
+		return ($this->db->query($sql)->result_array());
+	}
+	
+	
+	/*
+		reports/stock_list
+	*/
+	public function get_stock_list($location)
+	{
+		$sql = "SELECT  
+					SUM(volume) as volume,
+					GROUP_CONCAT(volume SEPARATOR '; ') as concat_volume,
+					GROUP_CONCAT(eol SEPARATOR '; ') as eol,
+					GROUP_CONCAT(lotnr SEPARATOR '; ') as lotnr,
+					GROUP_CONCAT(DATE_FORMAT(s.created_at, '%H:%i %d/%c/%y') SEPARATOR '; ') as created_at,
+					p.name, 
+					p.unit_buy
+				FROM 
+					stock as s
+				JOIN products as p ON 
+					p.id = product_id
+				WHERE 
+					location = '" . $location . "' 
+				AND
+					state = ". STOCK_IN_USE ."
+				GROUP BY 
+					product_id
+				ORDER BY
+					p.name ASC;
 			";
 		return ($this->db->query($sql)->result_array());
 	}
