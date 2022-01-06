@@ -17,6 +17,7 @@ class Products extends Vet_Controller
 		$this->load->model('Procedures_model', 'procedures');
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Events_products_model', 'eprod');
+		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Logs_model', 'logs');
 	}
 	
@@ -25,13 +26,74 @@ class Products extends Vet_Controller
 		$data = array(
 						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(5)->order_by("created_at", "desc")->get_all(),
 						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(5)->order_by("updated_at", "desc")->get_all(),
-						//"total_products" 	=> $this->products->count_rows(),
 						"search_q"			=> $this->input->post('name'),
 						"search"			=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
 						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
 						);
-						
-		$this->_render_page('product_index', $data);
+		if ($this->ion_auth->in_group("admin"))
+		{
+			$this->_render_page('product_index', $data);
+		}
+		else
+		{
+			$this->_render_page('product/info', $data);
+		}
+	}
+	
+	
+	/*
+		semi "public" profile of a product
+	*/
+	public function profile($id)
+	{
+		# update comment
+		if ($this->input->post('submit')) {
+			$this->products
+					->where(array(
+									"id" 	=> (int) $id
+							))
+					->update(array(
+									"comment" => $this->input->post('message'),
+							));
+		}
+			
+		# check the local stock
+		$local_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE, 'location' => $this->user->current_location))->group_by('product_id')->get();
+		$local_stock = ($local_stock_query) ? $local_stock_query['sum_vol'] : 0;
+		
+		# check the global stock
+		$global_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE))->group_by('product_id')->get();
+		$global_stock = ($global_stock_query) ? $global_stock_query['sum_vol'] : 0;
+		
+		# check if there is a local limit
+		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->user->current_location))->get();
+		$local_limit = ($local_limit_query) ? $local_limit_query['volume'] : 0;
+		
+		$data = array(
+				'product' 		=> $this->products->
+										with_prices('fields:id, volume, price')->
+										with_type('fields:name')->
+										with_booking_code('fields:category, code, btw')->
+										with_stock('fields: location, eol, lotnr, volume, barcode, state, created_at', 'where:`state`=\'1\'')->
+										get($id),
+				'global_stock' 	=> $global_stock,
+				'local_stock' 	=> $local_stock,
+				'local_limit' 	=> $local_limit,
+				'locations'		=> $this->location,
+				'history_1m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
+				'history_6m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
+				'history_1y'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
+				"extra_header" =>
+							'<link href="'. base_url() .'assets/css/trumbowyg.min.css" rel="stylesheet">',
+				"extra_footer" =>
+					'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
+					'<script src="'. base_url() .'assets/js/trumbowyg.min.js"></script>' .
+					'<script src="'. base_url() .'assets/js/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>' .
+					'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
+					'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
+				);
+				
+		$this->_render_page('product/profile', $data);
 	}
 	
 	public function product_price($id = false)

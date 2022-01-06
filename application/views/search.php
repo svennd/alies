@@ -145,8 +145,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>"><i class="fas fa-user"></i> Client</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -172,8 +171,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>"><i class="fas fa-user"></i> Client</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -199,8 +197,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>"><i class="fas fa-user"></i> Client</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -227,8 +224,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>"><i class="fas fa-user"></i> Client</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -254,8 +250,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>"><i class="fas fa-user"></i> Client</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>

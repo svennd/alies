@@ -174,7 +174,7 @@
       </li>
 	  <?php if (!$this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="product_list">
-        <a class="nav-link" href="<?php echo base_url(); ?>products/info">
+        <a class="nav-link" href="<?php echo base_url(); ?>products">
          <i class="fas fa-fw fa-shopping-cart"></i>
           <span>Products</span></a>
       </li>

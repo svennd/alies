@@ -274,7 +274,7 @@ class Owners_model extends MY_Model
 		return $this->db->query($get_per_province)->result_array();
 	}
 	
-	public function last_bill_by_year_month_init_vet()
+	public function last_bill_by_year_month_init_vet($year = 5)
 	{
 		$sql = "
 			select 
@@ -291,7 +291,11 @@ class Owners_model extends MY_Model
 			group by 
 				year(last_bill), 
 				initial_vet
-			";
+			having 
+				y > YEAR(CURDATE() - INTERVAL " . $year . " YEAR)
+			order by
+				y asc
+				";
 			
 		return $this->db->query($sql)->result_array();
 	}

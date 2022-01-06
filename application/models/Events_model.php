@@ -136,4 +136,40 @@ class Events_model extends MY_Model
 		$status = $this->fields('status')->get($event_id);
 		return ($status['status']);
 	}
+	
+	
+	/*
+		used in reports/product_range
+		to get a full list of products used in a certain range
+	*/
+	public function get_all_event_products($day)
+	{
+		$sql = "
+			SELECT 
+				e.id as event_id, e.updated_at, 
+				ep.volume as volume, ep.net_price as net_price, 
+				prod.name as product_name, prod.unit_sell, 
+				users.first_name as vet_name, 
+				stck.name 
+			FROM `events` as e
+			LEFT JOIN events_products as ep
+			ON
+				ep.event_id = e.id
+			LEFT JOIN products as prod
+			ON
+				prod.id = ep.product_id
+			LEFT JOIN users
+			ON
+				e.vet = users.id
+			LEFT JOIN stock_location as stck
+			ON
+				stck.id = e.location
+			WHERE 
+				e.created_at > DATE_ADD(NOW(), INTERVAL - " . (int) $day . " DAY)
+			AND
+				e.status <= ". STATUS_CLOSED ."
+			"
+			;
+		return $this->db->query($sql)->result_array();
+	}
 }

@@ -51,7 +51,6 @@ class Pets extends Vet_Controller
 		$data = array(
 						"pets"				=> $this->pets->with_owners('fields:last_name, id')->fields('name, id')->where(array("id" => $pet_id))->get(),
 						"weight_history" 	=> $this->pets_weight->where(array("pets" => $pet_id))->order_by("created_at", "asc")->get_all(),
-						"extra_footer"  	=> '<script src="'. base_url() .'assets/js/Chart.min.js"></script>',
 					);
 					
 		$this->_render_page('pets/weight_history', $data);
