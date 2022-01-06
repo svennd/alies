@@ -54,7 +54,7 @@
 		<div class="form-row">
 			<div class="col mb-3">
 			<label for="exampleFormControlInput3">Name</label>
-			<input type="text" name="name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['name'])) ? $product['name']: '' ?>">
+			<input type="text" name="name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['name'])) ? $product['name']: '' ?>" required>
 			</div>
 			<div class="col mb-3">
 			<label for="exampleFormControlInput3">Abbreviation</label>
@@ -135,22 +135,22 @@
 		<div class="form-row">
 			<div class="col">
 			<label for="exampleFormControlInput3">Buy volume</label>
-			<input type="text" name="buy_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?>">
+			<input type="text" name="buy_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?>" required>
 			</div>
 			<div class="col-md-2">
 			<label for="exampleFormControlInput3">Buy unit</label>
-			<input type="text" name="unit_buy" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?>">
+			<input type="text" name="unit_buy" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?>" required>
 			<small id="unitHelp" class="form-text text-muted">kg, fles, doos</small>
 			</div>
 			<div class="col-md-1"><label for="exampleFormControlInput3">==></label></div>
 			<div class="col">
 			<label for="exampleFormControlInput3">Sell volume</label>
-			<input type="text" name="sell_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['sell_volume'])) ? $product['sell_volume']: '' ?>">
+			<input type="text" name="sell_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['sell_volume'])) ? $product['sell_volume']: '' ?>" required>
 			<small class="form-text text-muted">min. 2 box, containing 4 strips : "8" "strips"</small>
 			</div>
 			<div class="col-md-2">
 			<label for="exampleFormControlInput3">Sell Unit</label>
-			<input type="text" name="unit_sell" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?>">
+			<input type="text" name="unit_sell" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?>" required>
 			</div>
 		</div>
 		
