@@ -8,7 +8,7 @@ class Products extends Vet_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		# models
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Product_type_model', 'prod_type');
@@ -20,14 +20,15 @@ class Products extends Vet_Controller
 		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Logs_model', 'logs');
 	}
-	
+
 	public function index()
 	{
 		$data = array(
-						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(5)->order_by("created_at", "desc")->get_all(),
-						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(5)->order_by("updated_at", "desc")->get_all(),
-						"search_q"			=> $this->input->post('name'),
-						"search"			=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
+						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(15)->order_by("created_at", "desc")->get_all(),
+						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(15)->order_by("updated_at", "desc")->get_all(),
+						"search_q"				=> $this->input->post('name'),
+						"types" 					=> $this->prod_type->get_all(),
+						"search"					=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
 						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
 						);
 		if ($this->ion_auth->in_group("admin"))
@@ -39,8 +40,8 @@ class Products extends Vet_Controller
 			$this->_render_page('product/info', $data);
 		}
 	}
-	
-	
+
+
 	/*
 		semi "public" profile of a product
 	*/
@@ -56,19 +57,19 @@ class Products extends Vet_Controller
 									"comment" => $this->input->post('message'),
 							));
 		}
-			
+
 		# check the local stock
 		$local_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE, 'location' => $this->user->current_location))->group_by('product_id')->get();
 		$local_stock = ($local_stock_query) ? $local_stock_query['sum_vol'] : 0;
-		
+
 		# check the global stock
 		$global_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE))->group_by('product_id')->get();
 		$global_stock = ($global_stock_query) ? $global_stock_query['sum_vol'] : 0;
-		
+
 		# check if there is a local limit
 		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->user->current_location))->get();
 		$local_limit = ($local_limit_query) ? $local_limit_query['volume'] : 0;
-		
+
 		$data = array(
 				'product' 		=> $this->products->
 										with_prices('fields:id, volume, price')->
@@ -92,28 +93,28 @@ class Products extends Vet_Controller
 					'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
 					'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
 				);
-				
+
 		$this->_render_page('product/profile', $data);
 	}
-	
-	
+
+
 	public function new($step = false, $pid = false)
 	{
 		# only admins have access here
 		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
-		
+
 		# populate the data array
 		$data = array(
 				'step'		=> (!$step) ? 1 : (int)$step,
 				'type' 		=> $this->prod_type->get_all(),
 				'booking'	=> $this->booking->get_all(),
 				);
-		
+
 		if ($this->input->post('submit')) {
 			if (!$step)
 			{
 				$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
-				
+
 				$input = array(
 									"name" 				=> $this->input->post('name'),
 									"short_name" 		=> $this->input->post('short_name'),
@@ -136,13 +137,13 @@ class Products extends Vet_Controller
 									"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
 									"limit_stock" 		=> $this->input->post('limit_stock')
 								);
-								
+
 					# new product
 					$pid = $this->products->insert($input);
-					
+
 					# log this
 					$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $pid);
-					
+
 					# redirect to next step
 					redirect( 'products/new/2/' . $pid );
 			}
@@ -156,7 +157,7 @@ class Products extends Vet_Controller
 					{
 						$this->products->update(array("buy_price" => $this->input->post('buy_price')), $pid);
 					}
-					
+
 					# modification
 					if ($this->input->post('submit') == "edit") {
 						$this->pprice
@@ -178,8 +179,8 @@ class Products extends Vet_Controller
 				}
 			}
 		}
-		
-		if ($step) 
+
+		if ($step)
 		{
 			$data['product'] = $this->products
 					->with_prices('fields:volume, price, id')
@@ -187,15 +188,15 @@ class Products extends Vet_Controller
 					->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
 					->get($pid);
 		}
-		
+
 		$this->_render_page('product/product_new', $data);
 	}
-	
+
 	public function product_price($id = false)
 	{
 		# only admins have access here
 		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
-		
+
 		# product specific
 		if ($id) {
 			# new price
@@ -218,21 +219,21 @@ class Products extends Vet_Controller
 										));
 				}
 			}
-		
+
 			$data = array(
 							"product" 		=> $this->products
 													->with_prices('fields:volume, price, id')
 													->where(array("sellable" => 1))
 													->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
 													->get($id),
-													
+
 							"stock_price"	=> $this->stock
 													->where(array("product_id" => $id, "state <" => STOCK_HISTORY, "volume >" => 0))
 													->fields('in_price, volume, created_at')
 													->get_all()
 						);
 			$this->_render_page('product_price_edit', $data);
-		
+
 		# full list of products
 		} else {
 			$data = array(
@@ -242,19 +243,19 @@ class Products extends Vet_Controller
 													->where(array("sellable" => 1))
 													->get_all()
 						);
-					
+
 			$this->_render_page('product_price_list', $data);
 		}
 	}
-	
+
 	public function remove_product_price($id, $new = false)
 	{
 		# only admins have access here
 		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
-		
+
 		$to_remove_price = $this->pprice->get($id);
 		$this->pprice->delete($id);
-		
+
 		if (!$new)
 		{
 			redirect('/products/product_price/' . $to_remove_price['product_id']);
@@ -264,12 +265,12 @@ class Products extends Vet_Controller
 			redirect('/products/new/2/' . $to_remove_price['product_id']);
 		}
 	}
-	
+
 	public function product_list($id_or_product = false)
 	{
 		// defaults
 		$products = false;
-		
+
 		if ($id_or_product) {
 			if ($id_or_product == "other") {
 				$products = $this->products
@@ -291,16 +292,16 @@ class Products extends Vet_Controller
 						"products" 		=> $products,
 						"types" 		=> $this->prod_type->get_all()
 					);
-			
+
 		$this->_render_page('products_list', $data);
 	}
-	
+
 	public function product($id = false)
 	{
 		$update = false;
 		if ($this->input->post('submit')) {
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
-			
+
 			$input = array(
 								"name" 				=> $this->input->post('name'),
 								"short_name" 		=> $this->input->post('short_name'),
@@ -326,20 +327,20 @@ class Products extends Vet_Controller
 								"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"limit_stock" 		=> $this->input->post('limit_stock')
 							);
-							
+
 			if ($this->input->post('submit') == "add") {
 				# new product
 				$id = $this->products->insert($input);
 				$update = $id;
-				
+
 				# log this
 				$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $id);
-				
+
 			} elseif ($this->input->post('submit') == "edit") {
 				$update = $this->products->update($input, $id);
 			}
 		}
-		
+
 		$data = array(
 						'product' 	=> ($id) ? $this->products->with_prices('fields:id, volume, price')->get($id) : false,
 						'type' 		=> $this->prod_type->get_all(),
@@ -351,7 +352,7 @@ class Products extends Vet_Controller
 						);
 		$this->_render_page('product_detail', $data);
 	}
-	
+
 	/*
 	delete product
 	*/
@@ -361,7 +362,7 @@ class Products extends Vet_Controller
 		$this->products->delete($id);
 		redirect('/products/product_list');
 	}
-	
+
 	# ajax request to return lot nr and eol date (in case there is no lotnr)
 	public function get_lot_nr()
 	{
@@ -371,7 +372,7 @@ class Products extends Vet_Controller
 							"product_id" 		=> $this->input->post('pid')
 							))
 			->get_all();
-			
+
 		echo ($result) ? json_encode($result) : json_encode(array());
 	}
 
@@ -387,11 +388,11 @@ class Products extends Vet_Controller
 				'barcode' 	=> $barcode,
 				'location' 	=> $location
 				))->get();
-			
+
 		echo ($result) ? json_encode($result) : json_encode(array());
 	}
-	
-	
+
+
 	/*
 		get_product is used in stock_add
 		cause we can only add stock products
@@ -399,9 +400,9 @@ class Products extends Vet_Controller
 	public function get_product()
 	{
 		$query = $this->input->get('query');
-		
+
 		$return = array();
-		
+
 		if (strlen($query) > 1) {
 			# products
 			$result = $this->products
@@ -432,33 +433,33 @@ class Products extends Vet_Controller
 		}
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
-	
+
 	public function gs1_to_product($gls = false, $return = false)
 	{
 		$gs1 = ($gls) ? $gls : $this->input->get('gs1');
-		
+
 		$result = $this->products
 							->fields('id, name, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 							->limit(2)
 							->where('input_barcode', $gs1)
 							->get();
-							
+
 		if (!$return) {
 			echo ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
 		} else {
 			return ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
 		}
 	}
-	
+
 	# return an ajax readable object of possible results
 	public function get_product_or_procedure()
 	{
 		$query = $this->input->get('query');
 		$return = array();
-		
+
 		/*
 			if string is 32 chars long its most likely GS1 barcode
-			
+
 			Searching for a :
 				- product w/ stock
 				- procedure
@@ -468,17 +469,17 @@ class Products extends Vet_Controller
 		if (strlen($query) == 32)
 		{
 			$gsl = $this->parse_gs1($query);
-			
+
 			if (!$gsl) { return false; }
-			
+
 			$stck = $this->stock->gs1_lookup($gsl['pid'], $gsl['lotnr'], $gsl['date'], $this->user->current_location);
-			
+
 			if ($stck)
 			{
 				# should only return a single result
 				$result = $stck['0'];
-				
-				
+
+
 				$query_prices = $this->pprice->get_all($result['pid']);
 				$prices = array();
 				foreach ($query_prices as $s) {
@@ -487,7 +488,7 @@ class Products extends Vet_Controller
 										"price" 	=> $s['price'],
 										);
 				}
-				
+
 				$return[] = array(
 								"value" => $result['pname'],
 								"data" => array(
@@ -513,13 +514,13 @@ class Products extends Vet_Controller
 								->limit(250) # this will count both products + prices + stock (somehow)
 								->order_by("type", "ASC")
 								->get_all();
-								
+
 			# in case no results
 			if ($result) {
 				foreach ($result as $r) {
 					$stock = array();
 					$prices = array();
-					
+
 					# there is stock
 					if (isset($r['stock'])) {
 						foreach ($r['stock'] as $s) {
@@ -558,13 +559,13 @@ class Products extends Vet_Controller
 								);
 				}
 			}
-			
+
 			# procedures
 			$result = $this->procedures
 								->fields('id, name, price, booking_code')
 								->where('name', 'like', $query, true)
 								->get_all();
-						
+
 			if ($result) {
 				foreach ($result as $r) {
 					$return[] = array(
@@ -581,11 +582,41 @@ class Products extends Vet_Controller
 				}
 			}
 		}
-	
+
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
-	
-	
+//
+	/*
+
+	*/
+	public function a_pid_by_type( $id )
+	{
+		$products = $this->products
+								->fields('id, name, unit_sell')
+								->with_stock('fields:volume')
+								->where('type', $id)
+								->get_all();
+
+			$return = array();
+			foreach ($products as $pod) {
+
+				# if there is volume, calculate howmuch
+				# a single query could improve this by doing
+				# a SUM operation
+				$stock = 0;
+				if (isset($pod['stock']))
+				{
+					foreach ($pod['stock'] as $st)
+					{
+						$stock += $st['volume'];
+					}
+				}
+
+				$return [] = array($pod['id'], $pod['name'], $pod['unit_sell'], $stock);
+			}
+		echo json_encode(array("data" => $return));
+	}
+
 	# based on the gs1 code we can get information on the product from the database
 	# even if not we can get date & lotnr and "product id" (not internal product_id)
 	private function parse_gs1($barcode)
@@ -596,16 +627,16 @@ class Products extends Vet_Controller
 			$pid = $result[1];
 			$date = (!$result[3]) ? $result[6] : $result[4];
 			$lotnr = (!$result[3]) ? $result[7] : $result[3];
-			
+
 			$day = (substr($date, 4, 2) == "00") ? "01" : substr($date, 4, 2);
-				
+
 			return array(
 						'date' 	=> "20" . substr($date, 0, 2) . "-" . substr($date, 2,2) . "-" . $day,
 						'lotnr' => $lotnr,
 						'pid' 	=> $pid
-					);	
+					);
 		}
-		
+
 		return false;
 	}
 }

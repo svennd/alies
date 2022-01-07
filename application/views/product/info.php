@@ -20,69 +20,130 @@
 			<?php endif; ?>
 			</div>
 		</div>
-		
-		<div class="card shadow mb-4">
-			<div class="card-header">Products</div>
+
+    <?php if ($product_types) : ?>
+
+    <?php if (count($product_types) > 7) : ?>
+
+        <div class="card shadow mb-4">
+          <div class="card-header">Products</div>
+                <div class="card-body">
+            By category :
+            <ul>
+            <?php foreach($product_types as $type): ?>
+              <li><a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id']; ?>"><?php echo $type['name']; ?></a> <?php echo (isset($type['products'])) ? '( ' . $type['products'][0]['counted_rows'] . ' )' : '';?></li>
+            <?php endforeach; ?>
+            </ul>
+          </div>
+        </div>
+
+    <?php else: // not to many categories ?>
+
+          <div class="card shadow mb-4">
+            <div class="card-header border-bottom">
+            <ul class="nav nav-tabs card-header-tabs" id="mynavtab-types" role="tablist">
+              <?php $i = 0; foreach($product_types as $type): ?>
+
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link <?php echo ($i == 0) ? 'active': ''; ?>" id="info-<?php echo $type['id']; ?>-tab" data-toggle="tab" href="#info-<?php echo $type['id']; ?>" role="tab" aria-controls="info-<?php echo $type['id']; ?>" aria-selected="true"><?php echo $type['name']; ?></a>
+                </li>
+              <?php $i++; endforeach; ?>
+            </ul>
+            </div>
             <div class="card-body">
-				By category :
-				<?php if ($product_types) : ?>
-				<ul>
-				<?php foreach($product_types as $type): ?>
-					<li><a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id']; ?>"><?php echo $type['name']; ?></a> <?php echo (isset($type['products'])) ? '( ' . $type['products'][0]['counted_rows'] . ' )' : '';?></li>
-				<?php endforeach; ?>
-					<li><a href="<?php echo base_url(); ?>products/product_list">List All Products</a></li>
-				</ul>
-				<?php else: ?>
-					No categories defined.
-				<?php endif; ?>
-				<?php if ($this->ion_auth->in_group("admin")): ?>
-				Specific Queries :
-				<ul>
-					<li><a href="<?php echo base_url(); ?>products/product_price">Price Only List</a></li>
-				</ul>
-				<?php endif; ?>
-			</div>
-		</div>
-	</div>
+                <table id="table-info" class="table" >
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  </table>
+            </div>
+          </div>
+
+        <?php endif; ?>
+  <?php else: ?>
+      No categories defined.
+  <?php endif; ?>
+
+  </div>
+
       <div class="col-lg-4 mb-4">
 
-	  <div class="card shadow mb-4">
-			<div class="card-header">Last Modified Products</div>
+
+          <div class="card shadow mb-4">
+            <div class="card-header border-bottom">
+            <ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
+              <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Last modified</a></li>
+              <li class="nav-item" role="presentation"><a class="nav-link" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="false">Last new</a></li>
+            </ul>
+            </div>
             <div class="card-body">
-				<?php if ($last_modified) : ?>
-				<ul>
-					<?php foreach($last_modified as $mod): ?>
-					<li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['updated_at']), time(), 1); ?> Ago)</small></li>
-					<?php endforeach; ?>
-				</ul>
-				<?php else: ?>
-					No Updates.
-				<?php endif; ?>
-			</div>
-		</div>
-		
-      <div class="card shadow mb-4">
-			<div class="card-header">Last Created Products</div>
-            <div class="card-body">
-				<?php if ($last_created) : ?>
-				<ul>
-					<?php foreach($last_created as $mod): ?>
-					<li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['created_at']), time(), 1); ?> Ago)</small></li>
-					<?php endforeach; ?>
-				</ul>
-				<?php else: ?>
-					No created.
-				<?php endif; ?>
-			</div>
-		</div>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
+                  <?php if ($last_modified) : ?>
+                  <ul>
+                    <?php foreach($last_modified as $mod): ?>
+                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['updated_at']), time(), 1); ?> Ago)</small></li>
+                    <?php endforeach; ?>
+                  </ul>
+                  <?php else: ?>
+                    No Updates.
+                  <?php endif; ?>
+                </div>
+                <div class="tab-pane fade" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
+                  <?php if ($last_created) : ?>
+                  <ul>
+                    <?php foreach($last_created as $mod): ?>
+                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['created_at']), time(), 1); ?> Ago)</small></li>
+                    <?php endforeach; ?>
+                  </ul>
+                  <?php else: ?>
+                    No created.
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          </div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#product_list").addClass('active');
+
+  var requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/1";
+
+  var table = $("#table-info").DataTable({
+    ajax: requestUrl,
+    "pageLength": 50,
+    "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+    "columnDefs": [
+      { "targets": 0, "data": null, "render": function ( data, type, row ) {
+        return "<a href='<?php echo base_url(); ?>products/profile/" + row[0] + "'>" + row[1] + "</a>";
+        }
+      },
+      { "targets": 1, "data": null, "render": function ( data, type, row ) {
+        var result = row[3] +" "+ row[2];
+        return result;
+        }
+      },
+    ],
+
+    "order": [[ 0, "desc" ]]
+  });
+
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+      var element_id = this.id.split("-")[1]; // info-id-tab
+      // console.log(element_id);
+      // subsequent ajax call, with button click:
+      requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/" + element_id;
+      table.ajax.url( requestUrl ).load();
+  });
+
 });
 </script>
-  
