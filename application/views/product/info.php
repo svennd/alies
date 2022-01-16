@@ -45,7 +45,7 @@
               <?php $i = 0; foreach($product_types as $type): ?>
 
                 <li class="nav-item" role="presentation">
-                  <a class="nav-link <?php echo ($i == 0) ? 'active': ''; ?>" id="info-<?php echo $type['id']; ?>-tab" data-toggle="tab" href="#info-<?php echo $type['id']; ?>" role="tab" aria-controls="info-<?php echo $type['id']; ?>" aria-selected="true"><?php echo $type['name']; ?></a>
+                  <a class="nav-link <?php echo ($i == 0) ? 'active': ''; ?>" id="info-<?php echo $type['id']; ?>-tab" data-toggle="tab" href="#info-<?php echo $type['id']; ?>" role="tab" aria-controls="info-<?php echo $type['id']; ?>" aria-selected="true"><?php echo $type['name'] . ' (' . $type['products'][0]['counted_rows'] . ')'; ?></a>
                 </li>
               <?php $i++; endforeach; ?>
             </ul>
@@ -55,6 +55,8 @@
                   <thead>
                   <tr>
                     <th>Name</th>
+                    <th>Stock</th>
+                    <th>Stock</th>
                     <th>Stock</th>
                   </tr>
                   </thead>
@@ -77,13 +79,26 @@
           <div class="card shadow mb-4">
             <div class="card-header border-bottom">
             <ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-              <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Last modified</a></li>
-              <li class="nav-item" role="presentation"><a class="nav-link" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="false">Last new</a></li>
+              <li class="nav-item" role="presentation"><a class="nav-link active" id="expire-tab" data-toggle="tab" href="#expire" role="tab" aria-controls="expire" aria-selected="true">Expiring</a></li>
+              <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Modified Products</a></li>
+              <li class="nav-item" role="presentation"><a class="nav-link" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="false">New Products</a></li>
             </ul>
             </div>
             <div class="card-body">
               <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
+                <div class="tab-pane fade active show" id="expire" role="tabpanel" aria-labelledby="expire-tab">
+                  <?php if ($expired) : ?>
+                  <ul>
+                    <?php foreach($expired as $exp_prod): ?>
+                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $exp_prod['products']['id']; ?>"><?php echo $exp_prod['products']['name']; ?></a>
+                      <small>(<?php echo timespan(time(), strtotime($exp_prod['eol']. ' 01:01:01'), 1); ?>, <?php echo round($exp_prod['volume']) . ' ' . $exp_prod['products']['unit_sell'] ?>)</small></li>
+                    <?php endforeach; ?>
+                  </ul>
+                  <?php else: ?>
+                    Nothing expiring
+                  <?php endif; ?>
+                </div>
+                <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
                   <?php if ($last_modified) : ?>
                   <ul>
                     <?php foreach($last_modified as $mod): ?>
@@ -132,10 +147,12 @@ document.addEventListener("DOMContentLoaded", function(){
         return result;
         }
       },
+      { "visible": false, "targets": [2,3]},
     ],
 
-    "order": [[ 0, "desc" ]]
+    "order": [[ 3, "desc" ]]
   });
+
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
       var element_id = this.id.split("-")[1]; // info-id-tab

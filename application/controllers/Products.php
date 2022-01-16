@@ -28,6 +28,15 @@ class Products extends Vet_Controller
 						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(15)->order_by("updated_at", "desc")->get_all(),
 						"search_q"				=> $this->input->post('name'),
 						"types" 					=> $this->prod_type->get_all(),
+						"expired"					=> $this->stock
+																		->fields('eol, volume')
+																		->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
+																		->where('eol > DATE_ADD(NOW(), INTERVAL -10 DAY)', null, null, false, false, true)
+																		->where(array('state' => STOCK_IN_USE))
+																		->with_products('fields: id, name, unit_sell')
+																		->order_by('eol', 'ASC')
+																		->set_cache('expering_items',3600)
+																		->get_all(),
 						"search"					=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
 						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
 						);

@@ -45,22 +45,19 @@
   </div>
 
 	<!-- Bootstrap core JavaScript-->
-	<script src="<?php echo base_url(); ?>assets/js/jQuery.3.4.1.min.js"></script>
-	<script src="<?php echo base_url(); ?>assets/js/bootstrap.bundle.min.js"></script>
+	<script src="<?php echo base_url(); ?>vendor/components/jquery/jquery.min.js"></script>
+	<script src="<?php echo base_url(); ?>vendor/components/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 	<!-- Custom scripts for all pages-->
 	<script src="<?php echo base_url(); ?>assets/js/sb-admin-2.js"></script>
-	
+
 	<!-- datatables -->
-	<script src="<?php echo base_url(); ?>assets/js/jquery.dataTables.min.js"></script>
-	<script src="<?php echo base_url(); ?>assets/js/dataTables.bootstrap4.min.js"></script>
-		
+	<script src="<?php echo base_url(); ?>vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="<?php echo base_url(); ?>vendor/datatables/datatables/media/js/dataTables.bootstrap4.min.js"></script>
+
 	<!-- select -->
-	<script src="<?php echo base_url(); ?>assets/js/select2.min.js"></script>
-	
-	<!-- time based stuff -->
-	<script src="<?php echo base_url(); ?>assets/js/moment.min.js"></script>
-	
+	<script src="<?php echo base_url(); ?>vendor/select2/select2/dist/js/select2.min.js"></script>
+
 	<?php echo (isset($extra_footer)) ? $extra_footer : ""; ?>
 </body>
 

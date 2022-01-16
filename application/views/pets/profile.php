@@ -1,4 +1,4 @@
-<?php 
+<?php
 // determ if we are editing or adding a pet profile
 $edit_mode = (isset($pet)) ? true : false;
 ?>
@@ -10,18 +10,18 @@ $edit_mode = (isset($pet)) ? true : false;
 				<?php if(!$edit_mode): ?>
 					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / Add pet
 				<?php else: ?>
-					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
+					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
 					<?php if($pet['death'] == 1 || $pet['lost'] == 1): ?>
 					<?php echo (isset($pet['name'])) ? $pet['name']: '' ?>
 					<?php else : ?>
-					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo (isset($pet['name'])) ? $pet['name']: '' ?></a> 
+					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo (isset($pet['name'])) ? $pet['name']: '' ?></a>
 					<?php endif; ?>
 					/ Edit pet
 				<?php endif; ?>
 			</div>
 			<div class="card-body">
-<form action="<?php echo ($edit_mode) ? 
-						base_url() . 'pets/edit/' . $pet['id'] : 
+<form action="<?php echo ($edit_mode) ?
+						base_url() . 'pets/edit/' . $pet['id'] :
 						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off">
 
 <?php include 'profile/required.php'; ?>
@@ -99,7 +99,7 @@ var country_code = [];
 	country_code[858] = "Uruguay";
 	country_code[862] = "Venezuela";
 	country_code[891] = "Yogoslavia";
-	
+
 function make_date(date)
 {
 	if($("#dead").prop("checked") == true) { return false; }
@@ -126,11 +126,11 @@ function get_chip_info(chip)
 	if (!chip) {return false;}
 	if(chip.toString().length == 15)
 	{
-		if (chip.substr(0,1) == 9) 
-		{ 
+		if (chip.substr(0,1) == 9)
+		{
 			$("#chip_info").html("manufacture code");
 		}
-		else 
+		else
 		{
 			if(typeof country_code[chip.substr(0,3)] === 'undefined')
 			{
@@ -144,7 +144,7 @@ function get_chip_info(chip)
 	}
 	else
 	{
-		$("#chip_info").html("Unrecognized code");
+		$("#chip_info").html("Unrecognized code, not 15 numbers!");
 	}
 }
 
@@ -156,12 +156,12 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#chip").change(function() {
 		get_chip_info(this.value);
 	});
-	
+
 	$("dead").change(function(event) {
 		var checkbox = event.target;
 		if (checkbox.checked) {
 		} else {
-			
+
 		}
 	});
 

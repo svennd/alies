@@ -11,16 +11,16 @@
 
 	<title>Alies - Dashboard</title>
 
-	<link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>vendor/components/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/sb-admin-2.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/custom.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>assets/css/dataTables.bootstrap4.min.css" rel="stylesheet"> <!-- datatables -->
-	<link href="<?php echo base_url(); ?>assets/css/all.min.css" rel="stylesheet"> <!-- font awesome -->
+	<link href="<?php echo base_url(); ?>vendor/datatables/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet"> <!-- datatables -->
+	<link href="<?php echo base_url(); ?>vendor/components/font-awesome/css/all.min.css" rel="stylesheet"> <!-- font awesome -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
 	<!-- select 2 -->
-	<link href="<?php echo base_url(); ?>assets/css/select2.min.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>assets/css/select2-bootstrap4.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>vendor/ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css" rel="stylesheet">
 	<?php echo (isset($extra_header)) ? $extra_header : ""; ?>
 
 
@@ -30,7 +30,7 @@
 
   <!-- mondal if required -->
   <?php echo $mondal; ?>
-  
+
   <!-- Page Wrapper -->
   <div id="wrapper">
 
@@ -47,13 +47,13 @@
       <!-- Divider -->
       <hr class="sidebar-divider">
 
-	  
+
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <!-- Heading -->
       <div class="sidebar-heading">
         Administration
       </div>
-	  
+
       <li class="nav-item" id="admin">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#adminmgm" aria-expanded="true" aria-controls="adminmgm">
           <i class="fas fa-user-shield"></i>
@@ -99,7 +99,7 @@
       <div class="sidebar-heading">
         Products
       </div>
-	  
+
       <li class="nav-item" id="products">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#prd" aria-expanded="true" aria-controls="prd">
           <i class="fas fa-fw fa-shopping-cart"></i>
@@ -108,16 +108,16 @@
         <div id="prd" class="collapse" aria-labelledby="prd" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Inventory management :</h6>
-			
+
 			<?php if ($this->ion_auth->in_group("admin")): ?>
             <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
 			<?php endif; ?>
-			
+
             <a class="collapse-item" href="<?php echo base_url(); ?>stock" id="stock">Stock</a>
           </div>
         </div>
       </li>
-	  
+
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="reports">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rep" aria-expanded="true" aria-controls="rep">
@@ -135,7 +135,7 @@
           </div>
         </div>
       </li>
-	  
+
       <li class="nav-item" id="backup">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#res" aria-expanded="true" aria-controls="res">
           <i class="fas fa-fw fa-history"></i>
@@ -145,7 +145,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Backup :</h6>
             <a class="collapse-item" href="<?php echo base_url(); ?>backup" id="backup">Backup</a>
-			
+
             <h6 class="collapse-header">Restore :</h6>
             <a class="collapse-item" href="<?php echo base_url(); ?>restore/booking" id="restore_book">Restore Booking</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>restore/locations" id="restore_loc">Restore Locations</a>
@@ -154,7 +154,7 @@
         </div>
       </li>
 	  <?php endif; ?>
-	  
+
       <!-- Divider -->
       <hr class="sidebar-divider">
 
@@ -218,10 +218,10 @@
 
         <!-- Topbar Search -->
 		<?php echo (isset($location)) ? $location : '<span style="color:red">location error</span>'; ?>
-			
+
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-		  
+
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->

@@ -21,13 +21,13 @@
 	 </div>
   </div>
 <div class="row">
-    <div class="col"> 
+    <div class="col">
 	  <div class="form-group">
 		<label for="color">Color</label>
 		<input type="text" name="color" class="form-control" id="color" value="<?php echo ($edit_mode && isset($pet['color'])) ? $pet['color']: '' ?>">
 	  </div>
 	</div>
-    <div class="col"> 
+    <div class="col">
 	  <div class="form-group">
 		<label for="weight">Weight</label>
 		<div class="input-group mb-3">
@@ -51,18 +51,19 @@
     <input type="text" name="chip" class="form-control" id="chip" value="<?php echo ($edit_mode && isset($pet['chip'])) ? $pet['chip']: '' ?>">
 	<i><small id="chip_info" class="form-text text-muted ml-2">&nbsp;</small></i>
   </div>
-  
+
   <h5>Trivia</h5>
   <hr>
   <div class="form-group">
     <label for="exampleFormControlTextarea1">Notes</label>
     <textarea class="form-control" name="msg" id="exampleFormControlTextarea1" rows="3"><?php echo ($edit_mode && isset($pet['note'])) ? $pet['note']: '' ?></textarea>
   </div>
+  <?php if($edit_mode): ?>
   <div class="form-group">
     <label for="nutrion">Nutrion Advice</label>
     <textarea class="form-control" name="nutritional_advice" id="nutrion" rows="3"><?php echo ($edit_mode && isset($pet['nutritional_advice'])) ? $pet['nutritional_advice']: '' ?></textarea>
   </div>
-  
+
   <h5>Status</h5>
   <hr>
 	<div class="form-group">
@@ -78,9 +79,11 @@
 			Lost
 		  </label>
 		</div>
-	</div> 
+	</div>
+<?php endif; ?>
   <h5>Update</h5>
   <hr>
-  
+
   <input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
-  <button type="submit" name="submit" value="1" class="btn btn-primary">Submit</button>
+
+  <button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo ($edit_mode) ? "Update Fiche" : "Add Pet"; ?></button>
