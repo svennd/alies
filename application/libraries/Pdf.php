@@ -12,7 +12,8 @@
  *
  */
 
-require_once(dirname(__FILE__) . '/dompdf/autoload.inc.php');
+require_once(dirname(__FILE__) . '/../../vendor/autoload.php');
+
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -20,11 +21,11 @@ class Pdf
 {
 	public function create($html, $filename, $download = false)
     {
-		
+
 		$options    =   new Options();
 		$options->set('enable_html5_parser', true);
 		$options->set('isRemoteEnabled', true);
-		
+
 	    $dompdf = new Dompdf($options);
 	    $dompdf->loadHtml($html);
 	    $dompdf->render();

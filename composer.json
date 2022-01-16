@@ -6,6 +6,7 @@
         "components/jquery": "3.4.1",
         "datatables/datatables": "1.10.*",
         "select2/select2": "4.*",
-        "ttskch/select2-bootstrap4-theme": "*"
+        "ttskch/select2-bootstrap4-theme": "*",
+        "dompdf/dompdf": "1.0.2"
     }
 }
