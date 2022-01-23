@@ -2,7 +2,7 @@
 	<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 	Report
 		<div class="dropdown no-arrow">
-			
+
 			<?php if($event_info['no_history'] == 1): ?>
 			<a href="<?php echo base_url(); ?>events/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink">
 				<i class="fas fa-eye"></i>
@@ -17,7 +17,7 @@
 	<?php if($event_info['no_history'] == 0): ?>
 	<div class="card-body">
 		<form action="<?php echo base_url(); ?>events/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
-		 
+
 			<div class="form-row">
 			<div class="col-md-2">
 				<div class="form-group">
@@ -27,8 +27,8 @@
 				 </select>
 				</div>
 			</div>
-			
-			
+
+
 			<div class="col">
 			  <div class="form-group">
 				<label for="exampleFormControlInput3">Title :</label>
@@ -36,13 +36,13 @@
 			  </div>
 			</div>
 		  </div>
-		  
+
 		  <div class="form-group">
 			<label for="anamnese">Report</label>
 			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
 			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
 		  </div>
-		  
+
 		<div class="form-row py-2">
 			<div class="col">
 			  <div class="dropbox" id="upload_field">
@@ -57,7 +57,7 @@
 			</div>
 			<?php endif; ?>
 		</div>
-		
+
 		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save"></i> Save</button>
 		</form>
 	</div>
@@ -98,8 +98,9 @@ var data = [
 		{ id: 3, text: "Operatie", title:"fas fa-fw fa-hammer"},
 		{ id: 4, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
 	];
-	
+
 $("#select_type").select2({
+	theme: 'bootstrap4',
 	placeholder: 'Select type',
 	data: data,
 	templateResult: formatState
@@ -145,7 +146,7 @@ $('#anamnese').trumbowyg({
 
 <?php if (!empty($event_info['type'])): ?>
 $('#select_type').val('<?php echo $event_info["type"]; ?>');
-$('#select_type').trigger('change'); 
+$('#select_type').trigger('change');
 <?php endif; ?>
 
 /* add files to event */
@@ -169,15 +170,15 @@ $("#upload_field")
 	.on( "drop", function(e) {
 		$(this).addClass('drag-over');
 		$(this).html("");
-		
+
 		e.preventDefault();
 		e.stopPropagation();
-				
+
 		if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
 			var filelist = e.originalEvent.dataTransfer.files;
 			for(var i=0;i<filelist.length;i++){
 					var file = filelist[i];
-					var file_loader = 
+					var file_loader =
 						'<h4 class="small font-weight-bold m-3">'+file.name+'<span class="float-right" id="text_status_' + file.name + '">&nbsp;</span></h4>' +
 						'<div class="progress m-3"><div id="bar_' + file.name + '" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>';
 					$(this).append(file_loader);
@@ -187,7 +188,7 @@ $("#upload_field")
 					uploadFile(file);
 			}
 		}
-			
+
 	})
 ;
 
@@ -196,36 +197,36 @@ async function uploadFile(file) {
 	const chunkSize = 40000;
 	const url = '<?php echo base_url(); ?>files/new_file_event/<?php echo $event_id; ?>?nocache=' + new Date().getTime();
 	const url_complete = '<?php echo base_url(); ?>files/new_file_event_complete/<?php echo $event_id; ?>';
-	
+
 	/*
 	 file names have a . (dot) in their name making them not selectable
 	*/
 	var progress = $('div[id="bar_' + file.name + '"]');
 	var text_status = $('span[id="text_status_' + file.name + '"]');
-	
+
 	var total = (file.size/chunkSize);
 	var procent_value = 0;
-	
+
 	for (let start = 0; start < file.size; start += chunkSize) {
 		const chunk = file.slice(start, start + chunkSize + 1);
 		const fd = new FormData();
 		fd.append('data', chunk);
 		fd.append('file_name', file.name);
 		fd.append('file_size', file.size);
-		
+
 		/* send file chunk */
 		var respons = await fetch(url, {method: 'POST', body: fd}).then(res => res.text());
-		
+
 		/* calculate & visualize progress */
 		procent_value = Math.ceil((((start + chunkSize)/chunkSize)/total) * 100);
 		progress.attr('aria-valuenow', procent_value).css('width', procent_value +'%');
 	}
-	
+
 	/* send file completion */
 	const compl = new FormData();
 		compl.append('file_name', file.name);
 		compl.append('file_size', file.size);
-		
+
 	/* send file chunk */
 	var response = await fetch(url_complete, {method: 'POST', body: compl}).then(response => response.json());
 	console.log(response);
@@ -244,4 +245,3 @@ async function uploadFile(file) {
 
 });
 </script>
-

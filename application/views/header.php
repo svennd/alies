@@ -20,7 +20,7 @@
 
 	<!-- select 2 -->
 	<link href="<?php echo base_url(); ?>vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>vendor/ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css" rel="stylesheet">
+	<link href="<?php echo base_url(); ?>assets/css/select2-bootstrap4.min.css" rel="stylesheet">
 	<?php echo (isset($extra_header)) ? $extra_header : ""; ?>
 
 
@@ -44,11 +44,11 @@
           <span>Dashboard</span></a>
       </li>
 
+	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <!-- Divider -->
       <hr class="sidebar-divider">
 
 
-	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <!-- Heading -->
       <div class="sidebar-heading">
         Administration
@@ -93,8 +93,6 @@
           </div>
         </div>
       </li>
-	  <?php endif; ?>
-
 
       <div class="sidebar-heading">
         Products
@@ -109,16 +107,14 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Inventory management :</h6>
 
-			<?php if ($this->ion_auth->in_group("admin")): ?>
             <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
-			<?php endif; ?>
+
 
             <a class="collapse-item" href="<?php echo base_url(); ?>stock" id="stock">Stock</a>
           </div>
         </div>
       </li>
 
-	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="reports">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rep" aria-expanded="true" aria-controls="rep">
           <i class="fas fa-fw fa-receipt"></i>
@@ -178,6 +174,11 @@
          <i class="fas fa-fw fa-shopping-cart"></i>
           <span>Products</span></a>
       </li>
+      <li class="nav-item" id="stock">
+        <a class="nav-link" href="<?php echo base_url(); ?>stock">
+         <i class="fas fa-fw fa-dolly"></i>
+          <span>Stock</span></a>
+      </li>
 	  <?php endif; ?>
 		<!--
       <hr class="sidebar-divider">
@@ -191,14 +192,13 @@
           <span>Games</span></a>
       </li>
 	  -->
-      <!-- Divider -->
+		<!--
       <hr class="sidebar-divider d-none d-md-block">
 
-      <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
-
+		-->
     </ul>
     <!-- End of Sidebar -->
 
@@ -228,13 +228,9 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-				<?php if (isset($user)): ?>
-					<?php echo $user->first_name; ?> <?php echo $user->last_name; ?>
-				<?php else : ?>
-					<span style="color:red;">error name</span>
-				<?php endif; ?>
-					</span>
-                <img class="img-profile rounded" src="<?php echo base_url() . 'assets/public/' . (!empty($user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
+										<?php echo (isset($user)) ? $user->first_name. '' . $user->last_name : 'error name'; ?>
+								</span>
+                <img class="img-profile rounded" src="<?php echo base_url() . 'assets/public/' . (!empty($user->image) && is_readable('assets/public/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

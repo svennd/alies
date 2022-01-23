@@ -12,6 +12,9 @@ Requirements :
 3) Configure application/config/config.php (mainly : base_url) and application/config/database.php (hostname, username, password, database)
 4) login at base_url with temporary info : (account) john@doe.no and (password) admin
 
+## run composer to download deps
+composer update
+
 ## Linux : Debian specific
 Install required packages :
 ```sh

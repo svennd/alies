@@ -8,7 +8,7 @@ class Stock extends Vet_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		# models
 		$this->load->model('Products_model', 'product');
 		$this->load->model('Product_type_model', 'prod_type');
@@ -16,7 +16,7 @@ class Stock extends Vet_Controller
 		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Stock_write_off_model', 'stock_write_off_log');
 	}
-	
+
 	public function index($filter = false, $success = false)
 	{
 		$products = array();
@@ -27,31 +27,31 @@ class Stock extends Vet_Controller
 				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
 			}
 		}
-		
+
 		$data = array(
 					"locations" => $this->location,
 					"filter" 	=> $filter,
 					"success" 	=> $success,
 					"products" 	=> $products,
 					);
-					
+
 		$this->_render_page('stock_index', $data);
 	}
-	
+
 	public function stock_detail($pid)
 	{
 		$stock_detail = $this->stock->where(array('product_id' => $pid))
 									->with_products('fields: name, unit_sell, buy_price')
 									->with_stock_locations('fields: name')
 									->get_all();
-		
+
 		$data = array(
 						"stock_detail" => $stock_detail,
 						"stock_usage" => $this->stock->get_usage($pid)
 						);
 		$this->_render_page('stock_detail', $data);
 	}
-	
+
 	/*
 		stock that is close to or has expired.
 	*/
@@ -61,18 +61,18 @@ class Stock extends Vet_Controller
 			->fields('eol, lotnr, volume, barcode')
 			->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 			->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true)
-			->where(array('location' => $this->user->current_location, 'state' => STOCK_IN_USE))
+			->where(array('state' => STOCK_IN_USE))
 			->with_products('fields: name, unit_buy')
 			->with_stock_locations('fields: name')
 			->order_by('eol', 'ASC')
 			->get_all();
-			
+
 		$data = array(
 						"stock_gone_bad" => $expired
 						);
 		$this->_render_page('stock_bad', $data);
 	}
-	
+
 	public function move_stock()
 	{
 		if ($this->input->post('submit') == "barcode") {
@@ -80,12 +80,12 @@ class Stock extends Vet_Controller
 			$new_location = $this->input->post('location');
 			$barcodes 	  = (empty($this->input->post('barcodes'))) ? array() : preg_split("/\r\n|\n|\r/", $this->input->post('barcodes'));
 			$stock_list	  = array();
-			
+
 			if ($barcodes && count($barcodes) > 0) {
 				foreach ($barcodes as $barcode) {
 					# a stock can be split so multiple results could be generated
 					$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location, "state" => STOCK_IN_USE))->get();
-					
+
 					# its a known stock product
 					if ($stock_product) {
 						# index : safety check for doubles
@@ -106,7 +106,7 @@ class Stock extends Vet_Controller
 			} else {
 				$warnings[] = "no barcodes provided.";
 			}
-			
+
 			$data = array(
 							"locations" => $this->location,
 							"warnings" 	=> $warnings,
@@ -115,13 +115,13 @@ class Stock extends Vet_Controller
 						);
 
 			$this->_render_page('stock_move_quantities', $data);
-			
+
 		} elseif ($this->input->post('submit') == "quantities") {
-						
+
 			$from 			= $this->user->current_location;
 			$to 			= $this->input->post('location');
 			$move_volumes 	= $this->input->post('move_volume');
-			
+
 			foreach ($move_volumes as $barcode => $value) {
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
@@ -129,11 +129,11 @@ class Stock extends Vet_Controller
 			redirect('/stock/' . $to . '/' . 1);
 		}
 	}
-	
+
 	public function add_stock($preselected = false)
 	{
 		$error = false;
-		
+
 		if ($this->input->post('submit')) {
 			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')) && $this->input->post('new_volume') < 5000) {
 				# check if this is already in the verify list
@@ -145,7 +145,7 @@ class Stock extends Vet_Controller
 										"in_price" 		=> $this->input->post('in_price'),
 										"state" 		=> STOCK_CHECK
 									))->get();
-									
+
 				# increase current verify stock
 				if ($result) {
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
@@ -155,13 +155,13 @@ class Stock extends Vet_Controller
 				else {
 					# also generate a barcode here
 					$this->load->library('barcode');
-					 
+
 					# generate barcode
 					# reduce time with 01/12/2019
 					# move to a base36 (to use letters)
 					$barcode = base_convert((time() - 1575158400), 10, 36);
 					$this->barcode->generate($barcode);
-				
+
 					$this->stock->insert(array(
 											"product_id" 		=> $this->input->post('pid'),
 											"eol" 				=> $this->input->post('eol'),
@@ -172,7 +172,7 @@ class Stock extends Vet_Controller
 											"volume" 			=> $this->input->post('new_volume'),
 											"state"				=> STOCK_CHECK
 										));
-										
+
 					if ($this->input->post('new_barcode_input')) {
 						$this->product
 								->where(array("id" => $this->input->post('pid')))
@@ -181,12 +181,12 @@ class Stock extends Vet_Controller
 				}
 			} else {
 				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
-				
+
 				# log this
 				$this->logs->logger($this->user->id, WARN, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
 			}
 		}
-		
+
 		$data = array(
 						"error" 		=> $error,
 						"preselected"	=> ($preselected) ? $this->product->fields('id, name, unit_buy')->get($preselected) : false,
@@ -195,24 +195,24 @@ class Stock extends Vet_Controller
 					);
 		$this->_render_page('stock_add', $data);
 	}
-	
+
 	public function delete_stock($stock_id)
 	{
 		$this->stock->where(array("state" => STOCK_CHECK))->delete($stock_id);
 		redirect('stock/add_stock', 'refresh');
 	}
-	
+
 	public function verify_stock()
-	{		
+	{
 		# all products currently in check state are now considered in use
 		$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
-		
+
 		# verify the stock
 		$this->logs->logger($this->user->id, INFO, "stock_verify", "products verified: " . $total);
-		
+
 		redirect('stock/add_stock', 'refresh');
 	}
-	
+
 	public function write_off()
 	{
 		# return the details of the selected product
@@ -235,26 +235,26 @@ class Stock extends Vet_Controller
 												"location" 		=> $this->input->post("location"),
 												"barcode" 		=> $this->input->post("barcode"),
 												"vet" 			=> $this->user->id,
-												
+
 									));
 			}
 
 			redirect('stock/' . $this->input->post("location") . "/" . 2, 'refresh');
 		}
 	}
-	
+
 	public function limit()
 	{
 		# global shortages
 		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
-		
+
 		$result = array();
-		
+
 		if ($r) {
-			
+
 			foreach ($r as $prod) {
 				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
-		
+
 				# false if none found
 				if ($stock && $stock['sum_vol'] < $prod['limit_stock']) {
 					$result[] = array(
@@ -267,7 +267,7 @@ class Stock extends Vet_Controller
 				}
 			}
 		}
-		
+
 		$data = array(
 						"global_stock" 	=> $result,
 						"locations" 	=> $this->location,
@@ -275,7 +275,7 @@ class Stock extends Vet_Controller
 					);
 		$this->_render_page('stock_shortages', $data);
 	}
-	
+
 	public function stock_limit()
 	{
 		if ($this->input->post('submit') == "add") {
@@ -293,25 +293,25 @@ class Stock extends Vet_Controller
 			);
 		$this->_render_page('stock_limit', $data);
 	}
-	
+
 	public function stock_limit_rm($id)
 	{
 		$this->stock_limit->delete($id);
 		redirect('/stock/stock_limit', 'refresh');
 	}
-	
-	
+
+
 	/*
 		house hold functions
 	*/
-	
+
 	# if some remaining data is still visible this can be used to hide it
 	public function stock_clean()
 	{
-		
+
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 		echo "archived " . $r . " lines; <a href='" . base_url('stock') . "'> return</a>";
-		
+
 		# make this traceable
 		$this->logs->logger($this->user->id, INFO, "stock_clean", "archived: " . $r);
 	}

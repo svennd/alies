@@ -149,7 +149,7 @@ function get_chip_info(chip)
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-	$("#breeds").select2();
+	$("#breeds").select2({theme: 'bootstrap4'});
 	$("#birth").change(function() {
 		make_date(this.value);
 	});

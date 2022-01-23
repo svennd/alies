@@ -24,8 +24,8 @@ class Products extends Vet_Controller
 	public function index()
 	{
 		$data = array(
-						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(15)->order_by("created_at", "desc")->get_all(),
-						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(15)->order_by("updated_at", "desc")->get_all(),
+						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(10)->order_by("created_at", "desc")->get_all(),
+						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(10)->order_by("updated_at", "desc")->get_all(),
 						"search_q"				=> $this->input->post('name'),
 						"types" 					=> $this->prod_type->get_all(),
 						"expired"					=> $this->stock

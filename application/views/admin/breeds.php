@@ -26,7 +26,7 @@
 			</form>
 			</div>
 	</div>
-		
+
       <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">Breeds List</h6>
@@ -50,7 +50,7 @@
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
@@ -65,9 +65,9 @@ function show_merge(id)
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({
 			"ajax": "<?php echo base_url(); ?>admin/a_get_breeds",
-			"pageLength": 50, 
+			"pageLength": 50,
 			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-			"columnDefs": [ 
+			"columnDefs": [
 				{ "targets": 1, "data": null, "render": function ( data, type, row ) {
 					var result = "<div id='name_"+ row[0] +"'>"+ row[1] +"</div><div id='edit_"+ row[0] +"' style='display:none;'><form method='post' action='<?php echo base_url(); ?>admin/breeds' class='form-inline'>";
 					result += "<input type='text' class='form-control mb-2 mr-sm-2' name='name' value='"+ row[1] +"' />";
@@ -92,14 +92,13 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#adminbreed").addClass('active');
-		
+
 	$("#dataTable").on('click', '.edit', function(){
 		var id = $(this).attr('id');
 		$("#name_" + id).hide();
 		$("#edit_" + id).show();
 		return false;
 	});
-	$("#new_breed").select2();
+	$("#new_breed").select2({theme: 'bootstrap4'});
 });
 </script>
-  

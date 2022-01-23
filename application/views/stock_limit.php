@@ -41,7 +41,7 @@ foreach ($locations as $l)
 		</div>
 
 	</div>
-      
+
 	<div class="col-lg-8 mb-4">
 
       <div class="card shadow mb-4">
@@ -50,7 +50,7 @@ foreach ($locations as $l)
 			</div>
             <div class="card-body">
 			<?php if ($stock_limit): ?>
-			
+
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
@@ -78,16 +78,15 @@ foreach ($locations as $l)
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#prd").show();
-	$("#product_name").select2();
+	$("#product_name").select2({theme: 'bootstrap4'});
 	$("#products").addClass('active');
 	$("#stock").addClass('active');
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
 </script>
-  

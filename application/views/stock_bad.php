@@ -20,7 +20,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<?php foreach ($stock_gone_bad as $expire): 
+				<?php foreach ($stock_gone_bad as $expire):
 				?>
 				<tr>
 					<td><?php echo $expire['products']['name']; ?></td>
@@ -38,23 +38,23 @@
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#prd").show();
 	$("#products").addClass('active');
-	$("#stock").addClass('active');	
-	
+	$("#stock").addClass('active');
+
 	const current_date = new Date();
-	
+
 	$("#dataTable").DataTable({
-			"pageLength": 50, 
+			"pageLength": 50,
 			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 			"order": [[ 1, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
-				var product_date = new Date(data[1]);				
+				var product_date = new Date(data[1]);
 				date_diff = (current_date - product_date);
 				if( date_diff > 0){
 					$(row).addClass("table-secondary");
@@ -66,4 +66,3 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 });
 </script>
-  

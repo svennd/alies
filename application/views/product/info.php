@@ -1,3 +1,9 @@
+<style>
+.list-group-hack {
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 0px;
+}
+</style>
 <div class="row">
       <div class="col-lg-8 mb-4">
 
@@ -80,42 +86,66 @@
             <div class="card-header border-bottom">
             <ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
               <li class="nav-item" role="presentation"><a class="nav-link active" id="expire-tab" data-toggle="tab" href="#expire" role="tab" aria-controls="expire" aria-selected="true">Expiring</a></li>
-              <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Modified Products</a></li>
               <li class="nav-item" role="presentation"><a class="nav-link" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="false">New Products</a></li>
+              <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Modified Products</a></li>
             </ul>
             </div>
             <div class="card-body">
               <div class="tab-content" id="myTabContent">
+
+                <!-- Expired -->
                 <div class="tab-pane fade active show" id="expire" role="tabpanel" aria-labelledby="expire-tab">
+
                   <?php if ($expired) : ?>
-                  <ul>
-                    <?php foreach($expired as $exp_prod): ?>
-                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $exp_prod['products']['id']; ?>"><?php echo $exp_prod['products']['name']; ?></a>
-                      <small>(<?php echo timespan(time(), strtotime($exp_prod['eol']. ' 01:01:01'), 1); ?>, <?php echo round($exp_prod['volume']) . ' ' . $exp_prod['products']['unit_sell'] ?>)</small></li>
+                  <div class="list-group">
+                    <?php $i=0; foreach($expired as $exp_prod): $i++; if($i > 10) continue; ?>
+                      <a href="<?php echo base_url(); ?>products/profile/<?php echo $exp_prod['products']['id']; ?>" class="list-group-item list-group-item-action list-group-hack">
+                        <div class="d-flex w-100 justify-content-between">
+                          <?php echo round($exp_prod['volume']) . ' ' . $exp_prod['products']['unit_sell'] ?>, <?php echo $exp_prod['products']['name']; ?>
+                          <small>in <?php echo timespan(time(), strtotime($exp_prod['eol']. ' 01:01:01'), 1); ?></small>
+                        </div>
+                      </a>
                     <?php endforeach; ?>
-                  </ul>
+                  </div>
+
+                  <br />
+                  <a href="<?php echo base_url(); ?>stock/expired_stock" class="btn btn-sm btn-outline-warning">Details (<?php echo count($expired); ?>)</a>
                   <?php else: ?>
                     Nothing expiring
                   <?php endif; ?>
                 </div>
+
+                <!-- Modified products -->
                 <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
                   <?php if ($last_modified) : ?>
-                  <ul>
-                    <?php foreach($last_modified as $mod): ?>
-                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['updated_at']), time(), 1); ?> Ago)</small></li>
-                    <?php endforeach; ?>
-                  </ul>
+                    <div class="list-group">
+                      <?php foreach($last_modified as $mod): ?>
+                        <a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>" class="list-group-item list-group-item-action list-group-hack">
+                          <div class="d-flex w-100 justify-content-between">
+                            <?php echo $mod['name']; ?>
+                            <small><?php echo timespan(time(), strtotime($mod['updated_at']. ' 01:01:01'), 1); ?> ago</small>
+                          </div>
+                        </a>
+                      <?php endforeach; ?>
+                    </div>
                   <?php else: ?>
                     No Updates.
                   <?php endif; ?>
                 </div>
+
+                <!-- New products -->
                 <div class="tab-pane fade" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
                   <?php if ($last_created) : ?>
-                  <ul>
-                    <?php foreach($last_created as $mod): ?>
-                    <li><a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['created_at']), time(), 1); ?> Ago)</small></li>
-                    <?php endforeach; ?>
-                  </ul>
+                    <div class="list-group">
+                      <?php foreach($last_created as $mod): ?>
+                        <a href="<?php echo base_url(); ?>products/profile/<?php echo $mod['id']; ?>" class="list-group-item list-group-item-action list-group-hack">
+                          <div class="d-flex w-100 justify-content-between">
+                            <?php echo $mod['name']; ?>
+                            <small><?php echo timespan(time(), strtotime($mod['created_at']. ' 01:01:01'), 1); ?> ago</small>
+                          </div>
+                        </a>
+                      <?php endforeach; ?>
+                    </div>
                   <?php else: ?>
                     No created.
                   <?php endif; ?>
@@ -130,6 +160,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+	$("#product_list").addClass('active');
 
   var requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/1";
 
