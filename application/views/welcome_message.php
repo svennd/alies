@@ -11,7 +11,7 @@
 				Welcome
 			</div>
 			<div class="card-body">
-			
+
 <div class="list-group">
 
 <?php if ($local_stock && count($local_stock) > 0): ?>
@@ -59,7 +59,7 @@
 				<div class="d-flex align-items-center justify-content-between mb-4">
 					<div class="d-flex align-items-center flex-shrink-0 mr-3">
 						<div class="avatar avatar-xl mr-3 bg-gray-200">
-							<img class="rounded img-fluid" style="max-width: 5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
+							<img class="rounded img-fluid" style="max-width: 5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image']) && is_readable('assets/public/' . $vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
 						</div>
 						<div class="d-flex flex-column font-weight-bold">
 						<a class="text-dark line-height-normal mb-1" href="<?php echo base_url(); ?>vet/pub/<?php echo $vet['id']; ?>"><?php echo $vet['first_name']; ?> <?php echo $vet['last_name']; ?></a>
@@ -77,7 +77,7 @@
 Please select your location :<br/><br/>
 <div class="row">
 	<?php foreach($locations as $l) : ?>
-	
+
   <div class="col-sm-3"><a class="btn btn-warning" href="<?php echo base_url() . '/welcome/change_location/' . $l['id']; ?>"><?php echo $l['name'] ?></a></div>
 	<?php endforeach; ?>
 </div>
