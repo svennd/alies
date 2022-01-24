@@ -22,7 +22,7 @@ class Stock extends Vet_Controller
 		$products = array();
 		if ($filter) {
 			if ($filter == "all") {
-				$products = $this->stock->where(array('state' => STOCK_IN_USE))->get_all_products();
+				$products = $this->stock->get_all_products();
 			} else {
 				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
 			}
@@ -30,7 +30,7 @@ class Stock extends Vet_Controller
 
 		$data = array(
 					"locations" => $this->location,
-					"filter" 	=> $filter,
+					"filter" 		=> $filter,
 					"success" 	=> $success,
 					"products" 	=> $products,
 					);
@@ -38,12 +38,19 @@ class Stock extends Vet_Controller
 		$this->_render_page('stock_index', $data);
 	}
 
-	public function stock_detail($pid)
+	public function stock_detail($pid, $all = false)
 	{
-		$stock_detail = $this->stock->where(array('product_id' => $pid))
+		$stock_detail = ($all) ?
+									$this->stock->where(array('product_id' => $pid))
 									->with_products('fields: name, unit_sell, buy_price')
 									->with_stock_locations('fields: name')
-									->get_all();
+									->get_all()
+									:
+									$this->stock->where(array('state' => STOCK_IN_USE, 'product_id' => $pid))
+									->with_products('fields: name, unit_sell, buy_price')
+									->with_stock_locations('fields: name')
+									->get_all()
+									;
 
 		$data = array(
 						"stock_detail" => $stock_detail,

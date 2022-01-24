@@ -27,6 +27,7 @@
 			</div>
 		</div>
 
+
     <?php if ($product_types) : ?>
 
     <?php if (count($product_types) > 7) : ?>
@@ -80,6 +81,95 @@
   </div>
 
       <div class="col-lg-4 mb-4">
+
+        <div class="card shadow mb-4">
+          <div class="card-header border-bottom">
+          <ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
+            <li class="nav-item" role="presentation"><a class="nav-link active" id="moveprod-tab" data-toggle="tab" href="#moveprod" role="tab" aria-controls="moveprod" aria-selected="true">Move products</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" id="writeoff-tab" data-toggle="tab" href="#writeoff" role="tab" aria-controls="writeoff" aria-selected="false">Write off</a></li>
+          </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+
+              <!-- move product -->
+              <div class="tab-pane fade active show" id="moveprod" role="tabpanel" aria-labelledby="moveprod-tab">
+                  <?php if($success == 1): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      Product(s) moved !
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  <?php endif; ?>
+                  <form action="<?php echo base_url(); ?>stock/move_stock" method="post" autocomplete="off">
+                  <div class="form-group">
+                    <label for="barcodes">Add product(s) by barcode :</label>
+                    <textarea class="form-control" name="barcodes" aria-describedby="barcodesHelp"  id="barcodes" rows="3"></textarea>
+                    <small id="barcodesHelp" class="form-text text-muted">One line per product</small>
+                  </div>
+
+                <div class="form-row">
+                  <div class="col mb-3">
+                    <label for="disabledTextInput">From Location</label>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="<?php echo $current_location; ?>" readonly>
+                  </div>
+                  <div class="col mb-3">
+                    <label for="exampleFormControlInput1">to Location</label>
+                    <select name="location" class="form-control" id="location">
+                      <?php foreach($locations as $location): ?>
+                        <?php if ($location['name'] == $current_location) { continue; } ?>
+                        <option value="<?php echo $location['id']; ?>"><?php echo $location['name']; ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                </div>
+
+
+                    <button type="submit" name="submit" value="barcode" class="btn btn-primary">Move</button>
+                  </form>
+              </div>
+
+              <div class="tab-pane fade" id="writeoff" role="tabpanel" aria-labelledby="writeoff-tab">
+                <?php if($success == 2): ?>
+          				<div class="alert alert-success alert-dismissible fade show" role="alert">
+          					Products removed from stock !
+          						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          						<span aria-hidden="true">&times;</span>
+          					  </button>
+          				</div>
+          			<?php endif; ?>
+          				<?php if(isset($warnings) && count($warnings) > 0): ?>
+          				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+          					<strong>Holy guacamole!</strong> We have some issue :
+          					<ul>
+          					  <?php foreach($warnings as $w): ?>
+          						<li><?php echo $w; ?></li>
+          					  <?php	endforeach; ?>
+          					</ul>
+          					  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          						<span aria-hidden="true">&times;</span>
+          					  </button>
+          				</div>
+          				<?php endif; ?>
+          				<form action="<?php echo base_url(); ?>stock/write_off" method="post" autocomplete="off">
+          				<div class="form-group">
+          					<label for="barcodes">Write off product by barcode :</label>
+          					<input type="text" id="product_barcode" name="barcode" class="form-control">
+          				</div>
+          				  <div class="form-group">
+          					<label for="exampleFormControlInput1">from Stock Location</label>
+
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="<?php echo $current_location; ?>" readonly>
+                    <input type="hidden" name="location" value="<?php echo $current_loc_id; ?>" />
+          				  </div>
+          				  <button type="submit" name="submit" value="writeoff" class="btn btn-danger">Remove</button>
+          				</form>
+              </div>
+
+            </div>
+          </div>
+        </div>
 
 
           <div class="card shadow mb-4">

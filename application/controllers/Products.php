@@ -21,8 +21,17 @@ class Products extends Vet_Controller
 		$this->load->model('Logs_model', 'logs');
 	}
 
-	public function index()
+	public function index($filter = false, $success = false)
 	{
+		$products = array();
+		if ($filter) {
+			if ($filter == "all") {
+				$products = $this->stock->get_all_products();
+			} else {
+				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
+			}
+		}
+
 		$data = array(
 						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(10)->order_by("created_at", "desc")->get_all(),
 						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(10)->order_by("updated_at", "desc")->get_all(),
@@ -37,6 +46,11 @@ class Products extends Vet_Controller
 																		->order_by('eol', 'ASC')
 																		->set_cache('expering_items',3600)
 																		->get_all(),
+						"locations" 		=> $this->location,
+						"filter" 				=> $filter,
+						"success" 			=> $success,
+						"products" 			=> $products,
+						"current_loc_id"	=> $this->user->current_location,
 						"search"					=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
 						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
 						);

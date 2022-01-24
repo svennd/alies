@@ -14,8 +14,6 @@
 			<hr/>
 			<br/>
 			<?php if ($products): ?>
-
-
 				<?php if($filter == "all"): ?>
 					<table class="table" id="dataTable">
 					<thead>

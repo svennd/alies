@@ -4,7 +4,7 @@
 	</div>
 	<div class="card-body">
 	<?php if ($stock_detail): ?>
-	
+
 		<table class="table" id="dataTable">
 		<thead>
 		<tr>
@@ -15,7 +15,7 @@
 			<th>In Price</th>
 			<th>Barcode</th>
 			<th>Location</th>
-			<th>State</th>
+			<!-- <th>State</th> -->
 		</tr>
 		</thead>
 		<tbody>
@@ -29,11 +29,12 @@
 			<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 			<td><?php echo $detail['barcode']; ?></td>
 			<td><?php echo $detail['stock_locations']['name']; ?></td>
-			<td><?php echo $detail['state']; ?></td>
+			<!-- <td><?php echo $detail['state']; ?></td> -->
 		</tr>
 		<?php endforeach; ?>
 		</tbody>
 		</table>
+		<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id'] . '/show_all'); ?>" class="btn btn-sm btn-info">show history</a>
 	<?php else: ?>
 		no entries
 	<?php endif; ?>
@@ -46,7 +47,7 @@
 	</div>
 	<div class="card-body">
 	<?php if ($stock_usage): ?>
-	
+
 		<table class="table" id="dataTable">
 		<thead>
 		<tr>
