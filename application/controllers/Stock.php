@@ -213,7 +213,7 @@ class Stock extends Vet_Controller
 		redirect('stock/add_stock', 'refresh');
 	}
 
-	public function write_off()
+	public function write_off($redir = false)
 	{
 		# return the details of the selected product
 		if ($this->input->post('submit') == "writeoff") {
@@ -231,15 +231,23 @@ class Stock extends Vet_Controller
 				$this->stock->reduce_product($this->input->post("barcode"), $this->input->post("location"), $this->input->post("volume"));
 				$this->stock_write_off_log->insert(array(
 												"product_id" 	=> $this->input->post("product_id"),
-												"volume" 		=> $this->input->post("volume"),
+												"volume" 			=> $this->input->post("volume"),
 												"location" 		=> $this->input->post("location"),
 												"barcode" 		=> $this->input->post("barcode"),
-												"vet" 			=> $this->user->id,
-
+												"vet" 				=> $this->user->id,
 									));
+				# clean stock since most likely this will result in a 0 line, no need to print stuff
+				$this->stock_clean(false);
 			}
 
-			redirect('stock/' . $this->input->post("location") . "/" . 2, 'refresh');
+			if ($redir)
+			{
+					redirect('stock/' . $redir, 'refresh');
+			}
+			else
+			{
+					redirect('stock/' . $this->input->post("location") . "/" . 2, 'refresh');
+			}
 		}
 	}
 
@@ -306,11 +314,11 @@ class Stock extends Vet_Controller
 	*/
 
 	# if some remaining data is still visible this can be used to hide it
-	public function stock_clean()
+	public function stock_clean($print = true)
 	{
 
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
-		echo "archived " . $r . " lines; <a href='" . base_url('stock') . "'> return</a>";
+		echo ($print) ? "archived " . $r . " lines; <a href='" . base_url('stock') . "'> return</a>" : "";
 
 		# make this traceable
 		$this->logs->logger($this->user->id, INFO, "stock_clean", "archived: " . $r);

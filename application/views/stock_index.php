@@ -5,7 +5,7 @@
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / List
 			</div>
             <div class="card-body">
-			<p>Locations : 
+			<p>Locations :
 				<?php foreach ($locations as $loc): ?>
 					<a href="<?php echo base_url(); ?>stock/<?php echo $loc['id'] ?>" class="btn <?php echo ($loc['id'] == $filter) ? 'btn-outline-success' : 'btn-outline-primary';?>"><?php echo $loc['name']; ?></a>
 				<?php endforeach; ?>
@@ -15,7 +15,7 @@
 			<br/>
 			<?php if ($products): ?>
 
-					
+
 				<?php if($filter == "all"): ?>
 					<table class="table" id="dataTable">
 					<thead>
@@ -69,9 +69,11 @@
   <div class="col-lg-4 mb-4">
 	<a href="<?php echo base_url(); ?>stock/add_stock" class="btn btn-success btn-lg mb-3"><i class="fas fa-shopping-cart"></i> Add Stock</a>
 	<a href="<?php echo base_url(); ?>stock/limit" class="btn btn-warning btn-lg mb-3"><i class="fas fa-exclamation-triangle"></i> Shortages</a>
+  <?php if ($this->ion_auth->in_group("admin")): ?>
 	<a href="<?php echo base_url(); ?>stock/stock_limit" class="btn btn-info btn-lg mb-3"><i class="fas fa-tasks"></i> Local Limits</a>
-	<a href="<?php echo base_url(); ?>stock/expired_stock" class="btn btn-danger btn-lg mb-3"> <i class="fas fa-prescription-bottle"></i> Bad Stock</a>
-    
+  <?php endif; ?>
+	<a href="<?php echo base_url(); ?>stock/expired_stock" class="btn btn-danger btn-lg mb-3"> <i class="fas fa-prescription-bottle"></i> Expired Stock</a>
+
 	<div class="card shadow mb-4">
 		<div class="card-header">
 			<a href="<?php echo base_url(); ?>stock">Stock</a> / Move stock
@@ -90,8 +92,8 @@
 				<label for="barcodes">Add product(s) by barcode :</label>
 				<textarea class="form-control" name="barcodes" aria-describedby="barcodesHelp"  id="barcodes" rows="3"></textarea>
 				<small id="barcodesHelp" class="form-text text-muted">One line per product</small>
-			</div>	
-			
+			</div>
+
 		<div class="form-row">
 			<div class="col mb-3">
 				<label for="disabledTextInput">From Location</label>
@@ -107,8 +109,8 @@
 				</select>
 			</div>
 		</div>
-		
-		
+
+
 			  <button type="submit" name="submit" value="barcode" class="btn btn-primary">Move</button>
 			</form>
 		</div>
@@ -118,7 +120,7 @@
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / Write off
 			</div>
-            <div class="card-body">	
+            <div class="card-body">
 			<?php if($success == 2): ?>
 				<div class="alert alert-success alert-dismissible fade show" role="alert">
 					Products removed from stock !
@@ -129,10 +131,10 @@
 			<?php endif; ?>
 				<?php if(isset($warnings) && count($warnings) > 0): ?>
 				<div class="alert alert-warning alert-dismissible fade show" role="alert">
-					<strong>Holy guacamole!</strong> We have some issue : 
+					<strong>Holy guacamole!</strong> We have some issue :
 					<ul>
 					  <?php foreach($warnings as $w): ?>
-						<li><?php echo $w; ?></li> 
+						<li><?php echo $w; ?></li>
 					  <?php	endforeach; ?>
 					</ul>
 					  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -144,7 +146,7 @@
 				<div class="form-group">
 					<label for="barcodes">Write off product by barcode :</label>
 					<input type="text" id="product_barcode" name="barcode" class="form-control">
-				</div>	
+				</div>
 				  <div class="form-group">
 					<label for="exampleFormControlInput1">from Stock Location</label>
 					<select name="location" class="form-control" id="location">
@@ -157,9 +159,9 @@
 				</form>
 			</div>
 		</div>
-		
+
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
@@ -167,8 +169,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#prd").show();
 	$("#products").addClass('active');
 	$("#stock").addClass('active');
-	
+
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
 </script>
-  

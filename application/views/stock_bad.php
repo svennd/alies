@@ -5,8 +5,9 @@
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>stock">Stock</a> / Expired stock
 			</div>
-            <div class="card-body">
-			<p>This table shows products that are expired (up to 360d) or are going to expire soon (90d). Background red are <30d, background grey are expired.<br/></p>
+      <div class="card-body">
+			<p>This table shows products that are expired (up to 360d) or are going to expire soon (90d).
+        <span class="p-1 bg-danger text-white">Expiring soon (30d)</span>, <span class="p-1 bg-secondary text-white">Expired</span>.<br/></p>
 			<?php if ($stock_gone_bad): ?>
 				<table class="table" id="dataTable">
 				<thead>
@@ -16,7 +17,8 @@
 					<th>Lotnr</th>
 					<th>Volume</th>
 					<th>Location</th>
-					<th>barcode</th>
+					<th>Barcode</th>
+          <th>Options</h>
 				</tr>
 				</thead>
 				<tbody>
@@ -29,12 +31,28 @@
 					<td><?php echo $expire['volume']; ?> <?php echo $expire['products']['unit_buy']; ?></td>
 					<td><?php echo $expire['stock_locations']['name']; ?></td>
 					<td><?php echo $expire['barcode']; ?></td>
+          <td>
+            <?php
+              $date = new DateTime($expire['eol']);
+              $now = new DateTime();
+
+              if($date < $now):
+            ?>
+            <form action="<?php echo base_url(); ?>stock/write_off/expired_stock" method="post" autocomplete="off">
+    					<input type="hidden" name="volume" value="<?php echo $expire['volume']; ?>">
+    					<input type="hidden" name="product_id" value="<?php echo $expire['products']['id']; ?>">
+    					<input type="hidden" name="location" value="<?php echo $expire['stock_locations']['id']; ?>">
+    					<input type="hidden" name="barcode" value="<?php echo $expire['barcode']; ?>">
+    				  <button type="submit" name="submit" value="write_off_q" class="btn btn-primary">Write off</button>
+    				</form>
+            <?php endif; ?>
+          </td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
 				</table>
 			<?php endif; ?>
-                </div>
+      </div>
 		</div>
 
 	</div>
