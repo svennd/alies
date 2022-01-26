@@ -4,7 +4,7 @@
 
 <div class="row">
 
-	<div class="col-xl-9 col-lg-8">
+	<div class="col-xl-8 col-lg-8">
 
 		<div class="card mb-4">
 			<div class="card-header">
@@ -15,7 +15,7 @@
 <div class="list-group">
 
 <?php if ($local_stock && count($local_stock) > 0): ?>
-  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action">
+  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action list-group-hack">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1">Local Stock Shortages</h5>
 		<small class="text-muted"></small>
@@ -25,7 +25,7 @@
 <?php endif; ?>
 
 <?php if (count($global_stock) > 0): ?>
-  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action">
+  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action list-group-hack">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1">Global Stock Shortages</h5>
 		<small class="text-muted"></small>
@@ -35,7 +35,7 @@
 <?php endif; ?>
 
 <?php if ($bad_products && count($bad_products) > 0): ?>
-  <a href="<?php echo base_url(); ?>stock/expired_stock" class="list-group-item list-group-item-action">
+  <a href="<?php echo base_url(); ?>stock/expired_stock" class="list-group-item list-group-item-action list-group-hack">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1">Expiring Local Stock</h5>
 		<small class="text-muted"></small>
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-xl-3 col-lg-4">
+	<div class="col-xl-4 col-lg-4">
 		<div class="card mb-4">
 			<div class="card-header">
 				Vets
