@@ -40,9 +40,9 @@ class Stock_model extends MY_Model
 		# get product offset
 		# this is a amount/volume that is lost every
 		# sell; for example dead volume in a needle
-		$sql = "SELECT id, offset FROM products WHERE id = '" . $product_id . "' LIMIT 1;";
+		$sql = "SELECT id, dead_volume FROM products WHERE id = '" . $product_id . "' LIMIT 1;";
 		$product = $this->db->query($sql)->result_array()[0];
-		$volume += $product['offset'];
+		$volume += $product['dead_volume'];
 
 		# if we get a barcode and a location, we can substract easy
 		if ($barcode && $location) {

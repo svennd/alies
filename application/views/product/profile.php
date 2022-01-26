@@ -11,9 +11,9 @@ foreach ($locations as $l)
 		<a href="<?php echo base_url(); ?>products">Products</a> /
 		<?php echo (isset($product['name'])) ? $product['name']: '' ?>
 	</div>
-	
+
 	<div class="card-body">
-	
+
 		<div class="row">
 			<div class="col-sm-8">
 				<h2><?php echo (isset($product['name'])) ? $product['name']: '' ?> <span class="badge badge-secondary"><?php echo (isset($product['type']['name'])) ? $product['type']['name']: '' ?></span></h2>
@@ -66,7 +66,7 @@ foreach ($locations as $l)
 		<div style="width:250px;">
 		<small>Consumer price : </small>
 		<p class="lead ml-3" style="color:#fa591d;"><strong>
-		<?php 
+		<?php
 			if ($product['prices'])
 			{
 				if (count($product['prices']) > 1)
@@ -94,7 +94,7 @@ foreach ($locations as $l)
 		</div>
 	</div>
 </div>
-	
+
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card shadow mb-4">
@@ -124,15 +124,15 @@ foreach ($locations as $l)
 									<td><?php echo ($history_1y) ? floatval($history_1y['sum_vol']) : 0; ?> <?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?></td>
 								</tr>
 								</table>
-								
+
 								<h5>Comment</h5>
-								<form action="<?php echo base_url(); ?>products/profile/<?php echo $product['id']; ?>" method="post" autocomplete="off">  
+								<form action="<?php echo base_url(); ?>products/profile/<?php echo $product['id']; ?>" method="post" autocomplete="off">
 								  <div class="form-group">
 									<textarea class="form-control" name="message" id="message" rows="6"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
 								  </div>
 								  <button type="submit" name="submit" value="update" class="btn btn-primary">Update</button>
 								</form>
-								
+
 							</div>
 							<div class="col-sm-6">
 								<h5>Product Details</h5>
@@ -156,7 +156,7 @@ foreach ($locations as $l)
 								<?php if (!empty($product['toedieningsweg'])) : ?>
 								<tr>
 									<td>Dead Volume</td>
-									<td><?php echo (isset($product['offset']) && $product['offset'] != 0) ? $product['offset']: '' ?></td>
+									<td><?php echo (isset($product['dead_volume']) && $product['dead_volume'] != 0) ? $product['dead_volume']: '' ?></td>
 								</tr>
 								<?php endif; ?>
 								<tr>
@@ -200,8 +200,8 @@ foreach ($locations as $l)
 						<small>Product entered : <?php echo date_format(date_create($product['created_at']), $user->user_date); ?>, last edit : <?php echo date_format(date_create($product['updated_at']), $user->user_date); ?></small>
 					</div>
 					<div class="tab-pane fade" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
-						<?php if (isset($product['stock'])): 
-						
+						<?php if (isset($product['stock'])):
+
 						 // check if local stock is empty
 						 $local_stock_count = 0;
 						 foreach($product['stock'] as $stock): if($user->current_location == $stock['location']): $local_stock_count++; endif; endforeach;
@@ -272,10 +272,10 @@ foreach ($locations as $l)
 		</div>
 	</div>
 </div>
-	
+
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	
+
 	$('#message').trumbowyg({
 
     btns: [
@@ -298,4 +298,3 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 });
 </script>
-  

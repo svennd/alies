@@ -7,8 +7,8 @@
 .bs-wizard > .bs-wizard-step + .bs-wizard-step {}
 .bs-wizard > .bs-wizard-step .bs-wizard-stepnum {color: #595959; font-size: 16px; margin-bottom: 5px;}
 .bs-wizard > .bs-wizard-step .bs-wizard-info {color: #999; font-size: 14px;}
-.bs-wizard > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #fbe8aa; top: 45px; left: 50%; margin-top: -15px; margin-left: -15px; border-radius: 50%;} 
-.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #fbbd19; border-radius: 50px; position: absolute; top: 8px; left: 8px; } 
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #fbe8aa; top: 45px; left: 50%; margin-top: -15px; margin-left: -15px; border-radius: 50%;}
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #fbbd19; border-radius: 50px; position: absolute; top: 8px; left: 8px; }
 .bs-wizard > .bs-wizard-step > .progress {position: relative; border-radius: 0px; height: 8px; box-shadow: none; margin: 20px 0;}
 .bs-wizard > .bs-wizard-step > .progress > .progress-bar {width:0px; box-shadow: none; background: #fbe8aa;}
 .bs-wizard > .bs-wizard-step.complete > .progress > .progress-bar {width:100%;}
@@ -21,13 +21,13 @@
 .bs-wizard > .bs-wizard-step:last-child  > .progress {width: 50%;}
 .bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
 /*END Form Wizard*/
-	
+
 </style>
 <div class="card shadow mb-4">
 	<div class="card-header">
 		<a href="<?php echo base_url(); ?>products">Products</a> / New Product
 	</div>
-	
+
 	<div class="card-body">
 		<div class="row bs-wizard" style="border-bottom:0;">
 
@@ -52,7 +52,7 @@
 			  <div class="bs-wizard-info text-center">Add stock</div>
 			</div>
 		</div>
-		
+
 		<?php if ($step == "1"): ?>
 		<form action="<?php echo base_url(); ?>products/new" method="post" autocomplete="off">
 			<h5>Product info</h5>
@@ -95,10 +95,10 @@
 				<div class="col mb-3">&nbsp;
 				</div>
 			</div>
-			
+
 			<br/>
 			<h5>Vaccin</h5>
-			<hr />	
+			<hr />
 			<div class="form-row">
 				<div class="col mb-3">
 					<div class="custom-control custom-switch">
@@ -114,10 +114,10 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<br/>
 			<h5>Transaction info</h5>
-			<hr />	
+			<hr />
 			<div class="form-row">
 				<div class="col mb-3">
 				<div class="custom-control custom-switch">
@@ -127,7 +127,7 @@
 				</div>
 				<div class="col mb-3">&nbsp;</div>
 			</div>
-			
+
 			<div class="form-row">
 				<div class="col">
 				<label for="exampleFormControlInput3">Buy volume*</label>
@@ -150,7 +150,7 @@
 				</div>
 			</div>
 			<br/>
-				
+
 			<div class="form-row">
 				<div class="col">
 				<label for="exampleFormControlInput3">BTW buy</label>
@@ -172,16 +172,16 @@
 				</div>
 				</div>
 			</div>
-			
-			<br/>			
+
+			<br/>
 			<h5>Advanced</h5>
-			<hr />		
+			<hr />
 
 			<div class="form-row">
 				<div class="col mb-3">
 				<label for="exampleFormControlInput3">Dead volume</label>
-				<input type="text" name="offset" class="form-control" id="exampleFormControlInput3" value="">
-				<small id="offsetHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
+				<input type="text" name="dead_volume" class="form-control" id="exampleFormControlInput3" value="">
+				<small id="dead_volumeHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
 				</div>
 				<div class="col mb-3">
 				<label for="exampleFormControlInput3">Min. requirement stock</label>
@@ -201,17 +201,17 @@
 				<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="">
 				<small class="form-text text-muted" id="extra_info">Set the barcode manually</small>
 				</div>
-			</div>		
+			</div>
 		<br/>
 		<button type="submit" name="submit" value="add" class="btn btn-outline-success">Next</button>
 		</form>
-		
+
 		<?php elseif ($step == "2"): ?>
 		<?php if ($product): ?>
-		
+
 				<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
 				<h5>Catalog Price : <?php echo $product['name'] ?></h5>
-				<hr />	
+				<hr />
 				<div class="form-row">
 					<div class="col">
 						<label for="exampleFormControlInput3">Catalog Price</label>
@@ -230,12 +230,12 @@
 						</div>
 					</div>
 				</div>
-				</form>		
-				
+				</form>
+
 				<br/>
 				<?php if (!is_null($product['prices'])): ?>
 				<h5>Current Sell Price</h5>
-				<hr />	
+				<hr />
 					<div class="form-row">
 						<div class="col-2">
 							<label for="exampleFormControlInput3">Volume</label>
@@ -249,10 +249,10 @@
 					$unit_price = ($product['buy_price']/$product['buy_volume']);
 					$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 				?>
-				
+
 					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
 					<div class="form-row">
-					
+
 						<div class="col-2">
 							<div class="input-group mb-2 mr-sm-2">
 								<input type="text" class="form-control" id="volume" name="volume" value="<?php echo $price['volume']; ?>">
@@ -262,15 +262,15 @@
 							</div>
 							<small class="form-text text-danger"></small>
 						</div>
-						
-						<div class="col-3">						
+
+						<div class="col-3">
 							<div class="input-group">
 								<input type="text" class="form-control" id="price" name="price" placeholder="" value="<?php echo $price['price']; ?>">
 								<div class="input-group-append">
 									<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
 								</div>
 							</div>
-							
+
 						</div>
 						<div class="col">
 							<div class="input-group">
@@ -281,13 +281,13 @@
 							</div>
 						</div>
 					</div>
-					</form>			
+					</form>
 				<?php endforeach; ?>
 					<br/>
 					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
 					<h6><u>Add price</u></h6>
 					<div class="form-row">
-					
+
 						<div class="col-2 mb-3">
 							<label for="exampleFormControlInput3">Volume</label>
 							<div class="input-group mb-2 mr-sm-2">
@@ -298,10 +298,10 @@
 							</div>
 							<small class="form-text text-danger"></small>
 						</div>
-						
+
 						<div class="col-3 mb-3">
 							<label for="exampleFormControlInput3">Price*</label>
-						
+
 							<div class="input-group">
 								<input type="text" class="form-control" id="price" name="price" placeholder="" value="" required>
 								<div class="input-group-append">
@@ -317,12 +317,12 @@
 							</div>
 						</div>
 					</div>
-					</form>	
-					
+					</form>
+
 				<?php else: ?>
-					
+
 					<br/>
-					
+
 					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
 
 					<h5>Set sell price</h5>
@@ -336,7 +336,7 @@
 									<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
 								</div>
 							</div>
-							
+
 							<small class="form-text text-danger">Sales price for a single unit</small>
 							<input type="hidden" name="volume" value="1" />
 						</div>
@@ -352,12 +352,12 @@
 				<?php else : ?>
 				<div class="alert alert-danger" role="alert">Product is not sellable, or can't have a price;</div>
 			<?php endif; ?>
-			
+
 			<?php if(!is_null($product['prices'])): ?>
 				<a href="<?php echo base_url(); ?>products/new/3/<?php echo $product['id']; ?>" class="btn btn-outline-success">next</a>
 			<?php endif; ?>
 		<?php elseif ($step == "3"): ?>
-		
+
 		<div class="alert alert-success" role="alert">
 		  <h4 class="alert-heading">Product added!</h4>
 		  <p>Product <i><?php echo $product['name']; ?></i> is now added.</p>
@@ -380,15 +380,15 @@
 <script type="text/javascript">
 
 function process_datamatrix(barcode) {
-	
-	// GS1 data matrix 
+
+	// GS1 data matrix
 	// 01 05420036903635 17 210400 10 111219
-	// length : ~30 
+	// length : ~30
 	// 01 EAN/GTIN  (14 length)
 	// 17 YY MM DD date (6 length)
 	// 10 barcode (variable length)
 	// 6 + 14 + 6 + x
-	
+
 	if (barcode.length > 26)
 	{
 		result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
@@ -397,7 +397,7 @@ function process_datamatrix(barcode) {
 			var input_barcode = result[1];
 			var date = result[2];
 			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
-			
+
 			$("#input_barcode").val(result[1]);
 			$("#extra_info").html("Scanned LotNR : " + "20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day + " lotnr :" + result[3]);
 		}
@@ -405,7 +405,7 @@ function process_datamatrix(barcode) {
 	else
 	{
 		console.log("code to short not recognized");
-	}	
+	}
 }
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -414,21 +414,20 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#prd").show();
 	$("#products").addClass('active');
 	$("#product_list").addClass('active');
-	
+
 	$("#vaccine_switch").change(function() {
 		$("#is_a_vaccine").toggle();
 	});
-	
+
 	$("#gs1_datamatrix").keyup(function(){
 		barcode = this.value;
 		clearInterval(_changeInterval)
 		_changeInterval = setInterval(function() {
 		clearInterval(_changeInterval)
 			process_datamatrix(barcode);
-		
+
 		}, 500);
 	});
-	
+
 });
 </script>
-  
