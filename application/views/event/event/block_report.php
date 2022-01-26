@@ -28,7 +28,6 @@
 				</div>
 			</div>
 
-
 			<div class="col">
 			  <div class="form-group">
 				<label for="exampleFormControlInput3">Title :</label>
@@ -48,11 +47,17 @@
 			  <div class="dropbox" id="upload_field">
 				<p class="text-center"><i class="fas fa-cloud-upload-alt fa-3x m-2"></i></p>
 			   </div>
+
+ 				<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
 			</div>
 			<?php if($event_uploads): ?>
 			<div class="col">
 				<?php foreach($event_uploads as $upload): ?>
-					<a href="<?php echo base_url(); ?>files/get_file/<?php echo $upload['id']; ?>"><?php echo $upload['filename']; ?></a><br/>
+					<div id="upload_<?php echo $upload['id']; ?>">
+						<a href="<?php echo base_url(); ?>files/get_file/<?php echo $upload['id']; ?>"><?php echo $upload['filename']; ?></a>
+						<a href="#" class="file_line" id="del_<?php echo $upload['id']; ?>">[DEL]</a>
+						<br/>
+					</div>
 				<?php endforeach; ?>
 			</div>
 			<?php endif; ?>
@@ -73,6 +78,7 @@
 	color:#6984da;
 }
 </style>
+
 <script>
 /*
 	work on users
@@ -132,7 +138,7 @@ $('#anamnese').trumbowyg({
         templates: [
             {
                 name: 'Anamnese_Onderzoek_Behandeling',
-                html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE::</b><br/><br/><br/><br/><b>BEHANDELING:</b><br/><br/><br/><br/>'
+                html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE:</b><br/><br/><br/><br/><b>BEHANDELING:</b><br/><br/><br/><br/>'
             },
 			/*
             {
@@ -149,9 +155,47 @@ $('#select_type').val('<?php echo $event_info["type"]; ?>');
 $('#select_type').trigger('change');
 <?php endif; ?>
 
-/* add files to event */
+$(".file_line")
+	.on( "click", function(e) {
+			var id = $(this).attr('id').split("_")[1];
+			$.ajax({
+			  url: "<?php echo base_url("files/delete_file/"); ?>" + id,
+				cache: false
+			}).done(function() {
+				$("#upload_" + id).toggle();
+			});
+	});
 
+/* if upload by click */
+$("#my_old_browser")
+	.on( "change", function(e) {
+
+			$("#upload_field").addClass('drag-over').html("");
+
+			var filelist = $(this)[0].files;
+			var file;
+
+			for(var i=0;i<filelist.length;i++){
+					var file = filelist[i];
+					var file_loader =
+						'<h4 class="small font-weight-bold m-3">'+file.name+'<span class="float-right" id="text_status_' + file.name + '">&nbsp;</span></h4>' +
+						'<div class="progress m-3"><div id="bar_' + file.name + '" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>';
+					$("#upload_field").append(file_loader);
+			}
+
+			// loop through files
+			for (var i = 0; i < filelist.length; i++) {
+			    file = filelist[i];
+			    uploadFile(file);
+			}
+
+	});
+
+/* add files to event */
 $("#upload_field")
+  .on( "click", function(e) {
+			$("#my_old_browser").click();
+	})
 	.on( "dragover", function(e) {
 		$(this).addClass('drag-over');
 		e.preventDefault();
@@ -174,6 +218,7 @@ $("#upload_field")
 		e.preventDefault();
 		e.stopPropagation();
 
+		// console.log(e.originalEvent.dataTransfer);
 		if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
 			var filelist = e.originalEvent.dataTransfer.files;
 			for(var i=0;i<filelist.length;i++){
@@ -229,7 +274,7 @@ async function uploadFile(file) {
 
 	/* send file chunk */
 	var response = await fetch(url_complete, {method: 'POST', body: compl}).then(response => response.json());
-	console.log(response);
+	// console.log(response);
 	if (response.success)
 	{
 		text_status.html("Complete!");

@@ -5,41 +5,41 @@ class Files extends Vet_Controller
 {
 	private $upload_dir = "./data/";
 	private $accepted_mime_type;
-	
+
 	# constructor
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		# load librarys
 		$this->load->helper('url');
 		$this->load->helper('download');
-		
+
 		# models
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Events_upload_model', 'events_upload');
-		
+
 		# config
 		$upload_mimetype = array(
 											// common image format
 											'png', 'jpg', 'jpeg', 'tiff', 'tif', 'gif', 'bmp',
 											'svg',
-											
+
 											// office files
 											'doc', 'docx', 'ods', 'odt',
 											'xls', 'xlsx',
 											'pdf',
 											'text', 'txt', 'rtf',
-											
+
 											// video files
 											'mp4', '3g2', 'avi', 'mpeg', 'mov'
-											
+
 											);
-		
+
 		# get a single list of all allowed mimetypes
 		$all_mimes = get_mimes(); # codeigniter function
 		$accepted_mime_type = array();
-		
+
 		foreach ($upload_mimetype as $type) {
 			if (is_array($all_mimes[$type])) {
 				foreach ($all_mimes[$type] as $t) {
@@ -62,24 +62,24 @@ class Files extends Vet_Controller
 		$content = file_get_contents($_FILES['data']['tmp_name']);
 		return file_put_contents("./data/e" . $event_id . "_" . $this->input->post('file_name'), $content, FILE_APPEND | LOCK_EX);
 	}
-	
-	
+
+
 	/*
 		This is definitly insecure need to verify input more securely
 		right now I check only mimetype
 	*/
 	public function new_file_event_complete($event_id)
 	{
-		$file_name 		= $this->input->post('file_name');
+		$file_name 			= $this->input->post('file_name');
 		$current_file 	= $this->upload_dir . "/e" . $event_id . "_" . $file_name;
-		$mimetype		= $this->get_mime_type($current_file);
-		
+		$mimetype				= $this->get_mime_type($current_file);
+
 		# sanity check
 		if (!file_exists($current_file)) {
 			echo json_encode(array('success' => false, 'error' => 'no file'));
 			return false;
 		}
-		
+
 		# check against allowed_mimetype
 		if (!in_array($mimetype, $this->accepted_mime_type)) {
 			# remove it
@@ -87,34 +87,55 @@ class Files extends Vet_Controller
 			echo json_encode(array('success' => false, 'error' => 'wrong mime type'));
 			return false;
 		}
-		
+
 		// move it from staging to finished
 		rename(
 			$current_file,
 			$this->upload_dir . "/stored/e" . $event_id . "_" . $file_name
 		);
-		
+
 		$this->events_upload->insert(array(
-					"event" 		=> $event_id,
+					"event" 			=> $event_id,
 					"filename" 		=> $this->input->post('file_name'),
-					"size"	 		=> $this->input->post('file_size'),
-					"user"	 		=> $this->user->id,
-					"mime"	 		=> $mimetype,
+					"size"	 			=> $this->input->post('file_size'),
+					"user"	 			=> $this->user->id,
+					"mime"	 			=> $mimetype,
 					"location"	 	=> $this->user->current_location,
 				));
 		echo json_encode(array('success' => true));
 	}
-	
+
 	public function get_file($id)
 	{
 		$file_info = $this->events_upload->get($id);
 		force_download(
-			$file_info['filename'],
-			file_get_contents($this->upload_dir . "/stored/e" . $file_info['event'] . "_" . $file_info['filename']),
-			$file_info['mime']
+				$file_info['filename'],
+				file_get_contents($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']),
+				$file_info['mime']
 		);
 	}
-	
+
+	public function delete_file($id)
+	{
+		$event_info = $this->events_upload->get($id);
+		if($event_info && file_exists($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']))
+		{
+			unlink($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']);
+			$this->events_upload->where(array('user' => $this->user->id))->delete($id);
+
+			echo "success";
+		}
+		# report it
+		else
+		{
+				echo "no workie";
+				var_dump($event_info);
+				var_dump(file_exists($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']));
+				$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
+		}
+		echo "final";
+	}
+
 	private function get_mime_type($file)
 	{
 		$finfo = new finfo(FILEINFO_MIME_TYPE);

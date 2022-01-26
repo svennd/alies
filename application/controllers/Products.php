@@ -18,7 +18,6 @@ class Products extends Vet_Controller
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Stock_limit_model', 'stock_limit');
-		$this->load->model('Logs_model', 'logs');
 	}
 
 	public function index($filter = false, $success = false)
