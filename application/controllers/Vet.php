@@ -227,7 +227,7 @@ class Vet extends Vet_Controller
 	*/
 	public function ajax_get_vets()
 	{
-		
+
 		if ($this->input->get("term"))
 		{
 			$term = $this->input->get("term");
@@ -242,12 +242,15 @@ class Vet extends Vet_Controller
 
 		# no users found
 		if (!$users) { return json_encode(array()); }
+
+		# loop the vets
+		$vets = array();
 		foreach ($users as $u)
 		{
-				$result[] = array("id" => $u['id'], "text" => $u['username']);
+				$vets[] = array("id" => $u['id'], "text" => $u['username']);
 		}
 
-		echo json_encode(array("results" => $result));
+		echo json_encode(array("results" => $vets));
 	}
 
 	private function get_pictures($user_id = false)
