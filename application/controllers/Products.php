@@ -175,8 +175,7 @@ class Products extends Vet_Controller
 				if ($this->input->post('submit')) {
 
 					# update buy_price
-					if (!empty($this->input->post('buy_price')))
-					{
+					if (!empty($this->input->post('buy_price'))) {
 						$this->products->update(array("buy_price" => $this->input->post('buy_price')), $pid);
 					}
 
@@ -191,7 +190,7 @@ class Products extends Vet_Controller
 												"price" => $this->input->post('price'),
 										));
 					# new price
-					} else {
+				} elseif ($this->input->post('submit') != "store_buy_price") {
 						$this->pprice->insert(array(
 													'volume' 		=> $this->input->post('volume'),
 													'price' 		=> $this->input->post('price'),
