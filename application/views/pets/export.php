@@ -1,46 +1,10 @@
-<?php 
-function get_symbol($type)
-{
-	switch($type)
-	{
-		case DOG:
-			return 'dog';
-		case CAT:
-			return 'cat';
-		case HORSE:
-			return 'horse';
-		case BIRD:
-			return 'bird';
-		case RABBIT:
-			return 'rabbit';
-		default:
-			return 'Other';
-	}						
-}
-function get_gender($gender)
-{
-	switch($gender)
-	{
-		case MALE:
-			return 'Male';
-		case FEMALE:
-			return 'Male neutered';
-		case MALE_NEUTERED:
-			return 'Female';
-		case FEMALE_NEUTERED:
-			return 'Female neutered';
-		default:
-			return 'Other';
-	}						
-}
-?>
 <div class="row">
     <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
-				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> <small>(#<?php echo $pet_info['id']; ?>)</small> / 
+				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
+				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> <small>(#<?php echo $pet_info['id']; ?>)</small> /
 				Export
 			</div>
             <div class="card-body">
@@ -57,9 +21,9 @@ function get_gender($gender)
 				  <th scope="col">Add in export</th>
 				</tr>
 			  </thead>
-			<?php  $i = 1; foreach ($pet_history as $his): 
-				
-				if (isset($history_to_take) && !in_array($his['id'], $history_to_take)) { continue; } 
+			<?php  $i = 1; foreach ($pet_history as $his):
+
+				if (isset($history_to_take) && !in_array($his['id'], $history_to_take)) { continue; }
 				?>
 				<tr>
 					<td>#<?php echo $i++; ?></td>
@@ -91,12 +55,9 @@ function get_gender($gender)
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-	$(".ana").click(function(){	
+	$(".ana").click(function(){
 		console.log(this.id);
 		$("#" + this.id + "_text").toggle();
 	});
 });
 </script>
-
-
-

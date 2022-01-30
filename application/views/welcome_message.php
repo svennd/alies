@@ -3,6 +3,67 @@
 <?php endif; ?>
 
 <div class="row">
+	<?php if($reports): ?>
+		<div class="col-xl-8 col-lg-8">
+			<div class="card mb-4">
+					<div class="card-header">
+					Reports
+					</div>
+
+					<div class="card-body">
+						<table class="table">
+							<tr>
+								<th>#</th>
+								<th>Title</th>
+								<th>Pet</th>
+								<th>Invoice</th>
+								<th>Report</th>
+								<th>Location</th>
+							</tr>
+						<?php foreach($reports as $report): ?>
+								<tr>
+									<td><a href="<?php echo base_url('events/event/'. $report['id']); ?>" class="btn btn-sm btn-outline-info">consult</a></td>
+									<td><?php echo $report['title']; ?></td>
+									<td><a href="<?php echo base_url('pets/fiche/'. $report['pet']['id']); ?>"><?php echo get_symbol($report['pet']['type']) ; ?> <?php echo $report['pet']['name']; ?></a></td>
+									<td><a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="badge <?php echo ($report['status']) ? 'badge-success' : 'badge-danger'; ?>">invoice</a></td>
+									<td>
+										<?php if ($report['report'] == REPORT_DONE): ?>
+											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="badge badge-success">finished</a>
+										<?php else : ?>
+											<a href="<?php echo base_url('events/event/'. $report['id']); ?>" class="badge badge-danger">open</a>
+										<?php endif; ?>
+									</td>
+									<td><?php echo $report['location']['name']; ?></td>
+								</tr>
+						<?php endforeach; ?>
+						</table>
+					</div>
+			</div>
+		</div>
+			<div class="col-xl-4 col-lg-4">
+				<div class="card mb-4">
+					<div class="card-header">
+						Vets
+					</div>
+					<div class="card-body">
+		 				<?php foreach($vets as $vet): ?>
+						<div class="d-flex align-items-center justify-content-between mb-4">
+							<div class="d-flex align-items-center flex-shrink-0 mr-3">
+								<div class="avatar avatar-xl mr-3 bg-gray-200">
+									<img class="rounded img-fluid" style="max-width: 5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image']) && is_readable('assets/public/' . $vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
+								</div>
+								<div class="d-flex flex-column font-weight-bold">
+								<a class="text-dark line-height-normal mb-1" href="<?php echo base_url(); ?>vet/pub/<?php echo $vet['id']; ?>"><?php echo $vet['first_name']; ?> <?php echo $vet['last_name']; ?></a>
+									<div class="small text-muted line-height-normal">Last login <?php echo timespan($vet['last_login'], time(), 1); ?></div>
+								</div>
+							</div>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+			</div>
+
+	<?php endif; ?>
 
 	<div class="col-xl-8 col-lg-8">
 
@@ -45,32 +106,24 @@
 <?php endif; ?>
 </div>
 
-				<img src="<?php echo base_url(); ?>assets/img/welcome_cat.png" class="img-fluid" />
-			</div>
-		</div>
-	</div>
-	<div class="col-xl-4 col-lg-4">
-		<div class="card mb-4">
-			<div class="card-header">
-				Vets
-			</div>
-			<div class="card-body">
- 				<?php foreach($vets as $vet): ?>
-				<div class="d-flex align-items-center justify-content-between mb-4">
-					<div class="d-flex align-items-center flex-shrink-0 mr-3">
-						<div class="avatar avatar-xl mr-3 bg-gray-200">
-							<img class="rounded img-fluid" style="max-width: 5rem;" src="<?php echo base_url(); ?>assets/public/<?php echo (!empty($vet['image']) && is_readable('assets/public/' . $vet['image'])) ? $vet['image'] : 'unknown.jpg'; ?>">
-						</div>
-						<div class="d-flex flex-column font-weight-bold">
-						<a class="text-dark line-height-normal mb-1" href="<?php echo base_url(); ?>vet/pub/<?php echo $vet['id']; ?>"><?php echo $vet['first_name']; ?> <?php echo $vet['last_name']; ?></a>
-							<div class="small text-muted line-height-normal">Last login <?php echo timespan($vet['last_login'], time(), 1); ?></div>
-						</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<img src="<?php echo base_url(); ?>assets/img/cat_0<?php echo date('N') % 6; ?>.png" class="img-fluid" />
+					</div>
+					<div class="col-lg-6">
+						<br/>
+						<br/>
+						<h5>Bad joke of the day</h5>
+						<?php
+							$var =  $this->lang->line('bad_joke_of_the_day');
+							echo "<b>". $var[0] ."</b><br>" . $var[1];
+						?>
 					</div>
 				</div>
-				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>
+<!-- row -->
 </div>
 
 <?php if ($current_location == "none"): ?>

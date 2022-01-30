@@ -42,6 +42,37 @@
 			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
 		  </div>
 
+			<?php if($event_info['status'] == STATUS_CLOSED): ?>
+			<hr />
+			<div class="form-group row">
+		    <label for="staticEmail" class="col-sm-2 col-form-label">Vet</label>
+		    <div class="col-sm-10">
+		      <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['username']; ?>">
+		    </div>
+		  </div>
+			<div class="form-group row">
+		    <label for="supp_vet_1" class="col-sm-2 col-form-label">Support Vet 1</label>
+		    <div class="col-sm-10">
+					<select name="supp_vet_1" style="width:100%" id="supp_vet_1" data-allow-clear="1">
+						<?php if($event_info['vet_1_sup']): ?>
+						<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['username']; ?></option>
+						<?php endif; ?>
+					</select>
+		    </div>
+		  </div>
+			<div class="form-group row">
+		    <label for="supp_vet_2" class="col-sm-2 col-form-label">Support Vet 2</label>
+		    <div class="col-sm-10">
+					<select name="supp_vet_2" style="width:100%" id="supp_vet_2" data-allow-clear="1">
+							<?php if($event_info['vet_2_sup']): ?>
+							<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['username']; ?></option>
+							<?php endif; ?>
+					</select>
+		    </div>
+		  </div>
+			<hr />
+	Attachments :
+		<?php endif; ?>
 		<div class="form-row py-2">
 			<div class="col">
 			  <div class="dropbox" id="upload_field">
@@ -55,15 +86,17 @@
 				<?php foreach($event_uploads as $upload): ?>
 					<div id="upload_<?php echo $upload['id']; ?>">
 						<a href="<?php echo base_url(); ?>files/get_file/<?php echo $upload['id']; ?>"><?php echo $upload['filename']; ?></a>
-						<a href="#" class="file_line" id="del_<?php echo $upload['id']; ?>">[DEL]</a>
+						<a href="#" class="file_line btn btn-sm btn-outline-danger" id="del_<?php echo $upload['id']; ?>"><i class="fas fa-trash-alt"></i></a>
 						<br/>
 					</div>
 				<?php endforeach; ?>
 			</div>
 			<?php endif; ?>
 		</div>
-
-		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save"></i> Save</button>
+		<hr />
+			<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
+		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save</button>
+		  <button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
 		</form>
 	</div>
 	<?php endif; ?>
@@ -85,32 +118,6 @@
 */
 
 document.addEventListener("DOMContentLoaded", function(){
-
-/* type images + text + searchable (perhaps overkill) */
-function formatState (state) {
-  if (!state.id) {
-    return state.text;
-  }
-  var $state = $(
-    '<span><i class="' + state.title + '"></i> ' + state.text + '</span>'
-  );
-  return $state;
-};
-
-var data = [
-		{ id: 0, text: "Ziekten", title:"fas fa-fw fa-file-medical"},
-		{ id: 1, text: "Vaccinatie", title:"fas fa-fw fa-syringe"},
-		{ id: 2, text: "Tanden", title:"fas fa-fw fa-tooth"},
-		{ id: 3, text: "Operatie", title:"fas fa-fw fa-hammer"},
-		{ id: 4, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
-	];
-
-$("#select_type").select2({
-	theme: 'bootstrap4',
-	placeholder: 'Select type',
-	data: data,
-	templateResult: formatState
-});
 
 $('#anamnese').trumbowyg({
 
@@ -287,6 +294,51 @@ async function uploadFile(file) {
 	}
 }
 
+
+/* type images + text + searchable (perhaps overkill) */
+function formatState (state) {
+  if (!state.id) {
+    return state.text;
+  }
+  var $state = $(
+    '<span><i class="' + state.title + '"></i> ' + state.text + '</span>'
+  );
+  return $state;
+};
+
+var data = [
+		{ id: 0, text: "Ziekten", title:"fas fa-fw fa-file-medical"},
+		{ id: 1, text: "Vaccinatie", title:"fas fa-fw fa-syringe"},
+		{ id: 2, text: "Tanden", title:"fas fa-fw fa-tooth"},
+		{ id: 3, text: "Operatie", title:"fas fa-fw fa-hammer"},
+		{ id: 4, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
+	];
+
+$("#select_type").select2({
+	theme: 'bootstrap4',
+	placeholder: 'Select type',
+	data: data,
+	templateResult: formatState
+});
+
+/* populate supporting vets */
+$('#supp_vet_1').select2({
+	theme: 'bootstrap4',
+	placeholder: 'Select vet',
+  ajax: {
+    url: '<?php echo base_url(); ?>vet/ajax_get_vets',
+    dataType: 'json'
+  },
+});
+
+$('#supp_vet_2').select2({
+	theme: 'bootstrap4',
+	placeholder: 'Select vet',
+  ajax: {
+    url: '<?php echo base_url(); ?>vet/ajax_get_vets',
+    dataType: 'json'
+  },
+});
 
 });
 </script>

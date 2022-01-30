@@ -7,7 +7,7 @@ class Events_model extends MY_Model
 {
 	public $table = 'events';
 	public $primary_key = 'id';
-	
+
 	public function __construct()
 	{
 		/*
@@ -31,7 +31,19 @@ class Events_model extends MY_Model
 					'foreign_key' => 'id',
 					'local_key' => 'vet'
 				);
-				
+		$this->has_one['vet_1_sup'] = array(
+					'foreign_model' => 'Users_model',
+					'foreign_table' => 'users',
+					'foreign_key' => 'id',
+					'local_key' => 'vet_support_1'
+				);
+		$this->has_one['vet_2_sup'] = array(
+					'foreign_model' => 'Users_model',
+					'foreign_table' => 'users',
+					'foreign_key' => 'id',
+					'local_key' => 'vet_support_2'
+				);
+
 		/*
 			has_many
 		*/
@@ -47,7 +59,7 @@ class Events_model extends MY_Model
 					'foreign_key' => 'event_id',
 					'local_key' => 'id'
 				);
-			
+
 		/*
 			pivot
 		*/
@@ -60,7 +72,7 @@ class Events_model extends MY_Model
 						'foreign_key' => 'id',
 						'get_relate'=> false
 		);
-		
+
 		$this->has_many_pivot['procedures'] = array(
 						'foreign_model'	=> 'Procedures_model',
 						'pivot_table'	=> 'events_procedures',
@@ -70,11 +82,11 @@ class Events_model extends MY_Model
 						'foreign_key' => 'id',
 						'get_relate'=> false
 		);
-		
+
 		parent::__construct();
 	}
-	
-	
+
+
 	/*
 		called in invoice
 	*/
@@ -84,7 +96,7 @@ class Events_model extends MY_Model
 		$procedures = array();
 		$tally 		= array();
 		$booking	= array();
-		
+
 		/* get products on this event */
 		$sql = "
 				SELECT product_id, volume, net_price, price, btw, events_products.btw, booking, barcode, products.name, products.unit_sell
@@ -103,7 +115,7 @@ class Events_model extends MY_Model
 				$booking[$product['booking']] = (isset($tally[$product['booking']])) ? ((float) $tally[$product['booking']] + $product['net_price']) : (float) $product['net_price'];
 			}
 		}
-		
+
 		/* get procedures on every event */
 		$sql = "
 				SELECT procedures_id, amount, net_price, booking, events_procedures.price, btw, procedures.name
@@ -122,7 +134,7 @@ class Events_model extends MY_Model
 				$booking[$proc['booking']] = (isset($tally[$proc['booking']])) ? ((float) $tally[$proc['booking']] + $proc['net_price']) : (float) $proc['net_price'];
 			}
 		}
-		
+
 		return array(
 					"prod" 		=> $products,
 					"proc" 		=> $procedures,
@@ -130,14 +142,14 @@ class Events_model extends MY_Model
 					"booking"	=> $booking
 					);
 	}
-	
+
 	public function get_status($event_id)
 	{
 		$status = $this->fields('status')->get($event_id);
 		return ($status['status']);
 	}
-	
-	
+
+
 	/*
 		used in reports/product_range
 		to get a full list of products used in a certain range
@@ -145,12 +157,12 @@ class Events_model extends MY_Model
 	public function get_all_event_products($day)
 	{
 		$sql = "
-			SELECT 
-				e.id as event_id, e.updated_at, 
-				ep.volume as volume, ep.net_price as net_price, 
-				prod.name as product_name, prod.unit_sell, 
-				users.first_name as vet_name, 
-				stck.name 
+			SELECT
+				e.id as event_id, e.updated_at,
+				ep.volume as volume, ep.net_price as net_price,
+				prod.name as product_name, prod.unit_sell,
+				users.first_name as vet_name,
+				stck.name
 			FROM `events` as e
 			LEFT JOIN events_products as ep
 			ON
@@ -164,7 +176,7 @@ class Events_model extends MY_Model
 			LEFT JOIN stock_location as stck
 			ON
 				stck.id = e.location
-			WHERE 
+			WHERE
 				e.created_at > DATE_ADD(NOW(), INTERVAL - " . (int) $day . " DAY)
 			AND
 				e.status <= ". STATUS_CLOSED ."

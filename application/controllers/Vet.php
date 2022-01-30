@@ -10,7 +10,7 @@ class Vet extends Vet_Controller
 		$this->load->library('ion_auth');
 		$this->load->library('form_validation');
 		$this->load->library('form_validation');
-		
+
 		# models
 		$this->load->model('Users_model', 'users');
 	}
@@ -18,13 +18,13 @@ class Vet extends Vet_Controller
 	# show profile
 	public function pub($id)
 	{
-		$data = array( 
+		$data = array(
 				'profile' => $this->users->fields('email, last_login, first_name, last_name, phone, updated_at, image, sidebar')->get( (int) $id)
 		);
-		
+
 		$this->_render_page('member/public_profile', $data);
 	}
-	
+
 	# change password
 	public function change_password()
 	{
@@ -85,15 +85,15 @@ class Vet extends Vet_Controller
 			}
 		}
 	}
-	
+
 	# change avatar to preselected one
 	public function avatar($pict_id = false)
 	{
 		# if no valid id is given
 		if ($pict_id === false) { redirect('vet/profile', 'refresh'); }
 		$img_list = $this->get_pictures($this->user->id);
-		
-		
+
+
 		# check what image the vet has selected
 		$chosen_img = false;
 		foreach($img_list['user'] as $img)
@@ -107,7 +107,7 @@ class Vet extends Vet_Controller
 				if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
 			}
 		}
-		
+
 		# only if valid image is selected
 		if($chosen_img)
 		{
@@ -115,7 +115,7 @@ class Vet extends Vet_Controller
 		}
 		redirect('vet/profile', 'refresh');
 	}
-	
+
 	public function profile_change()
 	{
 		$this->users->update(
@@ -127,10 +127,10 @@ class Vet extends Vet_Controller
 										'user_date' 	=> $this->input->post('user_date'),
 										'phone' 		=> $this->input->post('phone'),
 									), $this->user->id);
-									
+
 		redirect('vet/profile', 'refresh');
 	}
-	
+
 	// crop upload & images
 	public function profile()
 	{
@@ -138,66 +138,66 @@ class Vet extends Vet_Controller
 								"width" => 250,
 								"height" => 250,
 								);
-		
+
 		// setup
 		$data = array(
 			'user' => $this->user,
 			'extra_header' => '<link href="'. base_url() .'assets/css/croppie.css" rel="stylesheet">',
 			'extra_footer' => '<script src="'. base_url() .'assets/js/croppie.min.js"></script>'
 			);
-		
+
 		$raw_data = $this->input->post('imagebase64');
 		$img_store = $this->input->post('imagestore');
-		
+
 		// process new image
 		if ($raw_data) {
 			// remove header : data:image/png;base64
 			list($type, $raw_data) = explode(';', $raw_data);
 			list(, $raw_data)      = explode(',', $raw_data);
-			
+
 			// decode
 			$raw_decoded = base64_decode($raw_data);
-			
+
 			// create image from it
 			$ori_img = imagecreatefromstring($raw_decoded);
-			
+
 			// unrecognized format
 			if(!$ori_img) {
 				redirect('vet/profile', 'refresh');
 				return false;
 			}
-			
+
 			// determ size for resampling & resizing
 			$ori_size = getimagesizefromstring($raw_decoded);
 			list($org_w, $org_h) = ($ori_size);
-			
+
 			// create new image background
 			$resized_img = imagecreatetruecolor($upload_size['width'], $upload_size['height']);
-			
-			// resize fails 
+
+			// resize fails
 			if(!$ori_img) {
 				redirect('vet/profile', 'refresh');
 				return false;
 			}
-			
+
 			// resample & resize
 			imagecopyresampled($resized_img, $ori_img, 0, 0, 0, 0, $upload_size['width'], $upload_size['height'], $org_w, $org_h);
 
 			// needs buffering for reading the newly created file
 			ob_start();
-			
+
 			// store it
 			$time = time();
 			$data['time'] = $time;
 			imagepng($resized_img, 'assets/public/user_' . $this->user->id . '_'. $time .'.check.png');
-			
+
 			// read it
 			imagepng($resized_img);
 			$data['new_image'] = ob_get_contents();
 			ob_end_clean();
 			imagedestroy($resized_img);
 		}
-		
+
 		// Accept the new image
 		if ($img_store) {
 			$submit = ($this->input->post('submit') == "Accept") ? true : false;
@@ -216,17 +216,46 @@ class Vet extends Vet_Controller
 				}
 			}
 		}
-		
+
 		$data['preselected'] = $this->get_pictures($this->user->id);
 		$this->_render_page('member/profile', $data);
 	}
-	
+
+	/*
+	 ajax request for list of vets
+	 eg. in events to populate
+	*/
+	public function ajax_get_vets()
+	{
+		
+		if ($this->input->get("term"))
+		{
+			$term = $this->input->get("term");
+			$users = $this->users->where('username','like', $term)->get_all();
+		}
+		# generate a list
+		else
+		{
+			$users = $this->users->where(array("active" => 1))->fields(array("id", "username"))->get_all();
+
+		}
+
+		# no users found
+		if (!$users) { return json_encode(array()); }
+		foreach ($users as $u)
+		{
+				$result[] = array("id" => $u['id'], "text" => $u['username']);
+		}
+
+		echo json_encode(array("results" => $result));
+	}
+
 	private function get_pictures($user_id = false)
 	{
 		$image_list = array();
 		$i = 0;
-		
-		# get images user uploaded previously 
+
+		# get images user uploaded previously
 		if($user_id) {
 			foreach (glob("assets/public/user_" . (int) $user_id . "_*.png") as $filename) {
 				if(substr($filename, -9, 9) == "check.png") { continue; }
@@ -234,13 +263,13 @@ class Vet extends Vet_Controller
 				$i++;
 			}
 		}
-		
+
 		# get all premade images
 		foreach (glob("assets/public/pre_*.png") as $filename) {
 			$image_list['pre'][] = array( 'img' => $filename, 'id' => $i );
 			$i++;
 		}
-		
+
 		return $image_list;
 	}
 }

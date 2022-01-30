@@ -1,39 +1,3 @@
-<?php 
-function get_symbol($type)
-{
-	switch($type)
-	{
-		case DOG:
-			return '<span style="color:#628395"><i class="fas fa-fw fa-dog"></i></span>';
-		case CAT:
-			return '<span style="color:#96897B"><i class="fas fa-fw fa-cat"></i></span>';
-		case HORSE:
-			return '<span style="color:#CF995F"><i class="fas fa-fw fa-horse"></i></span>';
-		case BIRD:
-			return '<span style="color:#DBAD6A"><i class="fas fa-fw fa-dove"></i></span>';
-		case RABBIT:
-			return '<span style="color:#dec5a1"><i class="fas fa-paw fa-fw"></i></span>';
-		default:
-			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>';
-	}						
-}
-function get_gender($gender)
-{
-	switch($gender)
-	{
-		case MALE:
-			return '<span style="color:#4c6ef5;"><i class="fas fa-mars fa-fw"></i></span> Male';
-		case FEMALE:
-			return '<span style="color:#f783ac;"><i class="fas fa-venus fa-fw"></i></span> Female';
-		case MALE_NEUTERED:
-			return '<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered';
-		case FEMALE_NEUTERED:
-			return '<span style="color:#000;"><i class="fas fa-venus fa-fw"></i></span> Female neutered';
-		default:
-			return '<span style="color:#6cce23;"><i class="fas fa-genderless fa-fw"></i></span> Other';
-	}						
-}
-?>
 <div class="row">
 
 	<div class="col-lg-7 col-xl-10">
@@ -45,12 +9,12 @@ function get_gender($gender)
 		</div>
 		<div class="card-body">
 			<a href="<?php echo base_url(); ?>owners/invoices/<?php echo $owner['id']; ?>" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-history"></i></span><span class="text">Invoices</span></a>
-			
+
 			<a href="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" class="btn btn-info btn-icon-split"><span class="icon text-white-50"><i class="fas fa-user"></i></span><span class="text">Edit Client</span></a>
-			
+
 		</div>
 	</div>
-	
+
       <div class="card">
 		<div class="card-header">Pets</div>
             <div class="card-body">
@@ -65,13 +29,13 @@ function get_gender($gender)
 				<ul class="list-group">
 
 				<?php if ($pets): ?>
-				<?php 
-					foreach ($pets as $pet): 
-					if ($pet['death']) 
+				<?php
+					foreach ($pets as $pet):
+					if ($pet['death'])
 					{
 						continue;
 					}
-					if ($pet['lost']) 
+					if ($pet['lost'])
 					{
 						continue;
 					}
@@ -119,18 +83,18 @@ function get_gender($gender)
 				</ul>
 				<br/>
 				<?php if ($pets): ?>
-				<?php 
+				<?php
 					$total_dead = 0;
 					$total_lost = 0;
 					$dead_pet = array();
 					$lost_pet = array();
-					foreach ($pets as $pet): 
-						if ($pet['death']) 
+					foreach ($pets as $pet):
+						if ($pet['death'])
 						{
 							$total_dead++;
 							$dead_pet[] = $pet;
 						}
-						elseif ($pet['lost']) 
+						elseif ($pet['lost'])
 						{
 							$total_lost++;
 							$lost_pet[] = $pet;
@@ -142,13 +106,13 @@ function get_gender($gender)
 							<div class="mb-3">
 							<?php if($dead_pet): ?>
 							  <a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#passed" role="button" aria-expanded="false" aria-controls="collapseExample">Passed Away (<?php echo $total_dead; ?>)</a>
-							<?php endif; ?>							  
-							
+							<?php endif; ?>
+
 							<?php if($lost_pet): ?>
 							  <a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#gone" role="button" aria-expanded="false" aria-controls="collapseExample">Gone / Lost (<?php echo $total_lost; ?>)</a>
 							<?php endif; ?>
 							</div>
-						  
+
 							<?php if($dead_pet): ?>
 							<div class="collapse" id="passed" data-parent="#lost_or_passed">
 							  <div class="card card-body">
@@ -160,9 +124,9 @@ function get_gender($gender)
 									</a>
 								<?php endforeach; ?>
 							  </div>
-							</div>		
-							<?php endif; ?>	
-							
+							</div>
+							<?php endif; ?>
+
 							<?php if($lost_pet): ?>
 							<div class="collapse" id="gone" data-parent="#lost_or_passed">
 							  <div class="card card-body">
@@ -177,19 +141,19 @@ function get_gender($gender)
 							</div>
 							<?php endif; ?>
 						</div>
-					<?php endif; ?>	
-				<?php endif; ?>	
+					<?php endif; ?>
+				<?php endif; ?>
             </div>
-			
+
 		</div>
 	</div>
-	
+
 	<div class="col-lg-5 col-xl-2">
 		<?php include "blocks/block_full_client.php"; ?>
-		
+
 		<?php if($open_bill): ?>
 		<div class="alert alert-danger" role="alert">
-		Still open invoices : 
+		Still open invoices :
 			<ul>
 		<?php foreach($open_bill as $bill): ?>
 			<li><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo $bill['amount']; ?> &euro;</a></li>

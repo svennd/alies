@@ -132,3 +132,8 @@ define('STOCK_CHECK', 0);
 define('STOCK_IN_USE', 1);
 define('STOCK_HISTORY', 2);
 define('STOCK_ERROR', 3);
+
+# report status
+define('REPORT_INIT', 0);
+define('REPORT_OPEN', 1);
+define('REPORT_DONE', 2);
