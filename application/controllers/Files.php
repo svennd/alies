@@ -122,18 +122,12 @@ class Files extends Vet_Controller
 		{
 			unlink($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']);
 			$this->events_upload->where(array('user' => $this->user->id))->delete($id);
-
-			echo "success";
 		}
 		# report it
 		else
 		{
-				echo "no workie";
-				var_dump($event_info);
-				var_dump(file_exists($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']));
 				$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
 		}
-		echo "final";
 	}
 
 	private function get_mime_type($file)
