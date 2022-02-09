@@ -48,7 +48,7 @@
 					<?php foreach ($products as $product): ?>
 					<tr>
 						<td><a href="<?php echo base_url('stock/stock_detail/' . $product['products']['id']); ?>"><?php echo $product['products']['name']; ?></td>
-						<td><?php echo date_format(date_create($product['eol']), $user->user_date); ?></td>
+						<td><?php echo user_format_date($product['eol'], $user->user_date); ?></td>
 						<td><?php echo $product['lotnr']; ?></td>
 						<td><?php echo $product['volume']; ?> <?php echo $product['products']['unit_sell']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>

@@ -12,16 +12,16 @@
 </tr>
 <tr>
 	<td>Gender</td>
-	<td><?php 
+	<td><?php
 	switch($pet['gender'])
 	{
-		case MALE: 
+		case MALE:
 			echo "male";
 		break;
 		case FEMALE:
 			echo "female";
 		break;
-		case MALE_NEUTERED: 
+		case MALE_NEUTERED:
 			echo "male neutered";
 		break;
 		case FEMALE_NEUTERED:
@@ -48,7 +48,7 @@
 <?php if (!empty($pet['note'])): ?>
 	<div class="card bg-warning text-white">
 		<div class="card-body">
-		<div class="text-white"><?php echo empty($pet['note']) ? "?" : $pet['note']; ?></div>
+		<div class="text-white"><?php echo empty($pet['note']) ? "?" : nl2br($pet['note']); ?></div>
 		</div>
 	</div>
 	<br/>

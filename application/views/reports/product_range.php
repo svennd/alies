@@ -1,4 +1,4 @@
-<div class="row"> 
+<div class="row">
 	<div class="col-lg-10 mb-4">
 
 
@@ -24,12 +24,13 @@
 						<td><?php echo $line['net_price']; ?></td>
 						<td><?php echo $line['vet_name']; ?></td>
 						<td><?php echo $line['name']; ?></td>
-						<td><a href="<?php echo base_url(); ?>events/event/<?php echo $line['event_id'] ?>"><?php echo date_format(date_create($line['updated_at']), $user->user_date); ?></a></td>
+						<td><a href="<?php echo base_url(); ?>events/event/<?php echo $line['event_id'] ?>">
+							<?php echo user_format_date($line['updated_at'], $user->user_date); ?></a></td>
 					</tr>
 					<?php endforeach; ?>
 					</table>
 				<?php endif; ?>
 			</div>
-		</div>		
+		</div>
 	</div>
 </div>

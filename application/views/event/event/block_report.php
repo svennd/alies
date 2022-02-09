@@ -96,7 +96,10 @@
 		<hr />
 			<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
 		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save</button>
+
+			<?php if($event_info['status'] == STATUS_CLOSED): ?>
 		  <button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
+		<?php endif; ?>
 		</form>
 	</div>
 	<?php endif; ?>

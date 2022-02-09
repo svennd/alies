@@ -26,7 +26,7 @@ $cd->modify('-3 month');
 					<span class="fa-stack" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
 					  <i class="fas fa-arrow-right fa-stack-1x"></i>
-					</span>		
+					</span>
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
@@ -34,9 +34,9 @@ $cd->modify('-3 month');
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2">Search range</button>
 				</form>
-				
+
                 </div>
-		</div>  
+		</div>
 		<div class="card shadow mb-4">
 			<div class="card-header">
 				Invoices
@@ -69,7 +69,7 @@ $cd->modify('-3 month');
 					<td><?php echo $bill['amount']; ?> &euro;</td>
 					<td><?php echo $state[$bill['status']]; ?></td>
 					<td><?php echo (is_null($bill['updated_at'])) ? '-' : timespan(strtotime($bill['updated_at']), time(), 1) . ' ago'; ?></td>
-					<td><?php echo date_format(date_create($bill['created_at']), $user->user_date); ?></td>
+					<td><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
 					<!-- <td><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago</td> -->
 				</tr>
 				<?php endforeach; ?>
@@ -85,11 +85,10 @@ $cd->modify('-3 month');
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#reports").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50,  
+	$("#dataTable").DataTable({"pageLength": 50,
 	"columnDefs": [
     { "type": "num", "targets": 0 }
 	],
   "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
 </script>
-  

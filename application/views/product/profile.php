@@ -197,7 +197,7 @@ foreach ($locations as $l)
 							</div>
 						</div>
 						<hr />
-						<small>Product entered : <?php echo date_format(date_create($product['created_at']), $user->user_date); ?>, last edit : <?php echo date_format(date_create($product['updated_at']), $user->user_date); ?></small>
+						<small>Product entered : <?php echo user_format_date($product['created_at'], $user->user_date); ?>, last edit : <?php echo user_format_date($product['updated_at'], $user->user_date); ?></small>
 					</div>
 					<div class="tab-pane fade" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
 						<?php if (isset($product['stock'])):

@@ -5,7 +5,7 @@
 			<div class="col mr-2">
 				<div class="text-xs font-weight-bold text-uppercase mb-1">Nutrition</div>
 				<div class="text-gray-800">
-					<?php echo $pet['nutritional_advice']; ?>
+					<?php echo nl2br($pet['nutritional_advice']); ?>
 				</div>
 			</div>
 			<div class="col-auto"><i class="fas fa-bone fa-2x text-gray-300"></i></div>

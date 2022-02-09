@@ -4,8 +4,8 @@
 
 		    <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> / 
-				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> / 
+				<a href="<?php echo base_url(); ?>products">Products</a> /
+				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> /
 				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a> / pricing
 			</div>
             <div class="card-body">
@@ -17,7 +17,7 @@
 					$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 				?>
 					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
-					
+
 					<label class="sr-only" for="volume">volume</label>
 					<div class="input-group mb-2 mr-sm-2">
 						<div class="input-group-prepend">
@@ -42,7 +42,7 @@
 					<div class="input-group mb-2 mr-sm-2 col-md-1">
 						<input class="form-control <?php echo ($change > 0) ? 'is-valid' : 'is-invalid' ?>" type="text" placeholder="<?php echo $change; ?>%" readonly>
 					</div>
-					
+
 						<input type="hidden" name="price_id" value="<?php echo $price['id']; ?>" />
 						<button type="submit" name="submit" value="edit" class="btn btn-primary mb-2">Store</button>
 						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger mx-3 mb-2">remove</a>
@@ -51,7 +51,7 @@
 					<hr />
 					<h4>Add price</h4>
 					<p>Add volume reduction;</p>
-					
+
 					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
 
 					<label class="sr-only" for="volume">volume</label>
@@ -78,7 +78,7 @@
 					</form>
 				<?php else: ?>
 					No price assigned yet ! <br/>
-					
+
 					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
 
 					<label class="sr-only" for="price">price</label>
@@ -96,14 +96,14 @@
 				<div class="alert alert-danger" role="alert">Product is not sellable, or can't have a price;</div>
 			<?php endif; ?>
 			</div>
-		</div>	
+		</div>
 
 	</div>
 	<div class="col-lg-4 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> / 
-				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> / 
+				<a href="<?php echo base_url(); ?>products">Products</a> /
+				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> /
 				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a> / info
 			</div>
             <div class="card-body">
@@ -125,7 +125,7 @@
 					<tr>
 						<td><?php echo $stock['in_price']; ?> &euro; </td>
 						<td><?php echo $stock['volume']; ?> <?php echo $product['unit_sell']; ?></td>
-						<td><?php echo date_format(date_create($stock['created_at']), $user->user_date); ?></td>
+						<td><?php echo user_format_date($stock['created_at'], $user->user_date); ?></td>
 					</tr>
 					<?php endforeach; ?>
 				</table>
@@ -135,7 +135,7 @@
 			</div>
 		</div>
 	  </div>
-      
+
 </div>
 
 

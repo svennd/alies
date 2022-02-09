@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$error_level = array(
 		FATAL => "fatal",
 		ERROR => "error",
@@ -17,7 +17,7 @@
 			</div>
             <div class="card-body">
 			<?php if ($logs): ?>
-			
+
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
@@ -37,7 +37,7 @@
 					<td><?php echo $log['msg']; ?></td>
 					<td><?php echo $error_level[$log['level']]; ?></td>
 					<td><?php echo (isset($log['vet']['first_name'])) ? $log['vet']['first_name'] : ''; ?></td>
-					<td><?php echo date_format(date_create($log['created_at']), $user->user_date); ?></td>
+					<td><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -49,7 +49,7 @@
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script>

@@ -23,13 +23,13 @@ $now->modify('+1 day');
 
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
-					<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" min="<?php echo date_format($cd, 'Y-m-d'); ?>" id="search_from">				
+					<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" min="<?php echo date_format($cd, 'Y-m-d'); ?>" id="search_from">
 				</div>
 				  <div class="form-group mb-2">
 					<span class="fa-stack" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
 					  <i class="fas fa-arrow-right fa-stack-1x"></i>
-					</span>		
+					</span>
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
@@ -37,16 +37,16 @@ $now->modify('+1 day');
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2">Search range</button>
 				</form>
-				
+
                 </div>
-		</div> 
+		</div>
       <div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>invoice">Invoices</a>
 			</div>
             <div class="card-body">
 			<?php if ($bills): ?>
-			
+
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
@@ -62,7 +62,7 @@ $now->modify('+1 day');
 				<?php foreach ($bills as $bill): ?>
 				<tr>
 					<td>
-						<?php echo date_format(date_create($bill['created_at']), $user->user_date); ?><br/>
+						<?php echo user_format_date($bill['created_at'], $user->user_date); ?><br/>
 						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
 					</td>
 					<td><?php echo $bill['owner']['last_name']; ?></td>
@@ -82,17 +82,16 @@ $now->modify('+1 day');
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50,  
+	$("#dataTable").DataTable({"pageLength": 50,
 	"columnDefs": [
     { "type": "num", "targets": 0 }
 	],
   "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
 </script>
-  

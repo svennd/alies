@@ -25,7 +25,7 @@
 			<td><?php echo $detail['products']['name']; ?></td>
 			<td><?php echo $detail['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
 			<td><?php echo $detail['lotnr']; ?></td>
-			<td><?php echo date_format(date_create($detail['eol']), $user->user_date); ?></td>
+			<td><?php echo user_format_date($detail['eol'], $user->user_date); ?></td>
 			<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 			<td><?php echo $detail['barcode']; ?></td>
 			<td><?php echo $detail['stock_locations']['name']; ?></td>
