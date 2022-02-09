@@ -44,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Helpers
  * @category	Helpers
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/helpers/url_helper.html
+ * @link		https://codeigniter.com/userguide3/helpers/url_helper.html
  */
 
 // ------------------------------------------------------------------------
@@ -211,7 +211,7 @@ if ( ! function_exists('anchor_popup'))
 		{
 			$attributes = array($attributes);
 
-			// Ref: http://www.w3schools.com/jsref/met_win_open.asp
+			// Ref: https://www.w3schools.com/jsref/met_win_open.asp
 			$window_name = '_blank';
 		}
 		elseif ( ! empty($attributes['window_name']))
@@ -443,7 +443,7 @@ if ( ! function_exists('prep_url'))
 	 */
 	function prep_url($str = '')
 	{
-		if ($str === 'http://' OR $str === '')
+		if ($str === '')
 		{
 			return '';
 		}
@@ -470,31 +470,20 @@ if ( ! function_exists('url_title'))
 	 * human-friendly URL string with a "separator" string
 	 * as the word separator.
 	 *
-	 * @todo	Remove old 'dash' and 'underscore' usage in 3.1+.
 	 * @param	string	$str		Input string
-	 * @param	string	$separator	Word separator
-	 *			(usually '-' or '_')
+	 * @param	string	$separator	Word separator (usually '-' or '_')
 	 * @param	bool	$lowercase	Whether to transform the output string to lowercase
 	 * @return	string
 	 */
 	function url_title($str, $separator = '-', $lowercase = FALSE)
 	{
-		if ($separator === 'dash')
-		{
-			$separator = '-';
-		}
-		elseif ($separator === 'underscore')
-		{
-			$separator = '_';
-		}
-
 		$q_separator = preg_quote($separator, '#');
 
 		$trans = array(
 			'&.+?;'			=> '',
 			'[^\w\d _-]'		=> '',
 			'\s+'			=> $separator,
-			'('.$q_separator.')+'	=> $separator
+			'('.$q_separator.')+'	=> $separator,
 		);
 
 		$str = strip_tags($str);
@@ -546,7 +535,7 @@ if ( ! function_exists('redirect'))
 			if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1')
 			{
 				$code = ($_SERVER['REQUEST_METHOD'] !== 'GET')
-					? 303	// reference: http://en.wikipedia.org/wiki/Post/Redirect/Get
+					? 303	// reference: https://en.wikipedia.org/wiki/Post/Redirect/Get
 					: 307;
 			}
 			else

@@ -44,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Pagination
  * @author		EllisLab Dev Team
- * @link		https://codeigniter.com/user_guide/libraries/pagination.html
+ * @link		https://codeigniter.com/userguide3/libraries/pagination.html
  */
 class CI_Pagination {
 
@@ -363,14 +363,6 @@ class CI_Pagination {
 			unset($params['attributes']);
 		}
 
-		// Deprecated legacy support for the anchor_class option
-		// Should be removed in CI 3.1+
-		if (isset($params['anchor_class']))
-		{
-			empty($params['anchor_class']) OR $attributes['class'] = $params['anchor_class'];
-			unset($params['anchor_class']);
-		}
-
 		foreach ($params as $key => $val)
 		{
 			if (property_exists($this, $key))
@@ -686,7 +678,7 @@ class CI_Pagination {
 	/**
 	 * Add "rel" attribute
 	 *
-	 * @link	http://www.w3.org/TR/html5/links.html#linkTypes
+	 * @link	https://www.w3.org/TR/html5/links.html#linkTypes
 	 * @param	string	$type
 	 * @return	string
 	 */
