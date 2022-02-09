@@ -100,7 +100,7 @@ class MY_Model extends CI_Model
 	 * If value is set as an array, there won't be any changes done to it (ie: no field of the table will be updated or inserted).
 	 */
 	public $fillable = null;
-	
+
 	/**
 	 * @var null|array
 	 * Sets protected fields.
@@ -180,7 +180,6 @@ class MY_Model extends CI_Model
 
 	public function __construct()
 	{
-		parent::__construct();
 		$this->_set_connection();
 		$this->_set_timestamps();
 		$this->_fetch_table();
@@ -193,7 +192,7 @@ class MY_Model extends CI_Model
 		$this->before_update[]='add_updater';
 		*/
 	}
-	
+
 	/*
 	 * public function _get_rules($action=NULL)
 	 * This function returns the rules. If action is given and rules are
@@ -209,7 +208,7 @@ class MY_Model extends CI_Model
 		return $this->rules;
 	}
 
-	
+
 
 	public function _prep_before_write($data)
 	{
@@ -961,7 +960,7 @@ class MY_Model extends CI_Model
 				$data[$key][$relation_key] = null;
 				continue;
 			}
-			
+
 			if (!isset($pivot_table)) {
 				$sub_results = $this->{$relation['foreign_model_name']};
 				$select = array();
@@ -1633,14 +1632,14 @@ class MY_Model extends CI_Model
 		$this->_set_table_fillable_protected();
 		return true;
 	}
-	
+
 	private function _get_table_name($model_name)
 	{
 		$this->load->helper('inflector');
 		$table_name = plural(preg_replace('/(_m|_model|_mdl|model)?$/', '', strtolower($model_name)));
 		return $table_name;
 	}
-	
+
 	private function _set_table_fillable_protected()
 	{
 		if (is_null($this->fillable)) {
@@ -1656,7 +1655,7 @@ class MY_Model extends CI_Model
 		if (is_null($this->protected)) {
 			$this->protected = array($this->primary_key);
 		}
-		
+
 		return $this;
 	}
 
@@ -1751,7 +1750,7 @@ class MY_Model extends CI_Model
 		$full_model = explode('/', $data['foreign_model']);
 		if ($full_model) {
 			$data['foreign_model'] = end($full_model);
-			$data['model_dir'] = str_replace($data['foreign_model'], null, implode('/', $full_model));
+			$data['model_dir'] = str_replace($data['foreign_model'], '', implode('/', $full_model));
 		}
 
 		$foreign_model_name = str_replace('/', '_', $data['model_dir'].$data['foreign_model']);
@@ -1761,20 +1760,4 @@ class MY_Model extends CI_Model
 		return $data;
 	}
 
-	
-	/*
-	public function add_creator($data)
-	{
-		$data['created_by'] = $_SESSION['user_id'];
-		return $data;
-	}
-	*/
-
-	/*
-	public function add_updater($data)
-	{
-		$data['updated_by'] = $_SESSION['user_id'];
-		return $data;
-	}
-	*/
 }
