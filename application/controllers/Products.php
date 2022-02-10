@@ -18,18 +18,13 @@ class Products extends Vet_Controller
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Stock_limit_model', 'stock_limit');
+
+		# helpers
+		$this->load->helper('gs1');
 	}
 
-	public function index($filter = false, $success = false)
+	public function index($success = false)
 	{
-		$products = array();
-		if ($filter) {
-			if ($filter == "all") {
-				$products = $this->stock->get_all_products();
-			} else {
-				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
-			}
-		}
 
 		$data = array(
 						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(10)->order_by("created_at", "desc")->get_all(),
@@ -45,10 +40,8 @@ class Products extends Vet_Controller
 																		->order_by('eol', 'ASC')
 																		->set_cache('expering_items',3600)
 																		->get_all(),
-						"locations" 		=> $this->location,
-						"filter" 				=> $filter,
-						"success" 			=> $success,
-						"products" 			=> $products,
+						"locations" 			=> $this->location,
+						"success" 				=> $success,
 						"current_loc_id"	=> $this->user->current_location,
 						"search"					=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
 						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
@@ -80,13 +73,8 @@ class Products extends Vet_Controller
 							));
 		}
 
-		# check the local stock
-		$local_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE, 'location' => $this->user->current_location))->group_by('product_id')->get();
-		$local_stock = ($local_stock_query) ? $local_stock_query['sum_vol'] : 0;
-
-		# check the global stock
-		$global_stock_query = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $id, 'state' => STOCK_IN_USE))->group_by('product_id')->get();
-		$global_stock = ($global_stock_query) ? $global_stock_query['sum_vol'] : 0;
+		# check the stocks
+		list($local_stock, $global_stock) = $this->stock->get_stock_levels($id, $this->user->current_location);
 
 		# check if there is a local limit
 		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->user->current_location))->get();
@@ -106,14 +94,9 @@ class Products extends Vet_Controller
 				'history_1m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_6m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_1y'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
-				"extra_header" =>
-							'<link href="'. base_url() .'assets/css/trumbowyg.min.css" rel="stylesheet">',
-				"extra_footer" =>
-					'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
-					'<script src="'. base_url() .'assets/js/trumbowyg.min.js"></script>' .
-					'<script src="'. base_url() .'assets/js/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>' .
-					'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
-					'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
+				"extra_header" => inject_trumbowyg('header'),
+				"extra_footer" =>	'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
+													inject_trumbowyg()
 				);
 
 		$this->_render_page('product/profile', $data);
@@ -479,134 +462,161 @@ class Products extends Vet_Controller
 		$return = array();
 
 		/*
-			if string is 32 chars long its most likely GS1 barcode
-
-			Searching for a :
-				- product w/ stock
-				- procedure
-				- product on barcode
-
+			if string is 20 chars long its most likely GS1 barcode
 		*/
-		if (strlen($query) == 32)
+		if (strlen($query) >= 20)
 		{
-			$gsl = $this->parse_gs1($query);
+			$gsl = parse_gs1($query);
 
-			if (!$gsl) { return false; }
+			// not right format
+			if (!$gsl) { return $return; }
 
-			$stck = $this->stock->gs1_lookup($gsl['pid'], $gsl['lotnr'], $gsl['date'], $this->user->current_location);
-
-			if ($stck)
-			{
-				# should only return a single result
-				$result = $stck['0'];
-
-
-				$query_prices = $this->pprice->get_all($result['pid']);
-				$prices = array();
-				foreach ($query_prices as $s) {
-					$prices[] = array(
-										"volume" 	=> $s['volume'],
-										"price" 	=> $s['price'],
-										);
-				}
-
-				$return[] = array(
-								"value" => $result['pname'],
-								"data" => array(
-										"type" 		=> "barcode",
-										"lotnr"		=> $gsl['lotnr'],
-										"id" 		=> $result['pid'],
-										"price" 	=> $prices,
-										"btw" 		=> $result['btw_sell'],
-										"booking" 	=> $result['booking_code'],
-										"prod" 		=> 1,
-									));
-			}
+			// search for product w/ this barcode
+			$return = $this->get_gs1_barcode($gsl);
 		}
-		elseif (strlen($query) > 1) {
-			# products
-			$result = $this->products
-								->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
-								->with_type()
-								->with_prices('fields: volume, price')
-								->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
-								->where('name', 'like', $query, true)
-								->where('sellable', '1')
-								->limit(250) # this will count both products + prices + stock (somehow)
-								->order_by("type", "ASC")
-								->get_all();
 
-			# in case no results
-			if ($result) {
-				foreach ($result as $r) {
-					$stock = array();
-					$prices = array();
-
-					# there is stock
-					if (isset($r['stock'])) {
-						foreach ($r['stock'] as $s) {
-							$stock[] = array(
-												"location" 	=> $s['location'],
-												"lotnr" 	=> $s['lotnr'],
-												"volume" 	=> $s['volume'],
-												"barcode" 	=> $s['barcode'],
-												"eol" 		=> $s['eol']
-												);
-						}
-					}
-					# there are prices
-					if ($r['prices']) {
-						foreach ($r['prices'] as $s) {
-							$prices[] = array(
-												"volume" 	=> $s['volume'],
-												"price" 	=> $s['price'],
-												);
-						}
-					}
-					$return[] = array(
-								"value" => $r['name'],
-								"data" 	=> array(
-													"type" 		=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
-													"id" 		=> $r['id'],
-													"stock"		=> $stock,
-													"prices"	=> $prices,
-													"unit"		=> $r['unit_sell'],
-													"btw"		=> $r['btw_sell'],
-													"booking"	=> $r['booking_code'],
-													"vaccin"	=> $r['vaccin'],
-													"vaccin_freq"	=> $r['vaccin_freq'],
-													"prod"		=> 1
-												)
-								);
-				}
-			}
-
-			# procedures
-			$result = $this->procedures
-								->fields('id, name, price, booking_code')
-								->where('name', 'like', $query, true)
-								->get_all();
-
-			if ($result) {
-				foreach ($result as $r) {
-					$return[] = array(
-										"value" => $r['name'],
-										"data" 	=> array(
-														"type" 		=> "Proc",
-														"id" 		=> $r['id'],
-														"price"		=> $r['price'],
-														"btw"		=> "21",
-														"booking"	=> $r['booking_code'],
-														"prod"		=> 0
-													)
-									);
-				}
-			}
+		if (strlen($query) > 1)
+		{
+			$return = $this->get_products($query, $return);
+			$return = $this->get_procedures($query, $return);
 		}
 
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
-//
+
+	private function get_gs1_barcode(array $gsl) {
+
+		// init
+		$return = array();
+
+		// lookup in database
+		$stck = $this->stock->gs1_lookup($gsl['pid'], $gsl['lotnr'], $gsl['date'], $this->user->current_location);
+
+		if (!$stck) { return $return; }
+
+		# log this if there are multiple returns (==> bad gsl code )
+		if (count($stck) > 1)
+		{
+			$this->logs->logger($this->user->id, ERROR, "multi hit on gsl code", var_export($stck, true));
+		}
+
+		# should only return a single result
+		$result = $stck['0'];
+
+		$query_prices = $this->pprice->get_all($result['pid']);
+		$prices = array();
+		foreach ($query_prices as $s) {
+			$prices[] = array(
+								"volume" 	=> $s['volume'],
+								"price" 	=> $s['price'],
+								);
+		}
+
+		$return[] = array(
+						"value" => $result['pname'],
+						"data" => array(
+								"type" 		=> "barcode",
+								"lotnr"		=> $gsl['lotnr'],
+								"id" 			=> $result['pid'],
+								"price" 	=> $prices,
+								"btw" 		=> $result['btw_sell'],
+								"booking" 	=> $result['booking_code'],
+								"prod" 		=> 1,
+							));
+
+		return $return;
+	}
+
+	private function get_products($query, $return) {
+		# products
+		$result = $this->products
+							->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
+							->with_type()
+							->with_prices('fields: volume, price')
+							->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
+							->where('name', 'like', $query, true)
+							->where('sellable', '1')
+							->limit(250) # this will count both products + prices + stock (somehow)
+							->order_by("type", "ASC")
+							->get_all();
+
+		# in case no results
+		if (!$result) { return $return; }
+
+		foreach ($result as $r) {
+			$stock = array();
+			$prices = array();
+
+			# there is stock
+			if (isset($r['stock'])) {
+				foreach ($r['stock'] as $s) {
+					$stock[] = array(
+										"location" 	=> $s['location'],
+										"lotnr" 	=> $s['lotnr'],
+										"volume" 	=> $s['volume'],
+										"barcode" 	=> $s['barcode'],
+										"eol" 		=> $s['eol']
+										);
+				}
+			}
+
+		# there are prices
+		if ($r['prices']) {
+			foreach ($r['prices'] as $s) {
+				$prices[] = array(
+									"volume" 	=> $s['volume'],
+									"price" 	=> $s['price'],
+									);
+			}
+		}
+
+		$return[] = array(
+					"value" => $r['name'],
+					"data" 	=> array(
+										"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
+										"id" 					=> $r['id'],
+										"stock"				=> $stock,
+										"prices"			=> $prices,
+										"unit"				=> $r['unit_sell'],
+										"btw"					=> $r['btw_sell'],
+										"booking"			=> $r['booking_code'],
+										"vaccin"			=> $r['vaccin'],
+										"vaccin_freq"	=> $r['vaccin_freq'],
+										"prod"				=> 1
+									)
+					);
+		}
+		return $return;
+	}
+
+	/*
+		query procedures
+	*/
+	private function get_procedures(string $query, array $list) {
+
+		$result = $this->procedures
+							->fields('id, name, price, booking_code')
+							->where('name', 'like', $query, true)
+							->get_all();
+
+		if (!$result) { return $list; }
+
+		foreach ($result as $r) {
+			$list[] = array(
+								"value" => $r['name'],
+								"data" 	=> array(
+												"type" 		=> "Proc",
+												"id" 			=> $r['id'],
+												"price"		=> $r['price'],
+												"btw"			=> "21",
+												"booking"	=> $r['booking_code'],
+												"prod"		=> 0
+											)
+							);
+		}
+		return $list;
+	}
+
 	/*
 
 	*/
@@ -636,28 +646,5 @@ class Products extends Vet_Controller
 				$return [] = array($pod['id'], $pod['name'], $pod['unit_sell'], $stock);
 			}
 		echo json_encode(array("data" => $return));
-	}
-
-	# based on the gs1 code we can get information on the product from the database
-	# even if not we can get date & lotnr and "product id" (not internal product_id)
-	private function parse_gs1($barcode)
-	{
-		# this accepts 2 formats of gs1 code
-		if (preg_match('/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/', $barcode, $result))
-		{
-			$pid = $result[1];
-			$date = (!$result[3]) ? $result[6] : $result[4];
-			$lotnr = (!$result[3]) ? $result[7] : $result[3];
-
-			$day = (substr($date, 4, 2) == "00") ? "01" : substr($date, 4, 2);
-
-			return array(
-						'date' 	=> "20" . substr($date, 0, 2) . "-" . substr($date, 2,2) . "-" . $day,
-						'lotnr' => $lotnr,
-						'pid' 	=> $pid
-					);
-		}
-
-		return false;
 	}
 }

@@ -238,13 +238,11 @@ class Stock_model extends MY_Model
 						s.eol = '" . $eol . "' and
 						s.location = '" . $location . "' and
 						s.state = ". STOCK_IN_USE ."
-					ORDER BY
-						s.in_price
 					LIMIT
 						1
 				";
 
-		return $this->db->query($sql)->result_array();
+				return $this->db->query($sql)->result_array();
 	}
 
 	/*
@@ -269,6 +267,42 @@ class Stock_model extends MY_Model
 		return ($this->db->query($sql)->result_array());
 	}
 
+	/*
+		get stock level (local & global)
+	*/
+	public function get_stock_levels(int $product_id, int $location)
+	{
+		$sql = "SELECT
+							SUM(volume) as sum_volume,
+							location
+						FROM
+							stock
+						WHERE
+							`product_id` = '" . $product_id . "'
+							AND
+							`state` = '". STOCK_IN_USE ."'
+						GROUP BY
+							`location`
+				";
+
+		$result = $this->db->query($sql)->result_array();
+
+		if (!$result) { return array(0, 0); }
+
+		$total_volume = 0;
+		$local_volume = 0;
+
+		foreach ($result as $r)
+		{
+			$total_volume += $r['sum_volume'];
+			if ($location == $r['location'])
+			{
+				$local_volume = $r['sum_volume'];
+			}
+		}
+
+		return array($local_volume, $total_volume);
+	}
 
 	/*
 		reports/stock_list

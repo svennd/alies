@@ -4,7 +4,7 @@
 				<a href="<?php echo base_url(); ?>products">Products</a> / List
 			</div>
             <div class="card-body">
-			<p>Type : 
+			<p>Type :
 				<?php foreach ($types as $type): ?>
 					<a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id'] ?>" class="btn btn-outline-primary"><?php echo $type['name']; ?></a>
 				<?php endforeach; ?>
@@ -37,17 +37,17 @@
 					</td>
 					<td>
 						<small>
-						<?php if(!empty($product['supplier'])): ?> 
+						<?php if(!empty($product['supplier'])): ?>
 						S : <?php echo $product['supplier']; ?><br/>
 						<?php endif; ?>
-						<?php if(!empty($product['producer'])): ?> 
+						<?php if(!empty($product['producer'])): ?>
 						P : <?php echo $product['producer']; ?>
 						<?php endif; ?>
 						</small>
 					</td>
 					<td><?php echo $product['buy_volume']; ?> <?php echo $product['unit_buy']; ?> / &euro; <?php echo $product['buy_price']; ?></td>
 					<td>
-						<?php 
+						<?php
 						if (!isset($product['prices']))
 						{
 							echo "<span style='color:red;'><b>no price</b></span>";
@@ -76,7 +76,7 @@
 						b : <?php echo $product['btw_buy']; ?> %<br>
 						s : <?php echo $product['btw_sell']; ?> %
 						<?php echo $product['booking_code']['category']; ?>
-						</small></td>
+					</small></td>
 					<td><?php echo (isset($product['type']['name'])) ? $product['type']['name'] : 'Other'; ?></td>
 					<td>
 						<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i></a>
@@ -87,7 +87,7 @@
 				</table>
 			<?php endif; ?>
                 </div>
-		</div>	
+		</div>
 	</p>
 
 <script type="text/javascript">
@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 	$("#prd").show();
 	$("#products").addClass('active');
-	$("#product_list").addClass('active');  
+	$("#product_list").addClass('active');
 });
 </script>
-  

@@ -26,7 +26,6 @@ class Vet_Controller extends MY_Controller
 		}
 
 		$this->load->model('Stock_location_model', 'stock_location');
-		$this->load->model('Logs_model', 'logs');
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Events_model', 'events');
 
