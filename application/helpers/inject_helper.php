@@ -1,5 +1,10 @@
 <?php
 
+/*
+  simple wrappers to inject javascript & css
+*/
+
+
 function inject_trumbowyg(string $field = "footer")
 {
   return ($field == "header") ?

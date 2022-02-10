@@ -108,7 +108,10 @@ class Reports extends Admin_Controller
 	{
 		$product = $this->get_usage($search_from, $search_to, true);
 
+		$csv_lines = array();
+		# headers
 		$csv_lines[] = array('name', 'volume', 'unit', 'inprice', 'net_price', 'barcode');
+
 		foreach ($product as $p) {
 			$csv_lines[] = array(
 												$p['product']['name'],
