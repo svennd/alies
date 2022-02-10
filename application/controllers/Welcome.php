@@ -57,16 +57,6 @@ class Welcome extends Vet_Controller
 							"vets" 								=> $this->users->get_active_vets(),
 							"local_stock"					=> ($this->user->current_location != 0) ? $this->stock->get_local_stock_shortages($this->user->current_location) : false,
 							"global_stock"				=> $result,
-							"reports"							=> $this->events
-																						->with_pet('fields:id, type, name')
-																						->with_location('fields:name')
-																						->fields('id, title, pet, status, payment, location, report, updated_at')
-																						->where(array(
-																											'vet' 		=> $this->user->id,
-																											'no_history' => 0
-																										))
-																						->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
-																						->order_by('created_at', 'DESC')->get_all(),
 							"bad_products"				=> ($this->user->current_location != 0) ?
 												$this->stock
 													->fields('eol, id, product_id, location')

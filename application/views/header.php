@@ -174,6 +174,11 @@
          <i class="fas fa-fw fa-shopping-cart"></i>
           <span>Products</span></a>
       </li>
+      <li class="nav-item" id="product_list">
+        <a class="nav-link" href="<?php echo base_url(); ?>report">
+         <i class="far fa-fw fa-file"></i>
+          <span>Reports</span></a>
+      </li>
       <li class="nav-item" id="stock">
         <a class="nav-link" href="<?php echo base_url(); ?>stock">
          <i class="fas fa-fw fa-dolly"></i>
@@ -217,11 +222,19 @@
           </button>
 
         <!-- Topbar Search -->
-		<?php echo (isset($location)) ? $location : '<span style="color:red">location error</span>'; ?>
+					<?php echo (isset($location)) ? $location : '<span style="color:red">location error</span>'; ?>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-
+						<!-- Nav Item - Messages -->
+	          <li class="nav-item mx-1">
+	              <a class="nav-link" href="<?php echo base_url('report'); ?>">
+	                  <i class="fas fa-file fa-fw"></i>
+										<?php if ($report_count > 0): ?>
+	                  <span class="badge badge-info badge-counter"><?php echo $report_count; ?></span>
+										<?php endif; ?>
+	              </a>
+	          </li>
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
