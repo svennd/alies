@@ -20,7 +20,7 @@
 			<?php endif; ?>
 			</div>
 		</div>
-		
+
       <div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>reports">Reports</a> / Usage
@@ -36,7 +36,7 @@
 					<span class="fa-stack" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
 					  <i class="fas fa-arrow-right fa-stack-1x"></i>
-					</span>		
+					</span>
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
@@ -44,8 +44,8 @@
 				  </div>
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2">Search range</button>
 				</form>
-				
-				
+
+
 				<?php if($usage):  ?>
 				<a href="<?php echo base_url(); ?>reports/products_csv/<?php echo ($search_from) ? $search_from : ''; ?>/<?php echo ($search_to) ? $search_to : ''; ?>" class="btn btn-info"><i class="fas fa-file-export"></i> Export to CSV</a>
 
@@ -72,28 +72,25 @@
 					</table>
 				<?php endif; ?>
                 </div>
-		</div>  
+		</div>
 	</div>
       <div class="col-lg-4 mb-4">
 	  <div class="card shadow mb-4">
-			<div class="card-header">Last Modified Products</div>
-            <div class="card-body">
-			</div>
+			<div class="card-header">Range Search</div>
+        <div class="card-body">
+          <a href="<?php echo base_url('reports/product_range/day'); ?>" class="btn btn-success btn-sm mb-2">Day</a><br/>
+          <a href="<?php echo base_url('reports/product_range/week'); ?>" class="btn btn-success btn-sm mb-2">Week</a><br/>
+          <a href="<?php echo base_url('reports/product_range/month'); ?>" class="btn btn-success btn-sm mb-2">Month</a><br/>
+          <a href="<?php echo base_url('reports/product_range/quarter'); ?>" class="btn btn-success btn-sm mb-2">Quarter</a><br/>
+          <a href="<?php echo base_url('reports/product_range/halfyear'); ?>" class="btn btn-success btn-sm mb-2">6 months</a><br/>
+          <a href="<?php echo base_url('reports/product_range/year'); ?>" class="btn btn-success btn-sm mb-2">Year</a><br/>
+        </div>
 		</div>
-		
-      <div class="card shadow mb-4">
-			<div class="card-header">Last Created Products</div>
-            <div class="card-body">
-			
-			</div>
-		</div>
-
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
-  

@@ -70,14 +70,14 @@ class Vet_Controller extends MY_Controller
 																	->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
 																	->count_rows();
 
-		$sections = array(
-		'config'  => TRUE,
-		'queries' => TRUE,
-		'query_toggle_count' => 250
-		);
-
-		$this->output->set_profiler_sections($sections);
-		$this->output->enable_profiler(TRUE);
+		// $sections = array(
+		// 'config'  => TRUE,
+		// 'queries' => TRUE,
+		// 'query_toggle_count' => 250
+		// );
+		//
+		// $this->output->set_profiler_sections($sections);
+		// $this->output->enable_profiler(TRUE);
 	}
 
 
