@@ -9,16 +9,12 @@ class Events extends Vet_Controller
 	{
 		parent::__construct();
 
-		# load librarys
-		$this->load->helper('url');
-
 		# models
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Procedures_model', 'procedures');
-		$this->load->model('Events_model', 'events');
 		$this->load->model('Events_upload_model', 'events_upload');
 		$this->load->model('Events_procedures_model', 'eproc');
 		$this->load->model('Events_products_model', 'eprod');
@@ -73,16 +69,9 @@ class Events extends Vet_Controller
 			"other_pets"		=> $other_pets,
 			"u_location"		=> $this->user->current_location,
 			"procedures_d"	=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
-			"extra_header" 	=>
-				'<link href="'. base_url() .'assets/css/trumbowyg.min.css" rel="stylesheet">'
-				,
-			"extra_footer" 	=>
-				'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
-				'<script src="'. base_url() .'assets/js/trumbowyg.min.js"></script>' .
-				'<script src="'. base_url() .'assets/js/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>' .
-				'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
-				'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
-
+			"extra_header" 	=> inject_trumbowyg('header'),
+			"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
+													inject_trumbowyg()
 		);
 
 		$this->_render_page('event/main', $data);
@@ -107,42 +96,42 @@ class Events extends Vet_Controller
 	# edit the price based on what the vet tells us
 	public function edit_price($event_id)
 	{
-		# update procedure
-		if ($this->input->post('submit') == 'store_proc_price') {
-			if ($this->input->post('price') != $this->input->post('ori_net_price')) {
-				$this->eproc->update(array(
-											"net_price" 		=> $this->input->post('price'),
-											"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-											"calc_net_price"	=> $this->input->post('ori_net_price')
-										), array("id" => $this->input->post('event_proc_id'), "procedures_id" => $this->input->post('pid'), "event_id" => $event_id));
-			}
-		} elseif ($this->input->post('submit') == 'store_prod_price') {
-			if ($this->input->post('price') != $this->input->post('ori_net_price')) {
-				$this->eprod->update(array(
-											"net_price" 		=> $this->input->post('price'),
-											"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-											"calc_net_price"	=> $this->input->post('ori_net_price')
-										), array("id" => $this->input->post('event_product_id'), "product_id" => $this->input->post('pid'), "event_id" => $event_id));
+
+		# only if price is different from original price
+		if ($this->input->post('price') != $this->input->post('ori_net_price')) {
+			# update procedure
+			if ($this->input->post('submit') == 'store_proc_price') {
+					$this->eproc->update(array(
+												"net_price" 		=> $this->input->post('price'),
+												"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
+												"calc_net_price"	=> $this->input->post('ori_net_price')
+											), array("id" => $this->input->post('event_proc_id'), "procedures_id" => $this->input->post('pid'), "event_id" => $event_id));
+			} elseif ($this->input->post('submit') == 'store_prod_price') {
+					$this->eprod->update(array(
+												"net_price" 		=> $this->input->post('price'),
+												"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
+												"calc_net_price"	=> $this->input->post('ori_net_price')
+											), array("id" => $this->input->post('event_product_id'), "product_id" => $this->input->post('pid'), "event_id" => $event_id));
 			}
 		}
 
 		$eprod 				= $this->eprod
-								->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
-								->with_stock('fields: eol, lotnr, barcode')
-								->with_prices('fields: volume, price')
-								->with_vaccine('fields: id, redo')
-								->where(array("event_id" => $event_id))
-								->get_all();
+											->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
+											->with_stock('fields: eol, lotnr, barcode')
+											->with_prices('fields: volume, price')
+											->with_vaccine('fields: id, redo')
+											->where(array("event_id" => $event_id))
+											->get_all();
 		$eproc				= $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all();
 
 		$event_info 		= $this->events->get($event_id);
 		$pet_info 			= $this->pets->get($event_info['pet']);
 
 		$data = array(
-						"event_info"	=> $event_info,
-						"owner" 		=> $this->owners->get($pet_info['owner']),
-						"pet"			=> $pet_info,
-						"consumables"	=> $eprod,
+						"event_info"		=> $event_info,
+						"owner" 				=> $this->owners->get($pet_info['owner']),
+						"pet"						=> $pet_info,
+						"consumables"		=> $eprod,
 						"procedures_d"	=> $eproc,
 					);
 
@@ -163,8 +152,8 @@ class Events extends Vet_Controller
 				}
 
 				$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
-								"net_price" 		=> $new_net_price,
-								"price" 			=> $new_net_price * ((100 + $prod['btw'])/100),
+								"net_price" 			=> $new_net_price,
+								"price" 					=> $new_net_price * ((100 + $prod['btw'])/100),
 								"calc_net_price"	=> ($prod['calc_net_price'] != 0) ? $prod['calc_net_price'] : $prod['net_price']
 							));
 			}
@@ -180,8 +169,8 @@ class Events extends Vet_Controller
 					$new_net_price = $proc['net_price'] * ((100 - $reduction) / 100);
 				}
 				$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
-								"net_price" 		=> $new_net_price,
-								"price" 			=> $new_net_price * ((100 + $proc['btw'])/100),
+								"net_price" 			=> $new_net_price,
+								"price" 					=> $new_net_price * ((100 + $proc['btw'])/100),
 								"calc_net_price"	=> ($proc['calc_net_price'] != 0) ? $proc['calc_net_price'] : $proc['net_price']
 							));
 			}
@@ -198,28 +187,27 @@ class Events extends Vet_Controller
 			echo "cannot change due to status : status_history";
 			return false;
 		}
-		if ($this->input->post('submit') == 'report' || $this->input->post('submit') == 'finished_report') {
 
-			$this->events->update(
-				array(
-						"title" 						=> $this->input->post('title'),
-						"anamnese" 					=> $this->input->post('anamnese'),
-						"type" 							=> (int) $this->input->post('type'),
-						"vet_support_1"			=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
-						"vet_support_2" 		=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
-						"report"						=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
-						),
-				$event_id
-			);
+		if ($this->input->post('submit') != 'report' || $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
 
-			# report is finished, redirect to pet overview
-			if ($this->input->post('submit') == 'finished_report') {
-				redirect('/pets/fiche/' . $this->input->post('pet_id'));
-			}
-			redirect('/events/event/' . $event_id . '/report');
-		} else {
-			echo "no post data";
+		$this->events->update(
+			array(
+					"title" 						=> $this->input->post('title'),
+					"anamnese" 					=> $this->input->post('anamnese'),
+					"type" 							=> (int) $this->input->post('type'),
+					"vet_support_1"			=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
+					"vet_support_2" 		=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
+					"report"						=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
+					),
+			$event_id
+		);
+
+		# report is finished, redirect to pet overview
+		if ($this->input->post('submit') == 'finished_report') {
+			redirect('/pets/fiche/' . $this->input->post('pet_id'));
 		}
+		redirect('/events/event/' . $event_id . '/report');
+
 	}
 
 	public function add_proc_prod($event_id)

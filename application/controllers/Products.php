@@ -191,55 +191,61 @@ class Products extends Vet_Controller
 		# only admins have access here
 		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
 
-		# product specific
-		if ($id) {
-			# new price
-			if ($this->input->post('submit')) {
-				# modification
-				if ($this->input->post('submit') == "edit") {
-					$this->pprice
-							->where(array(
-											"id" 	=> $this->input->post('price_id')
-									))
-							->update(array(
-											"price" => $this->input->post('price'),
-									));
-				# new price
-				} else {
-					$this->pprice->insert(array(
-												'volume' 		=> $this->input->post('volume'),
-												'price' 		=> $this->input->post('price'),
-												'product_id' 	=> $id
-										));
-				}
-			}
-
-			$data = array(
-							"product" 		=> $this->products
-													->with_prices('fields:volume, price, id')
-													->where(array("sellable" => 1))
-													->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
-													->get($id),
-
-							"stock_price"	=> $this->stock
-													->where(array("product_id" => $id, "state <" => STOCK_HISTORY, "volume >" => 0))
-													->fields('in_price, volume, created_at')
-													->get_all()
-						);
-			$this->_render_page('product_price_edit', $data);
-
-		# full list of products
-		} else {
-			$data = array(
-							"products" 		=> $this->products
-													->with_prices('fields:volume, price')
-													->fields('name, buy_volume, buy_price, sellable, updated_at, unit_sell')
-													->where(array("sellable" => 1))
-													->get_all()
-						);
-
-			$this->_render_page('product_price_list', $data);
+		# show list with all products prices
+		# unless single product is selected
+		if (!$id) {
+			$this->list_product_page();
 		}
+
+		# modification
+		if ($this->input->post('submit') && $this->input->post('submit') == "edit") {
+			$this->pprice
+					->where(array(
+									"id" 	=> $this->input->post('price_id')
+							))
+					->update(array(
+									"price" => $this->input->post('price'),
+							));
+		# new price
+		} elseif($this->input->post('submit')) {
+			$this->pprice->insert(array(
+										'volume' 		=> $this->input->post('volume'),
+										'price' 		=> $this->input->post('price'),
+										'product_id' 	=> $id
+								));
+		}
+
+		$data = array(
+						"product" 		=> $this->products
+												->with_prices('fields:volume, price, id')
+												->where(array("sellable" => 1))
+												->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
+												->get($id),
+
+						"stock_price"	=> $this->stock
+												->where(array("product_id" => $id, "state <" => STOCK_HISTORY, "volume >" => 0))
+												->fields('in_price, volume, created_at')
+												->get_all()
+					);
+		$this->_render_page('product_price_edit', $data);
+
+	}
+
+	/*
+		generate a list with pricings for all products
+	*/
+	private function list_product_page()
+	{
+		$data = array(
+						"products" 		=> $this->products
+												->with_prices('fields:volume, price')
+												->fields('name, buy_volume, buy_price, sellable, updated_at, unit_sell')
+												->where(array("sellable" => 1))
+												->get_all()
+					);
+
+		$this->_render_page('product_price_list', $data);
+		return 1;
 	}
 
 	public function remove_product_price($id, $new = false)
@@ -260,31 +266,21 @@ class Products extends Vet_Controller
 		}
 	}
 
+	/*
+	generate a list with all products based on category
+	or if none is set "other"
+	*/
 	public function product_list($id_or_product = false)
 	{
-		// defaults
-		$products = false;
-
-		if ($id_or_product) {
-			if ($id_or_product == "other") {
-				$products = $this->products
-									->with_prices('fields:volume, price')
-									->with_booking_code()
-									->with_type('fields:name')
-									->where('type', '0')
-									->get_all();
-			} elseif ($id_or_product) {
-				$products = $this->products
-									->with_prices('fields:volume, price')
-									->with_booking_code()
-									->with_type('fields:name')
-									->where('type', $id_or_product)
-									->get_all();
-			}
-		}
+		$id = ($id_or_product == "other") ? 0 : $id_or_product;
 		$data = array(
-						"products" 		=> $products,
-						"types" 		=> $this->prod_type->get_all()
+						"products" 		=> ($id_or_product) ? $this->products
+																		->with_prices('fields:volume, price')
+																		->with_booking_code()
+																		->with_type('fields:name')
+																		->where('type', $id)
+																		->get_all() : false,
+						"types" 			=> $this->prod_type->get_all()
 					);
 
 		$this->_render_page('products_list', $data);
@@ -297,28 +293,28 @@ class Products extends Vet_Controller
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
 
 			$input = array(
-								"name" 				=> $this->input->post('name'),
-								"short_name" 		=> $this->input->post('short_name'),
-								"producer" 			=> $this->input->post('producer'),
-								"supplier" 			=> $this->input->post('supplier'),
-								"posologie" 		=> $this->input->post('posologie'),
+								"name" 						=> $this->input->post('name'),
+								"short_name" 			=> $this->input->post('short_name'),
+								"producer" 				=> $this->input->post('producer'),
+								"supplier" 				=> $this->input->post('supplier'),
+								"posologie" 			=> $this->input->post('posologie'),
 								"toedieningsweg" 	=> $this->input->post('toedieningsweg'),
-								"type" 				=> $this->input->post('type'),
+								"type" 						=> $this->input->post('type'),
 								"dead_volume"			=> $this->input->post('dead_volume'),
-								"buy_volume" 		=> $this->input->post('buy_volume'),
+								"buy_volume" 			=> $this->input->post('buy_volume'),
 								"sell_volume" 		=> $this->input->post('sell_volume'),
-								"buy_price"			=> $this->input->post('buy_price'),
-								"unit_buy" 			=> $this->input->post('unit_buy'),
-								"unit_sell" 		=> $this->input->post('unit_sell'),
+								"buy_price"				=> $this->input->post('buy_price'),
+								"unit_buy" 				=> $this->input->post('unit_buy'),
+								"unit_sell" 			=> $this->input->post('unit_sell'),
 								"input_barcode" 	=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
-								"btw_buy" 			=> $this->input->post('btw_buy'),
-								"btw_sell" 			=> $booking['btw'],
-								"vaccin" 			=> (is_null($this->input->post('vaccin')) ? 0 : 1),
+								"btw_buy" 				=> $this->input->post('btw_buy'),
+								"btw_sell" 				=> $booking['btw'],
+								"vaccin" 					=> (is_null($this->input->post('vaccin')) ? 0 : 1),
 								"vaccin_freq" 		=> $this->input->post('vaccin_freq'),
 								"booking_code" 		=> $this->input->post('booking_code'),
-								"delay" 			=> $this->input->post('delay'),
-								"comment" 			=> $this->input->post('comment'),
-								"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
+								"delay" 					=> $this->input->post('delay'),
+								"comment" 				=> $this->input->post('comment'),
+								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"limit_stock" 		=> $this->input->post('limit_stock')
 							);
 
@@ -332,6 +328,9 @@ class Products extends Vet_Controller
 
 			} elseif ($this->input->post('submit') == "edit") {
 				$update = $this->products->update($input, $id);
+
+				# log this
+				$this->logs->logger($this->user->id, INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
 			}
 		}
 
@@ -373,14 +372,12 @@ class Products extends Vet_Controller
 	# get product by barcode, ajax return
 	public function get_product_by_barcode()
 	{
-		$barcode = $this->input->get('barcode');
-		$location = $this->input->get('loc');
 		$result = $this->stock
 					->fields('eol, barcode, volume')
 					->with_products('fields: name, unit_sell, btw_sell, booking_code')
 				->where(array(
-				'barcode' 	=> $barcode,
-				'location' 	=> $location
+					'barcode' 	=> $this->input->get('barcode'),
+					'location' 	=> $this->input->get('loc')
 				))->get();
 
 		echo ($result) ? json_encode($result) : json_encode(array());
@@ -395,35 +392,35 @@ class Products extends Vet_Controller
 	{
 		$query = $this->input->get('query');
 
+		# too short
+		if (strlen($query) <= 1) { echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
+
+		# products
+		$result = $this->products
+							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
+							->with_type()
+							->where('name', 'like', $query, true)
+							->limit(20)
+							->order_by("type", "ASC")
+							->get_all();
+
+		# in case no results
+		if (!$result) {	echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
+
 		$return = array();
-
-		if (strlen($query) > 1) {
-			# products
-			$result = $this->products
-								->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
-								->with_type()
-								->where('name', 'like', $query, true)
-								->limit(20)
-								->order_by("type", "ASC")
-								->get_all();
-
-			# in case no results
-			if ($result) {
-				foreach ($result as $r) {
-					$return[] = array(
-								"value" => $r['name'],
-								"data" 	=> array(
-													"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
-													"id" 				=> $r['id'],
-													"buy_volume"		=> $r['buy_volume'],
-													"unit_buy"			=> $r['unit_buy'],
-													"sell_volume"		=> $r['sell_volume'],
-													"unit_sell"			=> $r['unit_sell'],
-													"buy_price"			=> $r['buy_price'],
-												)
-								);
-				}
-			}
+		foreach ($result as $r) {
+			$return[] = array(
+						"value" => $r['name'],
+						"data" 	=> array(
+											"type" 					=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
+											"id" 						=> $r['id'],
+											"buy_volume"		=> $r['buy_volume'],
+											"unit_buy"			=> $r['unit_buy'],
+											"sell_volume"		=> $r['sell_volume'],
+											"unit_sell"			=> $r['unit_sell'],
+											"buy_price"			=> $r['buy_price'],
+										)
+						);
 		}
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}

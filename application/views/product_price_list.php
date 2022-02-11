@@ -55,7 +55,7 @@
 												<td>". $price['volume'] ." ". $product['unit_sell']."</td>
 												<td>". $price['price'] ."&euro;</td>
 												<td>". (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) ."%</td>
-												
+
 										<tr>";
 								}
 								echo "</table></div>";
@@ -68,9 +68,9 @@
 					?>
 					</td>
 
-					
+
 					<td>
-						<?php 
+						<?php
 							if (!isset($product['prices']))
 							{
 								echo "<span style='color:red;'><b>no price</b></span>";
@@ -90,11 +90,11 @@
 								}
 								else
 								{
-									if ($product['prices']['0']['price'] == 0) 
+									if ($product['prices']['0']['price'] == 0 || $product['buy_price'] == 0)
 									{
 										echo "---";
 									}
-									else 
+									else
 									{
 										$unit_price = ($product['buy_price']/$product['buy_volume']);
 										$change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
@@ -113,10 +113,10 @@
 				</table>
 			<?php endif; ?>
                 </div>
-		</div>	
+		</div>
 
 	</div>
-      
+
 </div>
 
 
@@ -129,4 +129,3 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 });
 </script>
-  
