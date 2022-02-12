@@ -188,7 +188,7 @@ class Events extends Vet_Controller
 			return false;
 		}
 
-		if ($this->input->post('submit') != 'report' || $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
+		if ($this->input->post('submit') != 'report' && $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
 
 		$this->events->update(
 			array(

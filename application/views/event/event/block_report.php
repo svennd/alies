@@ -8,8 +8,8 @@
 				<i class="fas fa-eye"></i>
 			</a>
 			<?php else: ?>
-			<a href="<?php echo base_url(); ?>events/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink">
-				<i class="fas fa-eye-slash"></i>
+			<a href="<?php echo base_url(); ?>events/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
+				<i class="fas fa-eye-slash"></i> Disable
 			</a>
 			<?php endif; ?>
 		</div>
@@ -18,29 +18,45 @@
 	<div class="card-body">
 		<form action="<?php echo base_url(); ?>events/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
 
-			<div class="form-row">
-			<div class="col-md-2">
-				<div class="form-group">
-					  <label>Type :</label>
-				  <select name="type" style="width:100%" id="select_type" data-allow-clear="1">
-					<option id="0"></option>
-				 </select>
-				</div>
-			</div>
 
-			<div class="col">
-			  <div class="form-group">
-				<label for="exampleFormControlInput3">Title :</label>
-				<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="exampleFormControlInput3">
-			  </div>
-			</div>
+			<?php if($event_info['status'] == STATUS_CLOSED): ?>
+			<div class="form-row">
+				<div class="col-md-2">
+					<div class="form-group">
+						  <label>Type :</label>
+					  <select name="type" style="width:100%" id="select_type" data-allow-clear="1">
+						<option id="0"></option>
+					 </select>
+					</div>
+				</div>
+
+				<div class="col">
+				  <div class="form-group">
+					<label for="exampleFormControlInput3">Title :</label>
+					<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="exampleFormControlInput3">
+				  </div>
+				</div>
 		  </div>
+
+			<?php else: ?>
+
+			<div class="form-group row">
+				<label class="col-sm-1 col-form-label" for="title_field">Title :</label>
+		    <div class="col-sm-10">
+					<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="title_field">
+		    </div>
+		  </div>
+			<?php endif; ?>
 
 		  <div class="form-group">
 			<label for="anamnese">Report</label>
 			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
 			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
 		  </div>
+
+			<?php if($event_info['status'] == STATUS_CLOSED): ?>
+				<?php include "block_drawing.php"; ?>
+			<?php endif; ?>
 
 			<?php if($event_info['status'] == STATUS_CLOSED): ?>
 			<hr />
@@ -72,7 +88,6 @@
 		  </div>
 			<hr />
 	Attachments :
-		<?php endif; ?>
 		<div class="form-row py-2">
 			<div class="col">
 			  <div class="dropbox" id="upload_field">
@@ -93,9 +108,10 @@
 			</div>
 			<?php endif; ?>
 		</div>
+		<?php endif; ?>
 		<hr />
 			<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
-		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save</button>
+		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save Report</button>
 
 			<?php if($event_info['status'] == STATUS_CLOSED): ?>
 		  <button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
