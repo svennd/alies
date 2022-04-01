@@ -3412,4 +3412,35 @@ INSERT INTO `config` (`id`, `name`, `value`, `updated_at`, `created_at`) VALUES
 (2, 'alert_last_backup', '7', NULL, '2020-02-08 13:54:27');
 
 INSERT INTO `migrations` (`version`) VALUES
-(0);
+(7);
+
+--- migrations
+ALTER TABLE `stock` CHANGE `lotnr` `lotnr` VARCHAR(255) NOT NULL;
+ALTER TABLE `pets` ADD `nutritional_advice` TEXT NOT NULL AFTER `note`;
+ALTER TABLE `users` ADD `remember_selector` varchar(255) NULL DEFAULT NULL;
+ALTER TABLE `users` ADD `forgotten_password_selector` varchar(255) NULL DEFAULT NULL;
+ALTER TABLE `pets` ADD `death_date` DATE NULL DEFAULT NULL AFTER `death`;
+
+ALTER TABLE `owners` ADD INDEX(`street`);
+ALTER TABLE `owners` ADD INDEX(`first_name`);
+ALTER TABLE `owners` ADD INDEX(`last_name`);
+
+ALTER TABLE `stock` ADD INDEX `gsl_lookup` (`eol`, `location`, `lotnr`);
+
+ALTER TABLE `products` CHANGE `input_barcode` `input_barcode` VARCHAR(255) NULL;
+ALTER TABLE `products` ADD UNIQUE `barcode` (`input_barcode`);
+ALTER TABLE `users` ADD `search_config` TINYINT(1) NOT NULL DEFAULT '0' AFTER `phone`;
+ALTER TABLE `users` ADD `user_date` varchar(9) NOT NULL DEFAULT 'd-m-Y' AFTER `phone`;
+
+CREATE TABLE `stock_input` (
+      `id` int(11) NOT NULL,
+      `user` int(11) NOT NULL,
+      `location` int(11) NOT NULL,
+      `msg` text NOT NULL,
+      `updated_at` datetime NOT NULL,
+      `created_at` datetime NOT NULL
+    ) ENGINE=InnoDB;
+ALTER TABLE `stock_input` ADD PRIMARY KEY (`id`);
+ALTER TABLE `stock_input` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+alter table products change column `offset` `dead_volume` float(4,2);
+ALTER TABLE `events` ADD `report` TINYINT(1) NOT NULL DEFAULT '0' AFTER `vet_support_2`;

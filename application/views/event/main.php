@@ -1,10 +1,10 @@
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
-	
+
 	<?php if ($event_state != STATUS_CLOSED): ?>
 		<div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
+				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
 				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
 			</div>
 			<div class="card-body">
@@ -15,7 +15,7 @@
 						<th>Name</th>
 						<th>Barcode/LotNr</th>
 						<th>Price</th>
-						<th>Volume</th> 
+						<th>Volume</th>
 						<th>btw</th>
 						<th>Price</th>
 						<th>Options</th>
@@ -39,7 +39,7 @@
 					</tr>
 				</tfoot>
 				</table>
-				
+
 				<?php if($consumables || $procedures_d): ?>
 					<?php if($event_info['payment'] == 0) : ?>
 						<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
@@ -57,7 +57,7 @@
 		<?php include "event/block_other_pets.php"; ?>
 		<?php include "event/block_birthday.php"; ?>
 		<?php include "event/block_event_controller.php"; ?>
-		
+
 		<?php if ($event_state == STATUS_CLOSED): ?>
 			<?php include "event/block_closed_bill.php"; ?>
 		<?php endif; ?>
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#barcode_show_booking_select").hide();
 		$("#barcode_booking_select").show();
 	});
-	
+
 	$('#barcode_field').on('input', function() {
 		var barcode = $("#barcode_field").val();
 		if (barcode.length >= 5)
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				$("#barcode_unit_sell").html("/ " + data.volume + " " + data.products.unit_sell);
 				$("#barcode_btw_sell").val(data.products.btw_sell);
 				$("#barcode_show_booking_select").html(data.products.btw_sell + "%");
-				
+
 				// console.log(data);
 				// console.log(data.products.booking_code);
 				/* color & select the default booking code */
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 
 	$('#autocomplete').autocomplete({
-		
+
 		serviceUrl: '<?php echo base_url(); ?>products/get_product_or_procedure?loc=<?php echo $u_location; ?>',
 		onSelect: function (suggestion) {
 			// console.log(suggestion.data);
@@ -108,12 +108,12 @@ document.addEventListener("DOMContentLoaded", function(){
 			$("#btw_sell").val(suggestion.data.btw);
 			$("#booking_default").val(suggestion.data.booking);
 			$("#show_booking_select").html(suggestion.data.btw + "%");
-			
+
 			/* color the default booking code */
 			var select = $('[id=hidden_booking] option[value="' + suggestion.data.booking + '"]');
 				select.addClass("bg-success");
 				select.prop("selected", true)
-			
+
 			// its not a product
 			if (suggestion.data.prod == 0)
 			{
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				$("#stock_select").children().remove();
 				$('#product_or_proc').val(0);
 				$('#amount').val(1);
-				
+
 				// check if there is a price for a procedure
 				if (suggestion.data.price != null)
 				{
@@ -133,10 +133,27 @@ document.addEventListener("DOMContentLoaded", function(){
 			else
 			{
 				if(suggestion.data.type == "barcode") {
-					// to late (this is after click)
-					console.log("FIRE");
+					console.log(suggestion.data);
+					// set init
+					$('#unit_sell').html(suggestion.data.unit);
+					$('#stock_select').prop('disabled', false);
+					$("#stock_select").children().remove();
+					$('#product_or_proc').val(1);
+					$('#vaccin_or_no').val(suggestion.data.vaccin);
+					$('#vaccin_freq').val(suggestion.data.vaccin_freq);
+
+					// there should only be one
+					$("#stock_select").append(new Option(suggestion.data.barcode + " // " + suggestion.data.lotnr, suggestion.data.barcode, true, true));
+					$('#unit_sell').html("/ " + suggestion.data.volume + " " + suggestion.data.unit);
+
+					// check if there are prices (products)
+					if (suggestion.data.prices != null)
+					{
+							prices_to_html(suggestion.data.prices, suggestion.data.unit);
+					}
 				}
 				else {
+					console.log(suggestion.data);
 					// product
 					$('#unit_sell').html(suggestion.data.unit);
 					$('#stock_select').prop('disabled', false);
@@ -144,35 +161,35 @@ document.addEventListener("DOMContentLoaded", function(){
 					$('#product_or_proc').val(1);
 					$('#vaccin_or_no').val(suggestion.data.vaccin);
 					$('#vaccin_freq').val(suggestion.data.vaccin_freq);
-				
+
 					// check if there is stock
 					if (suggestion.data.stock != null)
 					{
 						var stock = "";
-						
+
 						// only 1 (preselect)
-						if (suggestion.data.stock.length == 1) 
+						if (suggestion.data.stock.length == 1)
 						{
 							stock = suggestion.data.stock[0];
 							$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
-							
+
 							$('#unit_sell').html("/ " + stock.volume + " " + suggestion.data.unit);
 						}
 						// multiple
 						else
 						{
-							// since this is not sorted take 
+							// since this is not sorted take
 							// current location first
 							for (let i = 0; i < suggestion.data.stock.length; i++) {
 								stock = suggestion.data.stock[i];
-							 
+
 								if (<?php echo $u_location; ?> == stock.location)
 								{
 									var option = new Option(stock.barcode +" - " + stock.lotnr + " (" + parseFloat(stock.volume).toPrecision() + ")", stock.barcode);
 									$("#stock_select").append(option);
 								}
 							}
-							
+
 							// other locations
 							for (let i = 0; i < suggestion.data.stock.length; i++) {
 								stock = suggestion.data.stock[i];
@@ -185,37 +202,14 @@ document.addEventListener("DOMContentLoaded", function(){
 								}
 							}
 						}
-						
-				
+
 					}
 					// check if there are prices (products)
 					if (suggestion.data.prices != null)
 					{
-						// only 1
-						if (suggestion.data.prices.length == 1) 
-						{
-							prices = suggestion.data.prices[0];
-							$("#price_ajax_request").html(prices.price + " &euro; / " + prices.volume + " " + suggestion.data.unit);
-						}
-						// multiple
-						else
-						{
-							var min = parseFloat(suggestion.data.prices[0].price);
-							var max = parseFloat(suggestion.data.prices[0].price);
-							var loop = "<div class='collapse' id='collapseSELECT'><table class='small'>";
-							
-							for (let i = 0; i < suggestion.data.prices.length; i++) {
-								current_price = suggestion.data.prices[i];
-								loop += "<tr><td>" + current_price.volume + " " + suggestion.data.unit + "</td><td>" + current_price.price + " &euro;</td></tr>";
-								if (min > parseFloat(current_price.price)) { min = current_price.price; }
-								if (max < parseFloat(current_price.price)) { max = current_price.price; }
-							}
-							loop += "</table></div>"
-							
-							$("#price_ajax_request").html("<a data-toggle='collapse' href='#collapseSELECT' role='button' aria-expanded='false' aria-controls='collapseSELECT'>" + min + " ~ " + max + " &euro;</a>" + loop);
-						}
+							prices_to_html(suggestion.data.prices, suggestion.data.unit);
 					}
-					
+
 				}
 			}
 		},
@@ -224,4 +218,30 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 
 });
+
+function prices_to_html(prices, unit) {
+	// only 1
+	if (prices.length == 1)
+	{
+		prices = prices[0];
+		$("#price_ajax_request").html(prices.price + " &euro; / " + prices.volume + " " + unit);
+	}
+	// multiple
+	else
+	{
+		var min = parseFloat(prices[0].price);
+		var max = parseFloat(prices[0].price);
+		var loop = "<div class='collapse' id='collapseSELECT'><table class='small'>";
+
+		for (let i = 0; i < prices.length; i++) {
+			current_price = prices[i];
+			loop += "<tr><td>" + current_price.volume + " " + unit + "</td><td>" + current_price.price + " &euro;</td></tr>";
+			if (min > parseFloat(current_price.price)) { min = current_price.price; }
+			if (max < parseFloat(current_price.price)) { max = current_price.price; }
+		}
+		loop += "</table></div>"
+
+		$("#price_ajax_request").html("<a data-toggle='collapse' href='#collapseSELECT' role='button' aria-expanded='false' aria-controls='collapseSELECT'>" + min + " ~ " + max + " &euro;</a>" + loop);
+	}
+}
 </script>

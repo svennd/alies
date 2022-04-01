@@ -185,9 +185,9 @@ class Pets extends Vet_Controller
 		$other_pets = $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
 
 		$data = array(
-			"pet"			=> $pet_info,
-			"owner" 		=> $this->owners->get($pet_info['owner']),
-			"pet_history"	=> $pet_history,
+			"pet"					=> $pet_info,
+			"owner" 			=> $this->owners->get($pet_info['owner']),
+			"pet_history"		=> $pet_history,
 			"history_count"	=> $history_count,
 			"vaccines" 		=> $this->vacs_pet->view($pet_id),
 			"other_pets"	=> $other_pets,

@@ -28,7 +28,7 @@ class Invoice extends Vet_Controller
 		$today = new DateTime();
 		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $today->format('Y-m-d');
 
-		$today->modify('-3 day');
+		$today->modify('-1 day');
 
 		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $today->format('Y-m-d');
 

@@ -51,7 +51,7 @@ class Events extends Vet_Controller
 		$eprod 					= $this->eprod
 										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, barcode')
-										->with_prices('fields: volume, price')
+										->with_prices('fields: volume, price|order_inside:volume asc')
 										->with_vaccine('fields: id, redo')
 										->where(array("event_id" => $event_id))
 										->get_all();
@@ -118,7 +118,7 @@ class Events extends Vet_Controller
 		$eprod 				= $this->eprod
 											->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 											->with_stock('fields: eol, lotnr, barcode')
-											->with_prices('fields: volume, price')
+											->with_prices('fields: volume, price|order_inside:volume asc')
 											->with_vaccine('fields: id, redo')
 											->where(array("event_id" => $event_id))
 											->get_all();
@@ -218,7 +218,7 @@ class Events extends Vet_Controller
 		}
 
 		$pid = (int) $this->input->post('pid');
-		$btw = $this->input->post('btw');
+		$btw = (float) $this->input->post('btw');
 		$booking = $this->input->post('booking_default');
 
 		# nothing given
@@ -231,10 +231,11 @@ class Events extends Vet_Controller
 			if ($this->input->post('booking_default') != $this->input->post('booking_code')) {
 				$result = $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
 				$booking = $result['id'];
-				$btw = $result['btw'];
+				$btw = (float) $result['btw'];
 			}
 
 			// add product to event
+			if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
 			list($price, $net_price) = $this->calculate_price_product($pid, $this->input->post('volume'), $btw);
 
 			$prod_line = $this->eprod->insert(array(
@@ -260,10 +261,10 @@ class Events extends Vet_Controller
 											"product_id" 	=> $pid,
 											"event_id" 		=> $event_id,
 											"event_line"	=> $prod_line,
-											"pet" 			=> $event['pet'],
-											"redo"			=> $date->format('Y-m-d'),
+											"pet" 				=> $event['pet'],
+											"redo"				=> $date->format('Y-m-d'),
 											"location"		=> $this->user->current_location,
-											"vet"			=> $this->user->id
+											"vet"					=> $this->user->id
 										));
 			}
 
@@ -273,7 +274,7 @@ class Events extends Vet_Controller
 			if ($this->input->post('booking_default') != $this->input->post('booking_code')) {
 				$result 	= $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
 				$booking 	= $result['id'];
-				$btw 		= $result['btw'];
+				$btw 			= $result['btw'];
 			}
 
 			// add procedure to event
@@ -298,25 +299,27 @@ class Events extends Vet_Controller
 	}
 
 	private function calculate_price_product($pid, $volume, $btw)
+	// function calculate_price_product($pid, $volume, $btw)
 	{
 		$this->load->model('Product_price_model', 'prices');
 
 		# get all prices in a sortable array
-		$all_prices = $this->prices->fields('volume, price')->where(array("product_id" => $pid))->get_all();
+		$all_prices = $this->prices->fields('volume, price')->order_by("volume", "ASC")->where(array("product_id" => $pid))->get_all();
 		$prices = array();
+		// var_dump($all_prices);
 		foreach ($all_prices as $price) {
 			$prices[] = $price['price'];
 			$volumes[] = $price['volume'];
 		}
+		$size_prices = count($all_prices);
 
 		# determ the price to use per volume
-		$to_use_price = array();
-		if (count($all_prices) == 1) {
-			$to_use_price = $prices[0];
-		} else {
-			# sort so we can loop
-			array_multisort($volumes, $prices);
+		$to_use_price = ($size_prices == 1) ? $prices[0]: 0;
 
+		// var_dump($volumes, $prices);
+
+		if ($size_prices > 1) {
+			array_multisort($volumes, $prices);
 			$i = 0;
 			foreach ($prices as $price) {
 				if ($volume < $volumes[$i]) {
@@ -330,6 +333,9 @@ class Events extends Vet_Controller
 		}
 		$net_price = $to_use_price * $volume;
 		$price = round(($net_price * (1 + ($btw/100))), 2, PHP_ROUND_HALF_UP);
+
+		// var_dump($to_use_price);
+		// var_dump(array($price, $net_price));
 		return array($price, $net_price);
 	}
 
@@ -382,6 +388,7 @@ class Events extends Vet_Controller
 			return false;
 		}
 		if ($this->input->post('submit') == 'edit_prod') {
+			if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
 			list($price, $net_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'), $this->input->post('btw'));
 			$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
 														"volume" 		=> $this->input->post('volume'),

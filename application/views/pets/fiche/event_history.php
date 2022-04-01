@@ -19,16 +19,16 @@
 
 	<?php if(!isset($full_history)): ?>
 	<div class="card-header"><a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>">History</a></div>
-	<?php else : ?>	
+	<?php else : ?>
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		<div>
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
+			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
 			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> / History
 		</div>
 	</div>
 	<?php endif; ?>
 	<div class="card-body">
-		
+
 		<?php if (isset($full_history)): ?>
 		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
@@ -47,7 +47,7 @@
 				</a>
 				<?php endif; ?>
 			</div>
-			
+
 			<div class="input-group input-group-sm">
 				<div class="input-group-prepend">
 					<div class="input-group-text" id="btnGroupAddon"><i class="fas fa-search"></i></div>
@@ -55,11 +55,11 @@
 				<input type="text" class="form-control" id="title_search" onkeyup="search_history()" value="" placeholder="Search Titles">
 			</div>
 		</div>
-			
+
 			<br/>
 			<br/>
 		<?php endif; ?>
-		
+
 		<?php if ($pet_history): ?>
 		<table class="table table-hover mb-0" id="pet_history">
 		<thead>
@@ -80,17 +80,17 @@
 			"fas fa-hammer",
 			"fas fa-heartbeat",
 		);
-		
-		for ($i = 0; $i < count($pet_history); $i++) :  
-		
-			$history = $pet_history[$i]; 
+
+		for ($i = 0; $i < count($pet_history); $i++) :
+
+			$history = $pet_history[$i];
 			$products = (isset($pet_history[$i]['products'])) ? $pet_history[$i]['products']: array();
 			$procs = (isset($pet_history[$i]['procedures'])) ? $pet_history[$i]['procedures']: array();
 	?>
 	<tr class="searchable">
 		<td><div class="humb-sm rounded-circle mr-2"><i class="<?php echo $symbols[$history['type']]; ?>"></i></div></td>
 		<td><?php echo $history['title']; ?></td>
-		<td><?php echo substr($history['created_at'], 0, 10); ?></td>
+		<td><?php echo user_format_date($history['created_at'], $user->user_date); ?></td>
 		<td><?php echo (isset($history['vet']['first_name'])) ? $history['vet']['first_name'] : 'unknown soldier' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
@@ -148,15 +148,15 @@
 		  }
 		}
 	  }
-	}	
-	
+	}
+
 document.addEventListener("DOMContentLoaded", function(){
 	// history anamnese
-	$(".ana").click(function(){	
+	$(".ana").click(function(){
 		$("#" + this.id + "_text").toggle();
 	});
-	
-	
+
+
 
 
 });

@@ -13,7 +13,7 @@
 			<?php foreach($vaccines as $vac):?>
 			<tr>
 			  <td><?php echo $vac['name']; ?></td>
-			  <td><?php echo $vac['max_redo']; ?></td>
+			  <td><?php echo user_format_date( $vac['max_redo'], $user->user_date); ?></td>
 			</tr>
 			<?php endforeach; ?>
 		  </tbody>

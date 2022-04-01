@@ -224,10 +224,14 @@ class Stock_model extends MY_Model
 						p.name as pname,
 						btw_sell,
 						booking_code,
+						p.unit_sell,
+						p.vaccin,
+						p.vaccin_freq,
 						p.input_barcode,
 						s.eol,
 						s.lotnr,
 						s.barcode,
+						s.volume,
 						s.id as stock_id
 					FROM `products` as p
 					LEFT JOIN stock as s ON

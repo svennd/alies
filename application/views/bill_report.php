@@ -6,7 +6,7 @@ $state = array(
 				"PAID",
 				"NON_COLLECTABLE",
 				);
-				
+
 	foreach ($location_i as $loc)
 	{
 		$l[$loc['id']] = $loc['name'];
@@ -14,7 +14,7 @@ $state = array(
 ?>
 <div class="row">
 	<div class="col-lg-12 mb-4">
-	
+
 	<?php if ($open_bills): ?>
 	<div class="alert alert-danger" role="alert">
 	Open invoices !<br/>
@@ -23,25 +23,25 @@ $state = array(
 		<?php endforeach; ?>
 	</div>
 	<?php endif; ?>
-	
+
 	<div class="card mb-4">
 		<div class="card-header">
 			<a href="<?php echo base_url(); ?>invoice">Invoice</a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
 			Bill (#<?php
-				$date = date_create_from_format ('Y-m-d H:i:s', $bill['created_at']); 
+				$date = date_create_from_format ('Y-m-d H:i:s', $bill['created_at']);
 					echo date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT); ?>)
 		</div>
 		<div class="card-body">
-		
-		
-			<div class="card-body p-0">		
-		
+
+
+			<div class="card-body p-0">
+
 				<div class="row">
 					<div class="col-lg-3 mb-4">
-			
+
 	<?php if ($bill['status'] != PAYMENT_PAID): ?>
 					<p class="lead">Payment : <?php echo $state[$bill['status']]; ?></p>
-					<?php 
+					<?php
 						$cash = round((float) $bill['cash'], 2);
 						$card = round((float) $bill['card'], 2);
 						if ($card + $cash != 0) :
@@ -51,7 +51,7 @@ $state = array(
 									Short : <?php echo $total_short; ?> &euro; (card : <?php echo $card; ?> &euro;, cash : <?php echo $cash; ?> &euro;)
 								</p>
 						<?php endif; ?>
-						
+
 					<form action="<?php echo base_url(); ?>invoice/bill_pay/<?php echo $bill_id ?>" method="post" autocomplete="off">
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
@@ -62,7 +62,7 @@ $state = array(
 				<span class="input-group-text">&euro;</span>
 			</div>
 		</div>
-		
+
 		<div class="input-group mb-3">
 		  <div class="input-group-prepend">
 			<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fas fa-euro-sign"></i>&nbsp; Cash</a></span>
@@ -71,17 +71,17 @@ $state = array(
 		<div class="input-group-append">
 			<span class="input-group-text">&euro;</span>
 		</div>
-		<div class="input-group-append">	
+		<div class="input-group-append">
 			<span class="input-group-text" id="calculate"><a href="#"><i class="fas fa-calculator"></i></a></span>
 		</div>
 		</div>
 		<i><small id="payment_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 			<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fas fa-file-invoice-dollar"></i> Payment Complete</button>
-		
+
 		<?php endif; ?>
 		<?php if ($bill['status'] == PAYMENT_PAID): ?>
 		<p class="lead">Payment : <?php echo $state[$bill['status']]; ?>!</p>
-		<?php 
+		<?php
 			$cash = round((float) $bill['cash'], 2);
 			$card = round((float) $bill['card'], 2);
 		?>
@@ -89,11 +89,11 @@ $state = array(
 
 		<?php endif; ?>
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>
-			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2" target="_blank"><i class="fas fa-syringe"></i> Drop from stock</a>	
+			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2" target="_blank"><i class="fas fa-syringe"></i> Drop from stock</a>
 		<?php endif; ?>
-		  </form>		
+		  </form>
 
-		</div>	  
+		</div>
 		<div class="col-lg-9 mb-4" style="border-left: 1px solid #dcdcdc;">
 					<div class="row">
 					<div class="col-md-6">
@@ -106,16 +106,16 @@ $state = array(
 					</div>
 	                <div class="row px-5 py-3">
                         <div class="col-md-12">
-							<?php 
+							<?php
 							// $full_total = 0.0;
-							foreach ($print_bill as $pet_id => $event): 
+							foreach ($print_bill as $pet_id => $event):
 								# resolve name, chip
 								$pet_info = $pets[$pet_id];
-								
+
 								foreach ($event as $event_id => $vbill):
 									list($event_id, $event_location, $payment_bill, $created_at, $updated_at) = array_values($event_info[$pet_id][$event_id]);
 									list($prod, $proc, $total) = array_values($vbill);
-									
+
 									# skip if no products or services
 									if (count($prod) + count($proc) == 0) continue;
 							?>
@@ -128,7 +128,7 @@ $state = array(
 								</div>
 
 								<div class="col-md-6 text-right">
-								<small><i><?php echo $bill['created_at']; ?></i></small>
+								<small><i><?php echo user_format_date($bill['created_at'], $user->user_date); ?></i></small>
 								</div>
 							</div>
 								<hr>
@@ -163,12 +163,12 @@ $state = array(
 									<?php endforeach; ?>
 									</tbody>
 								</table>
-								
+
 						<?php endforeach; ?>
 						<?php endforeach; ?>
                         </div>
                     </div>
-					<hr/>					
+					<hr/>
 	                <div class="row px-5 py-3">
                         <div class="col-md-4 offset-md-8">
 							<table class="table">
@@ -215,18 +215,18 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#cash_value").val("<?php echo $bill['amount']; ?>");
 		$("#card_value").val("");
 	});
-	
-	$("#calculate").click(function() { 
+
+	$("#calculate").click(function() {
 		var cash = parseFloat($("#cash_value").val());
 		var card = parseFloat($("#card_value").val());
 		var total = parseFloat(<?php echo $bill['amount']; ?>);
-		
-		if (isNaN(cash)) {cash = 0.0}  
-		if (isNaN(card)) {card = 0.0}  
-		if (isNaN(total)) {return false;}  
+
+		if (isNaN(cash)) {cash = 0.0}
+		if (isNaN(card)) {card = 0.0}
+		if (isNaN(total)) {return false;}
 		var total_in = cash+card;
-		
-		$("#payment_info").html("current: " + Math.round((total-total_in)*100)/100 + " &euro;");		
+
+		$("#payment_info").html("current: " + Math.round((total-total_in)*100)/100 + " &euro;");
 	});
 });
 </script>

@@ -82,7 +82,7 @@ class Products extends Vet_Controller
 
 		$data = array(
 				'product' 		=> $this->products->
-										with_prices('fields:id, volume, price')->
+										with_prices('fields:id, volume, price|order_inside:volume asc')->
 										with_type('fields:name')->
 										with_booking_code('fields:category, code, btw')->
 										with_stock('fields: location, eol, lotnr, volume, barcode, state, created_at', 'where:`state`=\'1\'')->
@@ -177,7 +177,7 @@ class Products extends Vet_Controller
 				'booking'	=> $this->booking->get_all(),
 				'product'	=> ($step) ?
 							$this->products
-								->with_prices('fields:volume, price, id')
+								->with_prices('fields:volume, price, id|order_inside:volume asc')
 								->where(array("sellable" => 1))
 								->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
 								->get($pid)
@@ -205,6 +205,7 @@ class Products extends Vet_Controller
 							))
 					->update(array(
 									"price" => $this->input->post('price'),
+									"volume" => $this->input->post('volume'),
 							));
 		# new price
 		} elseif($this->input->post('submit')) {
@@ -217,7 +218,7 @@ class Products extends Vet_Controller
 
 		$data = array(
 						"product" 		=> $this->products
-												->with_prices('fields:volume, price, id')
+												->with_prices('fields:volume, price, id|order_inside:volume asc')
 												->where(array("sellable" => 1))
 												->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
 												->get($id),
@@ -238,7 +239,7 @@ class Products extends Vet_Controller
 	{
 		$data = array(
 						"products" 		=> $this->products
-												->with_prices('fields:volume, price')
+												->with_prices('fields:volume, price|order_inside:volume asc')
 												->fields('name, buy_volume, buy_price, sellable, updated_at, unit_sell')
 												->where(array("sellable" => 1))
 												->get_all()
@@ -275,7 +276,7 @@ class Products extends Vet_Controller
 		$id = ($id_or_product == "other") ? 0 : $id_or_product;
 		$data = array(
 						"products" 		=> ($id_or_product) ? $this->products
-																		->with_prices('fields:volume, price')
+																		->with_prices('fields:volume, price|order_inside:volume asc')
 																		->with_booking_code()
 																		->with_type('fields:name')
 																		->where('type', $id)
@@ -335,7 +336,7 @@ class Products extends Vet_Controller
 		}
 
 		$data = array(
-						'product' 	=> ($id) ? $this->products->with_prices('fields:id, volume, price')->get($id) : false,
+						'product' 	=> ($id) ? $this->products->with_prices('fields:id, volume, price|order_inside:volume asc')->get($id) : false,
 						'type' 		=> $this->prod_type->get_all(),
 						'update'	=> $update,
 						'booking'	=> $this->booking->get_all(),
@@ -372,6 +373,20 @@ class Products extends Vet_Controller
 	# get product by barcode, ajax return
 	public function get_product_by_barcode()
 	{
+		/* this should be deprecated : perhaps for internal barcodes ? */
+
+		// $query = $this->input->get('barcode');
+		// $loc = $this->input->get('loc');
+		// $gsl = parse_gs1($query);
+		// var_dump($gsl);
+		// // not right format
+		// if (!$gsl) { return $return; }
+		//
+		// // search for product w/ this barcode
+		// $return = $this->get_gs1_barcode($gsl);
+		//
+		// echo json_encode(array("query" => $query, "suggestions" => $return));
+
 		$result = $this->stock
 					->fields('eol, barcode, volume')
 					->with_products('fields: name, unit_sell, btw_sell, booking_code')
@@ -425,6 +440,10 @@ class Products extends Vet_Controller
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 
+	/*
+		similar function gto gs1_to_barcode
+		this is used in stock_add.php
+	*/
 	public function gs1_to_product($gls = false, $return = false)
 	{
 		$gs1 = ($gls) ? $gls : $this->input->get('gs1');
@@ -489,8 +508,9 @@ class Products extends Vet_Controller
 
 		# should only return a single result
 		$result = $stck['0'];
+		// var_dump($result);
 
-		$query_prices = $this->pprice->get_all($result['pid']);
+		$query_prices = $this->pprice->where(array('product_id' => (int)$result['pid']))->order_by('volume', 'ASC')->get_all();
 		$prices = array();
 		foreach ($query_prices as $s) {
 			$prices[] = array(
@@ -503,11 +523,16 @@ class Products extends Vet_Controller
 						"value" => $result['pname'],
 						"data" => array(
 								"type" 		=> "barcode",
-								"lotnr"		=> $gsl['lotnr'],
 								"id" 			=> $result['pid'],
-								"price" 	=> $prices,
+								"lotnr"		=> $gsl['lotnr'],
+								"prices" 	=> $prices,
+								"barcode"		=> $result['barcode'], // internal barcode
+								"unit"		=> $result['unit_sell'],
+								"volume"		=> $result['volume'],
 								"btw" 		=> $result['btw_sell'],
-								"booking" 	=> $result['booking_code'],
+								"booking" => $result['booking_code'],
+								"vaccin"			=> $result['vaccin'],
+								"vaccin_freq"	=> $result['vaccin_freq'],
 								"prod" 		=> 1,
 							));
 
@@ -519,7 +544,7 @@ class Products extends Vet_Controller
 		$result = $this->products
 							->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
 							->with_type()
-							->with_prices('fields: volume, price')
+							->with_prices('fields: volume, price|order_inside:volume asc')
 							->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
 							->where('name', 'like', $query, true)
 							->where('sellable', '1')
