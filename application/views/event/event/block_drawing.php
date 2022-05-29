@@ -35,6 +35,7 @@
 	    <div id="sketch">
 	      <canvas id="canvas"></canvas>
 	    </div>
+	    <div id="remark"></div>
 	</div>
 </div>
 <br/>
@@ -54,7 +55,8 @@
 
   <div class="btn-group" role="group" aria-label="Basic example">
 	  <button id="paint-clear" type="button" class="btn btn-sm btn-outline-success">Clear</button>
-	  <button id="paint-save" type="button" class="btn btn-sm btn-outline-success">Save</button>
+	  <button id="paint-save" type="button" class="btn btn-sm btn-outline-success">Download</button>
+	  <button id="paint-store" type="button" class="btn btn-sm btn-outline-primary">Store</button>
 	  <button id="paint-eyes" type="button" class="btn btn-sm btn-outline-success">Load eyes</button>
 	  <button id="paint-dog" type="button" class="btn btn-sm btn-outline-success">Load dog</button>
 	</div>
@@ -80,6 +82,34 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	canvas.height = $(sketch).height();
 	tmp_canvas.width = canvas.width;
 	tmp_canvas.height = canvas.height;
+
+	// auto save
+	sketch.onclick = function(){
+	setTimeout(
+	function() {
+		console.log("sending to store!");
+		crop = cropImageFromCanvas(ctx);
+
+		 // set background color
+		 newCanvas = document.createElement("canvas");
+		 newCanvas.width = crop.width;
+		 newCanvas.height = crop.height;
+
+		 bck_ctx = newCanvas.getContext('2d');
+		 bck_ctx.fillStyle = '#FFFFFF';
+		 bck_ctx.fillRect(0, 0, crop.width, crop.height);
+		 bck_ctx.drawImage(crop, 0, 0);
+
+		var photo = newCanvas.toDataURL('image/jpeg');
+		$.ajax({
+		  method: 'POST',
+		  url: '<?php echo base_url(); ?>files/drawing/<?php echo $event_id; ?>',
+		  data: {
+		    drawing: photo
+		  }
+		});
+		}, 750);
+	}
 
 	var undo_canvas = [];
 	var undo_canvas_len = 7;
@@ -560,9 +590,9 @@ $('#paint-store').click(function(){
 	var photo = newCanvas.toDataURL('image/jpeg');
 	$.ajax({
 	  method: 'POST',
-	  url: 'photo_upload.php',
+	  url: '<?php echo base_url(); ?>files/drawing/<?php echo $event_id; ?>',
 	  data: {
-	    photo: photo
+	    drawing: photo
 	  }
 	});
 });

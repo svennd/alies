@@ -20,7 +20,7 @@
 			<?php endif; ?>
 			</div>
 		</div>
-		
+
 		<div class="card shadow mb-4">
 			<div class="card-header">Products</div>
             <div class="card-body">
@@ -45,7 +45,7 @@
 		</div>
 	</div>
       <div class="col-lg-4 mb-4">
-		
+
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
 		<a href="<?php echo base_url(); ?>products/new" class="btn btn-success btn-lg mb-3"><i class="fas fa-cart-plus"></i> New Product</a>
 		<?php endif; ?>
@@ -55,7 +55,7 @@
 				<?php if ($last_modified) : ?>
 				<ul>
 					<?php foreach($last_modified as $mod): ?>
-					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['updated_at']), time(), 1); ?> Ago)</small></li>
+					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo time_ago($mod['updated_at']); ?>)</small></li>
 					<?php endforeach; ?>
 				</ul>
 				<?php else: ?>
@@ -63,14 +63,14 @@
 				<?php endif; ?>
 			</div>
 		</div>
-		
+
       <div class="card shadow mb-4">
 			<div class="card-header">Last Created Products</div>
             <div class="card-body">
 				<?php if ($last_created) : ?>
 				<ul>
 					<?php foreach($last_created as $mod): ?>
-					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo timespan(strtotime($mod['created_at']), time(), 1); ?> Ago)</small></li>
+					<li><a href="<?php echo base_url(); ?>products/product/<?php echo $mod['id']; ?>"><?php echo $mod['name']; ?></a> <small>(<?php echo time_ago($mod['created_at']); ?>)</small></li>
 					<?php endforeach; ?>
 				</ul>
 				<?php else: ?>
@@ -80,7 +80,7 @@
 		</div>
 
 	</div>
-      
+
 </div>
 
 <script type="text/javascript">
@@ -90,4 +90,3 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 });
 </script>
-  

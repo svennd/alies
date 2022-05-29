@@ -14,6 +14,7 @@ class Files extends Vet_Controller
 		# load librarys
 		$this->load->helper('url');
 		$this->load->helper('download');
+		$this->load->helper('base64_to_img_helper');
 
 		# models
 		$this->load->model('Events_model', 'events');
@@ -105,9 +106,37 @@ class Files extends Vet_Controller
 		echo json_encode(array('success' => true));
 	}
 
+	/*
+		paint in event
+	*/
+	public function drawing(int $event_id)
+	{
+		// store
+		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . "draw");
+
+		if($image)
+		{
+			list($name, $type, $size) = $image;
+
+			$this->events_upload->insert(array(
+						"event" 			=> $event_id,
+						"filename" 		=> "draw",
+						"size"	 			=> $size,
+						"user"	 			=> $this->user->id,
+						"mime"	 			=> $type,
+						"location"	 	=> $this->user->current_location,
+					));
+			echo json_encode(array('success' => true));
+		}
+		return false;
+	}
+
 	public function get_file($id)
 	{
 		$file_info = $this->events_upload->get($id);
+
+		// var_dump($file_info);
+		// var_dump($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']);
 		force_download(
 				$file_info['filename'],
 				file_get_contents($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']),

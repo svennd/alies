@@ -23,7 +23,8 @@ function array_to_csv($array, $filename = "export.csv") {
   // open the "output" stream
   $f = fopen('php://output', 'w');
   foreach ($array as $list) {
-    $line = implode(",", $list);
-    fwrite($f, $line . "\n");
+    // $line = implode(",", $list);
+    // fwrite($f, $line . "\n");
+    fputcsv($fp, $fields);
   }
 }

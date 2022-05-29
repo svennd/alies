@@ -13,7 +13,7 @@ $cd->modify('-3 month');
 ?>
       <div class="card shadow mb-4">
 			<div class="card-header">
-				Report / Invoices / search
+				<a href="<?php echo base_url(); ?>reports">Reports</a> / Invoices / Range
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>reports/bills/" method="post" autocomplete="off" class="form-inline">
@@ -78,6 +78,37 @@ $cd->modify('-3 month');
                 </div>
 		</div>
 
+<div class="card shadow mb-4">
+	<div class="card-header">
+		<a href="<?php echo base_url(); ?>reports">Reports</a> / Invoices / Location
+	</div>
+
+	<div class="card-body">
+		<form action="<?php echo base_url(); ?>reports/bills/" method="post" autocomplete="off" class="form-inline">
+			<div class="form-group mb-2 mx-3">
+				<label for="staticEmail2" class="sr-only">search_from</label>
+				<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" id="search_from">
+			</div>
+			<div class="form-group mb-2">
+				<span class="fa-stack" style="vertical-align: top;">
+				<i class="far fa-square fa-stack-2x"></i>
+				<i class="fas fa-arrow-right fa-stack-1x"></i>
+				</span>
+			</div>
+			<div class="form-group mb-2 mx-3">
+				<label for="staticEmail2" class="sr-only">search_to</label>
+				<input type="date" name="search_to" class="form-control" value="<?php echo (!empty($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format($now, 'Y-m-d'); ?>" id="search_to">
+			</div>
+			<select name="location" class="form-control" id="location">
+				<?php foreach($locations as $location): ?>
+					<?php if ($location['name'] == $current_location) { continue; } ?>
+					<option value="<?php echo $location['id']; ?>"><?php echo $location['name']; ?></option>
+				<?php endforeach; ?>
+			</select>
+			<button type="submit" class="btn btn-success mb-2">Search range</button>
+		</form>
+	</div>
+</div>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){

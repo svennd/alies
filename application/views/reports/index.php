@@ -7,7 +7,6 @@
 			</div>
             <div class="card-body">
 				<ul>
-				<li><a href="<?php echo base_url(); ?>reports/graphs">Charts</a></li>
 				<li><a href="<?php echo base_url(); ?>reports/bills">Invoices</a></li>
 				<li><a href="<?php echo base_url(); ?>reports/clients">Clients</a></li>
 				<li><a href="<?php echo base_url(); ?>reports/products">Products</a></li>
@@ -22,4 +21,3 @@
 document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
-  

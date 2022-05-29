@@ -10,7 +10,8 @@
             <div class="card-body">
 			<p>Please select the events to export.</p>
 			<form action="<?php echo base_url(); ?>pets/export/<?php echo $pet_info['id']; ?>" method="post" autocomplete="off">
-			<table class="table table-sm">
+      <?php if($pet_history): ?>
+  		<table class="table table-sm">
 			  <thead class="thead-light">
 				<tr>
 				  <th scope="col">#</th>
@@ -48,6 +49,9 @@
 			<?php endforeach; ?>
 			</table>
 				<button type="submit" name="submit" value="1" class="btn btn-primary">Export PDF</button>
+      <?php else: ?>
+        no events on this pet.
+      <?php endif; ?>
 			</form>
 			</div>
 		</div>
