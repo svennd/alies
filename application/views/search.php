@@ -28,7 +28,11 @@
 }
 </style>
 
+<!-- normal button : on small screens -->
+<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user"></i> New Client</a>
+
 <div class="row">
+	
 	<div class="col-lg-10">
 		<div class="card card-waves shadow mb-4">
 			<div class="card-body px-3 pt-3 pb-0">
@@ -36,7 +40,9 @@
 				<div class="row align-items-center justify-content-between px-3">
 					<div class="col-lg-8">
 						<h3 class="text-primary"><a href="<?php echo base_url('search'); ?>">Search</a></h3>
-						<p class="lead mb-4">Search the database using (first) name, street, phone, pet id, pet chip nr, pet name.</p>
+						<div class="d-none d-sm-block">
+							<p class="lead mb-4">Search the database using (first) name, street, phone, pet id, pet chip nr, pet name.</p>
+						</div>
 						<div class="shadow rounded">
 						  <div class="form-group has-search">
 							<span class="fa fa-search form-control-feedback"></span>
@@ -44,14 +50,19 @@
 								<input type="text" class="form-control <?php echo (isset($query)) ? 'is-valid' :''?>" name="search_query" placeholder="search" value="<?php echo (isset($query)) ? $query :''?>">
 								<div class="input-group-append">
 								  <button class="btn btn-primary" type="submit" type="button">
-									Search
+									<div class="d-none d-sm-block">Search</div>
+									<div class="d-block d-sm-none d-md-none">S</div>
 								  </button>
 								</div>
 							</div>
 						  </div>
 						</div>
 					</div>
-					<div class="<?php echo (isset($query))? 'col-lg-1' : 'col-lg-3' ?>"><img class="img-fluid" src="<?php echo base_url(); ?>assets/img/people_search.png"></div>
+					<?php if(!isset($query)): ?>
+					<div class="col-lg-3">
+						<img class="img-fluid" src="<?php echo base_url(); ?>assets/img/people_search.png">
+					</div>
+					<?php endif; ?>
 				</div>
 				</form>
 				<?php if (isset($query)) : ?>
@@ -93,8 +104,9 @@
 			</div>
 		</div>					
 	</div>	
+	<!-- large button : on large screens -->
 	<div class="col-lg-2 mb-4">
-		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3"><i class="fas fa-user"></i> New Client</a>
+		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3 d-none d-sm-block"><i class="fas fa-user"></i> New Client</a>
 	</div>	
 </div>
 
@@ -106,10 +118,10 @@
 		<div class="card shadow mb-4">
 			<div class="card-header">Results</div>
 			<div class="card-body">
-<table class="table table-bordered table-hover" id="dataTable">
+<table class="table table-bordered table-hover display dt-responsive nowrap" width="100%" id="dataTable">
 		<thead>
 		<tr>
-			<th>search_query</th>
+			<th>Q</th>
 			<th>Last Name</th>
 			<th>First Name</th>
 			<th>Adress</th>
@@ -266,14 +278,25 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#clients").addClass('active');
 	
-	var dt = $("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+	var dt = $("#dataTable").DataTable({
+		"pageLength": 50, 
+		"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+
+		"responsive": {
+        	"details": {
+            "type": 'column',
+            "target": 'tr'
+        }
+  	  },
 	  "columnDefs": [
+		{ "responsivePriority": 1, "targets": 1 },
+		{ "responsivePriority": 2, "targets": 7 },
 		{ "type": "date", "targets": 5 },
 		{ "targets": [ 0 ], "visible": false }
 	  ]
 	});
 	dt
-    .order( [ 0, 'asc' ] )
+    .order( [ 6, 'desc' ] )
     .draw();	
 	
 	// initial filter if required

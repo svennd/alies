@@ -14,7 +14,7 @@
 	<link href="<?php echo base_url(); ?>vendor/components/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/sb-admin-2.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/custom.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>vendor/datatables/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet"> <!-- datatables -->
+	<link href="<?php echo base_url(); ?>assets/css/datatables.min.css" rel="stylesheet"> <!-- datatables -->
 	<link href="<?php echo base_url(); ?>vendor/components/font-awesome/css/all.min.css" rel="stylesheet"> <!-- font awesome -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 

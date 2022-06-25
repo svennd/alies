@@ -5,8 +5,8 @@
   $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
 		    $("body").toggleClass("sidebar-toggled");
 	localStorage.setItem("sidebar", 0);
-    $(".sidebar").toggleClass("toggled");
-	
+      $(".sidebar").toggleClass("toggled");
+
     if ($(".sidebar").hasClass("toggled")) {
 		localStorage.setItem("sidebar", 1);
       $('.sidebar .collapse').collapse('hide');
@@ -15,10 +15,17 @@
 
   // Close any open menu accordions when window is resized below 768px
   $(window).resize(function() {
+    console.log($(window).width());
     if ($(window).width() < 768) {
       $('.sidebar .collapse').collapse('hide');
     };
   });
+
+  // for phones 
+  if ($(window).width() < 450) {  
+    $('.sidebar .collapse').collapse('hide');
+    $(".sidebar").toggleClass("toggled");
+  };
 
   // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
   $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {

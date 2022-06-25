@@ -8,7 +8,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>A <a href="https://www.svennd.be" target="_blank">SvennD</a> Creation; <a href="https://github.com/svennd/alies/issues" target="_blank">Issues</a> & <a href="https://docs.google.com/document/d/1xZcrtoC5dQdrqQb-Q0UNQrPTMVbtqWo6GumkxTh9Lxc/edit?usp=sharing" target="_blank">Docs</a></span>
+            <span>A <a href="https://www.svennd.be" target="_blank">SvennD</a> Creation; <a href="https://github.com/svennd/alies/issues" target="_blank">Issues</a></span>
           </div>
         </div>
       </footer>
@@ -52,8 +52,7 @@
 	<script src="<?php echo base_url(); ?>assets/js/sb-admin-2.js"></script>
 
 	<!-- datatables -->
-	<script src="<?php echo base_url(); ?>vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
-	<script src="<?php echo base_url(); ?>vendor/datatables/datatables/media/js/dataTables.bootstrap4.min.js"></script>
+	<script src="<?php echo base_url(); ?>assets/js/datatables.min.js"></script>
 
 	<!-- select -->
 	<script src="<?php echo base_url(); ?>vendor/select2/select2/dist/js/select2.min.js"></script>
