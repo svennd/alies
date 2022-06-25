@@ -39,10 +39,13 @@
 				<form action="<?php echo base_url(); ?>search" method="post" autocomplete="off">
 				<div class="row align-items-center justify-content-between px-3">
 					<div class="col-lg-8">
+						<?php if(!isset($query)): ?>
 						<h3 class="text-primary"><a href="<?php echo base_url('search'); ?>">Search</a></h3>
+						
 						<div class="d-none d-sm-block">
 							<p class="lead mb-4">Search the database using (first) name, street, phone, pet id, pet chip nr, pet name.</p>
 						</div>
+						<?php endif; ?>
 						<div class="shadow rounded">
 						  <div class="form-group has-search">
 							<span class="fa fa-search form-control-feedback"></span>
