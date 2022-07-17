@@ -108,25 +108,54 @@ class Files extends Vet_Controller
 
 	/*
 		paint in event
+		filename : should not contain e_$event_id in db
 	*/
-	public function drawing(int $event_id)
+	public function drawing(int $event_id, $auto = false, $final = false)
 	{
+		// check if post happened
+		if($this->input->post('drawing') === null) { echo "false input"; exit; }
+
+		// make sure its unique
+		$timestamp = date('Hmsdmy');
+
+		// in case its auto storing data, remove older drawings
+		if ($auto)
+		{
+			array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
+		}
+
 		// store
-		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . "draw");
+		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
 
 		if($image)
 		{
 			list($name, $type, $size) = $image;
 
-			$this->events_upload->insert(array(
+			if (!(bool)$auto)
+			{
+				$id = $this->events_upload->insert(array(
 						"event" 			=> $event_id,
-						"filename" 		=> "draw",
+						"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
 						"size"	 			=> $size,
 						"user"	 			=> $this->user->id,
 						"mime"	 			=> $type,
-						"location"	 	=> $this->user->current_location,
-					));
-			echo json_encode(array('success' => true));
+						"location"	 		=> $this->user->current_location,
+				));
+			}
+			else
+			{
+				$this->events_upload->update(array(
+					"event" 			=> $event_id,
+					"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
+					"size"	 			=> $size,
+					"user"	 			=> $this->user->id,
+					"mime"	 			=> $type,
+					"location"	 		=> $this->user->current_location,
+				),
+				array("id" => (int) $auto));
+				$id = (int) $auto;
+			}
+			echo json_encode(array('success' => (bool) $auto, 'auto' => $id));
 		}
 		return false;
 	}
@@ -135,8 +164,6 @@ class Files extends Vet_Controller
 	{
 		$file_info = $this->events_upload->get($id);
 
-		// var_dump($file_info);
-		// var_dump($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']);
 		force_download(
 				$file_info['filename'],
 				file_get_contents($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']),
@@ -155,7 +182,7 @@ class Files extends Vet_Controller
 		# report it
 		else
 		{
-				$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
+			$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
 		}
 	}
 

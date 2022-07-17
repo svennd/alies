@@ -36,6 +36,7 @@
 	      <canvas id="canvas"></canvas>
 	    </div>
 	    <div id="remark"></div>
+		<input type="hidden" id="auto_safe_value" name="auto_safe_value" value="0" />
 	</div>
 </div>
 <br/>
@@ -55,7 +56,7 @@
 
   <div class="btn-group" role="group" aria-label="Basic example">
 	  <button id="paint-clear" type="button" class="btn btn-sm btn-outline-success">Clear</button>
-	  <button id="paint-save" type="button" class="btn btn-sm btn-outline-success">Download</button>
+	  <!-- <button id="paint-save" type="button" class="btn btn-sm btn-outline-success">Download</button> -->
 	  <button id="paint-store" type="button" class="btn btn-sm btn-outline-primary">Store</button>
 	  <button id="paint-eyes" type="button" class="btn btn-sm btn-outline-success">Load eyes</button>
 	  <button id="paint-dog" type="button" class="btn btn-sm btn-outline-success">Load dog</button>
@@ -78,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var sketch = document.querySelector('#sketch');
 	var canvas = document.querySelector('#canvas');
 	var tmp_canvas = document.createElement('canvas');
+
 	canvas.width = $(sketch).width();
 	canvas.height = $(sketch).height();
 	tmp_canvas.width = canvas.width;
@@ -87,27 +89,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	sketch.onclick = function(){
 	setTimeout(
 	function() {
-		console.log("sending to store!");
-		crop = cropImageFromCanvas(ctx);
-
-		 // set background color
-		 newCanvas = document.createElement("canvas");
-		 newCanvas.width = crop.width;
-		 newCanvas.height = crop.height;
-
-		 bck_ctx = newCanvas.getContext('2d');
-		 bck_ctx.fillStyle = '#FFFFFF';
-		 bck_ctx.fillRect(0, 0, crop.width, crop.height);
-		 bck_ctx.drawImage(crop, 0, 0);
-
-		var photo = newCanvas.toDataURL('image/jpeg');
-		$.ajax({
-		  method: 'POST',
-		  url: '<?php echo base_url(); ?>files/drawing/<?php echo $event_id; ?>',
-		  data: {
-		    drawing: photo
-		  }
-		});
+		SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), false);
 		}, 750);
 	}
 
@@ -553,48 +535,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	});
 
 
-/* download image */
-$('#paint-save').click(function(){
-
-	crop = cropImageFromCanvas(ctx);
-
-	 // set background color
-	 newCanvas = document.createElement("canvas");
-	 newCanvas.width = crop.width;
-	 newCanvas.height = crop.height;
-
-	 bck_ctx = newCanvas.getContext('2d');
-	 bck_ctx.fillStyle = '#FFFFFF';
-	 bck_ctx.fillRect(0, 0, crop.width, crop.height);
-	 bck_ctx.drawImage(crop, 0, 0);
-
-	 var dataURL = newCanvas.toDataURL("image/jpeg", 1.0);
- 	    downloadImage(dataURL, 'my-canvas.jpeg');
-});
-
-/* download image */
+/* store on server image */
 $('#paint-store').click(function(){
-
-	crop = cropImageFromCanvas(ctx);
-
-	 // set background color
-	 newCanvas = document.createElement("canvas");
-	 newCanvas.width = crop.width;
-	 newCanvas.height = crop.height;
-
-	 bck_ctx = newCanvas.getContext('2d');
-	 bck_ctx.fillStyle = '#FFFFFF';
-	 bck_ctx.fillRect(0, 0, crop.width, crop.height);
-	 bck_ctx.drawImage(crop, 0, 0);
-
-	var photo = newCanvas.toDataURL('image/jpeg');
-	$.ajax({
-	  method: 'POST',
-	  url: '<?php echo base_url(); ?>files/drawing/<?php echo $event_id; ?>',
-	  data: {
-	    drawing: photo
-	  }
-	});
+	console.log("stored on server");
+	SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), true);
 });
 
 $('#paint-eyes').click(function(){
@@ -619,36 +563,94 @@ $('#paint-dog').click(function(){
 
 });
 
-// crop image
-function cropImageFromCanvas(ctx) {
-  var canvas = ctx.canvas,
-    w = canvas.width, h = canvas.height,
-    pix = {x:[], y:[]},
-    imageData = ctx.getImageData(0,0,canvas.width,canvas.height),
-    x, y, index;
+/*
+ Save drawing :
+	- copy image into a new canvas
+	- crop the new canvas
+	- set a white background color
+	- send to server
+ */
+function SaveToServer(canvas, event_id, auto, isFinal) {
+	
+	var newAuto = 0;
 
-  for (y = 0; y < h; y++) {
-    for (x = 0; x < w; x++) {
-      index = (y * w + x) * 4;
-      if (imageData.data[index+3] > 0) {
-        pix.x.push(x);
-        pix.y.push(y);
-      }
+	// create canvas & copy input canvas to it
+	const store_canvas = document.createElement('canvas');
+		store_canvas.width = canvas.width;
+		store_canvas.height = canvas.height;
+
+	store_ctx = store_canvas.getContext('2d');
+		store_ctx.drawImage(canvas, 0, 0);
+	
+	// do the cropping
+	const crop = trimCanvas(store_canvas);
+
+	// add the background color
+	const addBackgroundCanvas = document.createElement("canvas");
+		addBackgroundCanvas.width = crop.width;
+		addBackgroundCanvas.height = crop.height;
+
+	var bck_ctx = addBackgroundCanvas.getContext('2d');
+		 bck_ctx.fillStyle = '#FFFFFF';
+		 bck_ctx.fillRect(0, 0, crop.width, crop.height);
+		 bck_ctx.drawImage(crop, 0, 0);
+
+	$.ajax({
+		method: 'POST',
+		url: isFinal ? '<?php echo base_url(); ?>files/drawing/' + event_id + '/' + auto + '/final' : '<?php echo base_url(); ?>files/drawing/' + event_id + '/' + auto,
+		data: {
+			drawing: addBackgroundCanvas.toDataURL('image/jpeg')
+		},
+		success: function (result) {
+			const json = JSON.parse(result);
+			isFinal ? $("#auto_safe_value").val(0) : $("#auto_safe_value").val(json.auto);
+		}
+	});
+}
+
+/* source: https://stackoverflow.com/questions/11796554/automatically-crop-html5-canvas-to-contents */
+function trimCanvas(canvas) {
+    const context = canvas.getContext('2d');
+
+    const topLeft = {
+        x: canvas.width,
+        y: canvas.height,
+        update(x,y){
+            this.x = Math.min(this.x,x);
+            this.y = Math.min(this.y,y);
+        }
+    };
+
+    const bottomRight = {
+        x: 0,
+        y: 0,
+        update(x,y){
+            this.x = Math.max(this.x,x);
+            this.y = Math.max(this.y,y);
+        }
+    };
+
+    const imageData = context.getImageData(0,0,canvas.width,canvas.height);
+
+    for(let x = 0; x < canvas.width; x++){
+        for(let y = 0; y < canvas.height; y++){
+            const alpha = imageData.data[((y * (canvas.width * 4)) + (x * 4)) + 3];
+            if(alpha !== 0){
+                topLeft.update(x,y);
+                bottomRight.update(x,y);
+            }
+        }
     }
-  }
-  pix.x.sort(function(a,b){return a-b});
-  pix.y.sort(function(a,b){return a-b});
-  var n = pix.x.length-1;
 
-  w = 1 + pix.x[n] - pix.x[0];
-  h = 1 + pix.y[n] - pix.y[0];
-  var cut = ctx.getImageData(pix.x[0], pix.y[0], w+1, h+1);
+    const width = bottomRight.x - topLeft.x;
+    const height = bottomRight.y - topLeft.y;
 
-  canvas.width = w;
-  canvas.height = h;
-  ctx.putImageData(cut, 0, 0);
+    const croppedCanvas = context.getImageData(topLeft.x,topLeft.y,width,height);
+    canvas.width = width;
+    canvas.height = height;
+    context.putImageData(croppedCanvas,0,0);
 
-	return canvas;
+    return canvas;
 }
 
 // Save | Download image

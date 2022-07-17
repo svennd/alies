@@ -51,31 +51,29 @@ class Export extends Admin_Controller
 			/* set item */
 			$cust = $domtree->createElement("Customer");
 			$cust = $Customers->appendChild($cust);
-
 			$this->append_child_element($cust, $domtree,
 				array(
-							'Prime' 			=> $client['id'],
-							'Name' 				=> htmlspecialchars($client['last_name']),
-							'Country'			=> 'BE',
-							'Street' 			=> $client['street'],
-							'HouseNumber' => $client['nr'],
+							'Prime' 		=> $client['id'],
+							'Name' 			=> htmlspecialchars($client['last_name']),
+							'Country'		=> 'BE',
+							'Street' 		=> $client['street'],
+							'HouseNumber' 	=> $client['nr'],
 							'ZipCode' 		=> $client['zip'],
-							'City' 				=> $client['city'],
-							'Language' 		=> $client['language'],
+							'City' 			=> $client['city'],
+							'Language' 		=> 1, // we have a field $client['language'] but its not implemented 
+												  // Kluwer has : 1: NL, 2: FR, 3: EN, 4: DE
 							'CurrencyCode' 	=> 'EUR',
-							'VATCode' 		=> '1',
-							'VATStatus'		=> (($client['btw_nr']) ? '1' : '0' ),
+							'VATCode' 		=> 1,
+							'VATStatus'		=> (($client['btw_nr']) ? 1 : 0 ),
 							'VATNumber'		=> (($client['btw_nr']) ? $client['btw_nr'] : ''),
-							'Phone'				=> (($client['telephone']) ? $client['telephone'] : ''),
-							'GSM'					=> (($client['mobile']) ? $client['mobile'] : ''),
-							'Email'				=> (($client['mail']) ? $client['mail'] : ''),
+							'Phone'			=> (($client['telephone']) ? $client['telephone'] : ''),
+							'GSM'			=> (($client['mobile']) ? $client['mobile'] : ''),
+							'Email'			=> (($client['mail']) ? $client['mail'] : ''),
 							'FreeField1'	=> (($client['msg']) ? $client['msg'] : ''),
-							'Status'			=> '2', // status : 0 : new, 1 : already known, 2 : known but editted
+							'Status'		=> 2, // status : 0 : new, 1 : already known, 2 : known but editted
 
 				));
 		}
-
-		/* get the xml printed */
 		Header('Content-type: text/xml');
 		echo $domtree->saveXML();
 	}
@@ -260,6 +258,7 @@ class Export extends Admin_Controller
 								'Amount' 			=> $this->amount($tally),
 								'DebCre'			=> -1,
 								'Ventil' 			=> $this->get_btw_id($current_booking_code['btw']), // btw
+								// 1:0%, 2:6%, 3:12%, 4:21%
 
 					));
 			}
@@ -295,7 +294,7 @@ class Export extends Admin_Controller
 		foreach ($data as $key => $value)
 		{
 			// if no value skip it
-			if (empty($value)) {
+			if (empty($value) && $value != "0") {
 				continue;
 			}
 			$father->appendChild($domtree->createElement($key, $value));
