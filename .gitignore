@@ -39,3 +39,7 @@ application/config/database.php
 # ignore custom
 /application/views/custom/bill_header.php
 /import/
+*.DBF
+*.DBT
+/assets/public/*.png
+/data/stored/*.jpeg
