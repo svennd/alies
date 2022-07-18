@@ -129,23 +129,6 @@ class Vet_Controller extends MY_Controller
 		$this->load->view('footer', $data);
 	}
 
-	public function _get_csv($name, $data)
-	{
-		$this->load->helper('download');
-
-		$file = $name . '_' . date('y_m_d') . '.csv';
-
-		$fp = fopen(APPPATH . 'cache/' . $file, 'w');
-
-		foreach ($data as $line) {
-			fputcsv($fp, $line, ';', '"');
-		}
-
-		fclose($fp);
-
-		force_download(APPPATH . 'cache/' . $file, null);
-	}
-
 	public function _get_mondal()
 	{
 		return $this->load->view('mondal/location', array("location" => $this->location), true);

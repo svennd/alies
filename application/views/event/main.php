@@ -1,7 +1,6 @@
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
 
-	<?php if ($event_state != STATUS_CLOSED): ?>
 		<div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
@@ -49,7 +48,6 @@
 				<?php endif; ?>
 			</div>
 		</div>
-	<?php endif; ?>
 		<?php include "event/block_report.php"; ?>
 	</div>
 	<div class="col-lg-5 col-xl-2">
@@ -57,12 +55,9 @@
 		<?php include "event/block_other_pets.php"; ?>
 		<?php include "event/block_birthday.php"; ?>
 		<?php include "event/block_event_controller.php"; ?>
-
-		<?php if ($event_state == STATUS_CLOSED): ?>
-			<?php include "event/block_closed_bill.php"; ?>
-		<?php endif; ?>
 	</div>
 </div>
+
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
@@ -88,8 +83,6 @@ document.addEventListener("DOMContentLoaded", function(){
 				$("#barcode_btw_sell").val(data.products.btw_sell);
 				$("#barcode_show_booking_select").html(data.products.btw_sell + "%");
 
-				// console.log(data);
-				// console.log(data.products.booking_code);
 				/* color & select the default booking code */
 				var select = $('[id=barcode_hidden_booking] option[value="' + data.products.booking_code + '"]');
 					select.addClass("bg-success");
@@ -133,7 +126,6 @@ document.addEventListener("DOMContentLoaded", function(){
 			else
 			{
 				if(suggestion.data.type == "barcode") {
-					console.log(suggestion.data);
 					// set init
 					$('#unit_sell').html(suggestion.data.unit);
 					$('#stock_select').prop('disabled', false);
@@ -149,11 +141,10 @@ document.addEventListener("DOMContentLoaded", function(){
 					// check if there are prices (products)
 					if (suggestion.data.prices != null)
 					{
-							prices_to_html(suggestion.data.prices, suggestion.data.unit);
+						prices_to_html(suggestion.data.prices, suggestion.data.unit);
 					}
 				}
 				else {
-					console.log(suggestion.data);
 					// product
 					$('#unit_sell').html(suggestion.data.unit);
 					$('#stock_select').prop('disabled', false);
@@ -207,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function(){
 					// check if there are prices (products)
 					if (suggestion.data.prices != null)
 					{
-							prices_to_html(suggestion.data.prices, suggestion.data.unit);
+						prices_to_html(suggestion.data.prices, suggestion.data.unit);
 					}
 
 				}

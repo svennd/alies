@@ -3,7 +3,7 @@
 
 #sketch {
 	border: 2px solid gray;
-  position: relative;
+  	position: relative;
 	height: 500px;
 	padding: 10px;
 }
@@ -50,8 +50,8 @@
     <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="ellipse" title="Ellipse"><i class="far fa-circle"></i></button>
     <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="fill" title="Fill"><i class="fas fa-fill-drip"></i></button>
     <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="text" title="Text"><i class="fas fa-font"></i></button>
-	  <button class="btn btn-sm btn-outline-success" id="undo-tool" type="button" title="Undo"><i class="fas fa-undo"></i></button>
-	  <button class="btn btn-sm btn-outline-success" id="redo-tool" type="button" title="Redo"><i class="fas fa-redo"></i></button>
+	<button class="btn btn-sm btn-outline-success" id="undo-tool" type="button" title="Undo"><i class="fas fa-undo"></i></button>
+	<button class="btn btn-sm btn-outline-success" id="redo-tool" type="button" title="Redo"><i class="fas fa-redo"></i></button>
   </div>
 
   <div class="btn-group" role="group" aria-label="Basic example">

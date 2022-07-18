@@ -20,6 +20,7 @@ class Events extends Vet_Controller
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Vaccine_model', 'vaccine');
+		$this->load->model('Bills_model', 'bills');
 	}
 
 	public function new_event($pet)
@@ -45,10 +46,10 @@ class Events extends Vet_Controller
 	public function event($event_id, $update = false)
 	{
 		$event_info 		= $this->events->with_vet('fields: username')->with_vet_1_sup('fields: username')->with_vet_2_sup('fields: username')->get($event_id);
-		$pet_id 				= $event_info['pet'];
+		$pet_id 			= $event_info['pet'];
 		$pet_info 			= $this->pets->with_breeds()->with_pets_weight()->get($pet_id);
 		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
-		$eprod 					= $this->eprod
+		$eprod 				= $this->eprod
 										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, barcode')
 										->with_prices('fields: volume, price|order_inside:volume asc')
@@ -58,23 +59,31 @@ class Events extends Vet_Controller
 
 		$data = array(
 			"event_state"		=> $event_info['status'],
-			"owner" 				=> $this->owners->get($pet_info['owner']),
-			"pet"						=> $pet_info,
+			"owner"				=> $this->owners->get($pet_info['owner']),
+			"pet"				=> $pet_info,
 			"event_info"		=> $event_info,
-			"booking_codes"	=> $this->booking->get_all(),
-			"event_uploads"	=> $this->events_upload->where(array('event' => $event_id))->get_all(),
+			"booking_codes"		=> $this->booking->get_all(),
+			"event_uploads"		=> $this->events_upload->where(array('event' => $event_id))->get_all(),
 			"consumables"		=> $eprod,
 			"event_id"			=> $event_id,
-			"update" 				=> $update,
+			"update" 			=> $update,
 			"other_pets"		=> $other_pets,
+			"billing_info"		=> ($event_info['status'] != STATUS_CLOSED ) ? false: $this->bills->with_location()->get($event_info['payment']),
 			"u_location"		=> $this->user->current_location,
-			"procedures_d"	=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
-			"extra_header" 	=> inject_trumbowyg('header'),
-			"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
+			"procedures_d"		=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
+			"extra_header" 		=> inject_trumbowyg('header'),
+			"extra_footer" 		=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
 													inject_trumbowyg()
 		);
 
-		$this->_render_page('event/main', $data);
+		if ($event_info['status'] != STATUS_CLOSED ) 
+		{
+			$this->_render_page('event/main', $data);
+		}
+		else 
+		{
+			$this->_render_page('event/main_report', $data);
+		}
 	}
 
 	# in case its only medication pickup or food
@@ -115,13 +124,14 @@ class Events extends Vet_Controller
 			}
 		}
 
-		$eprod 				= $this->eprod
-											->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
-											->with_stock('fields: eol, lotnr, barcode')
-											->with_prices('fields: volume, price|order_inside:volume asc')
-											->with_vaccine('fields: id, redo')
-											->where(array("event_id" => $event_id))
-											->get_all();
+		$eprod 	= $this->eprod
+						->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
+						->with_stock('fields: eol, lotnr, barcode')
+						->with_prices('fields: volume, price|order_inside:volume asc')
+						->with_vaccine('fields: id, redo')
+						->where(array("event_id" => $event_id))
+						->get_all();
+
 		$eproc				= $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all();
 
 		$event_info 		= $this->events->get($event_id);
