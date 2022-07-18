@@ -113,7 +113,7 @@ class Files extends Vet_Controller
 	public function drawing(int $event_id, $auto = false, $final = false)
 	{
 		// check if post happened
-		if($this->input->post('drawing') === null) { echo "false input"; exit; }
+		if($this->input->post('drawing') === null) { return false; }
 
 		// make sure its unique
 		$timestamp = date('Hmsdmy');
@@ -127,37 +127,33 @@ class Files extends Vet_Controller
 		// store
 		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
 
-		if($image)
-		{
-			list($name, $type, $size) = $image;
+		list($name, $type, $size) = $image;
 
-			if (!(bool)$auto)
-			{
-				$id = $this->events_upload->insert(array(
-						"event" 			=> $event_id,
-						"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
-						"size"	 			=> $size,
-						"user"	 			=> $this->user->id,
-						"mime"	 			=> $type,
-						"location"	 		=> $this->user->current_location,
-				));
-			}
-			else
-			{
-				$this->events_upload->update(array(
+		if (!(bool)$auto)
+		{
+			$id = $this->events_upload->insert(array(
 					"event" 			=> $event_id,
 					"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
 					"size"	 			=> $size,
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $type,
 					"location"	 		=> $this->user->current_location,
-				),
-				array("id" => (int) $auto));
-				$id = (int) $auto;
-			}
-			echo json_encode(array('success' => (bool) $auto, 'auto' => $id));
+			));
 		}
-		return false;
+		else
+		{
+			$this->events_upload->update(array(
+				"event" 			=> $event_id,
+				"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
+				"size"	 			=> $size,
+				"user"	 			=> $this->user->id,
+				"mime"	 			=> $type,
+				"location"	 		=> $this->user->current_location,
+			),
+			array("id" => (int) $auto));
+			$id = (int) $auto;
+		}
+		echo json_encode(array('success' => (bool) $auto, 'auto' => $id));
 	}
 
 	public function get_file($id)
