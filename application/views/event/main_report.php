@@ -1,6 +1,52 @@
+<style>
+.topfields {
+	width: 150px;
+	padding: 10px 50px;
+	font-size: 1.1em;
+}
+
+.max {
+	height: 100%;
+}
+
+.templates {
+	width: 100%;
+	height: 150px;
+}
+
+.templates  .img-fluid {
+    /* display: block; */
+	margin-top: 5px;
+	margin-left: 5px;
+    width: auto;
+    max-height: 95%;
+}
+
+.dropbox{
+    border:2px dashed #d3d8e8;
+}
+
+.drag-over{
+    border:2px dashed #6984da;
+	color:#6984da;
+}
+
+
+.tab-content > #media.tab-pane {
+   display: block;
+   height:0;
+   max-height:0;
+   overflow:hidden;
+}
+
+.tab-content > #media.active  {
+   display: block;
+   height:auto;
+   max-height: 100%;
+}
+
+</style>
 <div class="col-lg-12">
-
-
 	<div class="card shadow mb-4">
 		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 			Report

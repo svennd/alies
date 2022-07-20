@@ -42,4 +42,4 @@ application/config/database.php
 *.DBF
 *.DBT
 /assets/public/*.png
-/data/stored/*.jpeg
+/data/stored/*

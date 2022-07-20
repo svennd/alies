@@ -4,7 +4,8 @@
 #sketch {
 	border: 2px solid gray;
   	position: relative;
-	height: 500px;
+	min-height: 500px;
+	width: 100%;
 	padding: 10px;
 }
 
@@ -27,51 +28,191 @@
     white-space: nowrap;
 }
 
+.panel-resizable {
+  resize: vertical;
+  overflow: hidden;
+}
+
+/* range style */
+
+.range {
+    display: table;
+    position: relative;
+    height: 25px;
+    background-color: rgb(245, 245, 245);
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.range input[type="range"] {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    -o-appearance: none !important;
+    appearance: none !important;
+
+    display: table-cell;
+    width: 100%;
+    background-color: transparent;
+    height: 25px;
+    cursor: pointer;
+}
+.range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    -o-appearance: none !important;
+    appearance: none !important;
+
+    width: 11px;
+    height: 25px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0px;
+    background-color: rgb(153, 153, 153);
+}
+
+.range input[type="range"]::-moz-slider-thumb {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    -o-appearance: none !important;
+    appearance: none !important;
+    
+    width: 11px;
+    height: 25px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0px;
+    background-color: rgb(153, 153, 153);
+}
+
+.range output {
+    display: table-cell;
+    padding: 0px 5px 2px;
+    min-width: 40px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(153, 153, 153);
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+.range input[type="range"] {
+    outline: none;
+}
+
+.range.range-primary input[type="range"]::-webkit-slider-thumb {
+    background-color: rgb(66, 139, 202);
+}
+.range.range-primary input[type="range"]::-moz-slider-thumb {
+    background-color: rgb(66, 139, 202);
+}
+.range.range-primary output {
+    background-color: rgb(66, 139, 202);
+}
+.range.range-primary input[type="range"] {
+    outline-color: rgb(66, 139, 202);
+}
+
 </style>
-
 <div class="row">
-	<div class="col">
 
-	    <div id="sketch">
-	      <canvas id="canvas"></canvas>
-	    </div>
-	    <div id="remark"></div>
+	<!-- controls -->
+	<div class="col" id="control_tools">
+		Tools:
+		<br/>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="pencil" title="Pencil"><i class="fas fa-pencil-alt fa-fw"></i></button>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="eraser" title="Eraser"><i class="fas fa-eraser fa-fw"></i></button>
+		<br/>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="square" title="Square"><i class="far fa-square fa-fw"></i></button>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="ellipse" title="Ellipse"><i class="far fa-circle fa-fw"></i></button>
+		<br/>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="fill" title="Fill"><i class="fas fa-fill-drip fa-fw"></i></button>
+			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="text" title="Text"><i class="fas fa-font fa-fw"></i></button>
+		<br/>
+		<br/>
+			<button class="btn btn-outline-primary my-1" id="undo-tool" type="button" title="Undo"><i class="fas fa-undo fa-fw"></i></button>
+			<button class="btn btn-outline-primary my-1" id="redo-tool" type="button" title="Redo"><i class="fas fa-redo fa-fw"></i></button>
+		<br/>
+			<button class="btn btn-outline-danger my-1" id="paint-clear" type="button" ><i class="fas fa-trash fa-fw"></i> Wipe&nbsp;&nbsp;</button>
+		<br/>
+		<br/>
+	 		<button class="btn btn-outline-primary my-1" id="paint-store" type="button"><i class="fas fa-file-upload fa-fw"></i> Upload&nbsp;</button>
+		<br/>
+	</div>
+
+	<!-- drawing area -->
+	<div class="col-md-10">
+		<div id="sketch">
+			<canvas id="canvas" width="800" height="500"></canvas>
+		</div>
 		<input type="hidden" id="auto_safe_value" name="auto_safe_value" value="0" />
+		<div id="remark" class="small text-right">&nbsp;</div>
+	</div>
+
+	<!-- color & size selection -->
+	<div class="col-md-1">
+		Color : 
+		<p id="colorpicker">
+		<br/>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="red" type="button"><i class="fas fa-tint fa-fw" style="color:red;"></i></button>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="blue" type="button"><i class="fas fa-tint fa-fw" style="color:blue;"></i></button>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="yellow" type="button"><i class="fas fa-tint fa-fw" style="color:yellow;"></i></button>
+		<br/>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="orange" type="button"><i class="fas fa-tint fa-fw" style="color:orange;"></i></button>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="green" type="button"><i class="fas fa-tint fa-fw" style="color:green;"></i></button>
+	 		<button class="btn btn-outline-dark my-1" data-divbtn="purple" type="button"><i class="fas fa-tint fa-fw" style="color:purple;"></i></button>
+		<br/>
+		</p>
+		Custom Color:
+		<br/>
+			<input type="color" name="color" id="picked_color" value="#23EFBF" class="btn btn-outline-dark my-1" style="width:98px;">
+		<br/>
+		<br/>
+		Size:
+			<div class="range range-primary">
+				<input type="range" name="range" id="size_selector" min="1" max="10" value="2">
+				<output id="rangePrimary">2</output>
+			</div> 
+
 	</div>
 </div>
-<br/>
-
-<input type="color" name="color" id="picked_color" value="#000000" class="mb-2">
-
-  <div class="btn-group" id="paint-panel" role="group" aria-label="Basic example">
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="pencil" title="Pencil"><i class="fas fa-pencil-alt"></i></button>
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="square" title="Square"><i class="far fa-square"></i></button>
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="ellipse" title="Ellipse"><i class="far fa-circle"></i></button>
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="fill" title="Fill"><i class="fas fa-fill-drip"></i></button>
-    <button class="btn btn-sm btn-outline-success" type="button" data-divbtn="text" title="Text"><i class="fas fa-font"></i></button>
-	<button class="btn btn-sm btn-outline-success" id="undo-tool" type="button" title="Undo"><i class="fas fa-undo"></i></button>
-	<button class="btn btn-sm btn-outline-success" id="redo-tool" type="button" title="Redo"><i class="fas fa-redo"></i></button>
-  </div>
-
-  <div class="btn-group" role="group" aria-label="Basic example">
-	  <button id="paint-clear" type="button" class="btn btn-sm btn-outline-success">Clear</button>
-	  <!-- <button id="paint-save" type="button" class="btn btn-sm btn-outline-success">Download</button> -->
-	  <button id="paint-store" type="button" class="btn btn-sm btn-outline-primary">Store</button>
-	  <button id="paint-eyes" type="button" class="btn btn-sm btn-outline-success">Load eyes</button>
-	  <button id="paint-dog" type="button" class="btn btn-sm btn-outline-success">Load dog</button>
+<div class="row">
+	<div class="col-md-1">&nbsp;</div>
+	<div class="col-md-10">
+		Templates :	
+		<div class="dropbox templates" id="templates">
+			<img src="<?php echo base_url(); ?>assets/img/templates/eyes.png" alt="eyes" class="img-fluid img-thumbnail align-middle" />
+			<img src="<?php echo base_url(); ?>assets/img/templates/dog.png" alt="dog" class="img-fluid img-thumbnail align-middle" />
+			<img src="<?php echo base_url(); ?>assets/img/templates/skelet.jpg" alt="dog skelet" class="img-fluid img-thumbnail align-middle" />
+		</div>
 	</div>
+</div>
 
-<!--
-  <form id="choose-size">
-    <div class="title">pick size</div>
-    <div class="radio-group"><input type="radio" name="size" value="1">1</div>
-    <div class="radio-group"><input type="radio" name="size" value="2" checked="checked">2</div>
-    <div class="radio-group"><input type="radio" name="size" value="3">3</div>
-    <div class="radio-group"><input type="radio" name="size" value="4">4</div>
-  </form>
--->
-
+<br/>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -89,7 +230,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	sketch.onclick = function(){
 	setTimeout(
 	function() {
-		SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), false);
+		// SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), false);
+		$("#remark").html("auto saved " + new Date().toTimeString().split(" ")[0]);
 		}, 750);
 	}
 
@@ -112,13 +254,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	var mouse = {x: 0, y: 0};
 	var start_mouse = {x:0, y:0};
-	var eraser_width = 10;
-	var fontSize = '14px';
+	var eraser_width = 6;
+	var fontSize = '15px';
 
 	// Pencil Points
 	var ppts = [];
 
-	var chosen_size = 2; // by default
+	var chosen_size = 3; // by default
 	/* Drawing on Paint App */
 	tmp_ctx.lineWidth = 3;
 	tmp_ctx.lineJoin = 'round';
@@ -214,7 +356,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     	textarea.style.top = y + 'px';
     	textarea.style.width = width + 'px';
     	textarea.style.height = height + 'px';
-
     	textarea.style.display = 'block';
 	}
 
@@ -230,7 +371,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	tool = 'pencil';
 	tools_func = {'pencil':paint_pencil, 'square':paint_square, 'ellipse':paint_ellipse, 'eraser':paint_eraser, 'text':paint_text};
 
-	$('#paint-panel').on('click', function(event){
+	// menu
+	$('#control_tools').on('click', function(event){
 		// remove the mouse down eventlistener if any
 		tmp_canvas.removeEventListener('mousemove', tools_func[tool], false);
 
@@ -247,6 +389,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}
 	});
 
+	// custom color picker
 	$('#picked_color').on('input', function() {
 		// remove the mouse down eventlistener if any
 		tmp_canvas.removeEventListener('mousemove', tools_func[tool], false);
@@ -257,6 +400,45 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		tmp_ctx.fillStyle = color;
 	});
 
+	// preselected color picker
+	$('#colorpicker').on('click', function(event){
+		tmp_canvas.removeEventListener('mousemove', tools_func[tool], false); 
+		var target = event.target,
+			tagName = target.tagName.toLowerCase();
+
+		if(target && tagName != 'button'){
+			target = target.parentNode;
+        	tagName = target.tagName.toLowerCase();
+		}
+
+		if(target && tagName === 'button'){
+			tmp_ctx.strokeStyle = $(target).data('divbtn'); 
+			tmp_ctx.fillStyle = $(target).data('divbtn'); 
+		}
+	});
+
+	// templates
+	$('#templates').on('click', function(event){
+
+		// if an image was clicked add it as background
+		if(event.target.src !== undefined){
+			// clear canvas
+			ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+			
+			// draw new background
+			var background = new Image();
+			background.src = event.target.src;
+			background.onload = function() {
+				// reset scope for different dimension
+				canvas.width = this.width;
+   				canvas.height = this.height;
+				tmp_canvas.width = this.width;
+				tmp_canvas.height = this.height;
+				ctx.drawImage(background, 0, 0);
+			}
+		}
+	});
+	
 
 	// Mouse-Down
 	tmp_canvas.addEventListener('mousedown', function(e) {
@@ -293,9 +475,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     	}
 
     	if (tool === 'fill') {
-
-        var input_color = $("#picked_color").val();
-        var rgb_color = hex2rgb(input_color);
+			var input_color = tmp_ctx.fillStyle;
+			var rgb_color = hex2rgb(input_color);
 
     		var replace_r = rgb_color.r;
     		var replace_g = rgb_color.g;
@@ -303,19 +484,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     		var imgd = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				var pix = imgd.data;
-				// console.log(pix);
-				// pix is row-wise straightened array
 				var pos = 4 * (canvas.width * mouse.y + mouse.x);
-
-				// console.log(pos);
-				// ppts.push({x: mouse.x, y: mouse.y});
-				// paint_pencil(e);
-
-				// var target_color = map_to_color(pix[pos],pix[pos+1],pix[pos+2],pix[pos+3]);
 				var target_color = rgb2hex(pix[pos],pix[pos+1],pix[pos+2], pix[pos+3]);
-				// console.log(pix[pos],pix[pos+1],pix[pos+2]);
 
-			// console.log("input" + input_color, "target" + target_color);
       if (input_color !== target_color) {
 				var Q = [pos];
 
@@ -481,32 +652,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		undo_canvas[undo_canvas_top]['redoable'] = false;
 	});
 
+	$('#size_selector').on("change input", function() {
+		var SelectedSize = $(this).val();
+		$('#rangePrimary').html(SelectedSize);
 
-	// Change Size
-  $('.radio-group').on('click', function(){
-		var s = $('input[name=size]:checked').val();
-
-    // console.log("got" + s);
-		if (s==='1') {
-			tmp_ctx.lineWidth = 1;
-			eraser_width = 5;
-			fontSize = '10px';
-		}
-		if (s==='2') {
-			tmp_ctx.lineWidth = 3;
-			eraser_width = 10;
-			fontSize = '14px';
-		}
-		if (s==='3') {
-			tmp_ctx.lineWidth = 6;
-			eraser_width = 15;
-			fontSize = '18px';
-		}
-		if (s==='4') {
-			tmp_ctx.lineWidth = 10;
-			eraser_width = 20;
-			fontSize = '22px';
-		}
+		tmp_ctx.lineWidth = SelectedSize;
+		eraser_width = SelectedSize*2;
+		fontSize = 10+Math.round(SelectedSize*1.5) + 'px'; /* 12px -> 25px */
 	});
 
 	// undo-redo tools
@@ -525,7 +677,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	$('#redo-tool').on('click', function(){
 		var next = next_undo_canvas(undo_canvas_top);
 		if (undo_canvas[next].redoable) {
-			// console.log(undo_canvas_top);
 			var ucan = undo_canvas[next]['ucan'];
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(ucan, 0, 0);
@@ -534,32 +685,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}
 	});
 
+	/* store on server image */
+	$('#paint-store').click(function(){
+		SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), true);
+		$("#remark").html("<strong>saved</strong> " + new Date().toTimeString().split(" ")[0]);
+		$("#paint-store").addClass('btn-outline-success').html('Stored!');
+	});
 
-/* store on server image */
-$('#paint-store').click(function(){
-	console.log("stored on server");
-	SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), true);
-});
-
-$('#paint-eyes').click(function(){
-
-	var background = new Image();
-	background.src = "<?php echo base_url(); ?>assets/img/templates/eyes.png";
-
-	background.onload = function(){
-	    ctx.drawImage(background,0,0);
-	}
-});
-
-$('#paint-dog').click(function(){
-
-	var background = new Image();
-	background.src = "<?php echo base_url(); ?>assets/img/templates/dog.png";
-
-	background.onload = function(){
-	    ctx.drawImage(background,0,0);
-	}
-});
 
 });
 

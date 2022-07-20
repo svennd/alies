@@ -1,15 +1,3 @@
-<style>
-    .topfields {
-        width: 150px;
-        padding: 10px 50px;
-        font-size: 1.1em;
-    }
-
-    .max {
-        height: 100%;
-    }
-</style>
-
 <?php 
     $age = timespan(strtotime($pet['birth']), time(), 1); 
     $cash = round((float) $billing_info['cash'], 2);

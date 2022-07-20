@@ -1,31 +1,18 @@
-<style>
-.dropbox{
-    border:2px dashed #d3d8e8;
-}
-.drag-over{
-    border:2px dashed #6984da;
-	color:#6984da;
-}
-</style>
-
 <div class="card shadow mb-4">
-
-
 
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link active" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a></li>
 			</ul>
 	</div>
-
-
 
 	<?php if($event_info['no_history'] == 0): ?>
     <form action="<?php echo base_url(); ?>events/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
     <div class="card-body">
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
+            <div class="tab-pane" id="info" role="tabpanel" aria-labelledby="info-tab">
                 <!-- report form -->
                 <div class="row">
                     <div class="col-md-8">
@@ -87,20 +74,20 @@
 
 
             </div>
-            <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
+            <div class="tab-pane active show" id="media" role="tabpanel" aria-labelledby="media-tab">
 				<?php include "block_drawing.php"; ?>
-                <hr />
-
+            </div>           
+			 <div class="tab-pane" id="files" role="tabpanel" aria-labelledby="files-tab">
 				<?php include "block_attachments.php"; ?>
             </div>
         </div>
 
 		<hr />
-			<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
-		  <button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save Report</button>
+		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
+		<button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save Report</button>
 
-			<?php if($event_info['status'] == STATUS_CLOSED): ?>
-		  <button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
+		<?php if($event_info['status'] == STATUS_CLOSED): ?>
+			<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
 		<?php endif; ?>
 		</form>
 	</div>
