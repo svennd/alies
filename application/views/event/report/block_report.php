@@ -1,97 +1,70 @@
-<div class="card shadow mb-4">
-
-	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a></li>
-			</ul>
+<!-- report form -->
+<div class="row">
+	<div class="col-md-8">
+		<div class="form-row">
+			<div class="col-md-2">
+				<div class="form-group">
+					<label>Type :</label>
+				<select name="type" style="width:100%" id="select_type" data-allow-clear="1">
+					<option id="0"></option>
+				</select>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="exampleFormControlInput3">Title :</label>
+					<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="exampleFormControlInput3">
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="anamnese">Report</label>
+			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
+			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
+		</div>
 	</div>
-
-	<?php if($event_info['no_history'] == 0): ?>
-    <form action="<?php echo base_url(); ?>events/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
-    <div class="card-body">
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane" id="info" role="tabpanel" aria-labelledby="info-tab">
-                <!-- report form -->
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Type :</label>
-                                <select name="type" style="width:100%" id="select_type" data-allow-clear="1">
-                                    <option id="0"></option>
-                                </select>
-                                </div>
-                            </div>
-
-                            <div class="col">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput3">Title :</label>
-                                <input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="exampleFormControlInput3">
-                            </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="anamnese">Report</label>
-                            <textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
-                            <small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
-                        </div>
-                        <hr />
-                        <div class="form-group row">
-                            <label for="staticEmail" class="col-sm-2 col-form-label">Vet</label>
-                            <div class="col-sm-10">
-                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['username']; ?>">
-                            </div>
-                        </div>
-                            <div class="form-group row">
-                            <label for="supp_vet_1" class="col-sm-2 col-form-label">Support Vet 1</label>
-                            <div class="col-sm-10">
-                                    <select name="supp_vet_1" style="width:100%" id="supp_vet_1" data-allow-clear="1">
-                                        <?php if($event_info['vet_1_sup']): ?>
-                                        <option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['username']; ?></option>
-                                        <?php endif; ?>
-                                    </select>
-                            </div>
-                        </div>
-                            <div class="form-group row">
-                            <label for="supp_vet_2" class="col-sm-2 col-form-label">Support Vet 2</label>
-                            <div class="col-sm-10">
-                                    <select name="supp_vet_2" style="width:100%" id="supp_vet_2" data-allow-clear="1">
-                                            <?php if($event_info['vet_2_sup']): ?>
-                                            <option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['username']; ?></option>
-                                            <?php endif; ?>
-                                    </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-			        	<?php include "block_closed_bill.php"; ?>
-                    </div>
-                </div>
-
-
-
-            </div>
-            <div class="tab-pane active show" id="media" role="tabpanel" aria-labelledby="media-tab">
-				<?php include "block_drawing.php"; ?>
-            </div>           
-			 <div class="tab-pane" id="files" role="tabpanel" aria-labelledby="files-tab">
-				<?php include "block_attachments.php"; ?>
-            </div>
-        </div>
-
-		<hr />
-		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
-		<button type="submit" name="submit" value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save Report</button>
-
-		<?php if($event_info['status'] == STATUS_CLOSED): ?>
-			<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
-		<?php endif; ?>
-		</form>
+	<div class="col-md-4">
+		<?php include "block_closed_bill.php"; ?>
 	</div>
-	<?php endif; ?>
+</div>
+
+<hr />
+<div class="row">
+	<div class="col-md-8">
+
+		<div class="form-group row">
+			<label for="staticEmail" class="col-sm-2 col-form-label">Vet</label>
+			<div class="col-sm-10">
+			<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['username']; ?>">
+			</div>
+		</div>
+			<div class="form-group row">
+			<label for="supp_vet_1" class="col-sm-2 col-form-label">Support Vet 1</label>
+			<div class="col-sm-10">
+					<select name="supp_vet_1" style="width:100%" id="supp_vet_1" data-allow-clear="1">
+						<?php if($event_info['vet_1_sup']): ?>
+						<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['username']; ?></option>
+						<?php endif; ?>
+					</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="supp_vet_2" class="col-sm-2 col-form-label">Support Vet 2</label>
+			<div class="col-sm-10">
+					<select name="supp_vet_2" style="width:100%" id="supp_vet_2" data-allow-clear="1">
+							<?php if($event_info['vet_2_sup']): ?>
+							<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['username']; ?></option>
+							<?php endif; ?>
+					</select>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="dropbox d-flex align-items-center" id="upload_field">
+			<p class="text-center w-100"><i class="fas fa-cloud-upload-alt fa-3x m-2"></i><br/>Click here or drag the files here.</p>
+		</div>
+		<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
+	</div>
 </div>
 
 

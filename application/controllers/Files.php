@@ -71,9 +71,9 @@ class Files extends Vet_Controller
 	*/
 	public function new_file_event_complete($event_id)
 	{
-		$file_name 			= $this->input->post('file_name');
-		$current_file 	= $this->upload_dir . "/e" . $event_id . "_" . $file_name;
-		$mimetype				= $this->get_mime_type($current_file);
+		$file_name			= $this->input->post('file_name');
+		$current_file 		= $this->upload_dir . "/e" . $event_id . "_" . $file_name;
+		$mimetype			= $this->get_mime_type($current_file);
 
 		# sanity check
 		if (!file_exists($current_file)) {
@@ -97,11 +97,11 @@ class Files extends Vet_Controller
 
 		$this->events_upload->insert(array(
 					"event" 			=> $event_id,
-					"filename" 		=> $this->input->post('file_name'),
+					"filename" 			=> $this->input->post('file_name'),
 					"size"	 			=> $this->input->post('file_size'),
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $mimetype,
-					"location"	 	=> $this->user->current_location,
+					"location"	 		=> $this->user->current_location,
 				));
 		echo json_encode(array('success' => true));
 	}
@@ -110,7 +110,7 @@ class Files extends Vet_Controller
 		paint in event
 		filename : should not contain e_$event_id in db
 	*/
-	public function drawing(int $event_id, $auto = false, $final = false)
+	public function drawing(int $event_id, $final = false)
 	{
 		// check if post happened
 		if($this->input->post('drawing') === null) { return false; }
@@ -119,41 +119,37 @@ class Files extends Vet_Controller
 		$timestamp = date('Hmsdmy');
 
 		// in case its auto storing data, remove older drawings
-		if ($auto)
-		{
-			array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
-		}
-
+		array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
+		
 		// store
 		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
 
-		list($name, $type, $size) = $image;
-
-		if (!(bool)$auto)
+		// if auto stored don't save it to database
+		if ($final) 
 		{
+
+			list($name, $type, $size) = $image;
+	
 			$id = $this->events_upload->insert(array(
 					"event" 			=> $event_id,
-					"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
+					"filename" 			=> $timestamp . '_'. "fin.jpeg",
 					"size"	 			=> $size,
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $type,
 					"location"	 		=> $this->user->current_location,
 			));
 		}
-		else
-		{
-			$this->events_upload->update(array(
-				"event" 			=> $event_id,
-				"filename" 			=> ($final) ? $timestamp . '_'. "fin.jpeg" : $timestamp . '_'. "draw.jpeg",
-				"size"	 			=> $size,
-				"user"	 			=> $this->user->id,
-				"mime"	 			=> $type,
-				"location"	 		=> $this->user->current_location,
-			),
-			array("id" => (int) $auto));
-			$id = (int) $auto;
-		}
-		echo json_encode(array('success' => (bool) $auto, 'auto' => $id));
+		
+		echo json_encode(array('success' => true));
+	}
+
+	public function reset_draw(int $event_id)
+	{
+		// in case its auto storing data, remove older drawings
+		array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
+
+		// respond
+		echo json_encode(array('success' => true));
 	}
 
 	public function get_file($id)
@@ -170,16 +166,19 @@ class Files extends Vet_Controller
 	public function delete_file($id)
 	{
 		$event_info = $this->events_upload->get($id);
+
 		if($event_info && file_exists($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']))
 		{
 			unlink($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']);
-			$this->events_upload->where(array('user' => $this->user->id))->delete($id);
 		}
 		# report it
 		else
 		{
 			$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
 		}
+
+		# delete it anyway
+		$this->events_upload->where(array('user' => $this->user->id))->delete($id);
 	}
 
 	private function get_mime_type($file)

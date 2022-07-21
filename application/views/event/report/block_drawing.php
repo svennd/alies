@@ -139,7 +139,7 @@
 
 </style>
 <div class="row">
-
+	<?php echo ($drawing_temp) ? '<img src="' . base_url() . $drawing_temp[0].'" id="RestoreImg" alt="restored image" class="d-none" />' : ''; ?>
 	<!-- controls -->
 	<div class="col" id="control_tools">
 		Tools:
@@ -157,11 +157,6 @@
 			<button class="btn btn-outline-primary my-1" id="undo-tool" type="button" title="Undo"><i class="fas fa-undo fa-fw"></i></button>
 			<button class="btn btn-outline-primary my-1" id="redo-tool" type="button" title="Redo"><i class="fas fa-redo fa-fw"></i></button>
 		<br/>
-			<button class="btn btn-outline-danger my-1" id="paint-clear" type="button" ><i class="fas fa-trash fa-fw"></i> Wipe&nbsp;&nbsp;</button>
-		<br/>
-		<br/>
-	 		<button class="btn btn-outline-primary my-1" id="paint-store" type="button"><i class="fas fa-file-upload fa-fw"></i> Upload&nbsp;</button>
-		<br/>
 	</div>
 
 	<!-- drawing area -->
@@ -169,8 +164,8 @@
 		<div id="sketch">
 			<canvas id="canvas" width="800" height="500"></canvas>
 		</div>
-		<input type="hidden" id="auto_safe_value" name="auto_safe_value" value="0" />
 		<div id="remark" class="small text-right">&nbsp;</div>
+		<input type="hidden" name="event_id" value="<?php echo $event_id; ?>" id="event_id" />
 	</div>
 
 	<!-- color & size selection -->
@@ -181,7 +176,6 @@
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="red" type="button"><i class="fas fa-tint fa-fw" style="color:red;"></i></button>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="blue" type="button"><i class="fas fa-tint fa-fw" style="color:blue;"></i></button>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="yellow" type="button"><i class="fas fa-tint fa-fw" style="color:yellow;"></i></button>
-		<br/>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="orange" type="button"><i class="fas fa-tint fa-fw" style="color:orange;"></i></button>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="green" type="button"><i class="fas fa-tint fa-fw" style="color:green;"></i></button>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="purple" type="button"><i class="fas fa-tint fa-fw" style="color:purple;"></i></button>
@@ -203,6 +197,10 @@
 <div class="row">
 	<div class="col-md-1">&nbsp;</div>
 	<div class="col-md-10">
+		<p class="text-right">
+			<button class="btn btn-outline-danger mx-3" id="paint-clear" type="button" ><i class="fas fa-trash fa-fw"></i> Wipe</button>
+			<button class="btn btn-outline-primary" id="paint-store" type="button"><i class="fas fa-file-upload fa-fw"></i> Store</button>
+		</p>
 		Templates :	
 		<div class="dropbox templates" id="templates">
 			<img src="<?php echo base_url(); ?>assets/img/templates/eyes.png" alt="eyes" class="img-fluid img-thumbnail align-middle" />
@@ -220,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var sketch = document.querySelector('#sketch');
 	var canvas = document.querySelector('#canvas');
 	var tmp_canvas = document.createElement('canvas');
+	const event_id = $("#event_id").val();
 
 	canvas.width = $(sketch).width();
 	canvas.height = $(sketch).height();
@@ -230,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	sketch.onclick = function(){
 	setTimeout(
 	function() {
-		// SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), false);
+		SaveToServer(canvas, event_id, false);
 		$("#remark").html("auto saved " + new Date().toTimeString().split(" ")[0]);
 		}, 750);
 	}
@@ -268,12 +267,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	tmp_ctx.strokeStyle = 'black';
 	tmp_ctx.fillStyle = 'black';
 
+	// draw restored images 
+	const restored_image = $("#RestoreImg").attr('src');
+	if(restored_image !== undefined){
+		var background = new Image();
+			background.src = restored_image;
+			background.onload = function() {
+				// reset scope for different dimension
+				canvas.width = this.width;
+   				canvas.height = this.height;
+				tmp_canvas.width = this.width;
+				tmp_canvas.height = this.height;
+				ctx.drawImage(background, 0, 0);
+			}
+			$("#remark").html("Restored drawing");
+	}
+
 	// paint functions
 	var paint_pencil = function(e) {
 
 		mouse.x = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
 		mouse.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
-		//console.log(mouse.x + " "+mouse.y);
 		// Saving all the points in an array
 		ppts.push({x: mouse.x, y: mouse.y});
 
@@ -641,17 +655,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			return  top-1;
 	}
 
-	// clear paint area
-	$('#paint-clear').click(function(){
-		ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-		// keep the image in the undo_canvas
-		undo_canvas_top = next_undo_canvas(undo_canvas_top);
-		var uctx = undo_canvas[undo_canvas_top]['uctx'];
-		uctx.clearRect(0, 0, canvas.width, canvas.height);
-		uctx.drawImage(canvas, 0, 0);
-		undo_canvas[undo_canvas_top]['redoable'] = false;
-	});
-
 	$('#size_selector').on("change input", function() {
 		var SelectedSize = $(this).val();
 		$('#rangePrimary').html(SelectedSize);
@@ -685,9 +688,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}
 	});
 
+	/* Reset the entire screen & remove the file */
+	$('#paint-clear').click(function(){
+		SendReset(event_id);
+		location.reload();
+	});
+
 	/* store on server image */
 	$('#paint-store').click(function(){
-		SaveToServer(canvas, '<?php echo $event_id; ?>', $("#auto_safe_value").val(), true);
+		SaveToServer(canvas, event_id, true);
 		$("#remark").html("<strong>saved</strong> " + new Date().toTimeString().split(" ")[0]);
 		$("#paint-store").addClass('btn-outline-success').html('Stored!');
 	});
@@ -696,15 +705,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 /*
+ Remove all files from server, reset page
+ don't do a reload but a "Save"
+*/
+function SendReset(event_id) {
+	$.ajax({
+		method: 'POST',
+		url: '<?php echo base_url(); ?>files/reset_draw/' + event_id
+	});
+}
+
+/*
  Save drawing :
 	- copy image into a new canvas
 	- crop the new canvas
 	- set a white background color
 	- send to server
  */
-function SaveToServer(canvas, event_id, auto, isFinal) {
-	
-	var newAuto = 0;
+function SaveToServer(canvas, event_id, isFinal) {
 
 	// create canvas & copy input canvas to it
 	const store_canvas = document.createElement('canvas');
@@ -729,13 +747,12 @@ function SaveToServer(canvas, event_id, auto, isFinal) {
 
 	$.ajax({
 		method: 'POST',
-		url: isFinal ? '<?php echo base_url(); ?>files/drawing/' + event_id + '/' + auto + '/final' : '<?php echo base_url(); ?>files/drawing/' + event_id + '/' + auto,
+		url: '<?php echo base_url(); ?>files/drawing/' + event_id + (isFinal ? '/final' : ''),
 		data: {
 			drawing: addBackgroundCanvas.toDataURL('image/jpeg')
 		},
 		success: function (result) {
 			const json = JSON.parse(result);
-			isFinal ? $("#auto_safe_value").val(0) : $("#auto_safe_value").val(json.auto);
 		}
 	});
 }

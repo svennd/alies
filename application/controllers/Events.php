@@ -56,7 +56,7 @@ class Events extends Vet_Controller
 										->with_vaccine('fields: id, redo')
 										->where(array("event_id" => $event_id))
 										->get_all();
-
+										
 		$data = array(
 			"event_state"		=> $event_info['status'],
 			"owner"				=> $this->owners->get($pet_info['owner']),
@@ -64,6 +64,7 @@ class Events extends Vet_Controller
 			"event_info"		=> $event_info,
 			"booking_codes"		=> $this->booking->get_all(),
 			"event_uploads"		=> $this->events_upload->where(array('event' => $event_id))->get_all(),
+			"drawing_temp"		=> glob("data/stored/e" . $event_id . "_*_draw.jpeg"),
 			"consumables"		=> $eprod,
 			"event_id"			=> $event_id,
 			"update" 			=> $update,
