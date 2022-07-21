@@ -130,7 +130,7 @@ class Files extends Vet_Controller
 
 			list($name, $type, $size) = $image;
 	
-			$id = $this->events_upload->insert(array(
+			$this->events_upload->insert(array(
 					"event" 			=> $event_id,
 					"filename" 			=> $timestamp . '_'. "fin.jpeg",
 					"size"	 			=> $size,
