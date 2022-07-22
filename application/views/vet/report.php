@@ -40,3 +40,8 @@
 		</div>
 	<?php endif; ?>
 </div>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(){
+	$("#reports").addClass('active');
+});
+</script>

@@ -80,7 +80,7 @@
 					<?php endif; ?>
 					<li class="list-group-item list-group-item-light">
 						<p class="text-center">
-							<small class="text-muted"><a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> Add Pet</a></small>
+								<a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> Add Pet</a>
 						</p>
 					</li>
 					</ul>
@@ -164,7 +164,7 @@
 			</ul>
 		</div>
 		<?php endif; ?>
-
+		<a class="btn btn-outline-danger" href="<?php echo base_url() . 'debug/index/' . $owner['id']; ?>"><i class="fas fa-bug"></i> Debug</a>
 	</div>
 
 </div>

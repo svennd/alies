@@ -163,21 +163,30 @@
           <i class="fas fa-fw fa-user"></i>
           <span>Clients</span></a>
       </li>
+      <li class="nav-item" id="reports">
+        <a class="nav-link" href="<?php echo base_url(); ?>report">
+         <i class="far fa-fw fa-file"></i>
+          <span>Reports</span></a>
+      </li>
+      <li class="nav-item" id="vaccines">
+        <a class="nav-link" href="<?php echo base_url(); ?>vaccins">
+        <i class="fas fa-syringe fa-fw"></i>
+          <span>Vaccins</span></a>
+      </li>
+	  <?php if (!$this->ion_auth->in_group("admin")): ?>
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading">
+        Administration
+      </div>
       <li class="nav-item" id="invoice">
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
           <i class="fas fa-fw fa-euro-sign"></i>
           <span>Invoice</span></a>
       </li>
-	  <?php if (!$this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="product_list">
         <a class="nav-link" href="<?php echo base_url(); ?>products">
          <i class="fas fa-fw fa-shopping-cart"></i>
           <span>Products</span></a>
-      </li>
-      <li class="nav-item" id="product_list">
-        <a class="nav-link" href="<?php echo base_url(); ?>report">
-         <i class="far fa-fw fa-file"></i>
-          <span>Reports</span></a>
       </li>
       <li class="nav-item" id="stock">
         <a class="nav-link" href="<?php echo base_url(); ?>stock">
