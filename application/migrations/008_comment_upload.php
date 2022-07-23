@@ -15,6 +15,8 @@ class Migration_comment_upload extends CI_Migration {
 	{
 		// add support for stock messages when input is done
 		$sql[] = "ALTER TABLE `events_upload` ADD `comment` TEXT NOT NULL AFTER `mime`;";
+		$sql[] = "ALTER TABLE `pets` ADD `deleted_at` DATETIME NULL AFTER `updated_at`;";
+		$sql[] = "ALTER TABLE `owners` ADD `deleted_at` DATETIME NULL AFTER `updated_at`;";
 
 		foreach ($sql as $q)
 		{
@@ -26,6 +28,8 @@ class Migration_comment_upload extends CI_Migration {
 	public function down()
 	{
 		$sql[] = "ALTER TABLE `events_upload` DROP `comment`;";
+		$sql[] = "ALTER TABLE `pets` DROP `deleted_at`;";
+		$sql[] = "ALTER TABLE `owners` DROP `deleted_at`;";
 
 		foreach ($sql as $q)
 		{

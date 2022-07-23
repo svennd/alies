@@ -168,11 +168,6 @@
          <i class="far fa-fw fa-file"></i>
           <span>Reports</span></a>
       </li>
-      <li class="nav-item" id="vaccines">
-        <a class="nav-link" href="<?php echo base_url(); ?>vaccins">
-        <i class="fas fa-syringe fa-fw"></i>
-          <span>Vaccins</span></a>
-      </li>
 	  <?php if (!$this->ion_auth->in_group("admin")): ?>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
@@ -182,6 +177,11 @@
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
           <i class="fas fa-fw fa-euro-sign"></i>
           <span>Invoice</span></a>
+      </li>
+      <li class="nav-item" id="vaccines">
+        <a class="nav-link" href="<?php echo base_url(); ?>vaccine">
+        <i class="fas fa-syringe fa-fw"></i>
+          <span>Vaccins</span></a>
       </li>
       <li class="nav-item" id="product_list">
         <a class="nav-link" href="<?php echo base_url(); ?>products">

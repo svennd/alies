@@ -10,6 +10,9 @@ class Pets_model extends MY_Model
 	
 	public function __construct()
 	{
+		// enable soft deletes
+		$this->soft_deletes = true;
+
 		/*
 			has_one
 		*/

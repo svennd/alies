@@ -15,5 +15,18 @@ function user_format_date(String $datetime = null, String $format)
 */
 function time_ago(String $date = null)
 {
-  return ($date == null) ? "never" : timespan(strtotime($date), time(), 1) . " Ago";
+  if ($date == null) 
+  {
+    return "never";
+  }
+
+  $current_timestamp = time();
+  $input_timestamp = strtotime($date);
+
+  if ($current_timestamp > $input_timestamp)
+  {
+    return timespan($input_timestamp, $current_timestamp, 1) . " Ago";
+  }
+
+  return "In " . timespan($current_timestamp, $input_timestamp, 1);
 }

@@ -22,6 +22,19 @@
                     </ul>
                     (after this has happened you will return to this page.)
                 </p>
+                <hr />
+                <a class="btn btn-outline-danger" href="<?php echo base_url() . 'debug/delete_owner/' . $owner['id']; ?>"><i class="fas fa-bug"></i> delete owner/client</a>
+                <br/>
+                <br/>
+                <p>
+                    This function will delete the client + all his pets. <strong>bills will NOT be deleted (but will contain errors)</strong><br/>
+                    <ul>
+                        <li>This function will lookup all pets, then remove them. (if you want to keep the pets, transfer ownership first to a temporary host)</li>
+                        <li>Then the owner will be deleted</li>
+                    </ul>
+                    note : soft delete is on, so the owners & pets can be retrieved. (but only after manual database recovery)<br/>
+                    (<strong>after this has happened you will return to the INDEX.</strong>)
+                </p>
 			</div>
 	  </div>
 	</div>

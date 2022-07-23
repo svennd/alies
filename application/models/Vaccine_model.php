@@ -64,7 +64,7 @@ class Vaccine_model extends MY_Model
 				MAX(redo) as max_redo,
 				products.name
 			FROM 
-				vaccine_pet 
+				" . $this->table . " 
 			JOIN
 				products
 			ON
@@ -76,6 +76,67 @@ class Vaccine_model extends MY_Model
 			order by 
 				max_redo 
 			asc
+		";
+		
+		return ($this->db->query($sql)->result_array());
+	}
+
+	public function get_expiring_vaccines($date)
+	{
+		$sql = "
+			SELECT 
+				MIN(vac.redo) as redo_date,
+
+				GROUP_CONCAT(DISTINCT products.name) as product_name,
+				
+				GROUP_CONCAT(DISTINCT pets.name) as pet_name, 
+
+				owners.id as owner_id,
+				owners.first_name as first_name, 
+				owners.last_name as last_name, 
+				owners.street as owner_street, 
+				owners.nr as owner_nr, 
+				owners.city as owner_city, 
+				owners.mail as owner_mail, 
+				owners.last_bill as last_bill,
+
+				stock.name as location,
+
+				users.first_name as vet_name
+			FROM 
+			" . $this->table . " as vac
+			
+			JOIN
+				products
+			ON
+				products.id = vac.product_id
+
+			JOIN
+				stock_location as stock
+			ON
+				stock.id = vac.location
+
+			JOIN
+				pets
+			ON
+				pets.id = vac.pet
+				
+			JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			JOIN
+				users
+			ON
+				users.id = vac.vet
+
+			WHERE
+				vac.redo <= LAST_DAY('" . $date . "') AND vac.redo >= DATE_FORMAT('" . $date . "', '%Y-%m-01')
+
+			GROUP BY
+				owners.id
+
+			ORDER BY vac.redo ASC
 		";
 		
 		return ($this->db->query($sql)->result_array());

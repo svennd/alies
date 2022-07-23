@@ -9,9 +9,40 @@ class Vaccine extends Vet_Controller
 	{
 		parent::__construct();
 		$this->load->model('Pets_model', 'pets');
-		$this->load->model('Vaccine_model', 'vacs_pet');
+		$this->load->model('Vaccine_model', 'vacs');
+
+		# helpers
+		$this->load->helper('file_download');
 	}
-		
+	
+	public function index(int $month = 1, $export = false)
+	{
+		# get first day of the month
+		$date = new DateTime('first day of this month');
+
+		# increase or decreate month by settings
+		$date->modify($month . 'month');
+
+		$data = array(
+				"month" => $date->format('F'),
+				"year" => $date->format('Y'),
+				"month_int"	=> $month,
+				"expiring_vacs" => $this->vacs->get_expiring_vaccines($date->format('Y-m-d H:i:s'))
+		);
+		if ($export)
+		{
+			$csv = $this->load->view('vaccine/export', $data, true);
+			array_to_csv_download($csv, "vaccines_" . $date->format('M_Y') . ".csv");
+
+			// PII so, keep atleast a log
+            $this->logs->logger($this->user->id, INFO, "downloaded_vaccine_list", "month : " . $month);
+		}
+		else
+		{
+			$this->_render_page('vaccine/overview', $data);
+		}
+	}
+
 	public function fiche($pet_id)
 	{
 		$pet_info = $this->pets->with_owners('fields:first_name,last_name')->fields('id, type, name')->get($pet_id);
@@ -19,7 +50,7 @@ class Vaccine extends Vet_Controller
 		$data = array(
 					"pet_info" 	=> $pet_info,
 					"pet_id" 	=> $pet_id,
-					"vaccines" 	=> $this->vacs_pet
+					"vaccines" 	=> $this->vacs
 											->with_vet('fields: first_name')
 											->with_product('fields: name, vaccin_freq')
 											->with_location('fields: name')
@@ -27,6 +58,6 @@ class Vaccine extends Vet_Controller
 											->get_all()
 				);
 		;
-		$this->_render_page('vaccine_overview', $data);
+		$this->_render_page('vaccine/pet_fiche', $data);
 	}
 }

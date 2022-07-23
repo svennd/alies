@@ -60,4 +60,22 @@ class Debug extends Vet_Controller
         redirect('debug/index/' . $owner);
     }
 	
+    /*
+        will delete owner (soft delete)
+        - first delete all pets (soft)
+        - then delete owner
+    */
+    public function delete_owner(int $owner)
+    {
+        # delete all pets
+        $this->pets->where(array('owner' => $owner))->delete();
+        $this->logz->logger($this->user->id, WARN, "delete_owner_pets", "removed pets for : " . $owner);
+
+        # delete client
+        $this->owners->delete($owner);
+        $this->logz->logger($this->user->id, WARN, "delete_owner", "removed owner : " . $owner);
+
+        # we just removed the owner so it should be gone
+        redirect('/');
+    }
 }
