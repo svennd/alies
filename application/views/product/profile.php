@@ -276,6 +276,7 @@ foreach ($locations as $l)
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 
+	$("#product_list").addClass('active');
 	$('#message').trumbowyg({
 
     btns: [

@@ -256,11 +256,10 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="<?php echo base_url(); ?>vet/profile">
+				        <a class="dropdown-item" href="<?php echo base_url(); ?>vet/profile">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="<?php echo base_url(); ?>vet/change_password">
                 <a class="dropdown-item" href="<?php echo base_url(); ?>vet/change_password">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings

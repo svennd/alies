@@ -89,7 +89,7 @@ $state = array(
 
 		<?php endif; ?>
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>
-			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2" target="_blank"><i class="fas fa-syringe"></i> Drop from stock</a>
+			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2"><i class="fas fa-syringe"></i> Drop from stock</a>
 		<?php endif; ?>
 		  </form>
 
