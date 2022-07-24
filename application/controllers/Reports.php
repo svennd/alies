@@ -207,12 +207,47 @@ class Reports extends Admin_Controller
 		$this->output->cache(360);
 
 		$data = array(
+						"last_bill_clients" => $this->chart_last_bill(10),
 						"total_clients"		=> $this->owners->count_rows(),
 					);
 
 		$this->_render_page('reports/clients', $data);
 	}
 
+	private function chart_last_bill(int $years = 5)
+	{
+		/* 
+			going from data : 
+			array(3) {
+				["y"]=>
+				string(4) "2018"
+				["total"]=>
+				string(1) "6"
+				["vet"]=>
+				string(5) "Svenn"
+			}
+
+			to data :
+			label : 2018, 2019, ...
+			dataset : 
+				label : svenn
+				data: 1 2 3 4 5
+				label : annelies
+				data: 2 3 1 4 7
+		*/
+		$r = $this->owners->last_bill_by_year_month_init_vet($years);
+		
+
+		$years = array_unique(array_column($r, 'y'));
+		$vets = array_unique(array_column($r, 'vet'));
+		foreach ($vets as $vet)
+		{
+			$filter_per_vet = array_filter($r, fn ($n) => $n['vet'] == $vet);
+			$data[$vet] = array_column($filter_per_vet, 'total');
+		}
+		return array("years" => $years, "vets" => $vets, "data" => $data);
+	}
+	
 	/*
 		get all product usage for a certain time frame
 	*/

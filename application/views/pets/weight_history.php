@@ -55,6 +55,8 @@
 		</div>
 			      
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 <?php
@@ -80,6 +82,7 @@ else
 		data: { 
 				labels: <?php echo json_encode($plot_label); ?>,
 				datasets: [{
+					label : "weight",
 					backgroundColor: 'rgba(54, 162, 235, 0.3)',
 					borderColor : 'rgb(54, 162, 235)',
 					borderWidth: 1,

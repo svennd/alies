@@ -19,7 +19,7 @@ class Export extends Admin_Controller
 		$this->load->model('Booking_code_model', 'booking');
 	}
 
-	public function clients($days = false)
+	public function clients($days = false, int $status = 2)
 	{
 		# owners
 		if (!$days) {
@@ -70,7 +70,7 @@ class Export extends Admin_Controller
 							'GSM'			=> (($client['mobile']) ? $client['mobile'] : ''),
 							'Email'			=> (($client['mail']) ? $client['mail'] : ''),
 							'FreeField1'	=> (($client['msg']) ? $client['msg'] : ''),
-							'Status'		=> 2, // status : 0 : new, 1 : already known, 2 : known but editted
+							'Status'		=> $status, // status : 0 : new, 1 : already known, 2 : known but editted
 
 				));
 		}
@@ -78,7 +78,7 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 
-	public function facturen($search_from, $search_to)
+	public function facturen($search_from, $search_to, int $status = 2)
 	{
 		$bill_overview = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
@@ -197,9 +197,9 @@ class Export extends Admin_Controller
 							'DocType' 			=> '10',
 							'DocNumber'			=> date("Y") . substr(str_pad($factuur['id'], 5, "0", STR_PAD_LEFT), 0, 5),
 							'DocDate' 			=> $dt->format('d/m/Y'),
-							'Amount' 				=> $this->amount($factuur['amount']),
+							'Amount' 			=> $this->amount($factuur['amount']),
 							'VATAmount' 		=> $this->amount($total_btw),
-							'Status' 				=> '2',
+							'Status' 			=> $status,
 
 				));
 

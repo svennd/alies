@@ -281,10 +281,9 @@ class Owners_model extends MY_Model
 	{
 		$sql = "
 			select 
-				year(last_bill) as y, 
-				initial_vet, 
+				year(last_bill) as y,
 				count(owners.id) as total,
-				users.first_name
+				users.first_name as vet
 			from 
 				owners 
 			join 
@@ -296,6 +295,8 @@ class Owners_model extends MY_Model
 				initial_vet
 			having 
 				y > YEAR(CURDATE() - INTERVAL " . $year . " YEAR)
+			and
+				y <= YEAR(CURDATE())
 			order by
 				y asc
 				";

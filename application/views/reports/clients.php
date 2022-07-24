@@ -19,46 +19,63 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div>
-  <canvas id="myChart"></canvas>
+<div class="row">
+	<div class="col-md-5">
+		<canvas id="last_bill_chart"></canvas>
+		<p class="small">Chart : The data of last bill, of customers over a period of 10y; split over the initial vet.</p>
+	</div>
 </div>
 
 <script>
-	const data = {
-	  datasets: [
-			{
-	    label: 'My First Dataset',
-			data: {
-		January: 10,
-		February: 20,
-		march: 25,
-},
-	    fill: false,
-	    borderColor: 'rgb(75, 192, 192)',
-	    tension: 0.1
-	  },
-			{
-	    label: 'My second Dataset',
-			data: {
-		January: 15,
-		February: 8,
-		march: 25,
-},
-	    fill: false,
-	    borderColor: 'rgb(75, 192, 192)',
-	    tension: 0.1
-	  },
+const ctx = document.getElementById("last_bill_chart").getContext("2d");
 
-	]
-	};
-  const config = {
-    type: 'line',
-    data: data,
-    options: {}
-  };
+const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
+const randomRGB = () => `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`;
 
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
+const data = {
+  labels: [
+    <?php echo implode(',', $last_bill_clients['years']); ?>
+  ],
+  datasets: [
+	<?php foreach($last_bill_clients['data'] as $vet => $data): ?>
+    {
+      label: "<?php echo $vet; ?>",
+      backgroundColor: randomRGB(),
+
+      data: [
+        <?php echo implode(',', $data); ?>
+      ]
+    },
+	<?php endforeach; ?>
+  
+  ]
+};
+
+const options = {
+	plugins: {
+      title: {
+        display: true,
+        text: 'Last bill date'
+      },
+    },
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true
+      }
+    }
+};
+
+const chart = new Chart(ctx, {
+  // The type of chart we want to create
+  type: "bar",
+  // The data for our dataset
+  data: data,
+  // Configuration options go here
+  options: options
+});
+
 </script>
