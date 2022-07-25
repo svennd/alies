@@ -41,3 +41,43 @@ function get_gender($gender)
 			return '<span style="color:#6cce23;"><i class="fas fa-genderless fa-fw"></i></span> Other';
 	}
 }
+
+/*
+ return the bill name instead of the integer
+*/
+function get_bill_status(int $status)
+{
+	switch ($status)
+	{
+		case PAYMENT_PAID:
+			return "Paid";
+		case PAYMENT_PARTIALLY:
+			return "Paid Partially";
+		case PAYMENT_UNPAID:
+			return"Unpaid";
+		case PAYMENT_OPEN:
+			return "Open";
+		case PAYMENT_NON_COLLECTABLE:
+			return "PAYMENT_NON_COLLECTABLE";
+		default:
+			return "unknown";
+	}
+}
+
+/*
+	stock state to text
+*/
+function stock_state(int $stock_state) {
+	switch ($stock_state) {
+		case STOCK_CHECK:
+			return "check";
+		case STOCK_IN_USE:
+			return "in_use";
+		case STOCK_HISTORY:
+			return "history";
+		case STOCK_ERROR:
+			return "error";
+		default:
+			return "unknown";
+	}
+}

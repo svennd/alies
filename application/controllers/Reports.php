@@ -120,7 +120,7 @@ class Reports extends Admin_Controller
 				"locations"	=> $this->stock_location->get_all(),
 				"eprod" => $this->
 							eprod->
-							with_event()->
+							with_event('fields:id,created_at')->
 							where(array("product_id" => $product_id))->
 							get_all(),
 			);
@@ -201,7 +201,7 @@ class Reports extends Admin_Controller
 	}
 
 
-	public function clients()
+	public function clients(int $days = 0)
 	{
 		/* cache this for 6 hours */
 		$this->output->cache(360);
@@ -210,7 +210,21 @@ class Reports extends Admin_Controller
 						"last_bill_clients" => $this->chart_last_bill(10),
 						"total_clients"		=> $this->owners->count_rows(),
 					);
-
+		
+		if($days) {
+				$data['days'] = $days;
+				$data['clients'] = $this->owners
+					->group_start()
+						->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+						->where('created_at < NOW()', null, null, false, false, true)
+					->group_end()
+					->or_group_start()
+						->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+						->where('updated_at < NOW()', null, null, false, false, true)
+					->group_end()
+					->get_all();
+		}
+		
 		$this->_render_page('reports/clients', $data);
 	}
 

@@ -20,34 +20,10 @@
 	  </thead>
 	  <tbody>
 		<?php foreach($bills as $bill): ?>
-		<?php 
-			$date = date_create_from_format ('Y-m-d H:i:s', $bill['created_at']); 
-			switch ($bill['status'])
-			{
-				case PAYMENT_PAID:
-					$state = "Paid";
-				break;
-				case PAYMENT_PARTIALLY:
-					$state = "Paid Partially";
-				break;
-				case PAYMENT_UNPAID:
-					$state = "Unpaid";
-				break;
-				case PAYMENT_OPEN:
-					$state = "Open";
-				break;
-				case PAYMENT_NON_COLLECTABLE:
-					$state = "PAYMENT_NON_COLLECTABLE";
-				break;
-			}
-		 ?>
 		<tr>
-		  <td><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>">
-				<?php echo date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT); ?>
-				</a>
-			</td>
-		  <td><?php echo date_format($date, 'd M \'y'); ?></td>
-		  <td><?php echo $state; ?></td>
+		  <td><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo get_bill_id($bill['id'], $bill['created_at']); ?></a></td>
+		  <td><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
+		  <td><?php echo get_bill_status($bill['status']); ?></td>
 		  <td><?php echo $bill['amount']; ?></td>
 		  <td><?php echo $bill['card']; ?></td>
 		  <td><?php echo $bill['cash']; ?></td>

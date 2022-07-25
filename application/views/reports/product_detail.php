@@ -1,17 +1,4 @@
 <?php 
-
-function stock_state($stock_state) {
-	switch ($stock_state) {
-		case 0:
-			return "check";
-		case 1:
-			return "in_use";
-		case 2:
-			return "history";
-		case 3:
-			return "error";
-	}
-}
 foreach ($locations as $loc)
 {
 	$lookup_loc[$loc['id']] = $loc['name'];
@@ -22,7 +9,7 @@ foreach ($locations as $loc)
 		<div class="card shadow mb-4">
 			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <a href="<?php echo base_url(); ?>reports/products">Products</a> / <?php echo (isset($product_info[0]) && $product_info[0]['name']) ? $product_info[0]['name'] : ''; ?> / Stock</div>
             <div class="card-body">
-			<?php  if($product_info): ?>
+			<?php  if($product_info): $total_volume = 0; ?>
 				<table class="table">
 					<tr>
 						<td>barcode</td>
@@ -38,8 +25,8 @@ foreach ($locations as $loc)
 				<?php foreach ($product_info as $key => $stock): ?>
 					<tr>
 						<td><?php echo $stock['stock_barcode']; ?></td>
-						<td><?php echo stock_state($stock['stock_state']); ?></td>
-						<td><?php echo $stock['stock_volume']; ?></td>
+						<td <?php echo ($stock['stock_state'] == STOCK_ERROR) ? 'class="bg-warning text-dark"': ''; ?>><?php echo stock_state($stock['stock_state']); ?></td>
+						<td><?php echo $stock['stock_volume']; ?> <?php $total_volume += $stock['stock_volume']; ?></td>
 						<td><?php echo $stock['stock_lotnr']; ?></td>
 						<td><?php echo $stock['stock_eol']; ?></td>
 						<td><?php echo $stock['stock_in_price']; ?></td>
@@ -48,6 +35,17 @@ foreach ($locations as $loc)
 						<td><?php echo $stock['stock_created_at']; ?></td>
 					</tr>
 				<?php endforeach; ?>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="bg-secondary text-white">total :</td>
+						<td class="bg-secondary text-white"><?php echo $total_volume; ?></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
 				</table>
 			<?php endif; ?>
 			</div>
@@ -59,17 +57,17 @@ foreach ($locations as $loc)
 			<?php if($eprod): ?>
 				<table class="table">
 					<tr>
+						<td>date</td>
 						<td>volume</td>
 						<td>stock barcode</td>
-						<td>event_id</td>
-						<td>vet</td>
+						<td>consult</td>
 					</tr>
 				<?php foreach ($eprod as $prod): ?>
 					<tr>
+						<td><?php echo user_format_date($prod['event']['created_at'], $user->user_date); ?></td>
 						<td><?php echo $prod['volume']; ?></td>
-						<td><?php echo $prod['barcode']; ?></td>
-						<td><?php echo $prod['event']['id']; ?></td>
-						<td><?php echo $prod['event']['vet']; ?></td>
+						<td><?php echo $prod['barcode']; ?>
+						<td><a href="<?php echo base_url('events/event/' . $prod['event']['id']); ?>">consult</a></td>
 					</tr>
 				<?php endforeach; ?>
 				</table>

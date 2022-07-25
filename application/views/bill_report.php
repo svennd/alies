@@ -1,12 +1,4 @@
 <?php
-$state = array(
-				"OPEN",
-				"UNPAID",
-				"NOT COMPLETE",
-				"PAID",
-				"NON_COLLECTABLE",
-				);
-
 	foreach ($location_i as $loc)
 	{
 		$l[$loc['id']] = $loc['name'];
@@ -27,9 +19,7 @@ $state = array(
 	<div class="card mb-4">
 		<div class="card-header">
 			<a href="<?php echo base_url(); ?>invoice">Invoice</a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-			Bill (#<?php
-				$date = date_create_from_format ('Y-m-d H:i:s', $bill['created_at']);
-					echo date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT); ?>)
+			Bill (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>)
 		</div>
 		<div class="card-body">
 
@@ -40,7 +30,7 @@ $state = array(
 					<div class="col-lg-3 mb-4">
 
 	<?php if ($bill['status'] != PAYMENT_PAID): ?>
-					<p class="lead">Payment : <?php echo $state[$bill['status']]; ?></p>
+					<p class="lead">Payment : <?php echo get_bill_status($bill['status']); ?></p>
 					<?php
 						$cash = round((float) $bill['cash'], 2);
 						$card = round((float) $bill['card'], 2);
@@ -80,7 +70,7 @@ $state = array(
 
 		<?php endif; ?>
 		<?php if ($bill['status'] == PAYMENT_PAID): ?>
-		<p class="lead">Payment : <?php echo $state[$bill['status']]; ?>!</p>
+		<p class="lead">Payment : <?php echo get_bill_status($bill['status']); ?>!</p>
 		<?php
 			$cash = round((float) $bill['cash'], 2);
 			$card = round((float) $bill['card'], 2);
