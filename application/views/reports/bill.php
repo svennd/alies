@@ -78,7 +78,7 @@ $cd->modify('-3 month');
                 </div>
 		</div>
 
-<div class="card shadow mb-4">
+<!-- <div class="card shadow mb-4">
 	<div class="card-header">
 		<a href="<?php echo base_url(); ?>reports">Reports</a> / Invoices / Location
 	</div>
@@ -108,7 +108,7 @@ $cd->modify('-3 month');
 			<button type="submit" class="btn btn-success mb-2">Search range</button>
 		</form>
 	</div>
-</div>
+</div> -->
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
