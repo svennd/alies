@@ -1,7 +1,7 @@
 <?php 
     $age = timespan(strtotime($pet['birth']), time(), 1); 
-    $cash = round((float) $billing_info['cash'], 2);
-    $card = round((float) $billing_info['card'], 2);
+    $cash = (isset($billing_info['cash'])) ? round((float) $billing_info['cash'], 2) : 0;
+    $card = (isset($billing_info['card'])) ? round((float) $billing_info['card'], 2) : 0;    
 ?>
 <div class="row">
     <div class="col-4">
@@ -34,15 +34,17 @@
         <fieldset class="border max">
             <legend class="text-center topfields">Event</legend>
             <p class="text-center">
-                <?php echo user_format_date($billing_info['created_at'], $user->user_date) ?> (<?php echo time_ago($billing_info['created_at']); ?>)
-                <br/>
-                <?php echo (isset($billing_info['location']['name'])) ? $billing_info['location']['name']: 'unknown'; ?>
-                <br/>
-                <?php echo $billing_info['amount'] . " &euro;"; ?>
-                (
-                <?php echo ($card != 0) ? "<i class='fab fa-cc-visa'></i> " . $card . "&euro; " : ""; ?>
-                <?php echo ($cash != 0) ? "<i class='fas fa-coins'></i> " . $cash . "&euro; " : ""; ?>
-                )
+                <?php if($billing_info): ?>
+                    <?php echo user_format_date($billing_info['created_at'], $user->user_date) ?> (<?php echo time_ago($billing_info['created_at']); ?>)
+                    <br/>
+                    <?php echo (isset($billing_info['location']['name'])) ? $billing_info['location']['name']: 'unknown'; ?>
+                    <br/>
+                    <?php echo $billing_info['amount'] . " &euro;"; ?>
+                    (
+                    <?php echo ($card != 0) ? "<i class='fab fa-cc-visa'></i> " . $card . "&euro; " : ""; ?>
+                    <?php echo ($cash != 0) ? "<i class='fas fa-coins'></i> " . $cash . "&euro; " : ""; ?>
+                    )
+                <?php endif; ?>
                 <br/>
             </p>
         </fieldset>

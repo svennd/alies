@@ -77,7 +77,7 @@ class Events extends Vet_Controller
 													inject_trumbowyg()
 		);
 
-		if ($event_info['status'] != STATUS_CLOSED ) 
+		if ($event_info['status'] == STATUS_OPEN ) 
 		{
 			$this->_render_page('event/main', $data);
 		}

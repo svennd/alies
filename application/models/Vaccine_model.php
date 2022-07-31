@@ -131,8 +131,13 @@ class Vaccine_model extends MY_Model
 				users.id = vac.vet
 
 			WHERE
-				vac.redo <= LAST_DAY('" . $date . "') AND vac.redo >= DATE_FORMAT('" . $date . "', '%Y-%m-01')
-
+				vac.redo <= LAST_DAY('" . $date . "') 
+			AND 
+				vac.redo >= DATE_FORMAT('" . $date . "', '%Y-%m-01')
+			AND
+				pets.death = 0
+			AND
+				pets.lost = 0
 			GROUP BY
 				owners.id
 

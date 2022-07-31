@@ -19,7 +19,7 @@
 		</div>
 		<div class="form-group">
 			<label for="anamnese">Report</label>
-			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
+			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo nl2br($event_info['anamnese']); ?></textarea>
 			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
 		</div>
 	</div>
