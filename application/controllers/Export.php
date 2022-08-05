@@ -15,27 +15,124 @@ class Export extends Admin_Controller
 		# models
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Bills_model', 'bills');
+		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Booking_code_model', 'booking');
 	}
 
+
+	/*
+		generic export function for owners
+		following import_export_alies.docx guidelines
+	 */
+	public function owners($days = false)
+	{
+		$clients = $this->get_owners($days);
+
+		if (!$clients) { return $this->empty_xml('owners'); }
+
+		$domtree = new DOMDocument('1.0');
+
+		/* create the root element of the xml tree */
+		$xmlRoot = $domtree->createElement("xml");
+
+		/* append it to the document created */
+		$xmlRoot = $domtree->appendChild($xmlRoot);
+
+		// owners
+		$owners = $domtree->createElement("owners");
+		$owners = $xmlRoot->appendChild($owners);
+
+		foreach ($clients as $client) {
+			/* set item */
+			$cust = $domtree->createElement("owner");
+			$cust = $owners->appendChild($cust);
+			$this->append_child_element($cust, $domtree,
+				array(
+							'id' 			=> $client['id'],
+							'first_name' 	=> htmlspecialchars($client['first_name']),
+							'last_name' 	=> htmlspecialchars($client['last_name']),
+							'telephone' 	=> $client['telephone'],
+							'mobile' 		=> $client['mobile'],
+							'phone2' 		=> $client['phone2'],
+							'phone3' 		=> $client['phone3'],
+							'street' 		=> $client['street'],
+							'nr'		 	=> $client['nr'],
+							'zip' 			=> $client['zip'],
+							'city' 			=> $client['city'],
+							'mail' 			=> $client['mail'],
+							'msg' 			=> $client['msg'],
+							'btw_nr'		=> $client['btw_nr'],
+							'invoice_addr'	=> $client['invoice_addr'],
+							'invoice_contact' => $client['invoice_contact'],
+							'invoice_tel'	=> $client['invoice_tel'],
+							'debts'			=> $client['debts'], 
+							'low_budget'	=> $client['low_budget'], 
+							'contact'		=> $client['contact'], 
+							'last_bill'		=> $client['last_bill'], 
+
+				));
+		}
+		Header('Content-type: text/xml');
+		echo $domtree->saveXML();
+	}
+
+	/*
+		generic export function for pets
+		following import_export_alies.docx guidelines
+	 */
+	public function pets($days = false)
+	{
+		$pets = $this->get_pets($days);
+		
+		if (!$pets) { return $this->empty_xml('pets'); }
+
+		$domtree = new DOMDocument('1.0');
+
+		/* create the root element of the xml tree */
+		$xmlRoot = $domtree->createElement("xml");
+
+		/* append it to the document created */
+		$xmlRoot = $domtree->appendChild($xmlRoot);
+
+		// owners
+		$petsx = $domtree->createElement("pets");
+		$petsx = $xmlRoot->appendChild($petsx);
+
+		foreach ($pets as $pet) {
+			/* set item */
+			$cust = $domtree->createElement("pet");
+			$cust = $petsx->appendChild($cust);
+			$this->append_child_element($cust, $domtree,
+				array(
+							'id' 			=> $pet['id'],
+							'type'			=> $pet['type'],
+							'name'			=> $pet['name'],
+							'birth' 		=> $pet['birth'],
+							'death' 		=> $pet['death'],
+							'death_date' 	=> $pet['death_date'],
+							'breed'		 	=> $pet['breed'],
+							'gender' 		=> $pet['gender'],
+							'color' 		=> $pet['color'],
+							'last_weight' 	=> $pet['last_weight'],
+							'lost' 			=> $pet['lost'],
+							'chip'			=> $pet['chip'],
+							'nr_vac_book'	=> $pet['nr_vac_book'],
+							'note' 			=> $pet['note'],
+							'nutritional_advice' => $pet['nutritional_advice'],
+							'owner'			=> $pet['owner'], 
+							'location'		=> $pet['location'], 
+							'init_vet'		=> $pet['init_vet']
+				));
+		}
+		Header('Content-type: text/xml');
+		echo $domtree->saveXML();
+	}
+	
 	public function clients($days = false, int $status = 2)
 	{
 		# owners
-		if (!$days) {
-			$clients = $this->owners->get_all();
-		} else {
-			$clients = $this->owners
-							->group_start()
-								->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-								->where('created_at < NOW()', null, null, false, false, true)
-							->group_end()
-							->or_group_start()
-								->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-								->where('updated_at < NOW()', null, null, false, false, true)
-							->group_end()
-							->get_all();
-		}
+		$clients = $this->get_owners($days);
 
 		/* create a dom document with encoding utf8 */
 		$domtree = new DOMDocument('1.0', 'Windows-1252');
@@ -331,5 +428,58 @@ class Export extends Admin_Controller
 		$xmlRoot = $domtree->appendChild($xmlRoot);
 
 		return $xmlRoot;
+	}
+
+	/*
+		something is wrong (false) so return a empty file
+	*/
+	private function empty_xml($type = "")
+	{
+		Header('Content-type: text/xml');
+		echo "<?xml version='1.0'?><xml><" . $type . "></" . $type . "></xml>";
+	}
+
+	/*
+		return a list of owners
+	*/
+	private function get_owners($days = false)
+	{
+		# owners
+		if (!$days) {
+			return $this->owners->get_all();
+		}
+
+		return $this->owners
+						->group_start()
+							->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+							->where('created_at < NOW()', null, null, false, false, true)
+						->group_end()
+						->or_group_start()
+							->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+							->where('updated_at < NOW()', null, null, false, false, true)
+						->group_end()
+						->get_all();
+	}
+
+	/*
+		return a list of pets
+	*/
+	private function get_pets($days = false)
+	{
+		# owners
+		if (!$days) {
+			return $this->pets->get_all();
+		}
+
+		return $this->pets
+						->group_start()
+							->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+							->where('created_at < NOW()', null, null, false, false, true)
+						->group_end()
+						->or_group_start()
+							->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+							->where('updated_at < NOW()', null, null, false, false, true)
+						->group_end()
+						->get_all();
 	}
 }
