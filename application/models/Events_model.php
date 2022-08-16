@@ -111,11 +111,29 @@ class Events_model extends MY_Model
 		if ($product_array) {
 			foreach ($product_array as $product) {
 				$products[] = $product;
-				$tally[$product['btw']] = (isset($tally[$product['btw']])) ? ($tally[$product['btw']] + $product['net_price']) : $product['net_price'];
-				$booking[$product['booking']] = (isset($tally[$product['booking']])) ? ((float) $tally[$product['booking']] + $product['net_price']) : (float) $product['net_price'];
+
+				# index
+				$product_btw = (int) $product['btw'];
+				$product_booking = (int) $product['booking'];
+
+				# value
+				$net_price = (float) $product['net_price'];
+				
+				# tally products
+				if (isset($tally[$product_btw])) {
+					$tally[$product_btw] += $net_price;
+				} else { 
+					$tally[$product_btw] = $net_price;
+				}
+
+				# booking products
+				if (isset($booking[$product_booking])) {
+					$booking[$product_booking] += $net_price;
+				} else { 
+					$booking[$product_booking] = $net_price;
+				}
 			}
 		}
-
 		/* get procedures on every event */
 		$sql = "
 				SELECT procedures_id, amount, net_price, booking, events_procedures.price, btw, procedures.name
@@ -131,7 +149,7 @@ class Events_model extends MY_Model
 			foreach ($procedure_array as $proc) {
 				$procedures[] = $proc;
 				$tally[$proc['btw']] = (isset($tally[$proc['btw']])) ? (float) ($tally[$proc['btw']] + $proc['net_price']) : (float) $proc['net_price'];
-				$booking[$proc['booking']] = (isset($tally[$proc['booking']])) ? ((float) $tally[$proc['booking']] + $proc['net_price']) : (float) $proc['net_price'];
+				$booking[$proc['booking']] = (isset($booking[$proc['booking']])) ? ((float) $booking[$proc['booking']] + $proc['net_price']) : (float) $proc['net_price'];
 			}
 		}
 

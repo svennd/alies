@@ -129,7 +129,7 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 	
-	public function clients($days = false, int $status = 2)
+	public function clients($days = false, int $status = 0)
 	{
 		# owners
 		$clients = $this->get_owners($days);
@@ -162,7 +162,7 @@ class Export extends Admin_Controller
 							'CurrencyCode' 	=> 'EUR',
 							'VATCode' 		=> 1,
 							'VATStatus'		=> (($client['btw_nr']) ? 1 : 0 ),
-							'VATNumber'		=> (($client['btw_nr']) ? $client['btw_nr'] : ''),
+							'VATNumber'		=> (($client['btw_nr']) ? trim($client['btw_nr'], "BE") : ''),
 							'Phone'			=> (($client['telephone']) ? $client['telephone'] : ''),
 							'GSM'			=> (($client['mobile']) ? $client['mobile'] : ''),
 							'Email'			=> (($client['mail']) ? $client['mail'] : ''),
@@ -175,7 +175,7 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 
-	public function facturen($search_from, $search_to, int $status = 2)
+	public function facturen($search_from, $search_to, int $status = 0)
 	{
 		$bill_overview = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
@@ -236,13 +236,13 @@ class Export extends Admin_Controller
 
 			foreach ($events as $e) {
 				$event_bill = $this->events->get_products_and_procedures($e['id']);
-
+				
 				if (count($event_bill['tally']) == 0) {
 					continue;
 				}
 
 				foreach ($event_bill['tally'] as $btw => $value) {
-					$event_tally[$btw] =  (isset($event_tally[$btw])) ? $event_tally[$btw] + $value : $value;
+					$event_tally[$btw] = (isset($event_tally[$btw])) ? $event_tally[$btw] + $value : $value;
 				}
 				foreach ($event_bill['booking'] as $booking => $value) {
 					$event_booking[$booking] = (isset($event_booking[$booking])) ? $event_booking[$booking] + $value: $value;
