@@ -112,13 +112,7 @@ class Invoice extends Vet_Controller
 		$event_info = array();
 
 		# get all pets
-		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
-
-		# no pets on this owner
-		if (!$pets) {
-			$this->_render_page('bill_invalid', array('bill' => $bill));
-			return 0;
-		}
+		$pets = $this->get_pets($owner_id);
 
 		foreach ($pets as $pet) {
 			# for easy access
@@ -175,7 +169,7 @@ class Invoice extends Vet_Controller
 			}
 
 			# for making a printable bill
-			$pet_id_array [$pet_id] = $pet;
+			$pet_id_array[$pet_id] = $pet;
 		}
 
 		# calculate the full bill
@@ -184,16 +178,9 @@ class Invoice extends Vet_Controller
 			$bill_total += $total * (1 + ($btw/100));
 		}
 
-		# partial is tricky can remove products if not enough money
-		# but then we need to recalculate if there was enough payed
-		if (in_array($bill['status'], array(PAYMENT_OPEN, PAYMENT_UNPAID, PAYMENT_PARTIALLY))) {
-
-			# update the bill in case something changed
-			# hack for float comparison
-			if (round($bill_total, 2) != (float) $bill['amount']) {
-				$this->bills->update(array("status" => PAYMENT_UNPAID, "amount" => round($bill_total, 2)), $bill_id);
-			}
-		}
+		# check if the calculated price is equal to the price in the database
+		# if not, something got added, and we need to update it
+		$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
 
 		$data = array(
 					"owner" 		=> $this->owners->get($owner_id),
@@ -274,6 +261,23 @@ class Invoice extends Vet_Controller
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
+	# check if the calculated price is equal to the price in the database
+	# if not, something got added, and we need to update it
+	# called in get_bill()
+	private function check_for_updates_in_the_bill(int $bill_id, int $bill_status, float $bill_total, float $bill_amount)
+	{
+		# partial is tricky can remove products if not enough money
+		# but then we need to recalculate if there was enough payed
+		if (in_array($bill['status'], array(PAYMENT_OPEN, PAYMENT_UNPAID, PAYMENT_PARTIALLY))) {
+
+			# update the bill in case something changed
+			# hack for float comparison
+			if (round($bill_total, 2) != (float) $bill_amount) {
+				$this->bills->update(array("status" => PAYMENT_UNPAID, "amount" => round($bill_total, 2)), $bill_id);
+			}
+		}
+	}
+
 	# select all events with payment = $bill_id
 	# reduce stock based on the items used in the events;
 	private function remove_from_stock($bill_id)
@@ -328,5 +332,18 @@ class Invoice extends Vet_Controller
 					->where("id", "!=", $bill_id)
 				->where(array("owner_id" => $owner_id))
 				->get_all();;
+	}
+
+	// get pets for billing
+	private function get_pets(int $owner_id)
+	{
+		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
+
+		# no pets on this owner
+		if (!$pets) {
+			$this->_render_page('bill_invalid', array('bill' => $bill));
+			return 0;
+		}
+		return $pets;
 	}
 }
