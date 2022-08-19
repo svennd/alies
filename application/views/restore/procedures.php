@@ -2,9 +2,9 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Procedures</h6>
-            </div>
+	 	 <div class="card-header py-3">
+              <h6 class="m-0"><a href="<?php echo base_url(); ?>admin/proc/">Procedures</a> / Restore</h6>
+		</div>
             <div class="card-body">
 			<?php if ($proc): ?>
 				<table class="table" id="dataTable">
@@ -46,7 +46,9 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#backup").addClass('active');	
+	$("#adminmgm").show();
+	$("#admin").addClass('active');
+	$("#adminproc").addClass('active');
 });
 </script>
   

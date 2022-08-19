@@ -40,10 +40,10 @@ $cd->modify('-3 month');
 		<div class="card shadow mb-4">
 			<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 			Invoices
-			<div class="dropdown no-arrow">
-				<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm mb-2" download><i class="fas fa-file-export"></i> xml export</a>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm mb-2" download><i class="fas fa-file-export"></i> xml export</a>
+				</div>
 			</div>
-		</div>
             <div class="card-body">
 
 			<?php if ($bills): ?>

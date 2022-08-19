@@ -61,37 +61,33 @@
         </a>
         <div id="adminmgm" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-		  <!--
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin" id="adminstat">Stats</a>
-			-->
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/booking" id="adminbooking">Booking codes</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/breeds" id="adminbreed">Breeds</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/locations" id="adminlocation">Locations</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc">Procedures</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/product_types" id="product_types">Product types</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>logs" id="logs">Logs</a>
-			<!--
-            <a class="collapse-item" href="<?php echo base_url(); ?>alerts" id="alerts">Alerts</a>
-			-->
+            <a class="collapse-item" href="<?php echo base_url(); ?>backup" id="backup">Backup</a>
+          </div>
+        </div>
+      </li>
+      
+      <li class="nav-item" id="pricing">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pricingmg" aria-expanded="true" aria-controls="pricingmg">
+          <i class="fas fa-fw fa-dollar-sign"></i>
+          <span>Pricing</span>
+        </a>
+        <div id="pricingmg" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc">Procedures</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_list" id="prod_list">Products</a>
           </div>
         </div>
       </li>
 
       <li class="nav-item" id="usermgm">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#usermanagement" aria-expanded="true" aria-controls="usermanagement">
-          <i class="fas fa-fw fa-users"></i>
-          <span>User Management</span>
-        </a>
-        <div id="usermanagement" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">User management :</h6>
-            <a class="collapse-item" href="<?php echo base_url(); ?>member" id="userlist">User List</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>member/create_user" id="createuser">Create User</a>
-			<!--
-            <a class="collapse-item" href="<?php echo base_url(); ?>auth/create_group" id="creategroup">Create group</a>
-			-->
-          </div>
-        </div>
+        <a class="nav-link" href="<?php echo base_url(); ?>member">
+         <i class="fas fa-fw fa-users"></i>
+          <span>User Management</span></a>
       </li>
 
       <div class="sidebar-heading">
@@ -128,24 +124,6 @@
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/vaccine" id="vaccine_report">Vaccine</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item" id="backup">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#res" aria-expanded="true" aria-controls="res">
-          <i class="fas fa-fw fa-history"></i>
-          <span>Backup & Restore</span>
-        </a>
-        <div id="res" class="collapse" aria-labelledby="res" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Backup :</h6>
-            <a class="collapse-item" href="<?php echo base_url(); ?>backup" id="backup">Backup</a>
-
-            <h6 class="collapse-header">Restore :</h6>
-            <a class="collapse-item" href="<?php echo base_url(); ?>restore/booking" id="restore_book">Restore Booking</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>restore/locations" id="restore_loc">Restore Locations</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>restore/procedures" id="restore_proc">Restore Procedures</a>
           </div>
         </div>
       </li>

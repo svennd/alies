@@ -2,19 +2,22 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Product types List</h6>
-            </div>
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div>Product types</div>
+				<div class="dropdown no-arrow">
+					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> Add Product type</a>
+				</div>
+			</div>
             <div class="card-body">
-			<a href="#" class="btn btn-outline-success" id="add"><i class="fas fa-plus"></i> Add Product type</a>
+			
 			<div id="add_form" style="display:none;">
 				<form method="post" action="<?php echo base_url(); ?>admin/product_types" class="form-inline">
 					<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="" />
 					<button type="submit" name="submit" value="add_product_type" class="btn btn-primary mb-2">Add Type</button>
 				</form>
+			<br/>
+			<br/>
 			</div>
-			<br/>
-			<br/>
 			<?php if ($prod_type): ?>
 				<table class="table" id="dataTable">
 				<thead>

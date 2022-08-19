@@ -1,8 +1,15 @@
 	<p>
 		    <div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> / List
+
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div><a href="<?php echo base_url(); ?>products">Products</a> / List</div>
+				<?php if ($this->ion_auth->in_group("admin")): ?>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-plus"></i> new product</a>
+				</div>
+				<?php endif; ?>
 			</div>
+
             <div class="card-body">
 			<p>Type :
 				<?php foreach ($types as $type): ?>
@@ -93,8 +100,15 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#product_list").addClass('active');
+
+	<?php if ($this->ion_auth->in_group("admin")): ?>
+		$("#pricingmg").show();
+		$("#pricing").addClass('active');
+		$("#prod_list").addClass('active');
+	<?php else: ?>
+		$("#prd").show();
+		$("#products").addClass('active');
+		$("#product_list").addClass('active');
+	<?php endif; ?>
 });
 </script>

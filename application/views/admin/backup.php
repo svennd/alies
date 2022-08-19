@@ -34,6 +34,8 @@
   </div>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
+	$("#adminmgm").show();
+	$("#admin").addClass('active');
 	$("#backup").addClass('active');
 });
 </script>

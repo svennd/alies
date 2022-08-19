@@ -1,3 +1,4 @@
+<p>auth/index : no longer used ?</p>
 <h1 class="h3 mb-0 text-gray-800"><?php echo lang('index_heading');?></h1>
 <p><?php echo lang('index_subheading');?></p>
 

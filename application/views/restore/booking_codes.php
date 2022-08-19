@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Booking codes</h6>
+              <h6 class="m-0"><a href="<?php echo base_url(); ?>admin/booking/">Ledger codes</a> / Restore</h6>
             </div>
             <div class="card-body">
 			<?php if ($booking): ?>
@@ -39,10 +39,14 @@
       
 </div>
 
+
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#backup").addClass('active');
+	$("#adminmgm").show();
+	$("#admin").addClass('active');
+	$("#adminbooking").addClass('active');
+	
 });
 </script>
   

@@ -2,16 +2,20 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Procedures</h6>
-            </div>
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div>Procedures</div>
+				<div class="dropdown no-arrow">
+					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> Add Procedure</a>
+					<a href="<?php echo base_url(); ?>restore/procedures" class="btn btn-outline-danger btn-sm"><i class="fas fa-fw fa-history"></i> Restore</a>
+				</div>
+			</div>
             <div class="card-body">
-			<a href="#" class="btn btn-outline-success" id="add"><i class="fas fa-plus"></i> Add Procedure</a>
+			
 			<div id="add_form" style="display:none;">
 				<form method="post" action="<?php echo base_url(); ?>admin/proc" class="form-inline">
-					<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="" />
+					<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="" placeholder="procedure name" />
 					<div class="input-group mb-2 mr-sm-2">
-						<input type="text" class="form-control" name="price">
+						<input type="text" class="form-control" name="price" placeholder="price">
 						<div class="input-group-append">
 							<span class="input-group-text" id="basic-addon2">&euro;</span>
 						</div>
@@ -25,9 +29,9 @@
 					</div>
 					<button type="submit" name="submit" value="add_proc" class="btn btn-primary mb-2">Add Procedure</button>
 				</form>
+			<br/>
+			<br/>
 			</div>
-			<br/>
-			<br/>
 			<?php if ($proc): ?>
 				<table class="table" id="dataTable">
 				<thead>
@@ -68,8 +72,8 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#adminmgm").show();
-	$("#admin").addClass('active');
+	$("#pricingmg").show();
+	$("#pricing").addClass('active');
 	$("#adminproc").addClass('active');
 	
 	$("#add").on('click',function(){
