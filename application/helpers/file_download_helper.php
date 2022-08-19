@@ -15,6 +15,7 @@ function array_to_csv_download($array, $filename = "export.csv") {
 
 /*
   simple function to generate csv
+  (used in stocklist generation)
 */
 function array_to_csv($array, $filename = "export.csv") {
   header('Content-Type: application/csv');
@@ -23,8 +24,7 @@ function array_to_csv($array, $filename = "export.csv") {
   // open the "output" stream
   $f = fopen('php://output', 'w');
   foreach ($array as $list) {
-    // $line = implode(",", $list);
-    // fwrite($f, $line . "\n");
-    fputcsv($fp, $fields);
+    $line = implode(",", $list);
+    fwrite($f, $line . "\n");
   }
 }
