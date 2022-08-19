@@ -93,8 +93,7 @@ class Owners_model extends MY_Model
 	
 	public function search_by_phone_ex($phone)
 	{
-		$street = $this->db->escape_like_str($phone);
-
+		$phone = $this->db->escape_like_str($phone);
 		$sql = "
 			SELECT 
 				*
