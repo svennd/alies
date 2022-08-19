@@ -111,7 +111,7 @@
         </div>
       </li>
 
-      <li class="nav-item" id="reports">
+      <li class="nav-item" id="reportsmgm">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rep" aria-expanded="true" aria-controls="rep">
           <i class="fas fa-fw fa-receipt"></i>
           <span>Reports</span>

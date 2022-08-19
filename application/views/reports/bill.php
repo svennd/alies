@@ -38,10 +38,10 @@ $cd->modify('-3 month');
                 </div>
 		</div>
 		<div class="card shadow mb-4">
-			<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-			Invoices
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div>Invoices</div>
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm mb-2" download><i class="fas fa-file-export"></i> xml export</a>
+					<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm" download><i class="fas fa-file-export"></i> xml export</a>
 				</div>
 			</div>
             <div class="card-body">
@@ -114,11 +114,15 @@ $cd->modify('-3 month');
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#reports").addClass('active');
+	$("#reportsmgm").addClass('active');
+	$("#rep").show();
+	$("#invoice_report").addClass('active');
+
 	$("#dataTable").DataTable({"pageLength": 50,
 	"columnDefs": [
     { "type": "num", "targets": 0 }
 	],
   "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
+
 </script>

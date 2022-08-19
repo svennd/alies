@@ -2,8 +2,8 @@
 <div class="row">
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
-		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-		Vaccines - <?php echo $month . ' ' . $year; ?> (<?php echo count($expiring_vacs); ?>)
+		<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div>Vaccines - <?php echo $month . ' ' . $year; ?> (<?php echo count($expiring_vacs); ?>)</div>
 			<div class="dropdown no-arrow">
 				<a href="<?php echo base_url('vaccine/index/' . $month_int. '/export'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-export"></i> export csv : <?php echo $month . ' ' . $year; ?> </a>
 			</div>

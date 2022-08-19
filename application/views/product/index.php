@@ -1,9 +1,14 @@
 <div class="row">
       <div class="col-lg-8 mb-4">
-
+		
 		<div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> / Search Product
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div><a href="<?php echo base_url(); ?>products">Products</a> / Search Product</div>
+	  			<?php if ($this->ion_auth->in_group("admin")): ?>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-history"></i> New Product</a>
+				</div>		
+				<?php endif; ?>
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>products" method="post" autocomplete="off" class="form-inline">
@@ -46,9 +51,6 @@
 	</div>
       <div class="col-lg-4 mb-4">
 
-	  <?php if ($this->ion_auth->in_group("admin")): ?>
-		<a href="<?php echo base_url(); ?>products/new" class="btn btn-success btn-lg mb-3"><i class="fas fa-cart-plus"></i> New Product</a>
-		<?php endif; ?>
 	  <div class="card shadow mb-4">
 			<div class="card-header">Last Modified Products</div>
             <div class="card-body">

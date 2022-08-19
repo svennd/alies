@@ -48,7 +48,7 @@ class Products extends Vet_Controller
 						);
 		if ($this->ion_auth->in_group("admin"))
 		{
-			$this->_render_page('product_index', $data);
+			$this->_render_page('product/index', $data);
 		}
 		else
 		{
@@ -102,7 +102,6 @@ class Products extends Vet_Controller
 		$this->_render_page('product/profile', $data);
 	}
 
-
 	public function new($step = false, $pid = false)
 	{
 		# only admins have access here
@@ -110,64 +109,11 @@ class Products extends Vet_Controller
 
 		if ($this->input->post('submit') && !$step)
 		{
-			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
-
-			$input = array(
-								"name" 					=> $this->input->post('name'),
-								"short_name" 		=> $this->input->post('short_name'),
-								"producer" 			=> $this->input->post('producer'),
-								"supplier" 			=> $this->input->post('supplier'),
-								"type" 					=> $this->input->post('type'),
-								"dead_volume"		=> $this->input->post('dead_volume'),
-								"buy_volume" 		=> $this->input->post('buy_volume'),
-								"sell_volume" 	=> $this->input->post('sell_volume'),
-								"buy_price"			=> 1,
-								"unit_buy" 			=> $this->input->post('unit_buy'),
-								"unit_sell" 		=> $this->input->post('unit_sell'),
-								"input_barcode" => (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
-								"btw_buy" 			=> $this->input->post('btw_buy'),
-								"btw_sell" 			=> $booking['btw'],
-								"vaccin" 				=> (is_null($this->input->post('vaccin')) ? 0 : 1),
-								"vaccin_freq" 	=> $this->input->post('vaccin_freq'),
-								"booking_code" 	=> $this->input->post('booking_code'),
-								"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
-								"limit_stock" 	=> $this->input->post('limit_stock')
-							);
-
-				# new product
-				$pid = $this->products->insert($input);
-
-				# log this
-				$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $pid);
-
-				# redirect to next step
-				redirect( 'products/new/2/' . $pid );
+			$this->new_product_step_1();
 		}
-		elseif ($this->input->post('submit') && $step == 2)
+		elseif ($this->input->post('submit') && $step == 2 && $pid)
 		{
-			# update buy_price
-			if (!empty($this->input->post('buy_price'))) {
-				$this->products->update(array("buy_price" => $this->input->post('buy_price')), $pid);
-			}
-
-			# modification
-			if ($this->input->post('submit') == "edit") {
-				$this->pprice
-						->where(array(
-										"id" 	=> $this->input->post('price_id')
-								))
-						->update(array(
-										"volume" => $this->input->post('volume'),
-										"price" => $this->input->post('price'),
-								));
-			# new price
-			} elseif ($this->input->post('submit') != "store_buy_price") {
-				$this->pprice->insert(array(
-											'volume' 		=> $this->input->post('volume'),
-											'price' 		=> $this->input->post('price'),
-											'product_id' 	=> $pid
-									));
-			}
+			$this->new_product_step_2($pid);
 		}
 
 		# populate the data array
@@ -294,29 +240,29 @@ class Products extends Vet_Controller
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
 
 			$input = array(
-								"name" 						=> $this->input->post('name'),
+								"name" 					=> $this->input->post('name'),
 								"short_name" 			=> $this->input->post('short_name'),
 								"producer" 				=> $this->input->post('producer'),
 								"supplier" 				=> $this->input->post('supplier'),
 								"posologie" 			=> $this->input->post('posologie'),
-								"toedieningsweg" 	=> $this->input->post('toedieningsweg'),
-								"type" 						=> $this->input->post('type'),
+								"toedieningsweg" 		=> $this->input->post('toedieningsweg'),
+								"type" 					=> $this->input->post('type'),
 								"dead_volume"			=> $this->input->post('dead_volume'),
 								"buy_volume" 			=> $this->input->post('buy_volume'),
-								"sell_volume" 		=> $this->input->post('sell_volume'),
+								"sell_volume" 			=> $this->input->post('sell_volume'),
 								"buy_price"				=> $this->input->post('buy_price'),
 								"unit_buy" 				=> $this->input->post('unit_buy'),
 								"unit_sell" 			=> $this->input->post('unit_sell'),
-								"input_barcode" 	=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
+								"input_barcode" 		=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
 								"btw_buy" 				=> $this->input->post('btw_buy'),
 								"btw_sell" 				=> $booking['btw'],
-								"vaccin" 					=> (is_null($this->input->post('vaccin')) ? 0 : 1),
-								"vaccin_freq" 		=> $this->input->post('vaccin_freq'),
-								"booking_code" 		=> $this->input->post('booking_code'),
-								"delay" 					=> $this->input->post('delay'),
+								"vaccin" 				=> (is_null($this->input->post('vaccin')) ? 0 : 1),
+								"vaccin_freq" 			=> $this->input->post('vaccin_freq'),
+								"booking_code" 			=> $this->input->post('booking_code'),
+								"delay" 				=> $this->input->post('delay'),
 								"comment" 				=> $this->input->post('comment'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
-								"limit_stock" 		=> $this->input->post('limit_stock')
+								"limit_stock" 			=> $this->input->post('limit_stock')
 							);
 
 			if ($this->input->post('submit') == "add") {
@@ -658,5 +604,70 @@ class Products extends Vet_Controller
 				$return [] = array($pod['id'], $pod['name'], $pod['unit_sell'], $stock);
 			}
 		echo json_encode(array("data" => $return));
+	}
+
+	// enter the basic details of the product in the products table
+	private function new_product_step_1()
+	{
+		$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
+
+		$input = array(
+						"name" 				=> $this->input->post('name'),
+						"short_name" 		=> $this->input->post('short_name'),
+						"producer" 			=> $this->input->post('producer'),
+						"supplier" 			=> $this->input->post('supplier'),
+						"type" 				=> $this->input->post('type'),
+						"dead_volume"		=> $this->input->post('dead_volume'),
+						"buy_volume" 		=> $this->input->post('buy_volume'),
+						"sell_volume" 		=> $this->input->post('sell_volume'),
+						"buy_price"			=> 1,
+						"unit_buy" 			=> $this->input->post('unit_buy'),
+						"unit_sell" 		=> $this->input->post('unit_sell'),
+						"input_barcode" 	=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
+						"btw_buy" 			=> $this->input->post('btw_buy'),
+						"btw_sell" 			=> $booking['btw'],
+						"vaccin" 			=> (is_null($this->input->post('vaccin')) ? 0 : 1),
+						"vaccin_freq" 		=> $this->input->post('vaccin_freq'),
+						"booking_code" 		=> $this->input->post('booking_code'),
+						"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
+						"limit_stock" 		=> $this->input->post('limit_stock')
+					);
+
+		# new product
+		$pid = $this->products->insert($input);
+
+		# log this
+		$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $pid);
+		
+		# redirect to next step
+		redirect( 'products/new/2/' . $pid );
+	}
+
+	// update the pricing of a product of a new product
+	private function new_product_step_2(int $pid)
+	{
+		# update buy_price
+		if (!empty($this->input->post('buy_price'))) {
+			$this->products->update(array("buy_price" => $this->input->post('buy_price')), $pid);
+		}
+
+		# modification
+		if ($this->input->post('submit') == "edit") {
+			$this->pprice
+					->where(array(
+									"id" 	=> $this->input->post('price_id')
+							))
+					->update(array(
+									"volume" => $this->input->post('volume'),
+									"price" => $this->input->post('price'),
+							));
+		# new price
+		} elseif ($this->input->post('submit') != "store_buy_price") {
+			$this->pprice->insert(array(
+										'volume' 		=> $this->input->post('volume'),
+										'price' 		=> $this->input->post('price'),
+										'product_id' 	=> $pid
+								));
+		}
 	}
 }

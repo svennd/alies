@@ -123,6 +123,11 @@ const chart = new Chart(ctx, {
   options: options
 });
 
+document.addEventListener("DOMContentLoaded", function(){
+	$("#reportsmgm").addClass('active');
+	$("#rep").show();
+	$("#client_report").addClass('active');
+});
 </script>
 
 <?php endif; ?>

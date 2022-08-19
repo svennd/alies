@@ -92,5 +92,8 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+	$("#reportsmgm").addClass('active');
+	$("#rep").show();
+	$("#products_report").addClass('active');
 });
 </script>

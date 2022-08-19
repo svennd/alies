@@ -88,12 +88,15 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#reports").addClass('active');
 	$("#dataTable").DataTable({"pageLength": 50,  
 	"columnDefs": [
     { "type": "num", "targets": 0 }
 	],
   "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+ 	
+ 	$("#reportsmgm").addClass('active');
+	$("#rep").show();
+	$("#vaccine_report").addClass('active');
 });
 </script>
   

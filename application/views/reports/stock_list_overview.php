@@ -35,6 +35,9 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+ 	$("#reportsmgm").addClass('active');
+	$("#rep").show();
+	$("#stock_list").addClass('active');
 });
 </script>
   
