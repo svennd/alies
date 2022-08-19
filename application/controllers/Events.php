@@ -302,7 +302,7 @@ class Events extends Vet_Controller
 						"amount"			=> $volume,
 						"net_price" 		=> $net_price,
 						"booking" 			=> $booking,
-						"price" 			=> round(($net_price * (1 + ($btw/100))), 2, PHP_ROUND_HALF_UP),
+						"price" 			=> round(($net_price * (1 + ($btw/100))), 4, PHP_ROUND_HALF_UP),
 						"btw" 				=> $btw
 					));
 			redirect('events/event/' . $event_id);
@@ -310,7 +310,6 @@ class Events extends Vet_Controller
 	}
 
 	private function calculate_price_product($pid, $volume, $btw)
-	// function calculate_price_product($pid, $volume, $btw)
 	{
 		$this->load->model('Product_price_model', 'prices');
 
@@ -343,7 +342,7 @@ class Events extends Vet_Controller
 			}
 		}
 		$net_price = $to_use_price * $volume;
-		$price = round(($net_price * (1 + ($btw/100))), 2, PHP_ROUND_HALF_UP);
+		$price = round(($net_price * (1 + ($btw/100))), 4, PHP_ROUND_HALF_UP);
 
 		// var_dump($to_use_price);
 		// var_dump(array($price, $net_price));

@@ -35,6 +35,10 @@ class Migration_comment_upload extends CI_Migration {
 						CHANGE `sellable` `sellable` TINYINT(1) NOT NULL, 
 						CHANGE `vaccin` `vaccin` TINYINT(1) NOT NULL DEFAULT '0';";
 
+		# required to catch 11.1299999 (rounding could end up wrong by 1 cent)
+		$sql[] = "ALTER TABLE `events_procedures` CHANGE `price` `price` FLOAT(10,4) NOT NULL;";
+		$sql[] = "ALTER TABLE `events_products` CHANGE `price` `price` FLOAT(10,4) NOT NULL;";
+
 		foreach ($sql as $q)
 		{
 			$r = $this->db->query($q);

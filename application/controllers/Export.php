@@ -285,7 +285,7 @@ class Export extends Admin_Controller
 			# btw account
 			$total_btw = (float) 0.0;
 			foreach ($event_tally as $btw => $tally) {
-				$total_btw += round(($btw/100)*$tally, 2);
+				$total_btw += round(($btw/100)*$tally, 4);
 			}
 
 			$this->append_child_element($Sale, $domtree,

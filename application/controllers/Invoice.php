@@ -16,6 +16,9 @@ class Invoice extends Vet_Controller
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Events_products_model', 'events_products');
+
+		# helpers
+		$this->load->helper('generate_bill_id_helper');
 	}
 
 	# show bills of last 30 days;
@@ -51,34 +54,41 @@ class Invoice extends Vet_Controller
 	}
 
 	# generate a bill if thre is no open or unpaid one for this owner
-	public function bill($owner_id)
+	public function bill(int $owner_id, int $event_id)
 	{
 		# before we create a new bill check if there is already an unpaid bill
 		$check_bill = $this->bills
 					->group_start()
 						->where("status", "=", PAYMENT_UNPAID)
-						// ->where("status", "=", PAYMENT_PARTIALLY, true)
+						->where("status", "=", PAYMENT_PARTIALLY, true)
 						->where("status", "=", PAYMENT_OPEN, true)
 					->group_end()
 					->where(array("owner_id" => $owner_id))
 					->get_all();
 
-		if ($check_bill) {
-			// open bill!
+		if ($check_bill)
+		{
 			redirect('/invoice/get_bill/' . $check_bill[0]['id'] . '?old', 'refresh');
-		} else {
-			$bill_id = $this->bills->insert(array(
-					"owner_id" 		=> $owner_id,
-					"vet" 				=> $this->user->id,
-					"location" 		=> $this->user->current_location,
-					"status" 			=> PAYMENT_OPEN,
-				));
-
-			// update clients last bill
-			$this->owners->update(array("last_bill" => date_format(date_create(), "Y-m-d")), $owner_id);
-
-			redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 		}
+
+		// create new bill
+		$bill_id = $this->bills->insert(array(
+				"owner_id" 		=> $owner_id,
+				"vet" 			=> $this->user->id,
+				"location" 		=> $this->user->current_location,
+				"status" 		=> PAYMENT_OPEN,
+			));
+
+		// set the event to this payment
+		$this->events->update(array("payment" => $bill_id), $event_id);
+
+		// update clients last bill
+		$this->owners->update(array("last_bill" => date_format(date_create(), "Y-m-d")), $owner_id);
+
+		// make this traceable
+		$this->logs->logger($this->user->id, INFO, "generate_bill", "bill_id: " . $bill_id);
+
+		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
 	# generate a bill for a owner
@@ -89,11 +99,11 @@ class Invoice extends Vet_Controller
 	#		so we don't create 2 bills for 1 (or more) event
 	public function get_bill($bill_id, $pdf = false)
 	{
-		# make this traceable
-		$this->logs->logger($this->user->id, INFO, "generate_bill", "bill_id: " . $bill_id . " pdf: " . (int) $pdf);
 
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
+		$bill_status = $bill['status'];
+
 		$bill_total_tally = array();
 
 		# init
@@ -146,7 +156,8 @@ class Invoice extends Vet_Controller
 				$event_bill = $this->events->get_products_and_procedures($event_id);
 
 				# update event if its not part of this bill yet
-				if ($event['payment'] != $bill_id) {
+				# only if creating a new bill, else we would add events to a closed invoice
+				if ($event['payment'] != $bill_id && $bill_status != PAYMENT_PAID) {
 					# update event so that we know on what bill it was placed (and its no longer NO_BILL)
 					$this->events->update(array("payment" => $bill_id), $event_id);
 				}
@@ -184,24 +195,13 @@ class Invoice extends Vet_Controller
 			}
 		}
 
-		$open_bills = $this->bills
-					->group_start()
-						->where("status", "=", PAYMENT_UNPAID)
-						->where("status", "=", PAYMENT_OPEN, true)
-						->where("status", "=", PAYMENT_PARTIALLY, true)
-						->where("status", "=", PAYMENT_NON_COLLECTABLE, true)
-					->group_end()
-						->where("id", "!=", $bill_id)
-					->where(array("owner_id" => $owner_id))
-					->get_all();
-
 		$data = array(
 					"owner" 		=> $this->owners->get($owner_id),
 					"pets" 			=> $pet_id_array,
 					"print_bill"	=> $print_bill,
 					"bill_total_tally" => $bill_total_tally,
 					"bill_id"		=> $bill_id,
-					"open_bills"	=> $open_bills,
+					"open_bills"	=> $this->get_open_or_unpaid_bills($owner_id, $bill_id),
 					"event_info"	=> $event_info,
 					"location_i"	=> $this->location,
 					"bill"			=> $this->bills->get($bill_id) // can't remove for race condition on calculation
@@ -209,11 +209,7 @@ class Invoice extends Vet_Controller
 
 		if ($pdf)
 		{
-			$this->load->library('pdf'); // change to pdf_ssl for ssl
-			$date = date_create_from_format ('Y-m-d H:i:s', $data['bill']['created_at']);
-			$filename = "bill_" . date_format($date, 'Y') . str_pad($bill['id'], 5, '0', STR_PAD_LEFT);
-			$html = $this->load->view('bill_report_print', $data, true);
-			$this->pdf->create($html, $filename, true);
+			$this->generate_pdf_bill($bill_id, $data);
 		}
 		$this->_render_page('bill_report', $data);
 	}
@@ -300,5 +296,37 @@ class Invoice extends Vet_Controller
 			}
 		}
 		return true;
+	}
+
+	# logic for generating a pdf
+	private function generate_pdf_bill($bill_id, $data)
+	{
+		# load library (html->pdf)
+		$this->load->library('pdf'); 
+	
+		# race condition 
+		$bill = $this->bills->get($bill_id);
+
+		# generate the pdf based		
+		$this->pdf->create(
+			$this->load->view('bill_report_print', $data, true), 
+			"bill_" . get_bill_id($bill_id, $bill['created_at']), 
+			true
+		);
+	}
+
+	# get open_or_unpaid bills other then the one we are creating
+	private function get_open_or_unpaid_bills(int $owner_id, int $bill_id)
+	{
+		return $this->bills
+				->group_start()
+					->where("status", "=", PAYMENT_UNPAID)
+					->where("status", "=", PAYMENT_OPEN, true)
+					->where("status", "=", PAYMENT_PARTIALLY, true)
+					->where("status", "=", PAYMENT_NON_COLLECTABLE, true)
+				->group_end()
+					->where("id", "!=", $bill_id)
+				->where(array("owner_id" => $owner_id))
+				->get_all();;
 	}
 }
