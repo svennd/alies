@@ -112,7 +112,7 @@ class Invoice extends Vet_Controller
 		$event_info = array();
 
 		# get all pets
-		$pets = $this->get_pets($owner_id);
+		$pets = $this->get_pets($owner_id, $bill);
 
 		foreach ($pets as $pet) {
 			# for easy access
@@ -268,7 +268,7 @@ class Invoice extends Vet_Controller
 	{
 		# partial is tricky can remove products if not enough money
 		# but then we need to recalculate if there was enough payed
-		if (in_array($bill['status'], array(PAYMENT_OPEN, PAYMENT_UNPAID, PAYMENT_PARTIALLY))) {
+		if (in_array($bill_status, array(PAYMENT_OPEN, PAYMENT_UNPAID, PAYMENT_PARTIALLY))) {
 
 			# update the bill in case something changed
 			# hack for float comparison
@@ -335,7 +335,7 @@ class Invoice extends Vet_Controller
 	}
 
 	// get pets for billing
-	private function get_pets(int $owner_id)
+	private function get_pets(int $owner_id, $bill)
 	{
 		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
 
