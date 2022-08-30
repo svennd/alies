@@ -9,7 +9,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Alies - Dashboard</title>
+	<title>Alies - <?php echo $this->lang->line('dashboard'); ?></title>
 
 	<link href="<?php echo base_url(); ?>vendor/components/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/sb-admin-2.min.css" rel="stylesheet">
@@ -41,7 +41,7 @@
       <li class="nav-item">
         <a class="nav-link" href="<?php echo base_url(); ?>">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span><?php echo $this->lang->line('dashboard'); ?></span></a>
       </li>
 
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
@@ -134,63 +134,45 @@
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Veterinary
+      <?php echo $this->lang->line('Veterinary'); ?>
       </div>
       <li class="nav-item" id="clients">
         <a class="nav-link" href="<?php echo base_url(); ?>owners">
           <i class="fas fa-fw fa-user"></i>
-          <span>Clients</span></a>
+          <span><?php echo $this->lang->line('Clients'); ?></span></a>
       </li>
       <li class="nav-item" id="reports">
         <a class="nav-link" href="<?php echo base_url(); ?>report">
          <i class="far fa-fw fa-file"></i>
-          <span>Reports</span></a>
+          <span><?php echo $this->lang->line('Reports'); ?></span></a>
       </li>
 	  <?php if (!$this->ion_auth->in_group("admin")): ?>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
-        Administration
+      <?php echo $this->lang->line('Administration'); ?>
       </div>
       <li class="nav-item" id="invoice">
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
           <i class="fas fa-fw fa-euro-sign"></i>
-          <span>Invoice</span></a>
+          <span><?php echo $this->lang->line('Invoice'); ?></span></a>
       </li>
       <li class="nav-item" id="vaccines">
         <a class="nav-link" href="<?php echo base_url(); ?>vaccine">
         <i class="fas fa-syringe fa-fw"></i>
-          <span>Vaccins</span></a>
+          <span><?php echo $this->lang->line('Vaccins'); ?></span></a>
       </li>
       <li class="nav-item" id="product_list">
         <a class="nav-link" href="<?php echo base_url(); ?>products">
          <i class="fas fa-fw fa-shopping-cart"></i>
-          <span>Products</span></a>
+          <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
       <li class="nav-item" id="stock">
         <a class="nav-link" href="<?php echo base_url(); ?>stock">
          <i class="fas fa-fw fa-dolly"></i>
-          <span>Stock</span></a>
+          <span><?php echo $this->lang->line('Stock'); ?></span></a>
       </li>
 	  <?php endif; ?>
-		<!--
-      <hr class="sidebar-divider">
 
-      <div class="sidebar-heading">
-        Maintenance
-      </div>
-      <li class="nav-item" id="games">
-        <a class="nav-link" href="<?php echo base_url(); ?>games">
-         <i class="fas fa-gamepad"></i>
-          <span>Games</span></a>
-      </li>
-	  -->
-		<!--
-      <hr class="sidebar-divider d-none d-md-block">
-
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
-		-->
     </ul>
     <!-- End of Sidebar -->
 

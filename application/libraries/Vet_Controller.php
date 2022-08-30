@@ -77,6 +77,9 @@ class Vet_Controller extends MY_Controller
 		//
 		// $this->output->set_profiler_sections($sections);
 		// $this->output->enable_profiler(TRUE);
+
+		$this->lang->load('vet', 'dutch');
+		// $this->lang->load('vet', 'english');
 	}
 
 

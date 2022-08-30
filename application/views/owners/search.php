@@ -29,7 +29,7 @@
 </style>
 
 <!-- normal button : on small screens -->
-<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user"></i> New Client</a>
+<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user"></i> <?php echo $this->lang->line('New_client'); ?></a>
 
 <div class="row">
 	
@@ -40,10 +40,10 @@
 				<div class="row align-items-center justify-content-between px-3">
 					<div class="col-lg-8">
 						<?php if(!isset($query)): ?>
-						<h3 class="text-primary"><a href="<?php echo base_url('search'); ?>">Search</a></h3>
+						<h3 class="text-primary"><a href="<?php echo base_url('search'); ?>"><?php echo $this->lang->line('title_search'); ?></a></h3>
 						
 						<div class="d-none d-sm-block">
-							<p class="lead mb-4">Search the database using (first) name, street, phone, pet id, pet chip nr, pet name.</p>
+							<p class="lead mb-4"><?php echo $this->lang->line('search_help'); ?></p>
 						</div>
 						<?php endif; ?>
 						<div class="shadow rounded">
@@ -53,7 +53,7 @@
 								<input type="text" class="form-control <?php echo (isset($query)) ? 'is-valid' :''?>" name="search_query" placeholder="search" value="<?php echo (isset($query)) ? $query :''?>">
 								<div class="input-group-append">
 								  <button class="btn btn-primary" type="submit" type="button">
-									<div class="d-none d-sm-block">Search</div>
+									<div class="d-none d-sm-block"><?php echo $this->lang->line('title_search'); ?></div>
 									<div class="d-block d-sm-none d-md-none">S</div>
 								  </button>
 								</div>
@@ -109,7 +109,7 @@
 	</div>	
 	<!-- large button : on large screens -->
 	<div class="col-lg-2 mb-4">
-		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3 d-none d-sm-block"><i class="fas fa-user"></i> New Client</a>
+		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3 d-none d-sm-block"><i class="fas fa-user"></i> <?php echo $this->lang->line('New_client'); ?></a>
 	</div>	
 </div>
 
@@ -119,22 +119,22 @@
 	
 <?php if (isset($query)): ?>
 		<div class="card shadow mb-4">
-			<div class="card-header">Results</div>
+			<div class="card-header"><?php echo $this->lang->line('search_client'); ?></div>
 			<div class="card-body">
 <table class="table table-bordered table-hover display dt-responsive nowrap" width="100%" id="dataTable">
 		<thead>
 		<tr>
 			<th>Q</th>
-			<th>Last Name</th>
-			<th>First Name</th>
-			<th>Adress</th>
+			<th><?php echo $this->lang->line('last_name'); ?></th>
+			<th><?php echo $this->lang->line('first_name'); ?></th>
+			<th><?php echo $this->lang->line('adress'); ?></th>
 			<th>nr</th>
-			<th>City</th>
+			<th><?php echo $this->lang->line('city'); ?></th>
 			<?php if (count($phone)): ?>
-			<th>Phone</th>
+			<th><?php echo $this->lang->line('phone'); ?></th>
 			<?php endif; ?>
-			<th>Last Visit</th>
-			<th>option</th>
+			<th><?php echo $this->lang->line('last_visit'); ?></th>
+			<th><?php echo $this->lang->line('option'); ?></th>
 		</tr>
 		</thead>
 		<tbody>

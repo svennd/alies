@@ -19,12 +19,12 @@
 <div class="row">
 	<div class="col-lg-6">
 		<div class="card mb-4">
-			<div class="card-header">Profile Picture</div>
+			<div class="card-header"><?php echo $this->lang->line('profile_picture'); ?></div>
 			
 			<div class="card-body">
 			<?php if (isset($new_image)): ?>
 				<div class="form-group">
-					<div class="alert alert-info" style="display:none" id="alert_to_large" role="alert">Large images, might not upload; Consider offline reducing file size</div>	
+					<div class="alert alert-info" style="display:none" id="alert_to_large" role="alert"><?php echo $this->lang->line('profile_picture_warning'); ?></div>	
 					<form action="<?php echo base_url(); ?>vet/profile" id="profile_picture_accept" method="post" accept-charset="utf-8">
 					<?php echo (isset($new_image)) ? "<img src='data:image/png;base64,".base64_encode($new_image)."' />" : ''; ?>
 						<input type="hidden" id="timetag" name="timetag" value="<?php echo $time; ?>" />
@@ -72,43 +72,43 @@
 	<div class="col-md-6">
 		<div class="card mb-4">
 			<div class="card-header">
-				Profile Settings
+			<?php echo $this->lang->line('profile_settings'); ?>
 			</div>
 			
 			<div class="card-body">
-				<div class="alert alert-info" style="display:none" id="alert_to_large" role="alert">Large images, might not upload; Consider offline reducing file size</div>	
+				<div class="alert alert-info" style="display:none" id="alert_to_large" role="alert"><?php echo $this->lang->line('profile_picture_warning'); ?></div>	
 				<form action="<?php echo base_url(); ?>vet/profile_change" method="post" accept-charset="utf-8">
 					<div class="form-group">
-						<label for="email">Email</label>
+						<label for="email"><?php echo $this->lang->line('email'); ?></label>
 						<input type="mail" name="email" class="form-control" id="email" value="<?php echo $user->email; ?>" disabled>
 					</div>	 
 					<div class="form-row">
 						<div class="form-group col-md-6">
-							<label for="first_name">First Name</label>
+							<label for="first_name"><?php echo $this->lang->line('first_name'); ?></label>
 							<input type="text" name="first_name" class="form-control" id="first_name" value="<?php echo $user->first_name; ?>">
 						</div>
 						<div class="form-group col-md-6">
-							<label for="last_name">Last Name</label>
+							<label for="last_name"><?php echo $this->lang->line('last_name'); ?></label>
 							<input type="text" name="last_name" class="form-control" id="last_name" value="<?php echo $user->last_name; ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="phone">Phone</label>
+						<label for="phone"><?php echo $this->lang->line('phone'); ?></label>
 						<input type="text" name="phone" class="form-control" id="phone" value="<?php echo $user->phone; ?>">
 					</div>
 					<div class="form-group">
-						<label for="search_config">Default search result</label>
+						<label for="search_config"><?php echo $this->lang->line('default_search'); ?></label>
 						<select class="form-control" name="search_config" id="search_config">
-							<option value="1" <?php echo ($user->search_config == 1) ? 'selected' : ''; ?>>Last name</option>
-							<option value="2" <?php echo ($user->search_config == 2) ? 'selected' : ''; ?>>First name</option>
-							<option value="3" <?php echo ($user->search_config == 3) ? 'selected' : ''; ?>>Street name</option>
-							<option value="4" <?php echo ($user->search_config == 4) ? 'selected' : ''; ?>>Pet name</option>
-							<option value="5" <?php echo ($user->search_config == 5) ? 'selected' : ''; ?>>Phone</option>
-							<option value="0" <?php echo ($user->search_config == 0) ? 'selected' : ''; ?>>All</option>
+							<option value="1" <?php echo ($user->search_config == 1) ? 'selected' : ''; ?>><?php echo $this->lang->line('last_name'); ?></option>
+							<option value="2" <?php echo ($user->search_config == 2) ? 'selected' : ''; ?>><?php echo $this->lang->line('first_name'); ?></option>
+							<option value="3" <?php echo ($user->search_config == 3) ? 'selected' : ''; ?>><?php echo $this->lang->line('street'); ?></option>
+							<option value="4" <?php echo ($user->search_config == 4) ? 'selected' : ''; ?>><?php echo $this->lang->line('search_pet_name'); ?></option>
+							<option value="5" <?php echo ($user->search_config == 5) ? 'selected' : ''; ?>><?php echo $this->lang->line('phone'); ?></option>
+							<option value="0" <?php echo ($user->search_config == 0) ? 'selected' : ''; ?>><?php echo $this->lang->line('search_all'); ?></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="user_date">Default date format</label>
+						<label for="user_date"><?php echo $this->lang->line('default_date_format'); ?></label>
 						<select class="form-control" name="user_date" id="user_date">
 							<option value="d-m-Y" <?php echo ($user->user_date == 'd-m-Y') ? 'selected' : ''; ?>><?php echo date('d-m-Y'); ?></option>
 							<option value="d M, Y" <?php echo ($user->user_date == 'd M, Y') ? 'selected' : ''; ?>><?php echo date('d M, Y'); ?></option>

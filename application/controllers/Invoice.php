@@ -50,7 +50,7 @@ class Invoice extends Vet_Controller
 			"search_from"	=> (isset($search_from)) ? $search_from : '',
 			"search_to"		=> (isset($search_to)) ? $search_to : '',
 		);
-		$this->_render_page('bill_overview', $data);
+		$this->_render_page('bills/bill_overview', $data);
 	}
 
 	# generate a bill if thre is no open or unpaid one for this owner

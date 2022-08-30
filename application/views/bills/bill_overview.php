@@ -16,7 +16,7 @@ $now->modify('+1 day');
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				Report / Invoices / search
+				<?php echo $this->lang->line('title_invoice'); ?>
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>invoice/index" method="post" autocomplete="off" class="form-inline">

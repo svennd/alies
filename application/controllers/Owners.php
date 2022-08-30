@@ -20,7 +20,7 @@ class Owners extends Vet_Controller
 	public function index()
 	{
 		$data = array();
-		$this->_render_page('search', $data);
+		$this->_render_page('owners/search', $data);
 	}
 	
 	# legacy - please remove links to here

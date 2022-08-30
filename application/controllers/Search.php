@@ -57,6 +57,6 @@ class Search extends Vet_Controller
 							'pets'			=> $pets,
 					);
 		}
-		$this->_render_page('search', $data);
+		$this->_render_page('owners/search', $data);
 	}
 }
