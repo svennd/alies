@@ -38,7 +38,7 @@ class Logs extends Admin_Controller
 		$this->_render_page('logs/global', $data);
 	}
 	
-	/* usefull for debuggin */
+	/* usefull for debugin */
 	public function software_version()
 	{
 		$changelog = (file_exists("CHANGELOG.md")) ? nl2br(file_get_contents("CHANGELOG.md")) : "No CHANGELOG.md file;";

@@ -78,4 +78,29 @@ class Debug extends Vet_Controller
         # we just removed the owner so it should be gone
         redirect('/');
     }
+
+    public function downgrade()
+	{
+        if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+		$this->load->library('migration');
+
+		$version = $this->db->query("SELECT * FROM `migrations`")->result_array()[0]['version'];
+        echo "current version : $version<br/>";
+        echo "downgrading to : " . $version - 1 . "<br/>";
+		$this->migration->version($version-1);
+        echo "downgraded.<br/>";
+	}
+
+    public function upgrade()
+	{
+        if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+		$this->load->library('migration');
+
+		$version = $this->migration->latest();
+		if ($version === false) {
+			show_error($this->migration->error_string());
+		}
+        var_dump($version);
+        echo "upgraded";
+	}
 }

@@ -46,6 +46,8 @@ class Migration_death_date extends CI_Migration {
 		
 		$sql[] = "ALTER TABLE `stock` DROP INDEX `gsl_lookup`;";
 		
+		$sql[] = "ALTER TABLE `products` DROP INDEX `barcode`;";
+		
 		foreach ($sql as $q)
 		{
 			$r = $this->db->query($q);
