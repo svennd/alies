@@ -7,7 +7,7 @@
 		<td>
 			<form action="<?php echo base_url(); ?>events/edit_price/<?php echo $event_info['id']; ?>" id="form<?php echo $done['id']; ?>" method="post" autocomplete="off" class="form-inline">
 			
-				<div class="input-group">
+				<div class="input-group input-group-sm">
 					<input type="text" name="price" value="<?php echo $done['net_price']; ?>" class="form-control" id="volume<?php echo $done['id']; ?>" <?php echo ($event_info['status'] == STATUS_CLOSED) ? 'disabled' : ''; ?>>
 					  <div class="input-group-append">
 						<span class="input-group-text">&euro;</span>

@@ -6,7 +6,7 @@
 		<td><?php echo $done['procedures']['price']; $total += $done['price']; ?></td>
 		<td>
 			<form action="<?php echo base_url(); ?>events/proc_edit/<?php echo $event_id; ?>" id="proc<?php echo $done['id'] ?>" method="post" autocomplete="off" class="form-inline">
-				<div class="input-group" style="width:175px;">
+				<div class="input-group input-group-sm" style="width:175px;">
 					<input type="text" name="amount" value="<?php echo $done['amount']; ?>" class="form-control" id="amount<?php echo $done['id']; ?>" <?php echo ($event_state == STATUS_CLOSED) ? 'disabled' : ''; ?>>
 					<div class="input-group-append">
 						<span class="input-group-text">st</span>

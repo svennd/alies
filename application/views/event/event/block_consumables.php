@@ -39,7 +39,7 @@
 			<td>
 			<form action="<?php echo base_url(); ?>events/prod_edit/<?php echo $event_id; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
 			
-				<div class="input-group" style="width:175px;">
+				<div class="input-group input-group-sm" style="width:175px;">
 					<input type="text" name="volume" value="<?php if($product['volume'] != 0) { echo $product['volume']; }; ?>" class="form-control <?php if($product['volume'] == 0) { echo "is-invalid"; } ?>" id="volume<?php echo $product['id']; ?>" <?php echo ($event_state == STATUS_CLOSED) ? 'disabled' : ''; ?>>
 					  <div class="input-group-append">
 						<span class="input-group-text"><?php echo $product['product']['unit_sell']; ?></span>

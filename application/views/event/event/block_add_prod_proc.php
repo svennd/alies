@@ -11,7 +11,7 @@
 <tr>
 	<td>
 		<form id="prod_or_proc_form" name="new_product_form" action="<?php echo base_url(); ?>events/add_proc_prod/<?php echo $event_id; ?>" method="post" autocomplete="off">
-		<input type="text" name="product" class="form-control mb-2 mr-sm-2" id="autocomplete" placeholder="search" autocomplete="off">
+		<input type="text" name="product" class="form-control mb-2 mr-sm-2"  style="min-width:10rem;" id="autocomplete" placeholder="search" autocomplete="off">
 		<input type="hidden" id="new_pid" name="pid" value="" />
 		<input type="hidden" id="product_or_proc" name="prod" value="" />
 		</form>
@@ -19,7 +19,7 @@
 	<td><select class="form-control mb-2 mr-sm-2" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
 	<td id="price_ajax_request">&nbsp;</td>
 	<td>
-		<div class="input-group" style="width:175px;">
+		<div class="input-group" style="width:10rem;">
 			<input type="text" name="volume" form="prod_or_proc_form" value="" class="form-control" id="amount">
 			<div class="input-group-append">
 				<span class="input-group-text" id="unit_sell">st</span>
