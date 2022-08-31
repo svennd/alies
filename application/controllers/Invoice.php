@@ -180,7 +180,11 @@ class Invoice extends Vet_Controller
 
 		# check if the calculated price is equal to the price in the database
 		# if not, something got added, and we need to update it
-		$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
+		# check only if 
+		if ($bill['amount'])
+		{
+			$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
+		}
 
 		$data = array(
 					"owner" 		=> $this->owners->get($owner_id),
