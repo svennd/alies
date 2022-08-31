@@ -179,12 +179,8 @@ class Invoice extends Vet_Controller
 		}
 
 		# check if the calculated price is equal to the price in the database
-		# if not, something got added, and we need to update it
-		# check only if 
-		if ($bill['amount'])
-		{
-			$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
-		}
+		# if not, something got added or this is the initial call, and we need to update it
+		$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
 
 		$data = array(
 					"owner" 		=> $this->owners->get($owner_id),
@@ -268,7 +264,7 @@ class Invoice extends Vet_Controller
 	# check if the calculated price is equal to the price in the database
 	# if not, something got added, and we need to update it
 	# called in get_bill()
-	private function check_for_updates_in_the_bill(int $bill_id, int $bill_status, float $bill_total, float $bill_amount)
+	private function check_for_updates_in_the_bill(int $bill_id, int $bill_status, float $bill_total, $bill_amount)
 	{
 		# partial is tricky can remove products if not enough money
 		# but then we need to recalculate if there was enough payed
@@ -276,7 +272,8 @@ class Invoice extends Vet_Controller
 
 			# update the bill in case something changed
 			# hack for float comparison
-			if (round($bill_total, 2) != (float) $bill_amount) {
+			# bill_amount can be NULL
+			if (!$bill_amount && round($bill_total, 2) != (float) $bill_amount) {
 				$this->bills->update(array("status" => PAYMENT_UNPAID, "amount" => round($bill_total, 2)), $bill_id);
 			}
 		}
