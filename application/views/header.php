@@ -79,7 +79,7 @@
         <div id="pricingmg" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc">Procedures</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_list" id="prod_list">Products</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list">Products</a>
           </div>
         </div>
       </li>

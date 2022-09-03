@@ -18,12 +18,12 @@
 <div class="card shadow mb-4">
 
 	<?php if(!isset($full_history)): ?>
-	<div class="card-header"><a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>">History</a></div>
+	<div class="card-header"><a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>"><?php echo $this->lang->line('history'); ?></a></div>
 	<?php else : ?>
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		<div>
 			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> / History
+			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> / <?php echo $this->lang->line('history'); ?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -64,12 +64,12 @@
 		<table class="table table-hover mb-0" id="pet_history">
 		<thead>
 			<tr class="align-self-center">
-				<th>Type</th>
-				<th>Title</th>
-				<th><i class="far fa-clock"></i>  Date</th>
-				<th><i class="fas fa-user-md"></i> Vet</th>
-				<th><i class="fas fa-compass"></i> Location</th>
-				<th>Anamnese</th>
+				<th><?php echo $this->lang->line('type'); ?></th>
+				<th><?php echo $this->lang->line('title'); ?></th>
+				<th><i class="far fa-clock"></i>  <?php echo $this->lang->line('date'); ?></th>
+				<th><i class="fas fa-user-md"></i> <?php echo $this->lang->line('vet'); ?></th>
+				<th><i class="fas fa-compass"></i> <?php echo $this->lang->line('location'); ?></th>
+				<th><?php echo $this->lang->line('anamnese'); ?></th>
 			</tr>
 		</thead>
 	<?php
@@ -94,8 +94,8 @@
 		<td><?php echo (isset($history['vet']['first_name'])) ? $history['vet']['first_name'] : 'unknown soldier' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
-			<div id="anamnese_<?php echo $i; ?>" class="btn btn-outline-secondary ana">show</div>
-			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-outline-secondary">edit</a></div>
+			<div id="anamnese_<?php echo $i; ?>" class="btn btn-outline-secondary ana"><?php echo $this->lang->line('show'); ?></div>
+			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-outline-secondary"><?php echo $this->lang->line('edit'); ?></a></div>
 		</td>
 	</tr>
 	<tr id="anamnese_<?php echo $i; ?>_text" style="display:none;">
@@ -112,15 +112,15 @@
 		</td>
 	</tr>
 	<?php endfor; ?>
-		<?php if(!isset($full_history)): ?>
+		<?php if(!isset($full_history) && $history_count > 4): ?>
 		<tr>
-			<td colspan="6" class="text-center"><a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>" class="btn btn-outline-secondary">Full History (<?php echo $history_count; ?>)</a></td>
+			<td colspan="6" class="text-center"><a href="<?php echo base_url(); ?>pets/history/<?php echo $pet['id']; ?>" class="btn btn-outline-secondary"><?php echo $this->lang->line('full_history'); ?> (<?php echo $history_count; ?>)</a></td>
 		</tr>
 		<?php endif; ?>
 		</tbody>
 	</table>
 	<?php else : ?>
-	No history yet.
+		<?php echo $this->lang->line('no_history'); ?>
 	<?php endif; ?>
 	</div>
 </div>

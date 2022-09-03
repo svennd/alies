@@ -3,7 +3,7 @@
 	<div class="card-body">
 		<div class="row no-gutters align-items-center">
 			<div class="col mr-2">
-				<div class="text-xs font-weight-bold text-uppercase mb-1">Nutrition</div>
+				<div class="text-xs font-weight-bold text-uppercase mb-1"><?php echo $this->lang->line('nutrition'); ?></div>
 				<div class="text-gray-800">
 					<?php echo nl2br($pet['nutritional_advice']); ?>
 				</div>

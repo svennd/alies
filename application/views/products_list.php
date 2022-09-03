@@ -101,14 +101,8 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 
-	<?php if ($this->ion_auth->in_group("admin")): ?>
-		$("#pricingmg").show();
-		$("#pricing").addClass('active');
-		$("#prod_list").addClass('active');
-	<?php else: ?>
 		$("#prd").show();
 		$("#products").addClass('active');
 		$("#product_list").addClass('active');
-	<?php endif; ?>
 });
 </script>

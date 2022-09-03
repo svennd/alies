@@ -3,7 +3,7 @@
 	<div class="card-body">
 		<div class="row no-gutters align-items-center">
 			<div class="col mr-2">
-				<div class="text-xs font-weight-bold text-uppercase mb-1">Other Pets</div>
+				<div class="text-xs font-weight-bold text-uppercase mb-1"><?php echo $this->lang->line('other_pets'); ?></div>
 				<div class="text-gray-800">
 				<ul>
 				<?php foreach($other_pets as $p): if($p['id'] == $pet['id']) { continue; }?>

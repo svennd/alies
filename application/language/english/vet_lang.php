@@ -9,6 +9,8 @@ $lang['last_name']      = 'Last Name';
 $lang['first_name']     = 'First Name';
 $lang['phone']          = 'Phone';
 $lang['street']          = 'Street';
+$lang['show']          = 'Show';
+$lang['edit']          = 'Edit';
 
 # welcome page
 $lang['title_welcome']  = 'Welcome';
@@ -51,3 +53,39 @@ $lang['search_client']  = 'Search Client';
 
 # invoices
 $lang['title_invoice']   = 'Search invoices';
+
+# fiche
+$lang['edit_pet']   = 'Edit pet';
+$lang['pet_info']      = 'Pet';
+$lang['breed']      = 'Breed';
+$lang['gender']     = 'Gender';
+$lang['haircolor']  = 'Hair color';
+$lang['chip']       = 'ID Number';
+$lang['vacc_nr']    = 'Vaccine book number';
+$lang['age']        = 'Age';
+$lang['nutrition']  = 'Nutrition';
+$lang['other_pets']  = 'Other pets';
+
+## history
+$lang['history']  = 'History';
+$lang['full_history']  = 'Full History';
+$lang['type']  = 'Type';
+$lang['title']  = 'Title';
+$lang['date']  = 'Date';
+$lang['vet']  = 'Vet';
+$lang['location']  = 'Location';
+$lang['anamnese']  = 'Anamnese';
+$lang['no_history']  = 'No history yet.';
+
+## vaccines
+$lang['no_vaccines']  = 'No known vaccines';
+$lang['vaccines']  = 'Vaccine';
+$lang['title_vaccines']  = 'Vaccinations';
+$lang['exp_date']  = 'Expiry date';
+
+## menu
+$lang['new_consult']    = 'New Consult';
+$lang['consult']        = 'Consult'; # mobile
+$lang['tooth']          = 'Tooth';
+$lang['change_owner']   = 'Change Owner';
+$lang['export']         = 'Export';

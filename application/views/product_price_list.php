@@ -119,13 +119,12 @@
 
 </div>
 
-
-
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#product_list").addClass('active');
+
+	$("#pricingmg").show();
+	$("#pricing").addClass('active');
+	$("#prod_list").addClass('active');
 });
 </script>

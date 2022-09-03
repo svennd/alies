@@ -35,7 +35,7 @@
 	<div class="card-body">
 		<div class="row no-gutters align-items-center">
 			<div class="col mr-2">
-				<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Invoice</div>
+				<div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><?php echo $this->lang->line('Invoice'); ?></div>
 				<div class="mb-0 text-gray-800">
 					<?php if ($owner['invoice_contact']) : ?><b><?php echo $owner['invoice_contact']; ?></b><br/><?php endif; ?>
 					<?php if ($owner['invoice_addr']) : ?><?php echo $owner['invoice_addr']; ?><br/><?php endif; ?>
