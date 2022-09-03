@@ -87,14 +87,18 @@ class Admin extends Admin_Controller
 	public function proc()
 	{
 		if ($this->input->post('submit') == "add_proc") {
+			# log this
+			$this->logs->logger($this->user->id, INFO, "new_procedure", "proc_name: " . $this->input->post('name'));
 			$this->proc->insert(array(
-									"name" 			=> $this->input->post('name'),
-									"booking_code" 	=> $this->input->post('booking_code'),
-									"price"			=> $this->input->post('price')
-									));
+							"name" 			=> $this->input->post('name'),
+							"booking_code" 	=> $this->input->post('booking_code'),
+							"price"			=> $this->input->post('price')
+							));
 		}
 		
 		if ($this->input->post('submit') == "edit_proc") {
+			# log this
+			$this->logs->logger($this->user->id, INFO, "update_procedure", "proc_name: " . $this->input->post('name') . " price :" . $this->input->post('price'));
 			$this->proc->update(
 				array(
 									"name" 			=> $this->input->post('name'),

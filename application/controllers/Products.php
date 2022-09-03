@@ -141,18 +141,27 @@ class Products extends Vet_Controller
 		# unless single product is selected
 		if (!$id) {
 			$this->list_product_page();
+			return true;
 		}
 
 		# modification
 		if ($this->input->post('submit') && $this->input->post('submit') == "edit") {
+			# price id
+			$price_id = $this->input->post('price_id');
+			$volume = $this->input->post('volume');
+			$new_price = $this->input->post('price');
+
+			# log this change
+			$this->logs->logger($this->user->id, INFO, "modify_price", "Change product_id:" . (int) $id . " on price_id:" . (int) $price_id . " for volume: ". (float) $volume . " to (price)" . (float) $new_price);
 			$this->pprice
 					->where(array(
-									"id" 	=> $this->input->post('price_id')
+									"id" 	=> $price_id
 							))
 					->update(array(
-									"price" => $this->input->post('price'),
-									"volume" => $this->input->post('volume'),
+									"price" => $new_price,
+									"volume" => $volume,
 							));
+			
 		# new price
 		} elseif($this->input->post('submit')) {
 			$this->pprice->insert(array(
@@ -192,7 +201,6 @@ class Products extends Vet_Controller
 					);
 
 		$this->_render_page('product_price_list', $data);
-		return 1;
 	}
 
 	public function remove_product_price($id, $new = false)
