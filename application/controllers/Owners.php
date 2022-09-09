@@ -31,7 +31,6 @@ class Owners extends Vet_Controller
 		
 	public function add()
 	{
-		$invalid_input = false;
 		if ($this->input->post('submit')) {
 			if ( (!empty($this->input->post('last_name'))) ) {
 				$new_id = $this->owners->insert(array(
@@ -62,10 +61,9 @@ class Owners extends Vet_Controller
 				
 				redirect('/owners/detail/' . (int) $new_id, 'refresh');
 			}
-			$invalid_input = true;
 		}
 		
-		$this->_render_page('owners_add', array('invalid' => $invalid_input));
+		$this->_render_page('owners/add', array());
 	}
 	
 	public function edit($owner_id)
@@ -102,7 +100,7 @@ class Owners extends Vet_Controller
 					"owner" => $this->owners->get($owner_id),
 				);
 		
-		$this->_render_page('owners_edit', $data);
+		$this->_render_page('owners/edit', $data);
 	}
 
 	public function detail($id = false, $update = false)
