@@ -49,12 +49,14 @@
 								echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
 								foreach ($product['prices'] as $price)
 								{
+									$error = 0;
+									if ($product['buy_price'] == 0) { $product['buy_price'] = 1; $error = 1;}
 									$unit_price = ($product['buy_price']/$product['buy_volume']);
 									$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 									echo "<tr>
 												<td>". $price['volume'] ." ". $product['unit_sell']."</td>
 												<td>". $price['price'] ."&euro;</td>
-												<td>". (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) ."%</td>
+												<td>". (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) ."% ". (($error) ? "error in data":"") . "</td>
 
 										<tr>";
 								}
