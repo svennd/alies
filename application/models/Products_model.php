@@ -40,4 +40,142 @@ class Products_model extends MY_Model
 						);
 		parent::__construct();
 	}
+
+	public function usage_detail( int $product_id, string $search_from, string $search_to)
+	{
+		$sql = "
+			select 
+				ep.volume,
+				events.id, events.created_at, 
+				users.first_name,
+				stock.lotnr, stock.eol, stock.in_price,
+				pets.name as petname, pets.id as pet_id,
+				owners.id, owners.last_name,
+				stock_location.name
+			from 
+				events_products as ep
+			JOIN
+				events
+			ON
+				events.id = ep.event_id
+			JOIN
+				users
+			ON
+				vet = users.id
+			JOIN 
+				stock_location
+			ON
+				events.location = stock_location.id
+			LEFT JOIN
+				stock
+			ON
+				ep.barcode = stock.barcode
+			LEFT JOIN
+				pets
+			ON
+				pets.id = events.pet
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			where 
+				ep.product_id = '" . $product_id . "' 
+			AND
+				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+			AND
+				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+			order by
+				ep.created_at DESC
+		";
+		return $this->db->query($sql)->result_array();
+	}
+
+	# used to generate charts -todo-
+	public function product_monthly_use(int $product_id, string $type = "none", int $month = 36)
+	{
+		$date = date("Y-m-1 00:00", strtotime("-" . $month . " months"));
+
+		if ($type == "none")
+		{
+			$sql = "
+				select 
+					year(ep.created_at) as y, 
+					month(ep.created_at) as m, 
+					sum(volume) as p
+				from 
+					events_products as ep
+				JOIN
+					events
+				ON
+					events.id = ep.event_id
+				where 
+					ep.product_id = '" . $product_id . "' 
+				and
+					events.created_at > '" . $date . "'
+				group by 
+					year(ep.created_at), 
+					month(ep.created_at)
+				order by
+					ep.created_at DESC
+			";
+		}
+		elseif ($type == "per_vet")
+		{
+			$sql = "
+			select 
+					year(ep.created_at) as y, 
+					month(ep.created_at) as m, 
+					sum(volume) as p,
+					first_name
+				from 
+					events_products as ep
+				JOIN
+					events
+				ON
+					events.id = ep.event_id
+				JOIN
+					users
+				ON
+					vet = users.id
+				where 
+					ep.product_id = '" . $product_id . "' 
+				and
+					events.created_at > '" . $date . "'
+				group by 
+					year(ep.created_at), 
+					month(ep.created_at),
+					vet
+			";
+		}
+		elseif ($type == "per_location")
+		{
+			$sql = "
+			select 
+					year(ep.created_at) as y, 
+					month(ep.created_at) as m, 
+					sum(volume) as p,
+					stock_location.name as stockname
+				from 
+					events_products as ep
+				JOIN
+					events
+				ON
+					events.id = ep.event_id
+				join
+					stock_location
+				on
+					stock_location.id = events.location
+				where 
+					ep.product_id = '" . $product_id . "' 
+				and
+					events.created_at > '" . $date . "'
+				group by 
+					year(ep.created_at), 
+					month(ep.created_at),
+					stockname
+			";
+		}
+
+		return $this->db->query($sql)->result_array();
+	}
 }

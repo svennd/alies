@@ -50,6 +50,55 @@ class Reports extends Admin_Controller
 	}
 
 	/*
+		give a simple list of the usage
+		--> HEAVY JOIN QUERY
+	*/
+	public function usage(int $product_id)
+	{
+		/* input */
+		$search_from 	= $this->input->post('search_from');
+		$search_to 		= $this->input->post('search_to');
+
+		# check usage
+		# if non given show from -3m to today
+		$usage = ($this->input->post('submit') == "usage" && $search_from && $search_to) ? 
+			$this->products->usage_detail($product_id, $search_from, $search_to) 
+				: 
+			$this->products->usage_detail($product_id, date("Y-m-d", strtotime("-3 months")), date("Y-m-d"));
+		
+		$data = array(
+			"prod_info"			=> $this->products->get($product_id),
+			"usage" 			=> $usage,
+			"search_from"		=> is_null($search_from) ? date("Y-m-d", strtotime("-3 months")) : $search_from,
+			"search_to"			=> is_null($search_to) ? date("Y-m-d") : $search_to,
+		);
+		$this->_render_page('reports/usage_detail', $data);
+	}
+
+	public function usage_csv(int $product_id, $search_from, $search_to)
+	{
+		$product = $this->products->usage_detail($product_id, $search_from, $search_to);
+		$product_info =  $this->products->get($product_id);
+
+		$csv_lines = array();
+		# headers
+		$csv_lines[] = array('volume','vet', 'pet_id', 'client_id', 'lotnr', 'eol', 'created_at');
+
+		foreach ($product as $p) {
+			$csv_lines[] = array(
+									$p['volume'],
+									$p['first_name'],
+									$p['pet_id'],
+									$p['id'],
+									$p['lotnr'],
+									$p['eol'],
+									$p['created_at'],
+									);
+		}
+		array_to_csv($csv_lines);
+	}
+
+	/*
 		generate a list with sold products, combined.
 		Also split if inprice/net income was not the same
 	*/
@@ -74,8 +123,8 @@ class Reports extends Admin_Controller
 											->get_all() : false,
 
 			"usage"					=> $product,
-			"search_from"		=> $search_from,
-			"search_to"			=> $search_to,
+			"search_from"			=> $search_from,
+			"search_to"				=> $search_to,
 			);
 
 		$this->_render_page('reports/products', $data);
@@ -103,28 +152,6 @@ class Reports extends Admin_Controller
 									);
 		}
 		array_to_csv($csv_lines);
-	}
-
-	# detailed view of product info
-	public function product($product_id)
-	{
-		$data = array(
-				"product_info" => $this->
-										products->
-										fields('name')->
-										with_stock('fields:barcode,state,volume,lotnr,eol,in_price,location,updated_at,created_at|where:`state`=\'2\' or `state` = \'3\'|join:true')->
-										order_by('stock.state', 'asc')->
-										order_by('stock.created_at', 'desc')->
-										where(array("product_id" => $product_id))->
-										get_all(),
-				"locations"	=> $this->stock_location->get_all(),
-				"eprod" => $this->
-							eprod->
-							with_event('fields:id,created_at')->
-							where(array("product_id" => $product_id))->
-							get_all(),
-			);
-		$this->_render_page('reports/product_detail', $data);
 	}
 
 	# show used products for the defined range
@@ -261,7 +288,7 @@ class Reports extends Admin_Controller
 		}
 		return array("years" => $years, "vets" => $vets, "data" => $data);
 	}
-	
+
 	/*
 		get all product usage for a certain time frame
 	*/

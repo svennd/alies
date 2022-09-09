@@ -258,7 +258,7 @@ class Stock_model extends MY_Model
 					month(created_at) as month,
 					year(created_at) as year,
 					product_id,
-					count(volume) as volume
+					sum(volume) as volume
 				from
 					events_products
 				where

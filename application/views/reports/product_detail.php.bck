@@ -1,0 +1,105 @@
+<div class="row"><?php exit; ?>
+      <div class="col-lg-12 mb-4">
+		<div class="card shadow mb-4">
+			<div class="card-header">
+				<a href="<?php echo base_url(); ?>reports">Reports</a> / 
+				<a href="<?php echo base_url(); ?>reports/products">Products</a> / 
+				<?php echo (isset($product_info[0]) && $product_info[0]['name']) ? $product_info[0]['name'] : ''; ?> / 
+				Stock
+				<?php $unit = $product_info[0]['unit_sell']; ?>
+			</div>
+            <div class="card-body">
+			<?php  if($product_info): $total_volume = 0; ?>
+				<table class="table">
+					<tr>
+						<td>barcode</td>
+						<td>state</td>
+						<td>volume</td>
+						<td>lotnr</td>
+						<td>eol</td>
+						<td>in_price</td>
+						<td>location</td>
+						<td>updated_at</td>
+						<td>created_at</td>
+					</tr>
+				<?php foreach ($product_info as $key => $stock): ?>
+					<tr>
+						<td><?php echo $stock['barcode']; ?></td>
+						<td <?php echo ($stock['state'] == STOCK_ERROR) ? 'class="bg-warning text-dark"': ''; ?>><?php echo stock_state($stock['state']); ?></td>
+						<td><?php echo $stock['volume']; ?> <?php $total_volume += $stock['volume']; ?></td>
+						<td><?php echo $stock['lotnr']; ?></td>
+						<td><?php echo $stock['eol']; ?></td>
+						<td><?php echo $stock['in_price']; ?></td>
+						<td><?php echo $stock['lname']; ?></td>
+						<td><?php echo $stock['updated_at']; ?></td>
+						<td><?php echo $stock['created_at']; ?></td>
+					</tr>
+				<?php endforeach; ?>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="bg-secondary text-white">total :</td>
+						<td class="bg-secondary text-white"><?php echo $total_volume; ?></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			<?php endif; ?>
+			</div>
+		</div>
+		
+		<div class="card shadow mb-4">
+			<div class="card-header"><a href="<?php echo base_url(); ?>reports">Reports</a> / <?php echo (isset($product_info[0]) && $product_info[0]['name']) ? $product_info[0]['name'] : ''; ?> / Use</div>
+			<div class="card-body">
+			<h3>Usage per month</h3>
+				<p>Usage per month (note : missing months means 0 use), the full per consult use can be downloaded using the button above.</p>
+				<table class="table">
+					<tr>
+						<td>volume used</td>
+						<td>month/year</td>
+					</tr>
+			<?php foreach ($product_use as $p): ?>
+				<tr>
+					<td><?php echo $p["p"]; ?> <?php echo $unit; ?></td>
+					<td><?php echo $p["m"]; ?>/<?php echo $p["y"]; ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</table>
+			<h3>Usage this year detail</h3>
+			<p>Use the button to download the full list.</p>
+			<?php
+			if($eprod): ?>
+				<table class="table">
+					<tr>
+						<td>Date</td>
+						<td>Volume</td>
+						<td>Pet</td>
+						<td>lotnr</td>
+						<td>eol</td>
+						<td>Consult</td>
+					</tr>
+				<?php foreach ($eprod as $prod):  ?>
+					<tr>
+						<td><?php echo user_format_date($prod['created_at'], $user->user_date); ?></td>
+						<td><?php echo $prod['volume'] . ' ' . $unit; ?></td>
+						<td><?php echo $prod['pet']; ?>
+						<td><?php echo (is_null($prod['lotnr']) ? "-" : $prod['lotnr']); ?>
+						<td><?php echo (is_null($prod['eol']) ? "-" : $prod['eol']); ?>
+						<td><a href="<?php echo base_url('events/event/' . $prod['id']); ?>">consult</a></td>
+					</tr>
+				<?php endforeach; ?>
+				</table>
+			<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(){
+});
+</script>
+  

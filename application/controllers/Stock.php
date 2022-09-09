@@ -40,6 +40,8 @@ class Stock extends Vet_Controller
 
 	public function stock_detail($pid, $all = false)
 	{
+		// for charts this function from model can be used
+		// "product_use" => $this->products->product_monthly_use($product_id, "none", 24),
 		$stock_detail = ($all) ?
 									$this->stock->where(array('product_id' => $pid))
 									->with_products('fields: name, unit_sell, buy_price')
@@ -56,7 +58,7 @@ class Stock extends Vet_Controller
 						"stock_detail" => $stock_detail,
 						"stock_usage" => $this->stock->get_usage($pid)
 						);
-		$this->_render_page('stock_detail', $data);
+		$this->_render_page('stock/details', $data);
 	}
 
 	/*

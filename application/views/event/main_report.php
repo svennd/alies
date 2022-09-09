@@ -1,6 +1,6 @@
 <style>
 .topfields {
-	width: 150px;
+	width: 175px;
 	padding: 10px 50px;
 	font-size: 1.1em;
 }
@@ -53,16 +53,16 @@
 <div class="col-lg-12">
 	<div class="card shadow mb-4">
 		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-			Report
+			<?php echo $this->lang->line('report'); ?>
 			<div class="dropdown no-arrow">
 				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/print" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> Print Invoice</a>
 				<?php if($event_info['no_history'] == 1): ?>
 				<a href="<?php echo base_url(); ?>events/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
-				<i class="fas fa-eye"></i> Enable Report
+				<i class="fas fa-eye"></i> <?php echo $this->lang->line('enable_report'); ?>
 				</a>
 				<?php else: ?>
 				<a href="<?php echo base_url(); ?>events/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
-				<i class="fas fa-eye-slash"></i> Disable Report
+				<i class="fas fa-eye-slash"></i> <?php echo $this->lang->line('disable_report'); ?>
 				</a>
 				<?php endif; ?>
 			</div>
@@ -79,7 +79,7 @@
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
 			<li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
 			<li class="nav-item" role="presentation"><a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
-			<li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files<?php echo $uploaded_files; ?></a></li>
+			<li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false"><?php echo $this->lang->line('files'); ?> <?php echo $uploaded_files; ?></a></li>
 			</ul>
 	</div>
 
@@ -99,8 +99,8 @@
 
 		<hr />
 		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
-		<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> Save Report</button>
-		<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> Finish</button>
+		<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> <?php echo $this->lang->line('save_report'); ?></button>
+		<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
 	</div>
 	</form>
 </div>

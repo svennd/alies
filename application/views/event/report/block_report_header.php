@@ -6,9 +6,9 @@
 <div class="row">
     <div class="col-4">
         <fieldset class="border max">
-            <legend class="text-center topfields">Client</legend>
+            <legend class="text-center topfields"><?php echo $this->lang->line('client'); ?></legend>
             <p class="text-center">
-                <b class="text-uppercase"><a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['first_name'] ?> <?php echo $owner['last_name'] ?></a></b><br />
+                <b class="text-uppercase"><a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?> <?php echo $owner['first_name'] ?></a></b><br />
                 <?php echo $owner['street'] . ' ' . $owner['nr'] . '<br/>' .  $owner['city']; ?><br>
             </p>
         </fieldset>
@@ -16,7 +16,7 @@
 
     <div class="col-4">
         <fieldset class="border max">
-            <legend class="text-center topfields">Pet</legend>
+            <legend class="text-center topfields"><?php echo $this->lang->line('pet_info'); ?></legend>
             <p class="text-center">
                 <a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo get_symbol($pet['type']); ?><?php echo $pet['name']; ?></a>
                 <?php echo ($age < 30) ? '(' . $age . ')' : ''; ?>
@@ -32,7 +32,7 @@
     
     <div class="col-4">
         <fieldset class="border max">
-            <legend class="text-center topfields">Event</legend>
+            <legend class="text-center topfields"><?php echo $this->lang->line('event'); ?></legend>
             <p class="text-center">
                 <?php if($billing_info): ?>
                     <?php echo user_format_date($billing_info['created_at'], $user->user_date) ?> (<?php echo time_ago($billing_info['created_at']); ?>)

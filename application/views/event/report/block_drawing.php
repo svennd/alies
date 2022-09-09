@@ -142,7 +142,7 @@
 	<?php echo ($drawing_temp) ? '<img src="' . base_url() . $drawing_temp[0].'" id="RestoreImg" alt="restored image" class="d-none" />' : ''; ?>
 	<!-- controls -->
 	<div class="col" id="control_tools">
-		Tools:
+	<?php echo $this->lang->line('tools'); ?>:
 		<br/>
 			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="pencil" title="Pencil"><i class="fas fa-pencil-alt fa-fw"></i></button>
 			<button class="btn btn-outline-primary my-1" type="button" data-divbtn="eraser" title="Eraser"><i class="fas fa-eraser fa-fw"></i></button>
@@ -170,7 +170,7 @@
 
 	<!-- color & size selection -->
 	<div class="col-md-1">
-		Color : 
+	<?php echo $this->lang->line('color'); ?> : 
 		<p id="colorpicker">
 		<br/>
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="red" type="button"><i class="fas fa-tint fa-fw" style="color:red;"></i></button>
@@ -181,12 +181,12 @@
 	 		<button class="btn btn-outline-dark my-1" data-divbtn="purple" type="button"><i class="fas fa-tint fa-fw" style="color:purple;"></i></button>
 		<br/>
 		</p>
-		Custom Color:
+		<?php echo $this->lang->line('custom_color'); ?> :
 		<br/>
 			<input type="color" name="color" id="picked_color" value="#23EFBF" class="btn btn-outline-dark my-1" style="width:98px;">
 		<br/>
 		<br/>
-		Size:
+		<?php echo $this->lang->line('size'); ?> :
 			<div class="range range-primary">
 				<input type="range" name="range" id="size_selector" min="1" max="10" value="2">
 				<output id="rangePrimary">2</output>
@@ -198,10 +198,10 @@
 	<div class="col-md-1">&nbsp;</div>
 	<div class="col-md-10">
 		<p class="text-right">
-			<button class="btn btn-outline-danger mx-3" id="paint-clear" type="button" ><i class="fas fa-trash fa-fw"></i> Wipe</button>
-			<button class="btn btn-outline-primary" id="paint-store" type="button"><i class="fas fa-file-upload fa-fw"></i> Store</button>
+			<button class="btn btn-outline-danger mx-3" id="paint-clear" type="button" ><i class="fas fa-trash fa-fw"></i> <?php echo $this->lang->line('wipe'); ?></button>
+			<button class="btn btn-outline-primary" id="paint-store" type="button"><i class="fas fa-file-upload fa-fw"></i> <?php echo $this->lang->line('store'); ?></button>
 		</p>
-		Templates :	
+		<?php echo $this->lang->line('templates'); ?> :	
 		<div class="dropbox templates" id="templates">
 			<img src="<?php echo base_url(); ?>assets/img/templates/eyes.png" alt="eyes" class="img-fluid img-thumbnail align-middle" />
 			<img src="<?php echo base_url(); ?>assets/img/templates/dog.png" alt="dog" class="img-fluid img-thumbnail align-middle" />

@@ -1,6 +1,6 @@
 
 <fieldset class="border max bg-light">
-	<legend class="text-center topfields">Bill</legend>
+	<legend class="text-center topfields"><?php echo $this->lang->line('bill'); ?></legend>
 	<div class="list-group px-2">
 	<?php if($consumables): ?>
 		<?php foreach($consumables as $prod) : ?>

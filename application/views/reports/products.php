@@ -14,7 +14,7 @@
 			<?php if ($search): ?>
 			<ul>
 				<?php foreach($search as $sear): ?>
-					<li><a href="<?php echo base_url(); ?>reports/product/<?php echo $sear['id']; ?>"><?php echo $sear['name']; ?></a></li>
+					<li><a href="<?php echo base_url(); ?>stock/stock_detail/<?php echo $sear['id']; ?>"><?php echo $sear['name']; ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 			<?php endif; ?>

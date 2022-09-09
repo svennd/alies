@@ -1,4 +1,4 @@
-Attachments :
+<?php echo $this->lang->line('attachments'); ?> :
 <div class="form-row py-2">
 
     <?php if($event_uploads): ?>
