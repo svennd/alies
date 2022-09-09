@@ -201,14 +201,18 @@ class Events extends Vet_Controller
 
 		if ($this->input->post('submit') != 'report' && $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
 
+		# log this
+		$this->logs->logger($this->user->id, INFO, "update_report", "report_id: " . $event_id);
+			
+		# event update
 		$this->events->update(
 			array(
-					"title" 						=> $this->input->post('title'),
+					"title" 					=> $this->input->post('title'),
 					"anamnese" 					=> $this->input->post('anamnese'),
-					"type" 							=> (int) $this->input->post('type'),
-					"vet_support_1"			=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
-					"vet_support_2" 		=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
-					"report"						=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
+					"type" 						=> (int) $this->input->post('type'),
+					"vet_support_1"				=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
+					"vet_support_2" 			=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
+					"report"					=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
 					),
 			$event_id
 		);
