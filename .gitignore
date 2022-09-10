@@ -43,3 +43,4 @@ application/config/database.php
 *.DBT
 /assets/public/*.png
 /data/stored/*
+application/controllers/Import_private.php
