@@ -22,8 +22,14 @@
 		</div>
 
       <div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>reports">Reports</a> / Usage
+	 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div><a href="<?php echo base_url(); ?>reports">Reports</a> / Usage</div>
+
+				<?php if($usage): ?>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url(); ?>reports/products_csv/<?php echo ($search_from) ? $search_from : ''; ?>/<?php echo ($search_to) ? $search_to : ''; ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-export"></i> Export to CSV</a>
+				</div>
+				<?php endif; ?>
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>reports/products/" method="post" autocomplete="off" class="form-inline">
@@ -45,10 +51,7 @@
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2">Search range</button>
 				</form>
 
-
-				<?php if($usage):  ?>
-				<a href="<?php echo base_url(); ?>reports/products_csv/<?php echo ($search_from) ? $search_from : ''; ?>/<?php echo ($search_to) ? $search_to : ''; ?>" class="btn btn-info"><i class="fas fa-file-export"></i> Export to CSV</a>
-
+				<?php if($usage): ?>
 				<br>
 				<?php ?>
 				<table class="table">

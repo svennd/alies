@@ -6,7 +6,7 @@
 				<div><a href="<?php echo base_url(); ?>products">Products</a> / Search Product</div>
 	  			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-history"></i> New Product</a>
+					<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-plus"></i>New Product</a>
 				</div>		
 				<?php endif; ?>
 			</div>
@@ -35,7 +35,6 @@
 				<?php foreach($product_types as $type): ?>
 					<li><a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id']; ?>"><?php echo $type['name']; ?></a> <?php echo (isset($type['products'])) ? '( ' . $type['products'][0]['counted_rows'] . ' )' : '';?></li>
 				<?php endforeach; ?>
-					<li><a href="<?php echo base_url(); ?>products/product_list">List All Products</a></li>
 				</ul>
 				<?php else: ?>
 					No categories defined.

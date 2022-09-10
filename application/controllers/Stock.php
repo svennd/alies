@@ -15,6 +15,9 @@ class Stock extends Vet_Controller
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Stock_write_off_model', 'stock_write_off_log');
+
+		# helpers
+		$this->load->helper('gs1');
 	}
 
 	public function index($filter = false, $success = false)
@@ -87,30 +90,55 @@ class Stock extends Vet_Controller
 		if ($this->input->post('submit') == "barcode") {
 			$warnings = array();
 			$new_location = $this->input->post('location');
-			$barcodes 	  = (empty($this->input->post('barcodes'))) ? array() : preg_split("/\r\n|\n|\r/", $this->input->post('barcodes'));
+			$barcodes 	  = (empty($this->input->post('barcodes'))) ? array() : preg_split("/\r\n|\n|\r/", trim($this->input->post('barcodes')));
 			$stock_list	  = array();
 
 			if ($barcodes && count($barcodes) > 0) {
 				foreach ($barcodes as $barcode) {
-					# a stock can be split so multiple results could be generated
-					$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location, "state" => STOCK_IN_USE))->get();
+					if (parse_gs1($barcode)) 
+					{
+						$x = parse_gs1($barcode);
+						$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $this->user->current_location)[0];
+						if ($stock_product) {
+							$stock_list[$stock_product['barcode']] = array(
+													"name" 		=> $stock_product['pname'],
+													"eol" 		=> $stock_product['eol'],
+													"lotnr" 	=> $stock_product['lotnr'],
+													"volume" 	=> $stock_product['volume'],
+													"barcode" 	=> $stock_product['barcode'],
+													"sell_unit" => $stock_product['unit_sell']
+												);
+						}
+						# unknown barcode
+						else {
+							$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
+							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
+						}
+					}
+					else 
+					{
+						# a stock can be split so multiple results could be generated
+						$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location, "state" => STOCK_IN_USE))->get();
+						# its a known stock product
+						if ($stock_product) {
+							# index : safety check for doubles
+							$stock_list[$barcode] = array(
+													"name" 		=> $stock_product['products']['name'],
+													"eol" 		=> $stock_product['eol'],
+													"lotnr" 	=> $stock_product['lotnr'],
+													"volume" 	=> $stock_product['volume'],
+													"barcode"	=> $barcode,
+													"sell_unit" => $stock_product['products']['unit_sell']
+												);
+						}
+						# unknown barcode
+						else {
+							$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
+							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
+						}
 
-					# its a known stock product
-					if ($stock_product) {
-						# index : safety check for doubles
-						$stock_list[$barcode] = array(
-												"name" 		=> $stock_product['products']['name'],
-												"eol" 		=> $stock_product['eol'],
-												"lotnr" 	=> $stock_product['lotnr'],
-												"volume" 	=> $stock_product['volume'],
-												"sell_unit" => $stock_product['products']['unit_sell']
-											);
 					}
-					# unknown barcode
-					else {
-						$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
-						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
-					}
+
 				}
 			} else {
 				$warnings[] = "no barcodes provided.";
@@ -317,7 +345,30 @@ class Stock extends Vet_Controller
 		redirect('/stock/stock_limit', 'refresh');
 	}
 
+	public function edit(int $stock_id)
+	{
+		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
 
+		if ($this->input->post('submit')) {
+			$this->stock
+						->where(array("id" => $stock_id))
+						->update(array(
+								"eol" => $this->input->post('eol'),
+								"in_price" => $this->input->post('in_price'),
+								"lotnr" => $this->input->post('lotnr'),
+								"volume" => $this->input->post('new_volume'),
+								"state" => $this->input->post('state'),
+						));
+
+			$lookup = $this->stock->with_products('fields:id')->get($stock_id);
+			redirect('/stock/stock_detail/'. $lookup['products']['id']);
+		}
+
+		$data = array(
+						"stock"	=> $this->stock->with_products('fields:name,unit_sell,buy_price')->get($stock_id)
+					);
+		$this->_render_page('stock/edit.admin.php', $data);
+	}
 	/*
 		house hold functions
 	*/

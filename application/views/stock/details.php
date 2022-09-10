@@ -17,7 +17,10 @@
 			<th>In Price</th>
 			<th>Barcode</th>
 			<th>Location</th>
-			<!-- <th>State</th> -->
+			<th>State</th>
+			<?php if ($this->ion_auth->in_group("admin")): ?>
+			<th>Option</th>
+			<?php endif; ?>
 		</tr>
 		</thead>
 		<tbody>
@@ -30,14 +33,17 @@
 			<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 			<td><?php echo $detail['barcode']; ?></td>
 			<td><?php echo $detail['stock_locations']['name']; ?></td>
-			<!-- <td><?php echo $detail['state']; ?></td> -->
+			<td><?php echo stock_state($detail['state']); ?></td>
+			<?php if ($this->ion_auth->in_group("admin")): ?>
+			<td><a href="<?php echo base_url('stock/edit/' . $detail['id']); ?>" class="btn btn-outline-success">edit</a></td>
+			<?php endif; ?>
 		</tr>
 		<?php endforeach; ?>
         </tbody>
         <tfoot>
             <tr>
                 <th class="bg-secondary text-white">Total:</th>
-                <th colspan="5">&nbsp;</th>
+                <th colspan="<?php echo ($this->ion_auth->in_group("admin")) ? '7' : '6';?>">&nbsp;</th>
             </tr>
         </tfoot>
 		</table>

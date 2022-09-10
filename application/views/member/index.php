@@ -23,12 +23,13 @@
 				<td><?php echo $user['email'];?></td>
 				<td>
 					<?php foreach ($user['groups'] as $group):?>
-						<?php echo anchor("auth/edit_group/".$group->id, $group->name) ;?><br />
+						<!-- <?php echo anchor("auth/edit_group/".$group->id, $group->name) ;?><br /> -->
+						<?php echo $group->name;?><br />
 					<?php endforeach?>
 				</td>
 				<td>
-					<?php echo ($user['active']) ? anchor("auth/deactivate/". $user['id'], '<i class="fas fa-fw fa-lock"></i>', 'class="btn btn-outline-danger btn-sm"') : anchor("auth/activate/". $user['id'], '<i class="fas fa-fw fa-lock-open"></i>', 'class="btn btn-outline-info btn-sm"');?>
-					&nbsp;
+					<!-- <?php echo ($user['active']) ? anchor("auth/deactivate/". $user['id'], '<i class="fas fa-fw fa-lock"></i>', 'class="btn btn-outline-danger btn-sm"') : anchor("auth/activate/". $user['id'], '<i class="fas fa-fw fa-lock-open"></i>', 'class="btn btn-outline-info btn-sm"');?>
+					&nbsp; -->
 					<a href="<?php echo base_url(). 'member/edit_user/' . $user['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i></a>
 				</td>
 			</tr>

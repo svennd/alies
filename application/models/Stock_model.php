@@ -123,13 +123,6 @@ class Stock_model extends MY_Model
 		}
 	}
 
-	# check for stock that is going to become bad soonish
-	public function get_bad_products($location = false, $days = 90)
-	{
-		$sql = "";
-		return $this->db->query($sql)->result_array();
-	}
-
 	# return stock limits
 	public function get_local_stock_shortages($location = false)
 	{
