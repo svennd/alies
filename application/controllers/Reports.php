@@ -18,6 +18,7 @@ class Reports extends Admin_Controller
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vaccine');
+		$this->load->model('Booking_code_model', 'booking');
 
 		# helpers
 		$this->load->helper('file_download');
@@ -28,6 +29,32 @@ class Reports extends Admin_Controller
 	public function index()
 	{
 		$this->_render_page('reports/index', array());
+	}
+
+	public function accounting(string $search_from = "", string $search_to = "", int $booking_id = 0, bool $csv = false)
+	{
+		if ($csv)
+		{
+			$usage = $this->booking->get_usage($booking_id, $search_from, $search_to);
+			$csv = $this->load->view('reports/accounting_csv', array("usage" => $usage), true);
+			array_to_csv_download($csv, 'accounting_code_' .  $booking_id .'.csv');
+			return 0;
+		}
+
+		/* input */
+		$search_from 	= $this->input->post('search_from');
+		$search_to 		= $this->input->post('search_to');
+		$booking_id 	= $this->input->post('booking');
+
+		$data = array(
+			"usage"				=> is_null($booking_id) ? false : $this->booking->get_usage($booking_id, $search_from, $search_to),
+			"booking"			=> $this->booking->get_all(),
+			"search_from"		=> is_null($search_from) ? false : $search_from,
+			"search_to"			=> is_null($search_to) ? false : $search_to,
+			"booking_s"			=> is_null($booking_id) ? false : $booking_id,
+		);
+		$this->_render_page('reports/accounting', $data);
+
 	}
 
 	public function stock_list($location = false)
