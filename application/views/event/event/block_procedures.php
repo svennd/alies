@@ -3,7 +3,7 @@
 	<tr style="background-color: <?php echo ($done['price'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
 		<td><?php echo $done['procedures']['name']; ?></td>
 		<td>&nbsp;</td>
-		<td><?php echo $done['procedures']['price']; $total += $done['price']; ?></td>
+		<!-- <td><?php echo $done['procedures']['price']; $total += $done['price']; ?></td> -->
 		<td>
 			<form action="<?php echo base_url(); ?>events/proc_edit/<?php echo $event_id; ?>" id="proc<?php echo $done['id'] ?>" method="post" autocomplete="off" class="form-inline">
 				<div class="input-group input-group-sm" style="width:175px;">
@@ -17,8 +17,8 @@
 		</td>
 		<td><?php echo $done['btw']; ?>%</td>
 		<td>
-			<?php echo $done['price']; ?><br/>
-			<small><?php echo $done['net_price']; ?> ex. vat</small>
+			<?php echo round($done['price'],2); ?><br/>
+			<small><?php echo round($done['net_price'],2); ?> ex. vat</small>
 		</td>
 		<td>	
 		<?php if ($event_state != STATUS_CLOSED): ?>						

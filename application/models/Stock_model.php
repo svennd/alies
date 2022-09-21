@@ -329,4 +329,75 @@ class Stock_model extends MY_Model
 			";
 		return ($this->db->query($sql)->result_array());
 	}
+
+	/*
+		reduce duplicates
+		used in stock/stock_clean()
+	*/
+	public function fix_duplicates()
+	{
+		$sql = "SELECT
+					product_id,
+					`location`,
+					lotnr,
+					eol,
+					in_price,
+					barcode, # take the last one
+					SUM(volume) as volume,
+					COUNT(product_id) as product_counter
+				FROM
+					stock
+				WHERE
+					`state` = ". STOCK_IN_USE ."
+				GROUP BY
+					product_id,
+					`location`,
+					lotnr,
+					in_price,
+					eol
+				having
+					product_counter > 1
+				;
+			";
+
+		$products = $this->db->query($sql)->result_array();
+		
+		$new_merged_products = 0;
+		$lines = 0;
+		foreach ($products as $product)
+		{
+			$x = $this->stock
+						->where(array(
+									'product_id' => $product['product_id'],
+									'location' => $product['location'],
+									'lotnr' => $product['lotnr'],
+									'in_price' => $product['in_price'],
+									'eol' => $product['eol']
+								))
+						->update(array('volume' => 0, 'state' => STOCK_MERGE));
+			# this should never happen
+			# this means we found a "duplicate" where there are only 0 or 1 lines
+			if ($x <= 1)
+			{
+				$this->logs->logger($this->user->id, FATAL, "merge_stock_failed_to_find_lines", "pid:". $product['product_id'] . "debug:" . implode($product));
+			}
+
+			$this->insert(array(
+					'product_id' => $product['product_id'],
+					'location' => $product['location'],
+					'lotnr' => $product['lotnr'],
+					'in_price' => $product['in_price'],
+					'eol' => $product['eol'],
+					'barcode' => $product['barcode'],
+					'volume' => $product['volume'],
+					'state' => STOCK_IN_USE
+			));
+
+			$this->logs->logger($this->user->id, INFO, "merge_stock", "pid:" . $product['product_id'] . " had " . $x . " duplicate lines");
+			
+			$new_merged_products++;
+			$lines += $product['product_counter'];
+		}
+		return array('lines_merged' => $lines, 'new_merged' => $new_merged_products);
+	}
 }

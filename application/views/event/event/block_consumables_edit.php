@@ -4,6 +4,7 @@
 			<td>
 				<?php echo $product['volume'] . ' ' . $product['product']['unit_sell']; ?> <?php echo $product['product']['name']; ?>
 			</td>
+			<!--
 			<td>
 				<?php 
 					if (count($product['prices']) > 1)
@@ -22,6 +23,7 @@
 					}
 				?>
 				</td>
+			-->
 			<td><?php echo ($product['calc_net_price'] != 0) ? $product['calc_net_price'] : $product['net_price']; ?></td>
 			
 			<td>

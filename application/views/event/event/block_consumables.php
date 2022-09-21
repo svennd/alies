@@ -11,6 +11,7 @@
 				<small>-</small>
 			<?php endif; ?>
 			</td>
+			<!--
 			<td>
 				<?php 
 					if ($product['prices'])
@@ -36,7 +37,9 @@
 					}
 				?>
 				</td>
+				-->
 			<td>
+			
 			<form action="<?php echo base_url(); ?>events/prod_edit/<?php echo $event_id; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
 			
 				<div class="input-group input-group-sm" style="width:175px;">
@@ -56,8 +59,8 @@
 				<?php echo (!empty($product['btw'])) ? $product['btw'] : $product['product']['btw_sell']; ?>%
 			</td>
 			
-				<td><?php echo $product['price']; ?><br/>
-					<small><?php echo $product['net_price']; ?> ex. vat</small>
+				<td><?php echo round($product['price'],2); ?><br/>
+					<small><?php echo round($product['net_price'],2); ?> ex. vat</small>
 					<?php $total += $product['price']; ?>
 				</td>		
 			<td>

@@ -13,7 +13,7 @@
 					<tr class="thead-light">
 						<th>Name</th>
 						<th>Barcode/LotNr</th>
-						<th>Price</th>
+						<!-- <th>Price</th> -->
 						<th>Volume</th>
 						<th>btw</th>
 						<th>Price</th>
@@ -30,10 +30,10 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+						<!-- <td>&nbsp;</td> -->
 						<td>&nbsp;</td>
 						<td><i>Sum</i></td>
-						<td><i><?php echo $total; ?></i></td>
+						<td><i><?php echo round($total, 2); ?></i></td>
 						<td>&nbsp;</td>
 					</tr>
 				</tfoot>
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				// check if there is a price for a procedure
 				if (suggestion.data.price != null)
 				{
-					$("#price_ajax_request").html(suggestion.data.price + " &euro;");
+					// $("#price_ajax_request").html(suggestion.data.price + " &euro;");
 				}
 
 			}
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function(){
 					// check if there are prices (products)
 					if (suggestion.data.prices != null)
 					{
-						prices_to_html(suggestion.data.prices, suggestion.data.unit);
+						// prices_to_html(suggestion.data.prices, suggestion.data.unit);
 					}
 				}
 				else {
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function(){
 					// check if there are prices (products)
 					if (suggestion.data.prices != null)
 					{
-						prices_to_html(suggestion.data.prices, suggestion.data.unit);
+						// prices_to_html(suggestion.data.prices, suggestion.data.unit);
 					}
 
 				}

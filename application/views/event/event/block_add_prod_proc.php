@@ -17,7 +17,7 @@
 		</form>
 	</td>
 	<td><select class="form-control mb-2 mr-sm-2" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
-	<td id="price_ajax_request">&nbsp;</td>
+	<!-- <td id="price_ajax_request">&nbsp;</td> -->
 	<td>
 		<div class="input-group" style="width:10rem;">
 			<input type="text" name="volume" form="prod_or_proc_form" value="" class="form-control" id="amount">
