@@ -77,6 +77,27 @@ function stock_state(int $stock_state) {
 			return "history";
 		case STOCK_ERROR:
 			return "error";
+		case STOCK_MERGE:
+			return "stock_merged";
+		default:
+			return "unknown";
+	}
+}
+/*
+	ERROR levels
+*/
+function get_error_level(int $error) {
+	switch ($error) {
+		case DEBUG:
+			return "DEBUG";
+		case INFO:
+			return "INFO";
+		case WARN:
+			return "WARN";
+		case ERROR:
+			return "ERROR";
+		case FATAL:
+			return "FATAL";
 		default:
 			return "unknown";
 	}

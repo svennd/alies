@@ -96,9 +96,13 @@ class Vet extends Vet_Controller
 
 		# check what image the vet has selected
 		$chosen_img = false;
-		foreach($img_list['user'] as $img)
+
+		if (isset($img_list['user']))
 		{
-			if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
+			foreach($img_list['user'] as $img)
+			{
+				if ($img['id'] == $pict_id) { $chosen_img = $img['img']; break; }
+			}
 		}
 		if (!$chosen_img)
 		{
