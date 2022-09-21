@@ -151,7 +151,7 @@ class Stock extends Vet_Controller
 							"new_location" => $new_location
 						);
 
-			$this->_render_page('stock_move_quantities', $data);
+			$this->_render_page('stock/move_quantities', $data);
 
 		} elseif ($this->input->post('submit') == "quantities") {
 
@@ -378,9 +378,20 @@ class Stock extends Vet_Controller
 	{
 
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
-		echo ($print) ? "archived " . $r . " lines; <a href='" . base_url('stock') . "'> return</a>" : "";
 
 		# make this traceable
 		$this->logs->logger($this->user->id, INFO, "stock_clean", "archived: " . $r);
+
+		# make a call for duplicate products that are exactly identical
+		# eg. multiple same lotnr & dates entered on a different date
+		$duplicates = $this->stock->fix_duplicates();
+
+		$this->logs->logger($this->user->id, INFO, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
+		echo ($print) ? 
+				"0 volume lines : " . $r . "<br/>" .
+				$duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products <br/>" .
+				"<a href='" . base_url('stock') . "'> return</a>"
+				:
+				"";
 	}
 }

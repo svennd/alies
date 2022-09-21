@@ -91,6 +91,7 @@ define('FATAL', 1);
 define('ERROR', 2);
 define('WARN', 3);
 define('INFO', 4);
+define('DEBUG', 5);
 
 # event status
 define('STATUS_OPEN', 0); /* working bill */
@@ -132,6 +133,7 @@ define('STOCK_CHECK', 0);
 define('STOCK_IN_USE', 1);
 define('STOCK_HISTORY', 2);
 define('STOCK_ERROR', 3);
+define('STOCK_MERGE', 4);
 
 # report status
 define('REPORT_INIT', 0);
