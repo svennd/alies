@@ -12,70 +12,83 @@
 			<?php if ($product): ?>
 			<h4>Current Sell Price</h4>
 				<?php if (!is_null($product['prices'])): ?>
+					<table class="table">
+						<tr>
+							<th>From</th>
+							<th>Price</th>
+							<th>Margin</th>
+							<th>Options</th>
+						</tr>
 				<?php foreach($product['prices'] as $price):
 					$unit_price = ($product['buy_price']/$product['buy_volume']);
 					$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
 				?>
-					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
-
-					<label class="sr-only" for="volume">volume</label>
-					<div class="input-group mb-2 mr-sm-2">
-						<div class="input-group-prepend">
-						<span class="input-group-text" id="basic-addon1">from</span>
+				<tr>
+					<td>
+						<form method="post" id="form<?php echo $price['id'] ?>" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>">					
+						<div class="input-group">
+							<input type="text" class="form-control" id="volume" name="volume" placeholder="" value="<?php echo $price['volume']; ?>">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
+							</div>
 						</div>
-						<input type="text" class="form-control" id="volume" name="volume" placeholder="" value="<?php echo $price['volume']; ?>">
-						<div class="input-group-append">
-							<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
-						</div>
-					</div>
-					<p class="mb-2">
-					drops to &nbsp;
-					</p>
-					<label class="sr-only" for="price">price</label>
-					<div class="input-group mb-2 mr-sm-2">
-						<input type="text" class="form-control" id="price" name="price" placeholder="" value="<?php echo $price['price']; ?>">
-						<div class="input-group-append">
-							<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
-						</div>
-					</div>
-					margin :
-					<div class="input-group mb-2 mr-sm-2 col-md-1">
-						<input class="form-control <?php echo ($change > 0) ? 'is-valid' : 'is-invalid' ?>" type="text" placeholder="<?php echo $change; ?>%" readonly>
-					</div>
-
 						<input type="hidden" name="price_id" value="<?php echo $price['id']; ?>" />
-						<button type="submit" name="submit" value="edit" class="btn btn-primary mb-2">Store</button>
-						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger mx-3 mb-2">remove</a>
-					</form>
+						</form>
+					</td>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control" id="price" name="price" placeholder="" value="<?php echo $price['price']; ?>" form="form<?php echo $price['id'] ?>">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
+							</div>
+						</div>
+					</td>
+					<td>
+						<input class="form-control <?php echo ($change > 0) ? 'is-valid' : 'is-invalid' ?>" type="text" placeholder="<?php echo $change; ?>%" readonly>
+					</td>
+					<td>
+						<button type="submit" name="submit" value="edit" class="btn btn-primary btn-sm" form="form<?php echo $price['id'] ?>">Store</button>
+						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger my-1 btn-sm">remove</a>
+					</td>
+				</tr>
 				<?php endforeach; ?>
+					</table>
+
 					<hr />
 					<h4>Add price</h4>
 					<p>Add volume reduction;</p>
-
-					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
-
-					<label class="sr-only" for="volume">volume</label>
-					<div class="input-group mb-2 mr-sm-2">
-						<div class="input-group-prepend">
-						<span class="input-group-text" id="basic-addon1">from</span>
+					<table class="table">
+						<tr>
+							<th>From</th>
+							<th>Price</th>
+							<th>&nbsp;</th>
+							<th>Options</th>
+						</tr>
+					<tr>
+					<td>
+						<form method="post" id="form_new" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>">
+						<div class="input-group">
+							<input type="text" class="form-control" id="volume" name="volume" placeholder="">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
+							</div>
 						</div>
-						<input type="text" class="form-control" id="volume" name="volume" placeholder="">
-						<div class="input-group-append">
-							<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
-						</div>
-					</div>
-					<p class="mb-2">
-					drops to  &nbsp;
-					</p>
-					<label class="sr-only" for="price">price</label>
-					<div class="input-group mb-2 mr-sm-2">
-						<input type="text" class="form-control" id="price" name="price" placeholder="">
+						</form>
+					</td>
+					<td>
+					<div class="input-group">
+						<input type="text" class="form-control" id="price" name="price" placeholder="" form="form_new">
 						<div class="input-group-append">
 							<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
 						</div>
 					</div>
-						<button type="submit" name="submit" value="store" class="btn btn-primary mb-2">Store</button>
-					</form>
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<button type="submit" name="submit" form="form_new" value="store" class="btn btn-primary btn-sm">Store</button>
+					</td>
+					</tr>
+					</table>
 				<?php else: ?>
 					No price assigned yet ! <br/>
 

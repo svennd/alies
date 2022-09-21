@@ -157,7 +157,9 @@
 				</form>
 			</div>
 		</div>
-
+		<?php if ($this->ion_auth->in_group("admin")): ?>
+		<a href="<?php echo base_url(); ?>stock/stock_clean" class="btn btn-outline-danger btn-sm "><i class="fas fa-bug"></i> compress stock <i class="fas fa-compress-alt"></i></a>
+		<?php endif; ?>
 	</div>
 
 </div>
