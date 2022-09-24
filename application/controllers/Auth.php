@@ -27,8 +27,10 @@ class Auth extends CI_Controller
 	}
 
 	//log the user in
-	public function login()
+	public function login(int $location = -1)
 	{
+		$this->set_user_location($location);
+
 		$this->data['title'] = "Login";
 
 		//validate form input
@@ -287,5 +289,15 @@ class Auth extends CI_Controller
 		if (!$render) {
 			return $view_html;
 		}
+	}
+
+	# just used to give a suggestion
+	private function set_user_location(int $location)
+	{
+		if ($location == -1) { return 0; }
+
+		$this->load->helper('cookie');
+		
+		set_cookie("alies_location", (int) $location, 300);
 	}
 }

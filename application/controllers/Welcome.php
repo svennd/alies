@@ -50,10 +50,11 @@ class Welcome extends Vet_Controller
 				}
 			}
 		}
-
+	
 		$data = array(
 							"locations" 				=> $this->location,
 							"update_to_version" 		=> $version,
+
 							"vets" 						=> $this->users->get_active_vets(),
 							"local_stock"				=> ($this->user->current_location != 0) ? $this->stock->get_local_stock_shortages($this->user->current_location) : false,
 							"global_stock"				=> $result,

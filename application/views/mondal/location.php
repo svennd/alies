@@ -12,7 +12,7 @@
 			<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 				<div class="btn-group mr-2" role="group" aria-label="First group">
 					<?php foreach($location as $l) : ?>
-					<a class="btn btn-success" href="<?php echo base_url() . '/welcome/change_location/' . $l['id']; ?>"> 
+					<a class="btn <?php echo ($suggest_location == -1 || $suggest_location == $l['id']) ? "btn-success": "btn-warning"; ?>" href="<?php echo base_url() . '/welcome/change_location/' . $l['id']; ?>"> 
 					<?php echo $l['name'] ?>
 					</a>
 					<?php endforeach; ?>
