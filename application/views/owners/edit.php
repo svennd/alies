@@ -88,39 +88,39 @@
 				  
 				</div>	  
 				<div class="col-md-6">
-					<h5>Varia</h5>
+					<h5><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Varia</a></h5>
 					<hr>
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck" <?php echo (isset($owner['debts']) && $owner['debts'] == 1) ? 'checked': ''; ?>>
-								<label class="form-check-label" for="gridCheck">
-								<?php echo $this->lang->line('debts'); ?>
-								</label>
-							</div>
-						</div> 
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget" <?php echo (isset($owner['low_budget']) && $owner['low_budget'] == 1) ? 'checked': ''; ?>>
-								<label class="form-check-label" for="low_budget">
-								<?php echo $this->lang->line('low_budget'); ?>
-								</label>
-							</div>
-						</div> 
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" <?php echo (isset($owner['contact']) && $owner['contact'] == 1) ? 'checked': ''; ?>>
-								<label class="form-check-label" for="contact">
-								<?php echo $this->lang->line('contact'); ?>
-								</label>
-							</div>
+						<div class="collapse" id="collapseExample">
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck" <?php echo (isset($owner['debts']) && $owner['debts'] == 1) ? 'checked': ''; ?>>
+									<label class="form-check-label" for="gridCheck">
+									<?php echo $this->lang->line('debts'); ?>
+									</label>
+								</div>
+							</div> 
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget" <?php echo (isset($owner['low_budget']) && $owner['low_budget'] == 1) ? 'checked': ''; ?>>
+									<label class="form-check-label" for="low_budget">
+									<?php echo $this->lang->line('low_budget'); ?>
+									</label>
+								</div>
+							</div> 
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" <?php echo (isset($owner['contact']) && $owner['contact'] == 1) ? 'checked': ''; ?>>
+									<label class="form-check-label" for="contact">
+									<?php echo $this->lang->line('contact'); ?>
+									</label>
+								</div>
+							</div> 
 						</div> 
 					  <div class="form-group">
 						<label for="exampleFormControlTextarea1"><?php echo $this->lang->line('comment'); ?></label>
 						<textarea class="form-control" name="msg" id="exampleFormControlTextarea1" rows="3"><?php echo (isset($owner['msg'])) ? $owner['msg']: '' ?></textarea>
 					  </div>
-
-				</div>	  
-				</div>	  
+				</div>
 				  <button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo $this->lang->line('edit'); ?></button>
 				</form>
 

@@ -318,7 +318,7 @@ class Stock extends Vet_Controller
 						"locations" 	=> $this->location,
 						"local_stock" 	=> $this->stock->get_local_stock_shortages()
 					);
-		$this->_render_page('stock_shortages', $data);
+		$this->_render_page('stock/shortages', $data);
 	}
 
 	public function stock_limit()

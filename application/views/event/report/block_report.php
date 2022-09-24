@@ -80,7 +80,7 @@ $('#anamnese').trumbowyg({
     btns: [
         ['strong', 'em', 'fontsize'],
         ['undo', 'redo'],
-        ['superscript', 'subscript'],
+        // ['superscript', 'subscript'],
         ['link'],
         ['insertImage'],
         ['unorderedList', 'orderedList'],
@@ -88,6 +88,7 @@ $('#anamnese').trumbowyg({
         ['fullscreen'],
 		['template'],
     ],
+	autogrow: true,
 
     plugins: {
         fontsize: {
@@ -103,14 +104,22 @@ $('#anamnese').trumbowyg({
                 name: 'Anamnese_Onderzoek_Behandeling',
                 html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE:</b><br/><br/><br/><br/><b>BEHANDELING:</b><br/><br/><br/><br/>'
             },
-			/*
-            {
-                name: 'Template 2',
-                html: '<p>I am a different template!</p>'
-            }
-			*/
         ]
     }
+}).on('tbwchange', function(){ 
+	// autosave
+	clearTimeout(t);
+	t = setTimeout(function() {
+		content = $('#anamnese').trumbowyg('html');
+		$.ajax({
+			method: 'POST',
+			url: '<?php echo base_url(); ?>events/anamnese/' + <?php echo $event_info['id']; ?>,
+			data: {
+				anamnese: content
+			}
+			});
+		$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
+	}, 750);	
 });
 
 <?php if (!empty($event_info['type'])): ?>

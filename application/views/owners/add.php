@@ -88,31 +88,33 @@
 				  
 				</div>	  
 				<div class="col-md-6">
-					<h5>Varia</h5>
+					<h5><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Varia</a></h5>
 					<hr>
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck">
-								<label class="form-check-label" for="gridCheck">
-								<?php echo $this->lang->line('debts'); ?>
-								</label>
+						<div class="collapse" id="collapseExample">
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck">
+									<label class="form-check-label" for="gridCheck">
+									<?php echo $this->lang->line('debts'); ?>
+									</label>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget">
-								<label class="form-check-label" for="low_budget">
-								<?php echo $this->lang->line('low_budget'); ?>
-								</label>
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget">
+									<label class="form-check-label" for="low_budget">
+									<?php echo $this->lang->line('low_budget'); ?>
+									</label>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-check">
-							<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" checked="checked">
-								<label class="form-check-label" for="contact">
-								<?php echo $this->lang->line('contact'); ?>
-								</label>
-							</div>
+							<div class="form-group">
+								<div class="form-check">
+								<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" checked="checked">
+									<label class="form-check-label" for="contact">
+									<?php echo $this->lang->line('contact'); ?>
+									</label>
+								</div>
+							</div> 
 						</div> 
 					  <div class="form-group">
 						<label for="exampleFormControlTextarea1"><?php echo $this->lang->line('comment'); ?></label>

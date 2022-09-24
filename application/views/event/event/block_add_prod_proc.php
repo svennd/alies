@@ -31,7 +31,7 @@
 		<div id="booking_select" style="display:none;">
 			<select class="form-control mb-2 mr-sm-2" form="prod_or_proc_form" name="booking_code" id="hidden_booking">
 			<?php foreach($booking_codes as $booking): ?>
-				<option value="<?php echo $booking['id']; ?>"><?php echo $booking['code'] . " - " . $booking['btw'] . "%"; ?></option>
+				<option value="<?php echo $booking['id']; ?>"><?php echo $booking['category'] . " - " . $booking['code'] . " - " . $booking['btw'] . "%"; ?></option>
 			<?php endforeach; ?>
 			</select>
 		</div>

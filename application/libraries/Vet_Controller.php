@@ -134,7 +134,14 @@ class Vet_Controller extends MY_Controller
 
 	public function _get_mondal()
 	{
-		return $this->load->view('mondal/location', array("location" => $this->location), true);
+
+		# get login cookie
+		$this->load->helper('cookie');
+		
+		return $this->load->view('mondal/location', array(
+				"location"			 => $this->location,
+				"suggest_location"	 => (get_cookie('alies_location')) ? get_cookie('alies_location') : -1,
+			), true);
 	}
 
 	private function _get_current_location()
