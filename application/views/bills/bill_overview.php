@@ -1,11 +1,4 @@
 <?php
-$state = array(
-				"OPEN",
-				"UNPAID",
-				"PARTIALLY",
-				"PAID",
-				"NON_COLLECTABLE",
-				);
 $cd = new DateTime();
 $cd->modify('-29 day');
 $now = new DateTime();
@@ -66,7 +59,7 @@ $now->modify('+1 day');
 						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
 					</td>
 					<td><?php echo $bill['owner']['last_name']; ?></td>
-					<td><?php echo $state[$bill['status']]; ?></td>
+					<td><?php echo get_bill_status($bill['status']); ?></td>
 					<td><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 

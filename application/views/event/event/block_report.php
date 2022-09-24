@@ -1,3 +1,8 @@
+<style>
+.trumbowyg-editor, .trumbowyg-textarea {
+	line-height: 0.6;
+}
+</style>
 <div class="card shadow mb-4">
 	<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 	Report
@@ -51,7 +56,7 @@
 		  <div class="form-group">
 			<label for="anamnese">Report</label>
 			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo $event_info['anamnese']; ?></textarea>
-			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
+			<small id="autosave_anamnese">last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
 		  </div>
 
 			<?php if($event_info['status'] == STATUS_CLOSED): ?>
@@ -138,12 +143,15 @@
 
 document.addEventListener("DOMContentLoaded", function(){
 
+// autosave timer
+var t;
+
 $('#anamnese').trumbowyg({
 
     btns: [
         ['strong', 'em', 'fontsize'],
         ['undo', 'redo'],
-        ['superscript', 'subscript'],
+        // ['superscript', 'subscript'],
         ['link'],
         ['insertImage'],
         ['unorderedList', 'orderedList'],
@@ -151,7 +159,7 @@ $('#anamnese').trumbowyg({
         ['fullscreen'],
 		['template'],
     ],
-
+	autogrow: true,
     plugins: {
         fontsize: {
             sizeList: [
@@ -174,6 +182,21 @@ $('#anamnese').trumbowyg({
 			*/
         ]
     }
+})
+.on('tbwchange', function(){ 
+	// autosave
+	clearTimeout(t);
+	t = setTimeout(function() {
+		content = $('#anamnese').trumbowyg('html');
+		$.ajax({
+			method: 'POST',
+			url: '<?php echo base_url(); ?>events/anamnese/' + <?php echo $event_info['id']; ?>,
+			data: {
+				anamnese: content
+			}
+			});
+		$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
+	}, 750);	
 });
 
 <?php if (!empty($event_info['type'])): ?>

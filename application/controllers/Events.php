@@ -449,4 +449,15 @@ class Events extends Vet_Controller
 		$this->events->update(array("status" => STATUS_CLOSED), $event_id);
 		redirect('/events/event/' . $event_id);
 	}
+
+	# auto save function
+	public function anamnese($event_id)
+	{
+		$anamnese = $this->input->post('anamnese');
+
+		return (!empty($anamnese)) ? 
+			$this->events->where(array("id" => $event_id, "status" => STATUS_OPEN))->update(array("anamnese" => $anamnese)) 
+			:
+			0;
+	}
 }
