@@ -269,6 +269,8 @@ class Products extends Vet_Controller
 								"booking_code" 			=> $this->input->post('booking_code'),
 								"delay" 				=> $this->input->post('delay'),
 								"comment" 				=> $this->input->post('comment'),
+								"vhbcode" 				=> $this->input->post('vhbcode'),
+								"buy_price_date" 		=> $this->input->post('buy_price_date'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"limit_stock" 			=> $this->input->post('limit_stock')
 							);
@@ -499,7 +501,7 @@ class Products extends Vet_Controller
 							->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
 							->with_type()
 							->with_prices('fields: volume, price|order_inside:volume asc')
-							->with_stock('fields: location, eol, lotnr, volume, barcode, state', 'where:`state`=\'1\'')
+							->with_stock('fields: location, eol, lotnr, volume, barcode, state|order_inside:eol asc', 'where:`state`=\'1\'')
 							->where('name', 'like', $query, true)
 							->where('sellable', '1')
 							->limit(250) # this will count both products + prices + stock (somehow)

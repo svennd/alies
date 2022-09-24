@@ -173,6 +173,15 @@
 				</div>
 			</div>
 
+			<div class="form-row">
+				<div class="col">
+				<label for="exampleFormControlInput3">VHB code</label>
+				<input type="text" class="form-control" name="vhbcode" value="">
+				</div>
+				<div class="col">&nbsp;
+				</div>
+			</div>
+
 			<br/>
 			<h5>Advanced</h5>
 			<hr />

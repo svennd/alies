@@ -153,7 +153,7 @@
 			<input type="text" name="unit_sell" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?>" required>
 			</div>
 		</div>
-		
+
 		<div class="form-row">
 		<p>
 			&nbsp;
@@ -183,20 +183,39 @@
 
 		</div>
 		
-		  <div class="form-group">
-			<label for="exampleFormControlInput3">Catalog Price</label>
-			<input type="text" name="buy_price" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?>">
-		  </div>
-		  <div class="form-group">
-			<label for="exampleFormControlInput3">input_barcode</label>
-			<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
-			<small class="form-text text-muted" id="extra_info">&nbsp;</small>
-		  </div>
-		  <div class="form-group">
-			<label for="gs1_datamatrix">Scan barcode</label>
-			<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
-			<small class="form-text text-danger">Will overwrite input_barcode!</small>
-		  </div>
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="exampleFormControlInput3">Catalog Price</label>
+				<input type="text" name="buy_price" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?>">
+			</div>
+			<div class="form-group col">
+				<label for="exampleFormControlInput3">Catalog Update</label>
+				<input type="date" name="buy_price_date" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price_date'])) ? $product['buy_price_date']: '' ?>">
+			</div>
+		</div>
+		
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="exampleFormControlInput3">VHB code</label>
+				<input type="text" name="vhbcode" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?>">
+			</div>
+		  <div class="col">&nbsp;</div>
+		</div>
+		
+		<div class="form-row">
+				<div class="col mb-3">
+				<label for="gs1_datamatrix">Scan barcode</label>
+				<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
+				<small class="form-text text-danger">Will overwrite input_barcode! (scan with a reader)</small>
+				</div>
+				<div class="col mb-3">
+				<label for="exampleFormControlInput3">input_barcode</label>
+				<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
+				<small class="form-text text-muted" id="extra_info">Set the barcode manually</small>
+				</div>
+		</div>
+
 	  </div>
 	  
       <div class="tab-pane fade" id="v-pills-vaccine" role="tabpanel" aria-labelledby="v-pills-vaccine-tab">
