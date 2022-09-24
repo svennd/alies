@@ -49,7 +49,7 @@ $lang['Stock']          = 'Stock';
 # owners - search
 $lang['title_search']   = 'Zoeken';
 $lang['New_client']     = 'Nieuwe Klant';
-$lang['search_help']    = 'Zoek in de databank op (voor) naam, straat, telefoon, dier id, dier chip nr. of dier naam.';
+$lang['search_help']    = 'Zoek in de databank op (voor) naam, straat, telefoon, dier id, dier chip nr., dier naam or klant id.';
 $lang['adress']         = 'Adres';
 $lang['city']           = 'Gemeente';
 $lang['main_city']      = 'Stad';
@@ -131,3 +131,9 @@ $lang['debts']         = 'schulden';
 $lang['low_budget']         = 'laag budget';
 $lang['contact']         = 'contact';
 $lang['comment']         = 'commentaar';
+
+# shortages
+$lang['shortage']         = 'Tekort';
+$lang['local']         = 'Lokaal';
+$lang['global']         = 'Globaal';
+$lang['no_shortage']         = 'Geen tekorten';

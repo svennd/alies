@@ -23,8 +23,8 @@ class Search extends Vet_Controller
 		$query = $this->input->post('search_query');
 		if ($query)
 		{
-			
-			$last_name  = $this->owners->search_by_last_name($query);
+			# catch direct ID search here
+			$last_name  = (is_numeric($query)) ? $this->owners->get_all((int)$query) : $this->owners->search_by_last_name($query);
 			$first_name = $this->owners->search_by_first_name($query);
 			$street		= $this->owners->search_by_street_ex($query);
 			
@@ -35,7 +35,7 @@ class Search extends Vet_Controller
 					break;
 				}
 			}
-			$phone 		= ($possible_phone) ? $this->owners->search_by_phone_ex($query) : array();
+			$phone = ($possible_phone) ? $this->owners->search_by_phone_ex($query) : array();
 			
 			if (is_numeric($query))
 			{
@@ -49,7 +49,7 @@ class Search extends Vet_Controller
 			
 			$data = array(
 							'query' 		=> htmlspecialchars($query),
-							'name_street'	=> array_merge($last_name, $first_name, $street),
+							// 'name_street'	=> array_merge($last_name, $first_name, $street),
 							'last_name'		=> $last_name,
 							'first_name'	=> $first_name,
 							'street'		=> $street,
