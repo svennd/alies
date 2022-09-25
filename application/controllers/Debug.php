@@ -100,7 +100,7 @@ class Debug extends Vet_Controller
 		if ($version === false) {
 			show_error($this->migration->error_string());
 		}
-        var_dump($version);
-        echo "upgraded";
+        
+        echo "upgraded : " . implode($version);
 	}
 }
