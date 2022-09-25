@@ -105,7 +105,7 @@ class Reports extends Admin_Controller
 	public function usage_csv(int $product_id, $search_from, $search_to)
 	{
 		$product = $this->products->usage_detail($product_id, $search_from, $search_to);
-		$product_info =  $this->products->get($product_id);
+		// $product_info =  $this->products->get($product_id);
 
 		$csv_lines = array();
 		# headers

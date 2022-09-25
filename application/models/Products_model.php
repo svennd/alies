@@ -95,31 +95,30 @@ class Products_model extends MY_Model
 	{
 		$date = date("Y-m-1 00:00", strtotime("-" . $month . " months"));
 
-		if ($type == "none")
-		{
-			$sql = "
-				select 
-					year(ep.created_at) as y, 
-					month(ep.created_at) as m, 
-					sum(volume) as p
-				from 
-					events_products as ep
-				JOIN
-					events
-				ON
-					events.id = ep.event_id
-				where 
-					ep.product_id = '" . $product_id . "' 
-				and
-					events.created_at > '" . $date . "'
-				group by 
-					year(ep.created_at), 
-					month(ep.created_at)
-				order by
-					ep.created_at DESC
-			";
-		}
-		elseif ($type == "per_vet")
+		# none =)
+		$sql = "
+			select 
+				year(ep.created_at) as y, 
+				month(ep.created_at) as m, 
+				sum(volume) as p
+			from 
+				events_products as ep
+			JOIN
+				events
+			ON
+				events.id = ep.event_id
+			where 
+				ep.product_id = '" . $product_id . "' 
+			and
+				events.created_at > '" . $date . "'
+			group by 
+				year(ep.created_at), 
+				month(ep.created_at)
+			order by
+				ep.created_at DESC
+		";
+
+		if ($type == "per_vet")
 		{
 			$sql = "
 			select 
