@@ -16,6 +16,12 @@ class Stock_limit_model extends MY_Model
 					'foreign_key' => 'id',
 					'local_key' => 'product_id'
 				);
+		$this->has_one['stock_locations'] = array(
+			'foreign_model' => 'Stock_location_model',
+			'foreign_table' => 'stock_location',
+			'foreign_key' => 'id',
+			'local_key' => 'stock'
+		);
 		parent::__construct();
 	}
 }

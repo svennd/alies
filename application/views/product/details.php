@@ -1,12 +1,8 @@
 <div class="card shadow mb-4">
 	<div class="card-header">
 		<a href="<?php echo base_url(); ?>products">Products</a> /
-		<?php if ($product) : ?>
 		<a href="<?php echo base_url(); ?>products/product_list">List</a> /
 		Edit Product / <?php echo (isset($product['name'])) ? $product['name']: '' ?>
-		<?php else : ?>
-		New Product
-		<?php endif; ?>
 	</div>
 	
 	<div class="card-body">
@@ -19,29 +15,23 @@
 			</div>
 		<?php endif; ?>
 		
-		<?php if ($product) : ?>
-			<form action="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>" method="post" autocomplete="off">
-		<?php else : ?>
-			<form action="<?php echo base_url(); ?>products/product" method="post" autocomplete="off">
-		<?php endif; ?>
+		<form action="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>" method="post" autocomplete="off">
 		
 		<div class="row">
 			<div class="col-2">
 				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 					<a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Product Info</a>
-					<a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Stock</a>
+					<?php if ($this->ion_auth->in_group("admin")): ?>
+						<a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Stock</a>
+					<?php endif; ?>
 					<a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Transaction Info</a>
 					<a class="nav-link" id="v-pills-vaccine-tab" data-toggle="pill" href="#v-pills-vaccine" role="tab" aria-controls="v-pills-settings" aria-selected="false">Vaccine</a>
-				<?php if ($product) : ?>
 					<?php if ($this->ion_auth->in_group("admin")): ?>
 						<a class="nav-link" id="v-pills-price-tab" data-toggle="pill" href="#v-pills-price" role="tab" aria-controls="v-pills-varia" aria-selected="false">Price</a>
 					<?php endif; ?>
-				<?php endif; ?>
 					<a class="nav-link" id="v-pills-varia-tab" data-toggle="pill" href="#v-pills-varia" role="tab" aria-controls="v-pills-varia" aria-selected="false">Varia</a>
-				<?php if ($product) : ?>
 					<?php if ($this->ion_auth->in_group("admin")): ?>
 					<a class="nav-link" id="v-pills-danger-tab" data-toggle="pill" href="#v-pills-danger" role="tab" aria-controls="v-pills-danger" aria-selected="false">Danger</a>
-					<?php endif; ?>
 				<?php endif; ?>
 				</div>
 			</div>
@@ -101,28 +91,76 @@
 	<?php $total_1y = 0.0; if ($history_1y) : foreach ($history_1y as $h) { $total_1y += $h['volume']; } endif; ?>
 	<?php endif; ?>
 	<hr />		
-	<div class="form-group">
-		<label for="limits">Min. requirement</label>
-		<input type="text" name="limit_stock" class="form-control" id="limits" value="<?php echo (isset($product['limit_stock'])) ? $product['limit_stock']: '' ?>">
-		<small id="limitHelp" class="form-text text-muted">Minimum sellable volumes that should be available; (global)</small>
-		
-		<?php if ($product) : ?>
-		<table class="table table-sm mt-4">
-			<tr>
-				<td>Use Last Month</td>
-				<td><?php echo $total_1m; ?> <?php echo $product['unit_sell']; ?></td>
-			</tr>
-			<tr>
-				<td>Use Last 6 Month</td>
-				<td><?php echo $total_6m; ?> <?php echo $product['unit_sell']; ?></td>
-			</tr>
-			<tr>
-				<td>Use Last Year</td>
-				<td><?php echo $total_1y; ?> <?php echo $product['unit_sell']; ?></td>
-			</tr>
-		</table>
-		<?php endif; ?>
-	</div> 
+
+	<div class="form-row">
+			<div class="form-group col">
+				<label for="exampleFormControlInput3">Limit (global)</label>
+
+				<div class="input-group mb-3">
+					<input type="text" name="limit_stock" class="form-control" id="limits" value="<?php echo (isset($product['limit_stock'])) ? $product['limit_stock']: '' ?>">
+					<div class="input-group-append">
+						<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
+					</div>
+				</div>
+			<small id="limitHelp" class="form-text text-muted">Minimum sellable volumes that should be available; (global)</small>
+			</div>
+			<div class="form-group col">
+				<table class="table table-sm mt-4">
+					<tr>
+						<td>Use Last Month</td>
+						<td><?php echo $total_1m; ?> <?php echo $product['unit_sell']; ?></td>
+					</tr>
+					<tr>
+						<td>Use Last 6 Month</td>
+						<td><?php echo $total_6m; ?> <?php echo $product['unit_sell']; ?></td>
+					</tr>
+					<tr>
+						<td>Use Last Year</td>
+						<td><?php echo $total_1y; ?> <?php echo $product['unit_sell']; ?></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<h5>Local limits</h5>
+		<hr />
+		<p>The mimimal volume that should be in each location.</p>
+
+		<div class="form-row">
+		<?php foreach ($stock_locations as $stock): 
+			$local_limit_id = -1;
+			$local_limit_value = 0;
+
+			# super dirty but whateves
+			if ($llimit)
+			{
+				foreach($llimit as $limit)
+				{
+					if ($stock['id'] == $limit['stock'])
+					{
+						$local_limit_id = $limit['id'];
+						$local_limit_value = $limit['volume'];
+						break;
+					}
+				}
+			}
+			?>
+		<div class="form-group col-md-6">
+			<div class="form-group row">
+				<label for="inputPassword" class="col-sm-4 col-form-label"><?php echo $stock['name']; ?></label>
+				<div class="col-sm-4">
+					<div class="input-group mb-3">
+						<input type="text" name="limit[<?php echo $stock['id']; ?>][<?php echo $local_limit_id; ?>]" class="form-control" id="limits" value="<?php echo $local_limit_value; ?>">
+						<div class="input-group-append">
+							<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+				
+		<?php endforeach; ?>
+		</div>
+
 	  </div>
       <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
 	  	<h5>Transaction info</h5>
@@ -217,7 +255,7 @@
 		</div>
 
 	  </div>
-	  
+
       <div class="tab-pane fade" id="v-pills-vaccine" role="tabpanel" aria-labelledby="v-pills-vaccine-tab">
 		  <div class="form-group form-check">
 			<input type="checkbox" class="form-check-input" name="vaccin" value="1" id="exampleCheck1" <?php echo ($product && $product['vaccin']) ? "checked" : ""; ?>>
@@ -230,38 +268,36 @@
 			</div>
 	  </div>	
 	  
-  		<?php if ($product) : ?>
-			<div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
-			<?php if($product['sellable']): ?>
-			<?php 
-			if (!isset($product['prices']))
+		<div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
+		<?php if($product['sellable']): ?>
+		<?php 
+		if (!isset($product['prices']))
+		{
+			echo "<span style='color:red;'><b>no price set!</b></span>";
+		} 
+		else 
+		{
+			if (count($product['prices']) > 1)
 			{
-				echo "<span style='color:red;'><b>no price set!</b></span>";
-			} 
-			else 
-			{
-				if (count($product['prices']) > 1)
+				echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['unit_sell'];
+				echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
+				foreach ($product['prices'] as $price)
 				{
-					echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['unit_sell'];
-					echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
-					foreach ($product['prices'] as $price)
-					{
-						echo "<tr><td>". $price['volume'] ." ". $product['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
-					}
-					echo "</table></div>";
+					echo "<tr><td>". $price['volume'] ." ". $product['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
 				}
-				else
-				{
-					echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['unit_sell'];
-				}
+				echo "</table></div>";
 			}
-			?><br/>
-			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-success">Edit Price</a>
-			<?php else: ?>
-				<span style='color:red;'><b>Product is set as non-can't be sold.</b></span>
-			<?php endif; ?>
-			</div>
+			else
+			{
+				echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['unit_sell'];
+			}
+		}
+		?><br/>
+		<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-success">Edit Price</a>
+		<?php else: ?>
+			<span style='color:red;'><b>Product is set as non-can't be sold.</b></span>
 		<?php endif; ?>
+		</div>
 	  
 	  
 	  

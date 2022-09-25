@@ -275,32 +275,51 @@ class Products extends Vet_Controller
 								"limit_stock" 			=> $this->input->post('limit_stock')
 							);
 
-			if ($this->input->post('submit') == "add") {
-				# new product
-				$id = $this->products->insert($input);
-				$update = $id;
+			$update = $this->products->update($input, $id);
+			
+			# add or update local limits
+			$this->set_local_limits($this->input->post('limit'), $id);
 
-				# log this
-				$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $id);
-
-			} elseif ($this->input->post('submit') == "edit") {
-				$update = $this->products->update($input, $id);
-
-				# log this
-				$this->logs->logger($this->user->id, INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
-			}
+			# log this
+			$this->logs->logger($this->user->id, INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
 		}
 
 		$data = array(
 						'product' 	=> ($id) ? $this->products->with_prices('fields:id, volume, price|order_inside:volume asc')->get($id) : false,
 						'type' 		=> $this->prod_type->get_all(),
 						'update'	=> $update,
+						'llimit'	=> ($id) ? $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all() : false,
+						'stock_locations'	=> $this->stock_location->get_all(),
 						'booking'	=> $this->booking->get_all(),
 						'history_1m'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
 						'history_6m'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
 						'history_1y'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
 						);
-		$this->_render_page('product_detail', $data);
+		$this->_render_page('product/details', $data);
+	}
+
+	/*
+		set or add local limits
+	*/
+	private function set_local_limits(array $limits, int $product_id)
+	{
+		foreach($limits as $stock => $value)
+		{
+			$key = array_keys($value)[0];
+			$val = array_values($value)[0];
+
+			# not a new key : do update
+			if($key != -1)
+			{
+				$this->stock_limit->where(array('id' => $key))->update(array('volume' => $val));
+			}
+			else
+			{
+				# skip 0 volumes
+				if ($val == 0) { continue; }
+				$this->stock_limit->insert(array('stock' => (int) $stock, 'product_id' => $product_id, 'volume' => $val ));
+			}
+		}
 	}
 
 	/*
