@@ -50,7 +50,7 @@ class Search extends Vet_Controller
 			$data = array(
 							'query' 		=> htmlspecialchars($query),
 							// 'name_street'	=> array_merge($last_name, $first_name, $street),
-							'last_name'		=> $last_name,
+							'last_name'		=> ($last_name) ? $last_name : array(),
 							'first_name'	=> $first_name,
 							'street'		=> $street,
 							'phone'			=> $phone,

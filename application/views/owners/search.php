@@ -80,7 +80,6 @@
 													);
 							$active_switch = false;
 							$total_count = 0;
-							
 							foreach ($results as $key => $value) 
 							{
 								$current_count = count($value[0]);
