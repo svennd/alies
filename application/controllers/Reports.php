@@ -214,6 +214,7 @@ class Reports extends Admin_Controller
 			->where('created_at < STR_TO_DATE("' . $input_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
+			->with_owner('fields:last_name,id,low_budget,debts,btw_nr')
 			->order_by('created_at', 'asc')
 			->get_all();
 

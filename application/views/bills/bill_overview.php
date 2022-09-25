@@ -80,7 +80,9 @@ $now->modify('+1 day');
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#invoice").addClass('active');
+	$("#reportsmgm").addClass('active');
+	$("#reportsmgm").show();
+	$("#invoice_report").addClass('active');
 	$("#dataTable").DataTable({"pageLength": 50,
 	"columnDefs": [
     { "type": "num", "targets": 0 }
