@@ -42,14 +42,14 @@
 
   <h5>Identification</h5>
   <hr>
-   <div class="form-group">
-    <label for="vacbook">nr vac book</label>
-    <input type="text" name="vacbook" class="form-control" id="vacbook" value="<?php echo ($edit_mode && isset($pet['nr_vac_book'])) ? $pet['nr_vac_book']: '' ?>">
-  </div>
   <div class="form-group">
     <label for="chip">Chip</label>
     <input type="text" name="chip" class="form-control" id="chip" value="<?php echo ($edit_mode && isset($pet['chip'])) ? $pet['chip']: '' ?>">
 	<i><small id="chip_info" class="form-text text-muted ml-2">&nbsp;</small></i>
+  </div>
+   <div class="form-group">
+    <label for="vacbook">nr vac book</label>
+    <input type="text" name="vacbook" class="form-control" id="vacbook" value="<?php echo ($edit_mode && isset($pet['nr_vac_book'])) ? $pet['nr_vac_book']: '' ?>">
   </div>
 
   <h5>Trivia</h5>
