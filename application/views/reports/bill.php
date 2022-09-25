@@ -47,29 +47,36 @@ $cd->modify('-3 month');
             <div class="card-body">
 
 			<?php if ($bills): ?>
-				
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
 					<th>#invoice</th>
-					<th>vet</th>
-					<th>location</th>
 					<th>amount</th>
+					<th>client</th>
+					<th>created</th>
+					<th>location</th>
+					<th>vet</th>
 					<th>status</th>
 					<th>updated</th>
-					<th>created</th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($bills as $bill): ?>
 				<tr>
 					<td><a href="<?php echo base_url(); ?>/invoice/get_bill/<?php echo $bill['id']; ?>">#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?></a></td>
-					<td><?php echo $bill['vet']['first_name']; ?></td>
-					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 					<td><?php echo $bill['amount']; ?> &euro;</td>
+					<td>
+						<?php echo ($bill['owner']['btw_nr']) ? "<i class='far fa-building'></i>" : "<i class='fas fa-user'></i>"; ?>
+						<a href="<?php echo base_url('owners/detail/' . $bill['owner']['id']); ?>" class="<?php echo ($bill['owner']['debts']) ? "text-danger" : (($bill['owner']['low_budget']) ? "text-warning" : ""); ?>">
+						<?php echo $bill['owner']['last_name']; ?>
+						</a>
+					</td>
+					<td><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
+					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
+					<td><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo $state[$bill['status']]; ?></td>
 					<td><?php echo (is_null($bill['updated_at'])) ? '-' : timespan(strtotime($bill['updated_at']), time(), 1) . ' ago'; ?></td>
-					<td><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
+
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
