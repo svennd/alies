@@ -350,6 +350,7 @@ class Stock extends Vet_Controller
 		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
 
 		if ($this->input->post('submit')) {
+			$this->logs->logger($this->user->id, INFO, "admin_stock_edit", "debug: " . implode(',', $this->input->post()));
 			$this->stock
 						->where(array("id" => $stock_id))
 						->update(array(
