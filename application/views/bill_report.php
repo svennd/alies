@@ -139,7 +139,7 @@
 											<td><?php echo $procedure['amount']; ?></td>
 											<td><?php echo $procedure['net_price']; ?> &euro;</td>
 											<td><?php echo $procedure['btw']; ?> %</td>
-											<td><?php echo $procedure['price']; ?> &euro;</td>
+											<td><?php echo round($procedure['price'],2); ?> &euro;</td>
 										</tr>
 									<?php endforeach; ?>
 									<?php foreach ($prod as $product): ?>
@@ -148,7 +148,7 @@
 											<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 											<td><?php echo $product['net_price']; ?> &euro;</td>
 											<td><?php echo $product['btw']; ?> %</td>
-											<td><?php echo $product['price']; ?> &euro;</td>
+											<td><?php echo round($product['price'],2); ?> &euro;</td>
 										</tr>
 									<?php endforeach; ?>
 									</tbody>
