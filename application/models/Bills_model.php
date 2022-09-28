@@ -31,6 +31,25 @@ class Bills_model extends MY_Model
 		parent::__construct();
 	}
 	
+	public function bill_update(int $bill_id, array $data)
+	{
+		$sql = "
+			UPDATE 
+				`bills` 
+			SET 
+				`vet` = '" . (int) $data['vet'] . "', 
+				`location` = '" . (int) $data['location'] . "', 
+				`amount` = '" . (float) $data['amount'] . "',
+				`cash` = '" . (float) $data['cash'] . "', 
+				`card` = '" . (float) $data['card'] . "', 
+				`status` = '" . (int) $data['status'] . "', 
+				`created_at` = '" . $data['created'] ."' 
+			WHERE 
+				`bills`.`id` = '" . $bill_id . "';
+		";
+		return ($this->db->query($sql));
+	}
+
 	public function get_status($bill_id)
 	{
 		$status = $this->fields('status')->get($bill_id);

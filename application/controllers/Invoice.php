@@ -175,6 +175,7 @@ class Invoice extends Vet_Controller
 		# calculate the full bill
 		$bill_total = 0.0;
 		foreach ($bill_total_tally as $btw => $total) {
+			// var_dump($bill_total_tally);
 			$bill_total += $total * (1 + ($btw/100));
 		}
 
@@ -243,7 +244,7 @@ class Invoice extends Vet_Controller
 
 			# update the bill
 			$total_payed = ((float)$cash_value+(float)$card_value) - (float)$bill['amount'];
-			$status = ($total_payed == 0) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
+			$status = ($total_payed < 0.001) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
 
 			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value ), $bill_id);
 
@@ -273,7 +274,7 @@ class Invoice extends Vet_Controller
 			# update the bill in case something changed
 			# hack for float comparison
 			# bill_amount can be NULL
-			if (!$bill_amount && round($bill_total, 2) != (float) $bill_amount) {
+			if (is_null($bill_amount) || round($bill_total, 2) != (float) $bill_amount) {
 				$this->bills->update(array("status" => PAYMENT_UNPAID, "amount" => round($bill_total, 2)), $bill_id);
 			}
 		}

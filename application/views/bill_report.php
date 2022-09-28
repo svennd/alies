@@ -78,7 +78,7 @@
 		Payed : <?php echo $bill['amount']; ?> &euro; (card : <?php echo $card; ?> &euro;, cash : <?php echo $cash; ?> &euro;)
 
 		<?php endif; ?>
-			<?php if ($bill['status'] != PAYMENT_PAID): ?>
+			<?php if ($bill['status'] != PAYMENT_PAID && $bill['status'] != PAYMENT_PARTIALLY): ?>
 			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2"><i class="fas fa-syringe"></i> Drop from stock</a>
 		<?php endif; ?>
 		  </form>

@@ -58,6 +58,7 @@ $cd->modify('-3 month');
 					<th>vet</th>
 					<th>status</th>
 					<th>updated</th>
+					<th>edit</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -76,6 +77,7 @@ $cd->modify('-3 month');
 					<td><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo $state[$bill['status']]; ?></td>
 					<td><?php echo (is_null($bill['updated_at'])) ? '-' : timespan(strtotime($bill['updated_at']), time(), 1) . ' ago'; ?></td>
+					<td><a href='<?php echo base_url('admin_invoice/edit_bill/' . $bill['id']); ?>' class="btn btn-outline-danger btn-sm">edit</a></td>
 
 				</tr>
 				<?php endforeach; ?>

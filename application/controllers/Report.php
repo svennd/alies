@@ -25,7 +25,7 @@ class Report extends Vet_Controller
 											'vet' 		=> $this->user->id,
 											'no_history' => 0
 										))
-							->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
+							->where('updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)', null, null, false, false, true)
 							->order_by('created_at', 'DESC')->get_all(),
 							);
 

@@ -12,8 +12,8 @@ foreach ($locations as $l)
       <div class="card shadow mb-4">
 	 		<div class="card-header border-bottom">
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#global" role="tab" aria-controls="info" aria-selected="true"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('local'); ?>)</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="local-tab" data-toggle="tab" href="#local" role="tab" aria-controls="stocktabs" aria-selected="false"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('global'); ?>)</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#global" role="tab" aria-controls="info" aria-selected="true"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('global'); ?>)</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="local-tab" data-toggle="tab" href="#local" role="tab" aria-controls="stocktabs" aria-selected="false"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('local'); ?>)</a></li>
 			</ul>
 			</div>
             <div class="card-body">

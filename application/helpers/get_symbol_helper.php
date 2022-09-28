@@ -54,11 +54,11 @@ function get_bill_status(int $status)
 		case PAYMENT_PARTIALLY:
 			return "Paid Partially";
 		case PAYMENT_UNPAID:
-			return"Unpaid";
+			return "Unpaid";
 		case PAYMENT_OPEN:
 			return "Open";
 		case PAYMENT_NON_COLLECTABLE:
-			return "PAYMENT_NON_COLLECTABLE";
+			return "Not collectable";
 		default:
 			return "unknown";
 	}
