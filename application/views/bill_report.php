@@ -9,7 +9,7 @@
 
 	<?php if ($open_bills): ?>
 	<div class="alert alert-danger" role="alert">
-	Open invoices !<br/>
+	<?php echo $this->lang->line('open_invoices'); ?> !<br/>
 		<?php foreach($open_bills as $b): ?>
 			<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $b['id']; ?>"><?php echo $b['amount']; ?> &euro;</a><br/>
 		<?php endforeach; ?>
@@ -18,8 +18,9 @@
 
 	<div class="card mb-4">
 		<div class="card-header">
-			<a href="<?php echo base_url(); ?>invoice">Invoice</a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-			Bill (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>)
+			<a href="<?php echo base_url(); ?>invoice"><?php echo $this->lang->line('Invoice'); ?></a> /
+			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
+			<?php echo $this->lang->line('bill'); ?> (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>)
 		</div>
 		<div class="card-body">
 
@@ -38,14 +39,14 @@
 							$total_short = round( (float) $bill['amount'] - ($card + $cash) , 2);
 							?>
 								<p>
-									Short : <?php echo $total_short; ?> &euro; (card : <?php echo $card; ?> &euro;, cash : <?php echo $cash; ?> &euro;)
+									<?php echo $this->lang->line('shortage'); ?> : <?php echo $total_short; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
 								</p>
 						<?php endif; ?>
 
 					<form action="<?php echo base_url(); ?>invoice/bill_pay/<?php echo $bill_id ?>" method="post" autocomplete="off">
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
-				<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-cc-visa"></i>&nbsp;Card</a></span>
+				<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-cc-visa"></i>&nbsp;<?php echo $this->lang->line('card'); ?></a></span>
 			</div>
 			<input type="text" class="form-control" id="card_value" name="card_value" value="<?php echo ($card != 0) ? $card:'';?>" />
 			<div class="input-group-append">
@@ -55,7 +56,7 @@
 
 		<div class="input-group mb-3">
 		  <div class="input-group-prepend">
-			<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fas fa-euro-sign"></i>&nbsp; Cash</a></span>
+			<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fas fa-euro-sign"></i>&nbsp;<?php echo $this->lang->line('cash'); ?></a></span>
 		  </div>
 		  <input type="text" class="form-control" id="cash_value" name="cash_value" value="<?php echo ($cash != 0) ? $cash:'';?>" />
 		<div class="input-group-append">
@@ -66,20 +67,20 @@
 		</div>
 		</div>
 		<i><small id="payment_info" class="form-text text-muted ml-2">&nbsp;</small></i>
-			<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fas fa-file-invoice-dollar"></i> Payment Complete</button>
+			<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fas fa-file-invoice-dollar"></i> <?php echo $this->lang->line('payment_complete'); ?></button>
 
 		<?php endif; ?>
 		<?php if ($bill['status'] == PAYMENT_PAID): ?>
-		<p class="lead">Payment : <?php echo get_bill_status($bill['status']); ?>!</p>
+		<p class="lead"><?php echo $this->lang->line('payment'); ?>: <?php echo get_bill_status($bill['status']); ?>!</p>
 		<?php
 			$cash = round((float) $bill['cash'], 2);
 			$card = round((float) $bill['card'], 2);
 		?>
-		Payed : <?php echo $bill['amount']; ?> &euro; (card : <?php echo $card; ?> &euro;, cash : <?php echo $cash; ?> &euro;)
+		<?php echo $this->lang->line('payed'); ?> : <?php echo $bill['amount']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
 
 		<?php endif; ?>
 			<?php if ($bill['status'] != PAYMENT_PAID && $bill['status'] != PAYMENT_PARTIALLY): ?>
-			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2"><i class="fas fa-syringe"></i> Drop from stock</a>
+			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2"><i class="fas fa-syringe"></i> <?php echo $this->lang->line('drop_from_stock'); ?></a>
 		<?php endif; ?>
 		  </form>
 
@@ -113,7 +114,7 @@
 								<div class="col-md-6">
 									<h4><?php echo ucfirst(strtolower($pet_info['name'])); ?>
 									<small>
-									<a href="<?php echo base_url(); ?>events/event/<?php echo $event_id; ?>" class="btn btn-sm btn-outline-primary">consult</a><br/>
+									<a href="<?php echo base_url(); ?>events/event/<?php echo $event_id; ?>" class="btn btn-sm btn-outline-primary"><?php echo $this->lang->line('consult'); ?></a><br/>
 									</small></h4>
 								</div>
 
@@ -126,10 +127,10 @@
 									<thead>
 										<tr>
 											<th class="border-0 text-uppercase small font-weight-bold">Item</th>
-											<th class="border-0 text-uppercase small font-weight-bold">Quantity</th>
-											<th class="border-0 text-uppercase small font-weight-bold">Price</th>
-											<th class="border-0 text-uppercase small font-weight-bold">BTW</th>
-											<th class="border-0 text-uppercase small font-weight-bold">Total</th>
+											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('Quantity'); ?></th>
+											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('Price'); ?></th>
+											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('VAT'); ?></th>
+											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('Total'); ?></th>
 										</tr>
 									</thead>
 									<tbody>

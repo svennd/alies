@@ -28,14 +28,14 @@ $now->modify('+1 day');
 					<label for="staticEmail2" class="sr-only">search_to</label>
 					<input type="date" name="search_to" class="form-control" value="<?php echo (!empty($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format($now, 'Y-m-d'); ?>" id="search_to">
 				  </div>
-				  <button type="submit" class="btn btn-success mb-2">Search range</button>
+				  <button type="submit" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
 
                 </div>
 		</div>
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>invoice">Invoices</a>
+				<?php echo $this->lang->line('invoices'); ?>
 			</div>
             <div class="card-body">
 			<?php if ($bills): ?>
@@ -43,12 +43,12 @@ $now->modify('+1 day');
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th><i class="far fa-clock"></i> Date</th>
-					<th>Client</th>
-					<th>Status</th>
-					<th><i class="fas fa-user-md"></i> Vet</th>
-					<th><i class="fas fa-compass"></i> Location</th>
-					<th>Amount</th>
+					<th><i class="far fa-clock"></i> <?php echo $this->lang->line('date'); ?></th>
+					<th><?php echo $this->lang->line('client'); ?></th>
+					<th><?php echo $this->lang->line('state'); ?></th>
+					<th><?php echo $this->lang->line('vet'); ?></th>
+					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('amount'); ?></th>
 				</tr>
 				</thead>
 				<tbody>

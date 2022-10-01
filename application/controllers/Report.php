@@ -16,15 +16,18 @@ class Report extends Vet_Controller
 
 	public function index()
 	{
+		$where = array('no_history' => 0);
+		if (!($this->ion_auth->in_group("admin")))
+		{
+			$where['vet'] = $this->user->id;
+		}
 		$data = array(
 			"reports" => $this->events
 							->with_pet('fields:id, type, name')
 							->with_location('fields:name')
+							->with_vet('fields:first_name')
 							->fields('id, title, pet, status, payment, location, report, updated_at')
-							->where(array(
-											'vet' 		=> $this->user->id,
-											'no_history' => 0
-										))
+							->where($where)
 							->where('updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)', null, null, false, false, true)
 							->order_by('created_at', 'DESC')->get_all(),
 							);

@@ -55,7 +55,7 @@
 		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 			<?php echo $this->lang->line('report'); ?>
 			<div class="dropdown no-arrow">
-				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/print" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> Print Invoice</a>
+				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/print" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> <?php echo $this->lang->line('print_invoice'); ?></a>
 				<?php if($event_info['no_history'] == 1): ?>
 				<a href="<?php echo base_url(); ?>events/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
 				<i class="fas fa-eye"></i> <?php echo $this->lang->line('enable_report'); ?>

@@ -4,17 +4,17 @@
 
 		<div class="card mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/search">Client</a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / overview
+				<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
 				<small>(#<?php echo $owner['id']; ?>)</small>
 			</div>
 			<div class="card-body">
-				<a href="<?php echo base_url(); ?>owners/invoices/<?php echo $owner['id']; ?>" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-history"></i></span><span class="text">Invoices</span></a>
-				<a href="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" class="btn btn-info btn-icon-split"><span class="icon text-white-50"><i class="fas fa-user"></i></span><span class="text">Edit Client</span></a>
+				<a href="<?php echo base_url(); ?>owners/invoices/<?php echo $owner['id']; ?>" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-history"></i></span><span class="text"><?php echo $this->lang->line('invoices'); ?></span></a>
+				<a href="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" class="btn btn-info btn-icon-split"><span class="icon text-white-50"><i class="fas fa-user"></i></span><span class="text"><?php echo $this->lang->line('edit_client'); ?></span></a>
 			</div>
 		</div>
 
 		<div class="card">
-			<div class="card-header">Pets</div>
+			<div class="card-header"><?php echo $this->lang->line('pets'); ?></div>
 				<div class="card-body">
 					<?php if (isset($update) && $update) : ?>
 					<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -70,7 +70,7 @@
 
 								<div class="col-lg-12 col-xl-4 my-1">
 									<div class="btn-group">
-										<a class="btn btn-outline-success" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> New Consult</a>
+										<a class="btn btn-outline-success" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>
 										<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
 									</div>
 								</div>
@@ -80,7 +80,7 @@
 					<?php endif; ?>
 					<li class="list-group-item list-group-item-light">
 						<p class="text-center">
-								<a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> Add Pet</a>
+								<a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_pet'); ?></a>
 						</p>
 					</li>
 					</ul>
@@ -108,18 +108,18 @@
 							<div id="lost_or_passed">
 								<div class="mb-3">
 								<?php if($dead_pet): ?>
-								<a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#passed" role="button" aria-expanded="false" aria-controls="collapseExample">Passed Away (<?php echo $total_dead; ?>)</a>
+								<a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#passed" role="button" aria-expanded="false" aria-controls="collapseExample"><?php echo $this->lang->line('passed_away'); ?> (<?php echo $total_dead; ?>)</a>
 								<?php endif; ?>
 
 								<?php if($lost_pet): ?>
-								<a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#gone" role="button" aria-expanded="false" aria-controls="collapseExample">Gone / Lost (<?php echo $total_lost; ?>)</a>
+								<a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#gone" role="button" aria-expanded="false" aria-controls="collapseExample"><?php echo $this->lang->line('gone_or_lost'); ?> (<?php echo $total_lost; ?>)</a>
 								<?php endif; ?>
 								</div>
 
 								<?php if($dead_pet): ?>
 								<div class="collapse" id="passed" data-parent="#lost_or_passed">
 								<div class="card card-body">
-									<strong>Passed away</strong>
+									<strong><?php echo $this->lang->line('passed_away'); ?></strong>
 									<?php foreach ($dead_pet as $pet): ?>
 										<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>">
 												<?php echo get_symbol($pet['type']); ?>
@@ -133,7 +133,7 @@
 								<?php if($lost_pet): ?>
 								<div class="collapse" id="gone" data-parent="#lost_or_passed">
 								<div class="card card-body">
-									<strong>Gone / lost</strong>
+									<strong><?php echo $this->lang->line('gone_or_lost'); ?></strong>
 									<?php foreach ($lost_pet as $pet): ?>
 										<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>">
 												<?php echo get_symbol($pet['type']); ?>
@@ -156,7 +156,7 @@
 
 		<?php if($open_bill): ?>
 		<div class="alert alert-danger" role="alert">
-		Still open invoices :
+		<?php echo $this->lang->line('open_invoices'); ?> :
 			<ul>
 		<?php foreach($open_bill as $bill): ?>
 			<li><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo $bill['amount']; ?> &euro;</a></li>

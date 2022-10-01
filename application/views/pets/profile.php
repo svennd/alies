@@ -24,8 +24,16 @@ $edit_mode = (isset($pet)) ? true : false;
 						base_url() . 'pets/edit/' . $pet['id'] :
 						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off">
 
-<?php include 'profile/required.php'; ?>
-<?php include 'profile/details.php'; ?>
+<div class="row">
+	<div class="col">
+		<?php include 'profile/required.php'; ?>
+	</div>
+	<div class="col">
+		<?php include 'profile/details.php'; ?>
+	</div>
+</div>
+<input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
+<button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo ($edit_mode) ? $this->lang->line('edit') : $this->lang->line('add'); ?></button>
 
 </div>
 		</div>

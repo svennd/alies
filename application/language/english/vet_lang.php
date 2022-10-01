@@ -14,6 +14,7 @@ $lang['zip']          = 'Zip';
 $lang['show']          = 'Show';
 $lang['edit']          = 'Edit';
 $lang['add']          = 'Add';
+$lang['required']          = 'Required';
 
 # welcome page
 $lang['title_welcome']  = 'Welcome';
@@ -55,6 +56,7 @@ $lang['province']           = 'Province';
 $lang['last_visit']     = 'Last visit';
 $lang['option']         = 'Option';
 $lang['search_client']  = 'Search Client';
+$lang['edit_client']  = 'Edit Client';
 
 # invoices
 $lang['title_invoice']   = 'Search invoices';
@@ -114,6 +116,7 @@ $lang['wipe']         = 'Wipe';
 $lang['store']         = 'Store';
 $lang['client']         = 'Client';
 $lang['event']         = 'Event';
+$lang['print_invoice']         = 'Print Invoice';
 
 # owner profile
 $lang['btw_nr']         = 'BTW nr';
@@ -134,3 +137,45 @@ $lang['shortage']         = 'Shortage';
 $lang['local']         = 'Local';
 $lang['global']         = 'Global';
 $lang['no_shortage']         = 'No shortages';
+
+# changes
+$lang['last_update']    = 'Last Update';
+$lang['finished']    = 'finished';
+$lang['invoice_open']    = 'open';
+
+# invoices
+$lang['invoices']    = 'Invoices';
+$lang['state']      = 'State';
+$lang['amount']      = 'Amount';
+$lang['search_range']      = 'Search Range';
+$lang['open_invoices']      = 'Open invoices';
+$lang['Quantity']      = 'Quantity';
+$lang['Price']      = 'Price';
+$lang['VAT']                  = 'VAT';
+$lang['Total']                = 'Total';
+$lang['card']                 = 'Card';
+$lang['cash']                 = 'Cash';
+$lang['Payment']              = 'Payment';
+$lang['payment_complete']     = 'payment complete';
+$lang['payed']                = 'Payed';
+$lang['drop_from_stock']      = 'Drop from stock';
+
+# owners
+$lang['overview']      = 'overview';
+$lang['pets']      = 'Pets';
+$lang['add_pet']      = 'Add Pet';
+$lang['passed_away']      = 'Passed away';
+$lang['gone_or_lost']      = 'Gone / Lost';
+
+# pet fiche
+$lang['dog']      = 'dog';
+$lang['cat']      = 'cat';
+$lang['horse']      = 'horse';
+$lang['bird']      = 'bird';
+$lang['rabbit']      = 'rabbit';
+$lang['other']      = 'other';
+$lang['gender']      = 'gender';
+$lang['birth']      = 'birth';
+$lang['pet_name']      = 'Name';
+$lang['weight']      = 'Weight';
+$lang['notes']      = 'notes';

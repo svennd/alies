@@ -15,6 +15,7 @@ $lang['zip']          = 'Postcode';
 $lang['show']          = 'Toon';
 $lang['edit']          = 'Bewerk';
 $lang['add']          = 'Toevoegen';
+$lang['required']          = 'Verplicht';
 
 
 # welcome page
@@ -57,6 +58,7 @@ $lang['province']           = 'Provincie';
 $lang['last_visit']     = 'Laatste bezoek';
 $lang['option']         = 'Opties';
 $lang['search_client']  = 'Klant opzoeken';
+$lang['edit_client']  = 'Klant bewerken';
 
 # invoices
 $lang['title_invoice']   = 'Facturen opzoeken';
@@ -117,6 +119,7 @@ $lang['wipe']           = 'Wipe';
 $lang['store']          = 'Store';
 $lang['client']         = 'Klant';
 $lang['event']          = 'Event'; # limited space
+$lang['print_invoice']  = 'Print factuur';
 
 # owner profile
 $lang['btw_nr']         = 'BTW nr';
@@ -137,3 +140,45 @@ $lang['shortage']         = 'Tekort';
 $lang['local']         = 'Lokaal';
 $lang['global']         = 'Globaal';
 $lang['no_shortage']         = 'Geen tekorten';
+
+# changes
+$lang['last_update']    = 'Laatste wijziging';
+$lang['finished']       = 'klaar';
+$lang['invoice_open']    = 'bezig';
+
+# invoices
+$lang['invoices']    = 'Facturen';
+$lang['state']      = 'Status';
+$lang['amount']      = 'Bedrag';
+$lang['search_range']      = 'Zoek';
+$lang['open_invoices']      = 'Open facturen';
+$lang['Quantity']      = 'Hoeveelheid';
+$lang['Price']      = 'Prijs';
+$lang['VAT']      = 'BTW';
+$lang['Total']      = 'Totaal';
+$lang['card']      = 'Kaart';
+$lang['cash']      = 'Contant';
+$lang['payment']      = 'Betaling';
+$lang['payed']      = 'Betaald';
+$lang['payment_complete']      = 'Betaling voldaan';
+$lang['drop_from_stock']      = 'Uit stock halen';
+
+# owners
+$lang['overview']      = 'overzicht';
+$lang['pets']      = 'Dieren';
+$lang['add_pet']      = 'Dier Toevoegen';
+$lang['passed_away']      = 'Overleden';
+$lang['gone_or_lost']      = 'Verloren of verdwenen';
+
+# pet fiche
+$lang['dog']      = 'Hond';
+$lang['cat']      = 'Kat';
+$lang['horse']      = 'Paard';
+$lang['bird']      = 'Vogel';
+$lang['rabbit']      = 'Konijn';
+$lang['other']      = 'Andere';
+$lang['gender']      = 'Geslacht';
+$lang['birth']      = 'Geboorte';
+$lang['pet_name']      = 'Naam';
+$lang['weight']      = 'Gewicht';
+$lang['notes']      = 'Opmerkingen';
