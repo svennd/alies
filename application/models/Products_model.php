@@ -44,48 +44,50 @@ class Products_model extends MY_Model
 	public function usage_detail( int $product_id, string $search_from, string $search_to)
 	{
 		$sql = "
-			select 
-				ep.volume,
-				events.id, events.created_at, 
-				users.first_name,
-				stock.lotnr, stock.eol, stock.in_price,
-				pets.name as petname, pets.id as pet_id,
-				owners.id, owners.last_name,
-				stock_location.name
-			from 
-				events_products as ep
-			JOIN
-				events
-			ON
-				events.id = ep.event_id
-			JOIN
-				users
-			ON
-				vet = users.id
-			JOIN 
-				stock_location
-			ON
-				events.location = stock_location.id
-			LEFT JOIN
-				stock
-			ON
-				ep.barcode = stock.barcode
-			LEFT JOIN
-				pets
-			ON
-				pets.id = events.pet
-			LEFT JOIN
-				owners
-			ON
-				owners.id = pets.owner
-			where 
-				ep.product_id = '" . $product_id . "' 
-			AND
-				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
-			AND
-				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
-			order by
-				ep.created_at DESC
+		select 
+			ep.volume,
+			events.id as event_id, events.created_at as event_created_at, 
+			users.first_name,
+			stock.lotnr, stock.eol, stock.in_price,
+			pets.name as petname, pets.id as pet_id,
+			owners.id, owners.last_name,
+			stock_location.name as stockname
+		from 
+			events_products as ep
+		LEFT JOIN
+			events
+		ON
+			events.id = ep.event_id
+		LEFT JOIN
+			users
+		ON
+			vet = users.id
+		LEFT JOIN 
+			stock_location
+		ON
+			events.location = stock_location.id
+		LEFT JOIN
+			stock
+		ON
+			ep.barcode = stock.barcode
+		AND
+			events.location = stock.location
+		LEFT JOIN
+			pets
+		ON
+			pets.id = events.pet
+		LEFT JOIN
+			owners
+		ON
+			owners.id = pets.owner
+		where 
+			ep.product_id = '" . $product_id . "' 
+		AND
+			events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+		AND
+			events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+		order by
+			ep.created_at DESC
 		";
 		return $this->db->query($sql)->result_array();
 	}

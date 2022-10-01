@@ -43,11 +43,12 @@
 						<th>Pet</th>
 						<th>Client</th>
 						<th>Vet</th>
+						<th>Location</th>
 						<th>Consult</th>
 					</tr>
 					<?php foreach ($usage as $us): ?>
 					<tr>
-						<td><?php echo user_format_date($us['created_at'], $user->user_date); ?></td>
+						<td><?php echo user_format_date($us['event_created_at'], $user->user_date); ?></td>
 						<td><?php echo $us['volume'] . ' ' . $prod_info['unit_sell']; ?></td>
 						<td><?php echo $us['lotnr']; ?></td>
 						<td><?php echo $us['eol']; ?></td>
@@ -55,7 +56,8 @@
 						<td><a href="<?php echo base_url('pets/fiche/' . $us['pet_id']); ?>"><?php echo $us['petname']; ?></a></td>
 						<td><a href="<?php echo base_url('owners/detail/' . $us['id']); ?>"><?php echo $us['last_name']; ?></a></td>
 						<td><?php echo $us['first_name']; ?></td>
-						<td><a href="<?php echo base_url('events/event/' . $us['id']); ?>" class="btn btn-outline-info">Consult</a></td>
+						<td><?php echo $us['stockname']; ?></td>
+						<td><a href="<?php echo base_url('events/event/' . $us['event_id']); ?>" class="btn btn-outline-info">Consult</a></td>
 					<?php endforeach; ?>
 					</table>
 				<?php endif; ?>
