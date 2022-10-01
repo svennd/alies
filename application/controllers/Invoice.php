@@ -244,7 +244,7 @@ class Invoice extends Vet_Controller
 
 			# update the bill
 			$total_payed = ((float)$cash_value+(float)$card_value) - (float)$bill['amount'];
-			$status = ($total_payed < 0.001) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
+			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
 
 			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value ), $bill_id);
 
