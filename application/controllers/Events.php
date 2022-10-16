@@ -45,7 +45,7 @@ class Events extends Vet_Controller
 
 	public function event($event_id, $update = false)
 	{
-		$event_info 		= $this->events->with_vet('fields: username')->with_vet_1_sup('fields: username')->with_vet_2_sup('fields: username')->get($event_id);
+		$event_info 		= $this->events->with_vet('fields: first_name')->with_vet_1_sup('fields: first_name')->with_vet_2_sup('fields: first_name')->get($event_id);
 		$pet_id 			= $event_info['pet'];
 		$pet_info 			= $this->pets->with_breeds()->with_pets_weight()->get($pet_id);
 		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
@@ -85,21 +85,6 @@ class Events extends Vet_Controller
 		{
 			$this->_render_page('event/main_report', $data);
 		}
-	}
-
-	# in case its only medication pickup or food
-	# and this isn't relevant for medical history purpose
-	public function disable_history($event_id)
-	{
-		$this->events->update(array('no_history' => 1), $event_id);
-		redirect('events/event/' . $event_id);
-	}
-
-	# the reverse
-	public function enable_history($event_id)
-	{
-		$this->events->update(array('no_history' => 0), $event_id);
-		redirect('events/event/' . $event_id);
 	}
 
 	# annoying but its allowed
@@ -187,42 +172,6 @@ class Events extends Vet_Controller
 			}
 		}
 		redirect('events/edit_price/' . $event_id, 'refresh');
-	}
-
-	#
-	# reports
-	#
-	public function update_report($event_id)
-	{
-		if ($this->events->get_status($event_id) == STATUS_HISTORY) {
-			echo "cannot change due to status : status_history";
-			return false;
-		}
-
-		if ($this->input->post('submit') != 'report' && $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
-
-		# log this
-		$this->logs->logger($this->user->id, INFO, "update_report", "report_id: " . $event_id);
-			
-		# event update
-		$this->events->update(
-			array(
-					"title" 					=> $this->input->post('title'),
-					"anamnese" 					=> $this->input->post('anamnese'),
-					"type" 						=> (int) $this->input->post('type'),
-					"vet_support_1"				=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
-					"vet_support_2" 			=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
-					"report"					=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
-					),
-			$event_id
-		);
-
-		# report is finished, redirect to pet overview
-		if ($this->input->post('submit') == 'finished_report') {
-			redirect('/pets/fiche/' . $this->input->post('pet_id'));
-		}
-		redirect('/events/event/' . $event_id . '/report');
-
 	}
 
 	public function add_proc_prod($event_id)
@@ -448,16 +397,5 @@ class Events extends Vet_Controller
 	{
 		$this->events->update(array("status" => STATUS_CLOSED), $event_id);
 		redirect('/events/event/' . $event_id);
-	}
-
-	# auto save function
-	public function anamnese($event_id)
-	{
-		$anamnese = $this->input->post('anamnese');
-
-		return (!empty($anamnese)) ? 
-			$this->events->where(array("id" => $event_id, "status" => STATUS_OPEN))->update(array("anamnese" => $anamnese)) 
-			:
-			0;
 	}
 }

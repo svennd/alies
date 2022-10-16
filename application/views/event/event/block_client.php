@@ -1,6 +1,6 @@
 <div class="card 
 		<?php echo ($owner['debts']) ? "border-left-danger" : (($owner['low_budget']) ? "border-left-warning" : "border-left-success"); ?> 
-		shadow py-1 mb-3">
+		shadow py-1 mb-3 d-none d-xl-block">
 	<div class="card-body">
 		<div class="row no-gutters align-items-center">
 			<div class="col mr-2">

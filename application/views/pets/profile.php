@@ -24,14 +24,8 @@ $edit_mode = (isset($pet)) ? true : false;
 						base_url() . 'pets/edit/' . $pet['id'] :
 						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off">
 
-<div class="row">
-	<div class="col">
-		<?php include 'profile/required.php'; ?>
-	</div>
-	<div class="col">
-		<?php include 'profile/details.php'; ?>
-	</div>
-</div>
+<?php include 'profile/required.php'; ?>
+<?php include 'profile/details.php'; ?>
 <input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
 <button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo ($edit_mode) ? $this->lang->line('edit') : $this->lang->line('add'); ?></button>
 
@@ -158,6 +152,19 @@ function get_chip_info(chip)
 
 document.addEventListener("DOMContentLoaded", function(){
 	$("#breeds").select2({theme: 'bootstrap4'});
+	$("#breeds2").select2({
+		theme: 'bootstrap4',
+		ajax: {
+			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + params.term; },
+			dataType: 'json',
+			data: function (params) {
+				let query = {
+					type: $("input:radio[name ='type']:checked").val()
+				}
+				return query;
+			}
+		}
+	});
 	$("#birth").change(function() {
 		make_date(this.value);
 	});

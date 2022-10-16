@@ -14,7 +14,7 @@
 	height: 150px;
 }
 
-.templates  .img-fluid {
+.templates .img-fluid {
     /* display: block; */
 	margin-top: 5px;
 	margin-left: 5px;
@@ -57,11 +57,11 @@
 			<div class="dropdown no-arrow">
 				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/print" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> <?php echo $this->lang->line('print_invoice'); ?></a>
 				<?php if($event_info['no_history'] == 1): ?>
-				<a href="<?php echo base_url(); ?>events/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
+				<a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
 				<i class="fas fa-eye"></i> <?php echo $this->lang->line('enable_report'); ?>
 				</a>
 				<?php else: ?>
-				<a href="<?php echo base_url(); ?>events/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
+				<a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
 				<i class="fas fa-eye-slash"></i> <?php echo $this->lang->line('disable_report'); ?>
 				</a>
 				<?php endif; ?>
@@ -83,7 +83,7 @@
 			</ul>
 	</div>
 
-	<form action="<?php echo base_url(); ?>events/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
+	<form action="<?php echo base_url(); ?>events_report/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
 	<div class="card-body">
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane active show" id="info" role="tabpanel" aria-labelledby="info-tab">

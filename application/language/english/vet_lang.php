@@ -179,3 +179,20 @@ $lang['birth']      = 'birth';
 $lang['pet_name']      = 'Name';
 $lang['weight']      = 'Weight';
 $lang['notes']      = 'notes';
+
+# events
+$lang['name']       = 'Name';
+$lang['volume']     = 'Volume';
+$lang['lotnr']      = 'lotnr';
+$lang['net_price']  = 'ex. VAT';
+$lang['options']     = 'Options'; 
+$lang['sum']        = 'Sum'; 
+$lang['create_invoice']     = 'Create invoice'; 
+$lang['show_bill']     = 'Show bill';
+
+# event types
+$lang['disease']             = 'disease'; 
+$lang['operation']             = 'operation'; 
+$lang['medicine']             = 'medication'; 
+$lang['no_history']             = 'hide'; 
+$lang['history']             = 'show'; 

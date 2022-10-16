@@ -1,66 +1,112 @@
+<style>
+.depad_header th { padding: 0.15rem 0.75rem; }
+.nav-borders .nav-link {
+  color: #69707a;
+  border-bottom-width: 0.125rem;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.nav-borders .nav-link.active {
+  color: #0061f2;
+  border-bottom-color: #0061f2;
+}
+.nav-borders .nav-link.disabled {
+  color: #c5ccd6;
+}
+.nav-borders.flex-column .nav-link {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0;
+  margin-left: 0;
+  border-bottom: none;
+  border-right-width: 0.125rem;
+  border-right-style: solid;
+  border-right-color: transparent;
+}
+.nav-link.active {
+  border-right-color: #0061f2;
+}
+
+
+</style>
 <div class="row">
-	<div class="col-lg-7 col-xl-10">
+	<div class="col-lg-12 col-xl-10">
 
 		<div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div>
+					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
+					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
+				</div>
+				<?php include "event/block_header_types.php"; ?>
 			</div>
 			<div class="card-body">
-				<?php $total = 0; ?>
-				<table class="table">
-				<thead>
-					<tr class="thead-light">
-						<th>Name</th>
-						<th>Barcode/LotNr</th>
-						<!-- <th>Price</th> -->
-						<th>Volume</th>
-						<th>btw</th>
-						<th>Price</th>
-						<th>Options</th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php include "event/block_add_prod_proc.php"; ?>
-				<?php include "event/block_procedures.php"; ?>
-				<?php include "event/block_consumables.php"; ?>
-				<?php // include "event/block_add_barcode.php"; ?>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<!-- <td>&nbsp;</td> -->
-						<td>&nbsp;</td>
-						<td><i>Sum</i></td>
-						<td><i><?php echo round($total, 2); ?></i></td>
-						<td>&nbsp;</td>
-					</tr>
-				</tfoot>
-				</table>
-
+					
+				<nav class="nav nav-borders" id="headtabs">
+					<a href="#index" class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true"><?php echo $this->lang->line('bill'); ?></a>
+					<a href="#report" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-report-tab" data-toggle="tab" data-target="#nav-report" type="button" role="tab" aria-controls="nav-report" aria-selected="false"><?php echo $this->lang->line('report'); ?></a>
+					<a href="#media" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-media-tab" data-toggle="tab" data-target="#nav-media" type="button" role="tab" aria-controls="nav-media" aria-selected="false"><?php echo $this->lang->line('media'); ?></a>
+					<a href="#attachement" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-attachement-tab" data-toggle="tab" data-target="#nav-attachement" type="button" role="tab" aria-controls="nav-attachement" aria-selected="false"><?php echo $this->lang->line('files'); ?></a>
+				</nav>
+				<hr class="mt-0 mb-3">
+				
+				<div class="tab-content" id="nav-tabContent-heads">
+					<div class="tab-pane" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+						<?php include "invoice_index.php"; ?>
+					</div>
+					<div class="tab-pane" id="nav-report" role="tabpanel" aria-labelledby="nav-report-tab">
+						<?php include "event/block_report.php"; ?>
+					</div>
+					<div class="tab-pane" id="nav-media" role="tabpanel" aria-labelledby="nav-media-tab">
+						<?php include "event/block_drawing.php"; ?>
+					</div>
+					<div class="tab-pane" id="nav-attachement" role="tabpanel" aria-labelledby="nav-attachement-tab">
+						<?php include "event/block_attachments.php"; ?>
+					</div>
+				</div>
+				<hr class="mt-0 mb-3">
 				<?php if($consumables || $procedures_d): ?>
 					<?php if($event_info['payment'] == 0) : ?>
-						<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>/<?php echo $event_id; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Create invoice</a>
+						<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>/<?php echo $event_id; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> <?php echo $this->lang->line('create_invoice'); ?></a>
 					<?php else: ?>
-						<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> Show bill</a>
+						<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> <?php echo $this->lang->line('show_bill'); ?></a>
 					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</div>
-		<?php include "event/block_report.php"; ?>
 	</div>
-	<div class="col-lg-5 col-xl-2">
+	<div class="col-xl-2">
 		<?php include "event/block_client.php"; ?>
 		<?php include "event/block_other_pets.php"; ?>
 		<?php include "event/block_birthday.php"; ?>
 		<?php include "event/block_event_controller.php"; ?>
 	</div>
+
 </div>
 
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+
+	/* select the correct tab based on the url */
+	var strHash = document.location.hash;
+	if (strHash == "") {
+		$("#headtabs a:first").addClass("active");
+		$("#nav-tabContent-heads div:first").addClass("active");
+	} else {
+		$("a[href='" + strHash + "']").click();
+	}
+
 	$("#show_booking_select").click(function() {
 		$("#show_booking_select").hide();
 		$("#booking_select").show();
@@ -115,13 +161,6 @@ document.addEventListener("DOMContentLoaded", function(){
 				$("#stock_select").children().remove();
 				$('#product_or_proc').val(0);
 				$('#amount').val(1);
-
-				// check if there is a price for a procedure
-				if (suggestion.data.price != null)
-				{
-					// $("#price_ajax_request").html(suggestion.data.price + " &euro;");
-				}
-
 			}
 			else
 			{
@@ -137,12 +176,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					// there should only be one
 					$("#stock_select").append(new Option(suggestion.data.barcode + " // " + suggestion.data.lotnr, suggestion.data.barcode, true, true));
 					$('#unit_sell').html("/ " + suggestion.data.volume + " " + suggestion.data.unit);
-
-					// check if there are prices (products)
-					if (suggestion.data.prices != null)
-					{
-						// prices_to_html(suggestion.data.prices, suggestion.data.unit);
-					}
 				}
 				else {
 					// product
@@ -163,8 +196,6 @@ document.addEventListener("DOMContentLoaded", function(){
 						{
 							stock = suggestion.data.stock[0];
 							$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
-
-							$('#unit_sell').html("/ " + stock.volume + " " + suggestion.data.unit);
 						}
 						// multiple
 						else
@@ -195,44 +226,16 @@ document.addEventListener("DOMContentLoaded", function(){
 						}
 
 					}
-					// check if there are prices (products)
-					if (suggestion.data.prices != null)
-					{
-						// prices_to_html(suggestion.data.prices, suggestion.data.unit);
-					}
 
 				}
 			}
 		},
+		autoSelectFirst: true,
+		showNoSuggestionNotice: true,
 		groupBy: 'type',
 		minChars: '2'
 	});
 
 });
 
-function prices_to_html(prices, unit) {
-	// only 1
-	if (prices.length == 1)
-	{
-		prices = prices[0];
-		$("#price_ajax_request").html(prices.price + " &euro; / " + prices.volume + " " + unit);
-	}
-	// multiple
-	else
-	{
-		var min = parseFloat(prices[0].price);
-		var max = parseFloat(prices[0].price);
-		var loop = "<div class='collapse' id='collapseSELECT'><table class='small'>";
-
-		for (let i = 0; i < prices.length; i++) {
-			current_price = prices[i];
-			loop += "<tr><td>" + current_price.volume + " " + unit + "</td><td>" + current_price.price + " &euro;</td></tr>";
-			if (min > parseFloat(current_price.price)) { min = current_price.price; }
-			if (max < parseFloat(current_price.price)) { max = current_price.price; }
-		}
-		loop += "</table></div>"
-
-		$("#price_ajax_request").html("<a data-toggle='collapse' href='#collapseSELECT' role='button' aria-expanded='false' aria-controls='collapseSELECT'>" + min + " ~ " + max + " &euro;</a>" + loop);
-	}
-}
 </script>

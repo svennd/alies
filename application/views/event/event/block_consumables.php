@@ -5,44 +5,10 @@
 				<?php echo $product['product']['name']; ?>
 			</td>
 			<td>
-			<?php if (!empty($product['barcode'])) : ?>
-				<small><?php echo $product['barcode']; ?><br/>eol:<?php echo $product['stock']['eol']; ?> lot:<?php echo $product['stock']['lotnr']; ?></small>
-			<?php else: ?>
-				<small>-</small>
-			<?php endif; ?>
-			</td>
-			<!--
-			<td>
-				<?php 
-					if ($product['prices'])
-					{
-						if (count($product['prices']) > 1)
-						{
-							echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['product']['unit_sell'];
-							echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='small'>";
-							foreach ($product['prices'] as $price)
-							{
-								echo "<tr><td>". $price['volume'] ." ". $product['product']['unit_sell']."</td><td>". $price['price'] ."&euro;</td><tr>";
-							}
-							echo "</table></div>";
-						}
-						else
-						{
-							echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['product']['unit_sell'];
-						}
-					}
-					else
-					{
-						echo "no price set";
-					}
-				?>
-				</td>
-				-->
-			<td>
 			
 			<form action="<?php echo base_url(); ?>events/prod_edit/<?php echo $event_id; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
 			
-				<div class="input-group input-group-sm" style="width:175px;">
+				<div class="input-group input-group-sm" style="width:125px;">
 					<input type="text" name="volume" value="<?php if($product['volume'] != 0) { echo $product['volume']; }; ?>" class="form-control <?php if($product['volume'] == 0) { echo "is-invalid"; } ?>" id="volume<?php echo $product['id']; ?>" <?php echo ($event_state == STATUS_CLOSED) ? 'disabled' : ''; ?>>
 					  <div class="input-group-append">
 						<span class="input-group-text"><?php echo $product['product']['unit_sell']; ?></span>
@@ -52,20 +18,31 @@
 				<input type="hidden" name="event_product_id" value="<?php echo $product['id']; ?>"/>
 				<input type="hidden" name="pid" value="<?php echo $product['product_id']; ?>"/>
 				<input type="hidden" name="btw" value="<?php echo $product['btw']; ?>"/>
+				<?php if ($event_state != STATUS_CLOSED): ?>
+				&nbsp;<button type="submit" name="submit" value="edit_prod" form="form<?php echo $product['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-sync-alt"></i></button>
+				<?php endif; ?>
 			</form>
 			
+			</td>
+			<td>
+			<?php if (!empty($product['barcode'])) : ?>
+				<small>eol: <?php echo $product['stock']['eol']; ?> lot: <?php echo $product['stock']['lotnr']; ?></small>
+			<?php else: ?>
+				<small>-</small>
+			<?php endif; ?>
 			</td>
 			<td>
 				<?php echo (!empty($product['btw'])) ? $product['btw'] : $product['product']['btw_sell']; ?>%
 			</td>
 			
-				<td><?php echo round($product['price'],2); ?><br/>
-					<small><?php echo round($product['net_price'],2); ?> ex. vat</small>
-					<?php $total += $product['price']; ?>
-				</td>		
+			<td><?php echo round($product['price'],2); ?> &euro; 
+				<?php $total += $product['price']; ?>
+			</td>
+			<td>
+				<small><?php echo round($product['net_price'],2); ?> &euro;</small>
+			</td>		
 			<td>
 				<?php if ($event_state != STATUS_CLOSED): ?>
-					<button type="submit" name="submit" value="edit_prod" form="form<?php echo $product['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-save"></i></button>
 					<a href="<?php echo base_url(); ?>events/prod_remove/<?php echo $event_id; ?>/<?php echo $product['id'] ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
 				<?php endif; ?>
 			</td>

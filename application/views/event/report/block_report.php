@@ -35,7 +35,7 @@
 		<div class="form-group row">
 			<label for="staticEmail" class="col-sm-2 col-form-label">Vet</label>
 			<div class="col-sm-10">
-			<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['username']; ?>">
+			<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['first_name']; ?>">
 			</div>
 		</div>
 			<div class="form-group row">
@@ -43,7 +43,7 @@
 			<div class="col-sm-10">
 					<select name="supp_vet_1" style="width:100%" id="supp_vet_1" data-allow-clear="1">
 						<?php if($event_info['vet_1_sup']): ?>
-						<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['username']; ?></option>
+						<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['first_name']; ?></option>
 						<?php endif; ?>
 					</select>
 			</div>
@@ -53,7 +53,7 @@
 			<div class="col-sm-10">
 					<select name="supp_vet_2" style="width:100%" id="supp_vet_2" data-allow-clear="1">
 							<?php if($event_info['vet_2_sup']): ?>
-							<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['username']; ?></option>
+							<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['first_name']; ?></option>
 							<?php endif; ?>
 					</select>
 			</div>

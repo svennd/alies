@@ -182,3 +182,20 @@ $lang['birth']      = 'Geboorte';
 $lang['pet_name']      = 'Naam';
 $lang['weight']      = 'Gewicht';
 $lang['notes']      = 'Opmerkingen';
+
+# events
+$lang['name']       = 'Naam';
+$lang['volume']     = 'Volume';
+$lang['lotnr']      = 'Lotnr';
+$lang['net_price']  = 'excl. BTW';
+$lang['options']     = 'Opties'; 
+$lang['sum']             = 'Som'; 
+$lang['create_invoice']     = 'Factuur maken'; 
+$lang['show_bill']     = 'Toon factuur';
+
+# event types
+$lang['disease']             = 'ziekte'; 
+$lang['operation']             = 'operatie'; 
+$lang['medicine']             = 'medicatie'; 
+$lang['no_history']             = 'verberg'; 
+$lang['history']             = 'toon'; 

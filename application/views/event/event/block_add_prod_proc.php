@@ -11,25 +11,24 @@
 <tr>
 	<td>
 		<form id="prod_or_proc_form" name="new_product_form" action="<?php echo base_url(); ?>events/add_proc_prod/<?php echo $event_id; ?>" method="post" autocomplete="off">
-		<input type="text" name="product" class="form-control mb-2 mr-sm-2"  style="min-width:10rem;" id="autocomplete" placeholder="search" autocomplete="off">
+		<input type="text" name="product" class="form-control form-control-sm" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off">
 		<input type="hidden" id="new_pid" name="pid" value="" />
 		<input type="hidden" id="product_or_proc" name="prod" value="" />
 		</form>
 	</td>
-	<td><select class="form-control mb-2 mr-sm-2" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
-	<!-- <td id="price_ajax_request">&nbsp;</td> -->
 	<td>
-		<div class="input-group" style="width:10rem;">
-			<input type="text" name="volume" form="prod_or_proc_form" value="" class="form-control" id="amount">
+		<div class="input-group input-group-sm" style="width:125px;">
+			<input type="text" name="volume" form="prod_or_proc_form" value="" class="form-control" id="amount" required>
 			<div class="input-group-append">
 				<span class="input-group-text" id="unit_sell">st</span>
 			</div>
 		</div>
 	</td>
+	<td><select class="form-control form-control-sm" style="width:125px;" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
 	<td>		
 		<a href="#" id="show_booking_select"></a>
 		<div id="booking_select" style="display:none;">
-			<select class="form-control mb-2 mr-sm-2" form="prod_or_proc_form" name="booking_code" id="hidden_booking">
+			<select class="form-control" form="prod_or_proc_form" name="booking_code" id="hidden_booking">
 			<?php foreach($booking_codes as $booking): ?>
 				<option value="<?php echo $booking['id']; ?>"><?php echo $booking['category'] . " - " . $booking['code'] . " - " . $booking['btw'] . "%"; ?></option>
 			<?php endforeach; ?>
@@ -40,7 +39,8 @@
 		<input type="hidden" name="vaccin" value="" form="prod_or_proc_form" id="vaccin_or_no">
 		<input type="hidden" name="vaccin_freq" value="" form="prod_or_proc_form" id="vaccin_freq">
 	</td>
-	<td></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
 	<td>
 		<button type="submit" form="prod_or_proc_form" class="btn btn-outline-success btn-sm"><i class="fas fa-plus"></i></button>
 	</td>
