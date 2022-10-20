@@ -15,6 +15,7 @@ class Migration_breeds_type extends CI_Migration {
 	{
 		// add support for stock messages when input is done
 		$sql[] = "ALTER TABLE `breeds` ADD `type` TINYINT NULL DEFAULT '-1' AFTER `name`;";
+		$sql[] = "ALTER TABLE `breeds` ADD `freq` INT UNSIGNED NOT NULL AFTER `type`;";
 
 		foreach ($sql as $q)
 		{
@@ -26,6 +27,7 @@ class Migration_breeds_type extends CI_Migration {
 	public function down()
 	{
 		$sql[] = "ALTER TABLE `breeds` DROP `type`;";
+		$sql[] = "ALTER TABLE `breeds` DROP `freq`;";
 
 		foreach ($sql as $q)
 		{

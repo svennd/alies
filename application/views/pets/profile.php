@@ -151,11 +151,10 @@ function get_chip_info(chip)
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-	$("#breeds").select2({theme: 'bootstrap4'});
 	$("#breeds2").select2({
 		theme: 'bootstrap4',
 		ajax: {
-			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + params.term; },
+			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + ((params.term === undefined) ? '' : params.term); },
 			dataType: 'json',
 			data: function (params) {
 				let query = {

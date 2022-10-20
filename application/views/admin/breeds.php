@@ -28,9 +28,12 @@
 	</div>
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Breeds List</h6>
-            </div>
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div>Breeds</div>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url(); ?>breeds/rebuild_frequenty" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-history"></i> rebuild freq</a>
+				</div>
+			</div>
             <div class="card-body">
 			<?php if ($breeds): ?>
 				<table class="table" id="dataTable">
@@ -38,7 +41,7 @@
 				<tr>
 					<th>id</th>
 					<th>Breed</th>
-					<th>Pets in db</th>
+					<th>Pets (alive)</th>
 					<th>edit</th>
 				</tr>
 				</thead>

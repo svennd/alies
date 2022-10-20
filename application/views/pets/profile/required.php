@@ -99,15 +99,12 @@
 		</div>
 	</div>
 </div>
+
 <div class="form-group">
     <label for="breed"><?php echo $this->lang->line('breed'); ?></label>
 	<div class="form-row">
 		<div class="col">
-		<select name="breed" class="form-control" id="breeds">
-			<?php foreach($breeds as $breed): ?>
-				<option value="<?php echo $breed['id']; ?>" <?php echo ($edit_mode && $breed['id'] == $pet['breed']) ? 'selected': ''; ?>><?php echo $breed['name']; ?></option>
-			<?php endforeach; ?>
-		</select>
+		<select name="breed" class="form-control" id="breeds2"></select>
 		</div>
 		<div class="col">
 		<div class="input-group input-group mb-2 mr-sm-2">

@@ -11,7 +11,7 @@
 <tr>
 	<td>
 		<form id="prod_or_proc_form" name="new_product_form" action="<?php echo base_url(); ?>events/add_proc_prod/<?php echo $event_id; ?>" method="post" autocomplete="off">
-		<input type="text" name="product" class="form-control form-control-sm" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off">
+		<input type="text" name="product" class="form-control form-control-sm" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
 		<input type="hidden" id="new_pid" name="pid" value="" />
 		<input type="hidden" id="product_or_proc" name="prod" value="" />
 		</form>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 	</td>
-	<td><select class="form-control form-control-sm" style="width:125px;" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
+	<td><select class="form-control form-control-sm" style="width:175px;" form="prod_or_proc_form" name="barcode" id="stock_select" disabled></select></td>
 	<td>		
 		<a href="#" id="show_booking_select"></a>
 		<div id="booking_select" style="display:none;">

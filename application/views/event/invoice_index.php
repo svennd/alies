@@ -13,9 +13,9 @@
         </tr>
     </thead>
     <tbody>
+    <?php include "event/block_add_prod_proc.php"; ?>
     <?php include "event/block_procedures.php"; ?>
     <?php include "event/block_consumables.php"; ?>
-    <?php include "event/block_add_prod_proc.php"; ?>
     <?php // include "event/block_add_barcode.php"; ?>
     </tbody>
     <tfoot>

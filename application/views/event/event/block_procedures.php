@@ -16,7 +16,7 @@
 		</td>
 		<td>&nbsp;</td>
 		<td><?php echo $done['btw']; ?>%</td>
-		<td><?php echo round($done['price'],2); ?>  &euro;</td>
+		<td><?php echo round($done['price'],2); ?>  &euro;<?php $total += $done['price']; ?></td>
 		<td>
 			<small><?php echo round($done['net_price'],2); ?> &euro;</small>
 		</td>

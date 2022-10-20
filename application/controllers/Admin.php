@@ -61,9 +61,8 @@ class Admin extends Admin_Controller
 				}
 			}
 			
-			# this should be needed we can load this with ajax / search field
-			# https://github.com/svennd/alies/issues/30
 			$data = array(
+							// used for dropdown
 							"breeds" => $this->breeds->get_all(),
 						);
 
@@ -73,8 +72,11 @@ class Admin extends Admin_Controller
 	
 	public function a_get_breeds()
 	{
-		$breeds = $this->breeds->with_pets('fields:*count*')->get_all();
+		$breeds = $this->breeds
+							->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')
+							->get_all();
 		$return = array();
+		// var_dump($breeds);
 		
 		foreach ($breeds as $breed) {
 			$count_rows = (isset($breed['pets'][0]['counted_rows'])) ? $breed['pets'][0]['counted_rows'] : 0;
