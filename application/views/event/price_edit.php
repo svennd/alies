@@ -10,6 +10,7 @@
 		<div class="card-body">
 			<?php
 				$total = 0;
+				$total_ex = 0;
 			?>
 			<table class="table">
 			<thead>
@@ -20,6 +21,7 @@
 					<th>New Price</th>
 					<th>Change</th>
 					<th>Inc. BTW</th>
+					<th>Ex. BTW</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,7 +36,8 @@
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td><i>Sum</i></td>
-					<td><i><?php echo $total; ?></i></td>
+					<td><i><?php echo round($total, 2); ?></i></td>
+					<td><i><?php echo round($total_ex, 2);; ?></i></td>
 				</tr>
 			</tfoot>
 			</table>

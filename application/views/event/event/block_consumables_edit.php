@@ -55,8 +55,9 @@
 				}
 			?>
 			</td>
-				<td><?php echo $product['price']; ?>
+				<td><?php echo round($product['price'],2); ?>
 					<?php $total += $product['price']; ?>
+					<?php $total_ex += $product['net_price']; ?>
 				</td>
 		</tr>
 	<?php endforeach; ?>

@@ -36,8 +36,9 @@
 		?>
 		</td>
 		<td>
-			<?php echo $done['price']; ?>
+			<?php echo round($done['price'],2); ?>
 			<?php $total += $done['price']; ?>
+			<?php $total_ex += $done['net_price']; ?>
 		</td>
 		
 	</tr>
