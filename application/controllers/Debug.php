@@ -87,9 +87,10 @@ class Debug extends Vet_Controller
 		$version = $this->db->query("SELECT * FROM `migrations`")->result_array()[0]['version'];
         echo "current version : $version<br/>";
         echo "downgrading to : " . $version - 1 . "<br/>";
+
+        $this->db->query('UPDATE migrations SET version = ' . $version-1 . ';');
 		$this->migration->version($version-1);
         
-        $this->db->query('UPDATE migrations SET version = ' . $version-1 . ';');
         echo "downgraded.<br/>";
 	}
 
