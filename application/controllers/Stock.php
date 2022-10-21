@@ -111,7 +111,7 @@ class Stock extends Vet_Controller
 						}
 						# unknown barcode
 						else {
-							$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
+							$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
 							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
 						}
 					}
@@ -133,7 +133,7 @@ class Stock extends Vet_Controller
 						}
 						# unknown barcode
 						else {
-							$this->logs->logger($this->user->id, WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode . " from location ". $this->user->current_location . " (location)");
+							$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
 							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
 						}
 
@@ -160,7 +160,7 @@ class Stock extends Vet_Controller
 			$move_volumes 	= $this->input->post('move_volume');
 
 			foreach ($move_volumes as $barcode => $value) {
-				$this->logs->logger($this->user->id, INFO, "move_stock", "barcode:". $barcode . " from:" . $from . "=>" . $to. " volume:" . $value);
+				$this->logs->logger(INFO, "move_stock", "barcode:". $barcode . " from:" . $from . "=>" . $to. " volume:" . $value);
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}
@@ -171,7 +171,6 @@ class Stock extends Vet_Controller
 	public function add_stock($preselected = false)
 	{
 		$error = false;
-
 		if ($this->input->post('submit')) {
 			if (!empty($this->input->post('pid')) && !empty($this->input->post('new_volume')) && $this->input->post('new_volume') < 5000) {
 				# check if this is already in the verify list
@@ -186,6 +185,7 @@ class Stock extends Vet_Controller
 
 				# increase current verify stock
 				if ($result) {
+					$this->logs->stock(DEBUG, "add_stock_re", $this->input->post('pid'), $this->input->post('new_volume'));
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' AND state = '" . STOCK_CHECK . "' limit 1;";
 					$this->db->query($sql);
 				}
@@ -200,6 +200,7 @@ class Stock extends Vet_Controller
 					$barcode = base_convert((time() - 1575158400), 10, 36);
 					$this->barcode->generate($barcode);
 
+					$this->logs->stock(DEBUG, "add_stock", $this->input->post('pid'), $this->input->post('new_volume'));
 					$this->stock->insert(array(
 											"product_id" 		=> $this->input->post('pid'),
 											"eol" 				=> $this->input->post('eol'),
@@ -221,21 +222,29 @@ class Stock extends Vet_Controller
 				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
 
 				# log this
-				$this->logs->logger($this->user->id, WARN, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
+				$this->logs->logger(WARN, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
 			}
 		}
 
 		$data = array(
 						"error" 		=> $error,
 						"preselected"	=> ($preselected) ? $this->product->fields('id, name, unit_buy')->get($preselected) : false,
-						"products" 	=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(),
-						"extra_footer" => '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
+						"products" 		=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(),
+						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 					);
 		$this->_render_page('stock_add', $data);
 	}
 
 	public function delete_stock($stock_id)
 	{
+		# if logging is required also log this remove
+		if ($this->logs->min_log_level == DEBUG)
+		{
+			$info = $this->stock->where(array("state" => STOCK_CHECK, "id" => $stock_id))->get();
+			$this->logs->stock(DEBUG, "delete_stock", $info['product_id'], -$info['volume']);
+		}
+
+		# remove from list
 		$this->stock->where(array("state" => STOCK_CHECK))->delete($stock_id);
 		redirect('stock/add_stock', 'refresh');
 	}
@@ -246,7 +255,7 @@ class Stock extends Vet_Controller
 		$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
 
 		# verify the stock
-		$this->logs->logger($this->user->id, INFO, "stock_verify", "products verified: " . $total);
+		$this->logs->logger(INFO, "stock_verify", "products verified: " . $total);
 
 		redirect('stock/add_stock', 'refresh');
 	}
@@ -351,7 +360,7 @@ class Stock extends Vet_Controller
 		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
 
 		if ($this->input->post('submit')) {
-			$this->logs->logger($this->user->id, INFO, "admin_stock_edit", "debug: " . implode(',', $this->input->post()));
+			$this->logs->logger(INFO, "admin_stock_edit", "debug: " . implode(',', $this->input->post()));
 			$this->stock
 						->where(array("id" => $stock_id))
 						->update(array(
@@ -363,6 +372,7 @@ class Stock extends Vet_Controller
 						));
 
 			$lookup = $this->stock->with_products('fields:id')->get($stock_id);
+			$this->logs->stock(WARN, "admin_stock_edit", $lookup['products']['id'], $this->input->post('new_volume'));
 			redirect('/stock/stock_detail/'. $lookup['products']['id']);
 		}
 
@@ -382,13 +392,13 @@ class Stock extends Vet_Controller
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 
 		# make this traceable
-		$this->logs->logger($this->user->id, INFO, "stock_clean", "archived: " . $r);
+		$this->logs->logger(WARN, "stock_clean", "archived: " . $r);
 
 		# make a call for duplicate products that are exactly identical
 		# eg. multiple same lotnr & dates entered on a different date
 		$duplicates = $this->stock->fix_duplicates();
 
-		$this->logs->logger($this->user->id, INFO, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
+		$this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
 		echo ($print) ? 
 				"0 volume lines : " . $r . "<br/>" .
 				$duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products <br/>" .

@@ -57,7 +57,7 @@ class Owners extends Vet_Controller
 										"initial_loc"		=> $this->user->current_location,
 									));
 									
-				$this->logs->logger($this->user->id, INFO, "add_client", "Added client " . $this->input->post('last_name') . " (". $new_id . ")");
+				$this->logs->logger(INFO, "add_client", "Added client " . $this->input->post('last_name') . " (". $new_id . ")");
 				
 				redirect('/owners/detail/' . (int) $new_id, 'refresh');
 			}

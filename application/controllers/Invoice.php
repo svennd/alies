@@ -86,7 +86,7 @@ class Invoice extends Vet_Controller
 		$this->owners->update(array("last_bill" => date_format(date_create(), "Y-m-d")), $owner_id);
 
 		// make this traceable
-		$this->logs->logger($this->user->id, INFO, "generate_bill", "bill_id: " . $bill_id);
+		$this->logs->logger(INFO, "generate_bill", "bill_id: " . $bill_id);
 
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
@@ -207,7 +207,7 @@ class Invoice extends Vet_Controller
 	{
 
 		# make this traceable
-		$this->logs->logger($this->user->id, INFO, "bill_unpay", "bill_id: " . $bill_id);
+		$this->logs->logger(INFO, "bill_unpay", "bill_id: " . $bill_id);
 
 		$bill = $this->bills->get($bill_id);
 
@@ -255,7 +255,7 @@ class Invoice extends Vet_Controller
 				$this->remove_from_stock($bill_id);
 			} else {
 				# make this traceable - payment is done only partially
-				$this->logs->logger($this->user->id, INFO, "bill_pay_incomplete", "bill_id: " . $bill_id . " current_state:" . $bill['status'] );
+				$this->logs->logger(INFO, "bill_pay_incomplete", "bill_id: " . $bill_id . " current_state:" . $bill['status'] );
 			}
 
 		}

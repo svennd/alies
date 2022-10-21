@@ -51,8 +51,9 @@ class Stock_model extends MY_Model
 			# TODO : what if there is no stock there ! (this would pass) testing ...
 			# woops there was no barcode here (it must have been from somewhere else)
 			if ($affected == 0) {
+				$this->log->stock(ERROR, "reduce_stock_barcode_location", $product_id, -$volume, $location);
 				$this->stock->insert(array(
-							"product_id" 	=> $product['id'],
+							"product_id" 	=> $product_id,
 							"location" 		=> $location,
 							"volume" 		=>	-$volume,
 							"barcode" 		=> $barcode,
@@ -66,11 +67,13 @@ class Stock_model extends MY_Model
 			if ($result && count($result) == 1) {
 				$this->reduce_product($result[0]['barcode'], $location, $volume);
 			} else {
+				$this->log->stock(ERROR, "reduce_stock_location", $product_id, -$volume, $location);
 				$this->insert(array("product_id" => $product_id, "volume" => -$volume, "location" => $location, "state" => STOCK_ERROR));
 			}
 		}
 		# no location
 		else {
+			$this->log->stock(ERROR, "reduce_stock_unknown", $product_id, -$volume, $location);
 			$this->insert(array("product_id" => $product_id, "volume" => -$volume, "state" => STOCK_ERROR));
 		}
 
@@ -90,6 +93,13 @@ class Stock_model extends MY_Model
 
 	public function reduce_product($barcode, $from, $value)
 	{
+		# if logging is required also log this remove
+		if ($this->logs->min_log_level == DEBUG)
+		{
+			$info = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
+			$this->logs->stock(DEBUG, "reduce_product", $info['product_id'], -$value, $from);
+		}
+
 		$sql = "UPDATE stock SET volume=volume-" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $from . "' and state = '" . STOCK_IN_USE . "' limit 1;";
 		$this->db->query($sql);
 
@@ -106,6 +116,8 @@ class Stock_model extends MY_Model
 			$this->reduce_product($barcode, $to, -$value);
 		} else {
 			$from_info = $this->where(array("barcode" => $barcode, "location" => $from))->get();
+			
+			$this->logs->stock(DEBUG, "add_to_stock", $from_info['product_id'], $value, $to);
 			$this->insert(array(
 								"product_id" 	=> $from_info['product_id'],
 								"eol" 			=> $from_info['eol'],

@@ -17,7 +17,7 @@ class Admin_invoice extends Admin_Controller
     public function edit_bill(int $bill_id)
     {
         if ($this->input->post('submit')) {
-            $this->logs->logger($this->user->id, WARN, "edit_bill", "modified bill" . implode(',', $this->input->post()));
+            $this->logs->logger(WARN, "edit_bill", "modified bill" . implode(',', $this->input->post()));
             $this->bills->bill_update($bill_id, array(
 										"vet" 		    => $this->input->post('vet'),
 										"location"		=> $this->input->post('location'),

@@ -95,7 +95,7 @@ class Pets extends Vet_Controller
 										"weight" => $this->input->post("weight")
 									));
 
-				$this->logs->logger($this->user->id, INFO, "add_pet", "Added pet " . $this->input->post('name') . " (". $pet_id . ")");
+				$this->logs->logger(INFO, "add_pet", "Added pet " . $this->input->post('name') . " (". $pet_id . ")");
 
 				redirect('/owners/detail/' . (int)  $this->input->post('owner'));
 			}

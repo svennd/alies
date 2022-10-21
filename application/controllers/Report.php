@@ -26,6 +26,7 @@ class Report extends Vet_Controller
 							->with_pet('fields:id, type, name')
 							->with_location('fields:name')
 							->with_vet('fields:first_name')
+							// ->with_owner()
 							->fields('id, title, pet, status, payment, location, report, updated_at')
 							->where($where)
 							->where('updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)', null, null, false, false, true)

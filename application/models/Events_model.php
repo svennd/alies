@@ -83,6 +83,16 @@ class Events_model extends MY_Model
 						'get_relate'=> false
 		);
 
+		// $this->has_many_pivot['owner'] = array(
+		// 				'foreign_model'	=> 'Owners_model',
+		// 				'pivot_table'	=> 'pets',
+		// 				'local_key'		=> 'pet',
+		// 				'pivot_local_key' => 'id',
+		// 				'pivot_foreign_key' => 'owner',
+		// 				'foreign_key' => 'id',
+		// 				'get_relate'=> false
+		// );
+
 		parent::__construct();
 	}
 

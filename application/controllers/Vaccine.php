@@ -35,7 +35,7 @@ class Vaccine extends Vet_Controller
 			array_to_csv_download($csv, "vaccines_" . $date->format('M_Y') . ".csv");
 
 			// PII so, keep atleast a log
-            $this->logs->logger($this->user->id, INFO, "downloaded_vaccine_list", "month : " . $month);
+            $this->logs->logger(INFO, "downloaded_vaccine_list", "month : " . $month);
 		}
 		else
 		{

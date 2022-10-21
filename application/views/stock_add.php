@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			
 			var res = suggestion.data;
 			$("#pid").val(res.id);
-			$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_sell);
+			$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_buy);
 			$("#current_buy_price").val(res.buy_price);
 
 			$("#unit_buy").html(res.unit_buy);

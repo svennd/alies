@@ -54,7 +54,7 @@ class Events_report extends Vet_Controller
 		if ($this->input->post('submit') != 'report' && $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
 
 		# log this
-		$this->logs->logger($this->user->id, INFO, "update_report", "report_id: " . $event_id);
+		$this->logs->logger(INFO, "update_report", "report_id: " . $event_id);
 			
 		# event update
 		$this->events->update(

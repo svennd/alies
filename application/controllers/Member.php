@@ -74,7 +74,7 @@ class Member extends Admin_Controller
 					
 					
 					# make this traceable
-					$this->logs->logger($this->user->id, INFO, "new_user", "user_id: " . $registration_result . " name:" . $username);
+					$this->logs->logger(INFO, "new_user", "user_id: " . $registration_result . " name:" . $username);
 					
 				} else {
 					$warning = "registration failed" . $registration_result;

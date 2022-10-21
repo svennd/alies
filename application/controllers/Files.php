@@ -174,7 +174,7 @@ class Files extends Vet_Controller
 		# report it
 		else
 		{
-			$this->logs->logger($this->user->id, WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
+			$this->logs->logger(WARN, "broken delete", "file deletion, on a non-existing file or event : " . $id ." (files/delete_file)");
 		}
 
 		# delete it anyway

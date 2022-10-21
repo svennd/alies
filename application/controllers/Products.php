@@ -152,7 +152,7 @@ class Products extends Vet_Controller
 			$new_price = $this->input->post('price');
 
 			# log this change
-			$this->logs->logger($this->user->id, INFO, "modify_price", "Change product_id:" . (int) $id . " on price_id:" . (int) $price_id . " for volume: ". (float) $volume . " to (price)" . (float) $new_price);
+			$this->logs->logger(INFO, "modify_price", "Change product_id:" . (int) $id . " on price_id:" . (int) $price_id . " for volume: ". (float) $volume . " to (price)" . (float) $new_price);
 			$this->pprice
 					->where(array(
 									"id" 	=> $price_id
@@ -281,7 +281,7 @@ class Products extends Vet_Controller
 			$this->set_local_limits($this->input->post('limit'), $id);
 
 			# log this
-			$this->logs->logger($this->user->id, INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
+			$this->logs->logger(INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
 		}
 
 		$data = array(
@@ -478,7 +478,7 @@ class Products extends Vet_Controller
 		# log this if there are multiple returns (==> bad gsl code )
 		if (count($stck) > 1)
 		{
-			$this->logs->logger($this->user->id, ERROR, "multi hit on gsl code", var_export($stck, true));
+			$this->logs->logger(ERROR, "multi hit on gsl code", var_export($stck, true));
 		}
 
 		# should only return a single result
@@ -666,7 +666,7 @@ class Products extends Vet_Controller
 		$pid = $this->products->insert($input);
 
 		# log this
-		$this->logs->logger($this->user->id, INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $pid);
+		$this->logs->logger(INFO, "new_product", "product_name: " . $this->input->post('name') . " id : " . $pid);
 		
 		# redirect to next step
 		redirect( 'products/new/2/' . $pid );

@@ -90,7 +90,7 @@ class Admin extends Admin_Controller
 	{
 		if ($this->input->post('submit') == "add_proc") {
 			# log this
-			$this->logs->logger($this->user->id, INFO, "new_procedure", "proc_name: " . $this->input->post('name'));
+			$this->logs->logger(INFO, "new_procedure", "proc_name: " . $this->input->post('name'));
 			$this->proc->insert(array(
 							"name" 			=> $this->input->post('name'),
 							"booking_code" 	=> $this->input->post('booking_code'),
@@ -100,7 +100,7 @@ class Admin extends Admin_Controller
 		
 		if ($this->input->post('submit') == "edit_proc") {
 			# log this
-			$this->logs->logger($this->user->id, INFO, "update_procedure", "proc_name: " . $this->input->post('name') . " price :" . $this->input->post('price'));
+			$this->logs->logger(INFO, "update_procedure", "proc_name: " . $this->input->post('name') . " price :" . $this->input->post('price'));
 			$this->proc->update(
 				array(
 									"name" 			=> $this->input->post('name'),

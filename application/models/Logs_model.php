@@ -7,6 +7,7 @@ class Logs_model extends MY_Model
 {
 	public $table = 'log';
 	public $primary_key = 'id';
+	public $min_log_level = DEBUG; # DEBUG - INFO - WARN - ERROR - FATAL
 	
 	public function __construct()
 	{
@@ -19,13 +20,29 @@ class Logs_model extends MY_Model
 		parent::__construct();
 	}
 	
-	public function logger($user_id, $level, $event, $msg)
+	public function logger($level, $event, $msg)
 	{
 		return $this->insert(array(
 					"event" 	=> $event,
 					"level" 	=> $level,
-					"user_id" 	=> $user_id,
-					"msg" 		=> $msg
+					"user_id" 	=> $this->user->id,
+					"msg" 		=> $msg,
+					"location"	=> $this->user->current_location,
+				));
+	}
+
+	public function stock($level, $event, int $product, $volume, $location = false)
+	{
+
+		return ($level > $this->min_log_level) ? 
+			true : 
+			$this->db->insert('log_stock', array(
+					"level" 	=> $level,
+					"event" 	=> $event,
+					"product" 	=> $product,
+					"volume" 	=> $volume,
+					"user_id" 	=> $this->user->id,
+					"location"	=> ($location) ? $location : $this->user->current_location,
 				));
 	}
 }

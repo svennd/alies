@@ -47,7 +47,7 @@ class Debug extends Vet_Controller
                     ->update(array('status' => STATUS_CLOSED));
             
             // log this
-            $this->logz->logger($this->user->id, INFO, "manual_close", "close events for pet_id: " . $pet['id']);
+            $this->logz->logger(INFO, "manual_close", "close events for pet_id: " . $pet['id']);
         }
 
         # all bills will be closed
@@ -55,7 +55,7 @@ class Debug extends Vet_Controller
                     ->where(array('owner_id' => $owner))
                     ->update(array('status' => PAYMENT_PAID));
 
-        $this->logz->logger($this->user->id, WARN, "reset_events_owner", "reset owner: " . $owner);
+        $this->logz->logger(WARN, "reset_events_owner", "reset owner: " . $owner);
 
         redirect('debug/index/' . $owner);
     }
@@ -69,11 +69,11 @@ class Debug extends Vet_Controller
     {
         # delete all pets
         $this->pets->where(array('owner' => $owner))->delete();
-        $this->logz->logger($this->user->id, WARN, "delete_owner_pets", "removed pets for : " . $owner);
+        $this->logz->logger(WARN, "delete_owner_pets", "removed pets for : " . $owner);
 
         # delete client
         $this->owners->delete($owner);
-        $this->logz->logger($this->user->id, WARN, "delete_owner", "removed owner : " . $owner);
+        $this->logz->logger(WARN, "delete_owner", "removed owner : " . $owner);
 
         # we just removed the owner so it should be gone
         redirect('/');
