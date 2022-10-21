@@ -364,15 +364,19 @@ class Stock extends Vet_Controller
 			$this->stock
 						->where(array("id" => $stock_id))
 						->update(array(
-								"eol" => $this->input->post('eol'),
-								"in_price" => $this->input->post('in_price'),
-								"lotnr" => $this->input->post('lotnr'),
-								"volume" => $this->input->post('new_volume'),
-								"state" => $this->input->post('state'),
+								"eol" 		=> $this->input->post('eol'),
+								"in_price"	=> $this->input->post('in_price'),
+								"lotnr" 	=> $this->input->post('lotnr'),
+								"volume" 	=> $this->input->post('new_volume'),
+								"state" 	=> $this->input->post('state'),
 						));
 
 			$lookup = $this->stock->with_products('fields:id')->get($stock_id);
-			$this->logs->stock(WARN, "admin_stock_edit", $lookup['products']['id'], $this->input->post('new_volume'));
+			if ($this->input->post('ori_volume') != $this->input->post('new_volume'))
+			{
+				$this->logs->stock(WARN, "admin_stock_edit", $lookup['products']['id'], -$this->input->post('ori_volume'), $lookup['location']);
+				$this->logs->stock(WARN, "admin_stock_edit", $lookup['products']['id'], $this->input->post('new_volume'), $lookup['location']);
+			}
 			redirect('/stock/stock_detail/'. $lookup['products']['id']);
 		}
 

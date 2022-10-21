@@ -62,6 +62,7 @@
         <div class="form-row mb-3">
 
         </div>
+        <input type="hidden" name="ori_volume" value="<?php echo $stock['volume'] ?>">
         <button type="submit" name="submit" value="1" class="btn btn-primary">Edit</button>
     </form>
     </div>
