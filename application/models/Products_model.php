@@ -83,6 +83,8 @@ class Products_model extends MY_Model
 		where 
 			ep.product_id = '" . $product_id . "' 
 		AND
+			stock.state < '" . STOCK_ERROR . "'
+		AND
 			events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
 		AND
 			events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
