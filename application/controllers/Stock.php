@@ -14,7 +14,6 @@ class Stock extends Vet_Controller
 		$this->load->model('Product_type_model', 'prod_type');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Stock_limit_model', 'stock_limit');
-		$this->load->model('Stock_write_off_model', 'stock_write_off_log');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -58,8 +57,9 @@ class Stock extends Vet_Controller
 									;
 
 		$data = array(
-						"stock_detail" => $stock_detail,
-						"stock_usage" => $this->stock->get_usage($pid)
+						"stock_detail" 	=> $stock_detail,
+						"show_all"		=> $all,
+						"stock_usage" 	=> $this->stock->get_usage($pid)
 						);
 		$this->_render_page('stock/details', $data);
 	}
@@ -276,13 +276,8 @@ class Stock extends Vet_Controller
 			# reduce stock as requested
 			if ($this->input->post('submit') == "write_off_q") {
 				$this->stock->reduce_product($this->input->post("barcode"), $this->input->post("location"), $this->input->post("volume"));
-				$this->stock_write_off_log->insert(array(
-												"product_id" 	=> $this->input->post("product_id"),
-												"volume" 			=> $this->input->post("volume"),
-												"location" 		=> $this->input->post("location"),
-												"barcode" 		=> $this->input->post("barcode"),
-												"vet" 				=> $this->user->id,
-									));
+				$this->logs->stock(WARN, "writeoff", $this->input->post("product_id"), -$this->input->post("volume"), $this->input->post("location"));
+
 				# clean stock since most likely this will result in a 0 line, no need to print stuff
 				$this->stock_clean(false);
 			}

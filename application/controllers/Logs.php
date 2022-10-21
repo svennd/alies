@@ -6,6 +6,9 @@ class Logs extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
+		# models
+		$this->load->model('Log_stock_model', 'log_stock');
 	}
 
 	public function index()
@@ -16,18 +19,31 @@ class Logs extends Admin_Controller
 	
 	public function write_off()
 	{
-		$this->load->model('Stock_write_off_model', 'stock_write_off_log');
 		
 		$data = array(
-						"logs" 		=> $this->stock_write_off_log
+						"logs" 		=> $this->log_stock
 												->with_product('fields:name, unit_sell')
 												->with_vet('fields:first_name')
 												->with_locations('fields:name')
+											->where(array('event' => 'writeoff'))
 											->get_all(),
 		);
 		$this->_render_page('logs/stock_write_off', $data);
 	}
 	
+	public function product(int $product_id)
+	{
+		$data = array(
+			"logs" 		=> $this->log_stock
+									->with_product('fields:name, unit_sell')
+									->with_vet('fields:first_name')
+									->with_locations('fields:name')
+								->where(array('product' => $product_id))
+								->get_all(),
+		);
+		$this->_render_page('logs/product', $data);
+	}
+
 	public function nlog()
 	{
 		$this->load->model('Logs_model', 'nlog');

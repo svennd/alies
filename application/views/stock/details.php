@@ -2,7 +2,14 @@
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		<div><a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $stock_detail[0]['products']['name']; ?> / detail</div>
 		<div class="dropdown no-arrow">
-			<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id'] . '/show_all'); ?>"class="btn btn-outline-info btn-sm">History</a>
+			<?php if ($this->ion_auth->in_group("admin")): ?>
+				<?php if($show_all): ?>
+					<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id']); ?>"class="btn btn-outline-info btn-sm">Normal</a>
+				<?php else: ?>
+					<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id'] . '/show_all'); ?>"class="btn btn-outline-info btn-sm">History</a>
+				<?php endif; ?>
+				<a href="<?php echo base_url('logs/product/' . $stock_detail[0]['products']['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> Transaction log</a>
+			<?php endif; ?>
 		</div>
 	</div>
 	<div class="card-body">
