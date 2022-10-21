@@ -20,19 +20,21 @@ class Breeds extends Vet_Controller
 
         $obj = $this->breeds
                     ->fields('id, name');
-    
-        if (empty($query))
+
+        if (!empty($query))
         {
-            $obj->where('name', 'like', $query, true);
+            $obj = $this->breeds
+                    ->fields('id, name')
+                    ->where('name', 'like', $query, true);
         }
 
         $results = $obj
             ->where($where_type)
-            ->limit(10)
+            ->limit(50)
             ->order_by('freq', 'DESC')
             ->get_all();
 
-        if (!$results) { return 0; }
+        if (!$results) { var_dump($query); var_dump($where_type); return 0; }
         foreach ($results as $r) {
         	$return[] = array(
         				"id"    => $r['id'],
@@ -110,7 +112,6 @@ class Breeds extends Vet_Controller
         # loop through pets
         $all_pets = $this->pets->fields('id, type, breed, note')->where('note', '!=', '')->get_all();
 
-        $name_freq = array();
         $name_type = array();
         $not_found = array();
         $count_found = 0;
@@ -122,7 +123,7 @@ class Breeds extends Vet_Controller
                 continue; 
             }
 
-            $c = $this->pets->where(array('id' => $pet['id']))->update(array('breed' => $name_array[$breed_name], 'note' => ''));
+            $this->pets->where(array('id' => $pet['id']))->update(array('breed' => $name_array[$breed_name], 'note' => ''));
             $count_found++;
             $name_type[$breed_name] = $pet['type'];
         }
