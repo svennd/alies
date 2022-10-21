@@ -1,8 +1,14 @@
 <div class="row">
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>stock">Stock</a> / Move stock / Quantities
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div><a href="<?php echo base_url(); ?>stock">Stock</a> / Move stock / Quantities</div>
+				<div class="dropdown no-arrow">
+					<?php foreach($locations as $location): ?>
+						<?php if ($location['id'] != $new_location) { continue; } ?>
+						<a href="#" class="btn btn-outline-success btn-sm"><i class="fas fa-shipping-fast"></i> <?php echo $location['name']; ?></a>
+					<?php endforeach; ?>
+				</div>
 			</div>
 			<div class="card-body">
 				<?php if(count($warnings) > 0): ?>
@@ -20,7 +26,6 @@
 				</div>
 				<?php else: ?>
 				<form action="<?php echo base_url(); ?>stock/move_stock" method="post" autocomplete="off">
-				
 				<?php foreach ($move_list as $barcode => $product): ?>
 				<div class="form-row">
 					<div class="form-group col-md-4">
