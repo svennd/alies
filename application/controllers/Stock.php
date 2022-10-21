@@ -160,6 +160,7 @@ class Stock extends Vet_Controller
 			$move_volumes 	= $this->input->post('move_volume');
 
 			foreach ($move_volumes as $barcode => $value) {
+				$this->logs->logger($this->user->id, INFO, "move_stock", "barcode:". $barcode . " from:" . $from . "=>" . $to. " volume:" . $value);
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}
@@ -185,7 +186,7 @@ class Stock extends Vet_Controller
 
 				# increase current verify stock
 				if ($result) {
-					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' limit 1;";
+					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' AND state = '" . STOCK_CHECK . "' limit 1;";
 					$this->db->query($sql);
 				}
 				# create new verify stock

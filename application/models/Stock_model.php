@@ -46,10 +46,7 @@ class Stock_model extends MY_Model
 
 		# if we get a barcode and a location, we can substract easy
 		if ($barcode && $location) {
-			$sql = "UPDATE stock SET volume=volume-" . $volume. " WHERE barcode = '" . $barcode . "' and location = '" . $location . "' limit 1;";
-			$this->db->query($sql);
-
-			$affected = $this->db->affected_rows();
+			$affected = $this->reduce_product($barcode, $location, $volume);
 
 			# TODO : what if there is no stock there ! (this would pass) testing ...
 			# woops there was no barcode here (it must have been from somewhere else)
@@ -67,8 +64,7 @@ class Stock_model extends MY_Model
 			$result = $this->stock->where(array("product_id" => $product_id, "location" => $location))->fields('barcode')->get_all();
 
 			if ($result && count($result) == 1) {
-				$sql = "UPDATE stock SET volume=volume-" . $volume. " WHERE barcode = '" . $result[0]['barcode'] . "' and location = '" . $location . "' limit 1;";
-				$this->db->query($sql);
+				$this->reduce_product($result[0]['barcode'], $location, $volume);
 			} else {
 				$this->insert(array("product_id" => $product_id, "volume" => -$volume, "location" => $location, "state" => STOCK_ERROR));
 			}
@@ -88,7 +84,7 @@ class Stock_model extends MY_Model
 		$this->db->query($sql);
 
 		# check for issues
-		$sql = "UPDATE stock SET state = " . STOCK_ERROR . " WHERE product_id='" . $product_id . "' AND volume < '0';";
+		$sql = "UPDATE stock SET state = " . STOCK_ERROR . " WHERE product_id='" . $product_id . "' AND volume < '0' AND state != " . STOCK_ERROR . ";";
 		$this->db->query($sql);
 	}
 
@@ -96,6 +92,8 @@ class Stock_model extends MY_Model
 	{
 		$sql = "UPDATE stock SET volume=volume-" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $from . "' and state = '" . STOCK_IN_USE . "' limit 1;";
 		$this->db->query($sql);
+
+		return $this->db->affected_rows();
 	}
 
 	public function add_product_to_stock($barcode, $from, $to, $value)
@@ -105,9 +103,7 @@ class Stock_model extends MY_Model
 		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
 
 		if ($product_on_to) {
-			$sql = "UPDATE stock SET volume=volume+" . $value. ", state='" . STOCK_IN_USE . "' WHERE barcode = '" . $barcode . "' and location = '" . $to . "' limit 1;";
-			$this->db->query($sql);
-
+			$this->reduce_product($barcode, $to, -$value);
 		} else {
 			$from_info = $this->where(array("barcode" => $barcode, "location" => $from))->get();
 			$this->insert(array(
