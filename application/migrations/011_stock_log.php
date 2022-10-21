@@ -24,7 +24,7 @@ class Migration_stock_log extends CI_Migration {
 			`level` tinyint(3) NOT NULL,
 			`updated_at` datetime NOT NULL DEFAULT current_timestamp(),
 			`created_at` datetime NOT NULL DEFAULT current_timestamp()
-		  ) ENGINE=InnoDB DEFAULT;";
+		  ) ENGINE=InnoDB;";
 		$sql[] = "ALTER TABLE `log` ADD `location` TINYINT(4) NOT NULL AFTER `msg`;";
 
 		foreach ($sql as $q)
