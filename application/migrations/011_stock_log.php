@@ -14,18 +14,17 @@ class Migration_stock_log extends CI_Migration {
 	public function up()
 	{
 		$sql[] = "
-            CREATE TABLE `log_stock` (
-                `id` INT NOT NULL AUTO_INCREMENT , 
-                `user_id` TINYINT(4) NOT NULL , 
-                `product` INT NOT NULL , 
-                `product` VARCHAR(255) NOT NULL , 
-                `volume` DECIMAL(10,2) NOT NULL , 
-                `location` TINYINT(4) NOT NULL ,
-                `msg` TEXT NOT NULL , 
-                `level` TINYINT(3) NOT NULL , 
-                `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-            PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+		CREATE TABLE `log_stock` (
+			`id` int(11) NOT NULL,
+			`user_id` tinyint(4) NOT NULL,
+			`product` int(11) NOT NULL,
+			`event` varchar(255) NOT NULL,
+			`volume` decimal(10,2) NOT NULL,
+			`location` tinyint(4) NOT NULL,
+			`level` tinyint(3) NOT NULL,
+			`updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+			`created_at` datetime NOT NULL DEFAULT current_timestamp()
+		  ) ENGINE=InnoDB DEFAULT;";
 		$sql[] = "ALTER TABLE `log` ADD `location` TINYINT(4) NOT NULL AFTER `msg`;";
 
 		foreach ($sql as $q)
