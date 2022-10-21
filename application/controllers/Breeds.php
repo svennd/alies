@@ -134,5 +134,26 @@ class Breeds extends Vet_Controller
             $this->breeds->where(array('name' => $name))->update(array('type' => $type));
         }
         echo "done found : " . $count_found;
+ 
+    }
+
+    # debug 
+    # try to guess the type based on the database
+    public function run_guess_breed_type()
+    {
+        $breeds = $this->breeds->fields('id')->get_all();
+
+        $found = 0;
+        foreach ($breeds as $breed)
+        {
+            $pet = $this->pets->where(array('breed' => $breed['id']))->limit(1)->get();
+            # if there is a pet
+            if ($pet)
+            {
+               $this->breeds->where(array('id' => (int) $breed['id']))->update(array('type' => (int) $pet['type']));
+               $found++;
+            }
+        }
+        echo "guessed $found types of breeds, of the total ". count($breeds) . " in the database.";
     }
 }
