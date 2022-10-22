@@ -53,14 +53,15 @@ class Invoice extends Vet_Controller
 		$this->_render_page('bills/bill_overview', $data);
 	}
 
-	# generate a bill if thre is no open or unpaid one for this owner
+	# generate a bill if thre is no open for this owner
+	# once a bill is "unpaid/incomplete" products are removed from stock
+	# and the assigned vet is "locked"
 	public function bill(int $owner_id, int $event_id)
 	{
 		# before we create a new bill check if there is already an unpaid bill
 		$check_bill = $this->bills
 					->group_start()
 						->where("status", "=", PAYMENT_UNPAID)
-						->where("status", "=", PAYMENT_PARTIALLY, true)
 						->where("status", "=", PAYMENT_OPEN, true)
 					->group_end()
 					->where(array("owner_id" => $owner_id))
@@ -86,7 +87,7 @@ class Invoice extends Vet_Controller
 		$this->owners->update(array("last_bill" => date_format(date_create(), "Y-m-d")), $owner_id);
 
 		// make this traceable
-		$this->logs->logger(INFO, "generate_bill", "bill_id: " . $bill_id);
+		$this->logs->logger(DEBUG, "generate_bill", "bill_id: " . $bill_id);
 
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
@@ -99,7 +100,6 @@ class Invoice extends Vet_Controller
 	#		so we don't create 2 bills for 1 (or more) event
 	public function get_bill($bill_id, $pdf = false)
 	{
-
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
 		$bill_status = $bill['status'];
@@ -205,7 +205,6 @@ class Invoice extends Vet_Controller
 	# in case the client does not pay
 	public function bill_unpay($bill_id)
 	{
-
 		# make this traceable
 		$this->logs->logger(INFO, "bill_unpay", "bill_id: " . $bill_id);
 
@@ -246,7 +245,7 @@ class Invoice extends Vet_Controller
 			$total_payed = ((float)$cash_value+(float)$card_value) - (float)$bill['amount'];
 			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
 
-			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value ), $bill_id);
+			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value, "msg" => $this->input->post('msg')), $bill_id);
 
 			# remove products from stock
 			# only do this when the payment is not yet processed once before
@@ -260,6 +259,12 @@ class Invoice extends Vet_Controller
 
 		}
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
+	}
+
+	# on bill_unpay we need to send this in the background
+	public function store_bill_msg(int $bill_id)
+	{
+		$this->bills->update(array("msg" => $this->input->post('msg')), $bill_id);
 	}
 
 	# check if the calculated price is equal to the price in the database
@@ -285,7 +290,7 @@ class Invoice extends Vet_Controller
 	private function remove_from_stock($bill_id)
 	{
 		$events_from_bill = $this->events->where(array("payment" => $bill_id))->fields('id, location')->get_all();
-
+		$product_count = 0;
 		foreach ($events_from_bill as $event) {
 			$product_list = $this->events_products->where(array("event_id" => $event['id']))->fields('product_id, volume, barcode')->get_all();
 
@@ -299,8 +304,11 @@ class Invoice extends Vet_Controller
 					$event['location'],
 					$prod['barcode']
 				);
+				$product_count++;
 			}
 		}
+
+		$this->logs->logger(DEBUG, "drop_from_stock", "bill_id: " . $bill_id) . " products : ". $product_count;
 		return true;
 	}
 

@@ -22,7 +22,9 @@ class Logs_model extends MY_Model
 	
 	public function logger($level, $event, $msg)
 	{
-		return $this->insert(array(
+		return ($level > $this->min_log_level) ? 
+			true : 
+			$this->insert(array(
 					"event" 	=> $event,
 					"level" 	=> $level,
 					"user_id" 	=> $this->user->id,

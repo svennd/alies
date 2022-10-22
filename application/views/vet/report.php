@@ -25,7 +25,13 @@
 									<td><a href="<?php echo base_url('events/event/'. $report['id']); ?>" class="btn btn-sm btn-outline-info"><?php echo $this->lang->line('consult'); ?></a></td>
 									<td><?php echo $report['title']; ?></td>
 									<td><a href="<?php echo base_url('pets/fiche/'. $report['pet']['id']); ?>"><?php echo get_symbol($report['pet']['type']) ; ?> <?php echo $report['pet']['name']; ?></a></td>
-									<td><a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="badge <?php echo ($report['status']) ? 'badge-success' : 'badge-danger'; ?>"><?php echo $this->lang->line('Invoice'); ?></a></td>
+									<td>
+										<?php if($report['payment'] == 0): ?>
+										<a href="#" class="badge <?php echo ($report['status']) ? 'badge-success' : 'badge-danger'; ?>"><?php echo $this->lang->line('Invoice'); ?></a>
+										<?php else : ?>
+										<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="badge <?php echo ($report['status']) ? 'badge-success' : 'badge-danger'; ?>"><?php echo $this->lang->line('Invoice'); ?></a>
+										<?php endif; ?>
+									</td>
 									<td>
 										<?php if ($report['report'] == REPORT_DONE): ?>
 											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="badge badge-success"><?php echo $this->lang->line('finished'); ?></a>

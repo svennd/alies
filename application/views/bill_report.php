@@ -43,7 +43,7 @@
 								</p>
 						<?php endif; ?>
 
-					<form action="<?php echo base_url(); ?>invoice/bill_pay/<?php echo $bill_id ?>" method="post" autocomplete="off">
+		<form action="<?php echo base_url(); ?>invoice/bill_pay/<?php echo $bill_id ?>" method="post" autocomplete="off">
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-cc-visa"></i>&nbsp;<?php echo $this->lang->line('card'); ?></a></span>
@@ -66,10 +66,15 @@
 			<span class="input-group-text" id="calculate"><a href="#"><i class="fas fa-calculator"></i></a></span>
 		</div>
 		</div>
+		<div class="form-group">
+			<label for="msg">Notes</label>
+			<textarea class="form-control" id="msg" name="msg" rows="3"><?php echo $bill['msg']; ?></textarea>
+		</div>
 		<i><small id="payment_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 			<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fas fa-file-invoice-dollar"></i> <?php echo $this->lang->line('payment_complete'); ?></button>
 
 		<?php endif; ?>
+
 		<?php if ($bill['status'] == PAYMENT_PAID): ?>
 		<p class="lead"><?php echo $this->lang->line('payment'); ?>: <?php echo get_bill_status($bill['status']); ?>!</p>
 		<?php
@@ -77,10 +82,12 @@
 			$card = round((float) $bill['card'], 2);
 		?>
 		<?php echo $this->lang->line('payed'); ?> : <?php echo $bill['amount']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
-
+		<div class="form-group">
+			<textarea class="form-control" disabled><?php echo $bill['msg']; ?></textarea>
+		</div>
 		<?php endif; ?>
 			<?php if ($bill['status'] != PAYMENT_PAID && $bill['status'] != PAYMENT_PARTIALLY): ?>
-			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2"><i class="fas fa-syringe"></i> <?php echo $this->lang->line('drop_from_stock'); ?></a>
+			<a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill_id; ?>" class="btn btn-outline-danger mx-2" id="bill_unpay" onclick="event.preventDefault()"><i class="fas fa-syringe"></i> <?php echo $this->lang->line('drop_from_stock'); ?></a>
 		<?php endif; ?>
 		  </form>
 
@@ -181,7 +188,7 @@
 					<hr>
                     <div class="d-flex flex-row-reverse bg-dark text-white p-4">
                         <div class="py-3 px-5 text-right">
-                            <div class="mb-2">Total</div>
+                            <div class="mb-2"><?php echo $this->lang->line('Total'); ?></div>
                             <div class="h2 font-weight-light"><?php echo $bill['amount']; ?> &euro;</div>
                         </div>
                     </div>
@@ -218,6 +225,19 @@ document.addEventListener("DOMContentLoaded", function(){
 		var total_in = cash+card;
 
 		$("#payment_info").html("current: " + Math.round((total-total_in)*100)/100 + " &euro;");
+	});
+
+	// store message before we send on
+	$("#bill_unpay").click(function() {
+		$("#bill_unpay").html('<i class="fas fa-sync fa-spin"></i> Loading')
+		$.ajax({
+			method: 'POST',
+			url: '<?php echo base_url(); ?>invoice/store_bill_msg/' + <?php echo $bill['id']; ?>,
+			data: {
+				msg: $("#msg").val(),
+			}
+		});
+		window.location.href = this.href;
 	});
 });
 </script>

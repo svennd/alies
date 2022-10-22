@@ -48,62 +48,32 @@ class Vet_Controller extends MY_Controller
 
 		# required on every page
 		$this->page_data = array(
-								"user" 							=> $this->user,
+								"user" 						=> $this->user,
 								"location" 					=> $this->_get_compass_locations(),
-								"current_location" 	=> $this->_get_current_location(),
-								"mondal" 						=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
+								"current_location" 			=> $this->_get_current_location(),
+								"mondal" 					=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
 						);
-
-		$this->load->model('Alerts_model', 'alerts');
-		$this->is_backup_cron();
-
-		$this->page_data['alerts'] = $this->alerts->limit(5)->get_all();
-
 
 		$this->page_data['report_count'] = $this->events
 																	->where(array(
-																						'vet' 		=> $this->user->id,
-																						'no_history' => 0,
-																						'report' => '1'
+																						'vet' 			=> $this->user->id,
+																						'no_history' 	=> 0,
+																						'report' 		=> 1
 																					))
 																	->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
 																	->count_rows();
 
 		// $sections = array(
-		// 'config'  => TRUE,
-		// 'queries' => TRUE,
-		// 'query_toggle_count' => 250
+		// 	'config'  => TRUE,
+		// 	'queries' => TRUE,
+		// 	'query_toggle_count' => 250
 		// );
-		//
+		
 		// $this->output->set_profiler_sections($sections);
 		// $this->output->enable_profiler(TRUE);
 
 		$this->lang->load('vet', 'dutch');
 		// $this->lang->load('vet', 'english');
-	}
-
-
-	# verify if there is a backup action in last 7 days;
-	public function is_backup_cron()
-	{
-		$last_backup = date_create($this->conf['backup_count']['updated_at']);
-
-		# in case badly configurated
-		if (!$last_backup) {
-			return false;
-		}
-
-		$diff = date_diff($last_backup, date_create("now"));
-		if ($diff->format('%a') >= $this->conf['alert_last_backup']['value']) {
-			# warn the user
-			$this->alerts->insert(array(
-										"level" 	=> WARN,
-										"msg" 		=> "No backup for " . $this->conf['alert_last_backup']['value'] . " days!",
-									));
-			# since we warned the user
-			# update the last backup (to not spam the admin)
-			$this->settings->where(array("name" => "backup_count"))->update(array("name" => "backup_count"));
-		}
 	}
 
 	public function _get_compass_locations()
