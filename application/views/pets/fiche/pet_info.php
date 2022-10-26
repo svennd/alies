@@ -14,7 +14,7 @@
 </tr>
 <tr>
 	<td><?php echo $this->lang->line('breed'); ?></td>
-	<td><?php echo $pet['breeds']['name']; ?></td>
+	<td><?php echo isset($pet['breeds']['name']) ? $pet['breeds']['name'] : "?"; ?></td>
 </tr>
 <tr>
 	<td><?php echo $this->lang->line('gender'); ?></td>

@@ -145,11 +145,10 @@ class Pets extends Vet_Controller
 			redirect('/pets/fiche/' . (int)  $pet_id);
 		}
 
-		$pet_info = $this->pets->with_owners()->get($pet_id);
+		$pet_info = $this->pets->with_owners()->with_breeds('fields: name')->get($pet_id);
 		$data = array(
 						"pet" => $pet_info,
-						"owner" => $pet_info['owners'],
-						"breeds" => $this->breeds->get_all()
+						"owner" => $pet_info['owners']
 					);
 
 		$this->_render_page('pets/profile', $data);

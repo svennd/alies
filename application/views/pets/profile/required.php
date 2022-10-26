@@ -99,12 +99,12 @@
 		</div>
 	</div>
 </div>
-
 <div class="form-group">
     <label for="breed"><?php echo $this->lang->line('breed'); ?></label>
 	<div class="form-row">
 		<div class="col">
 		<select name="breed" class="form-control" id="breeds2"></select>
+		<input type="hidden" id="current_breed" name="<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
 		</div>
 		<div class="col">
 		<div class="input-group input-group mb-2 mr-sm-2">

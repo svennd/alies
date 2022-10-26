@@ -48,7 +48,7 @@ $lang['Stock']          = 'Stock';
 # owners
 $lang['title_search']     = 'Search';
 $lang['New_client']     = 'New Client';
-$lang['search_help']    = 'Search the database using (first) name, street, phone, pet id, pet chip nr, pet name or client id.';
+$lang['search_help']    = 'Search the database using (first) name, street, phone, pet id, pet chip nr, pet name, breed or client id.';
 $lang['adress']         = 'Adress';
 $lang['city']           = 'City';
 $lang['main_city']           = 'Main City';

@@ -50,7 +50,7 @@ $lang['Stock']          = 'Stock';
 # owners - search
 $lang['title_search']   = 'Zoeken';
 $lang['New_client']     = 'Nieuwe Klant';
-$lang['search_help']    = 'Zoek in de databank op (voor) naam, straat, telefoon, dier id, dier chip nr., dier naam or klant id.';
+$lang['search_help']    = 'Zoek in de databank op (voor) naam, straat, telefoon, dier id, dier chip nr., dier naam, ras of klant id.';
 $lang['adress']         = 'Adres';
 $lang['city']           = 'Gemeente';
 $lang['main_city']      = 'Stad';

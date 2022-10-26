@@ -68,7 +68,7 @@
 		</div>
 		<div class="form-group">
 			<label for="msg">Notes</label>
-			<textarea class="form-control" id="msg" name="msg" rows="3"><?php echo $bill['msg']; ?></textarea>
+			<textarea class="form-control" id="msg" name="msg" rows="3"><?php echo (isset($bill['msg']) ? $bill['msg'] : ""); ?></textarea>
 		</div>
 		<i><small id="payment_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 			<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fas fa-file-invoice-dollar"></i> <?php echo $this->lang->line('payment_complete'); ?></button>
@@ -83,7 +83,7 @@
 		?>
 		<?php echo $this->lang->line('payed'); ?> : <?php echo $bill['amount']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
 		<div class="form-group">
-			<textarea class="form-control" disabled><?php echo $bill['msg']; ?></textarea>
+			<textarea class="form-control" disabled><?php echo (isset($bill['msg']) ? $bill['msg'] : ""); ?></textarea>
 		</div>
 		<?php endif; ?>
 			<?php if ($bill['status'] != PAYMENT_PAID && $bill['status'] != PAYMENT_PARTIALLY): ?>

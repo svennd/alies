@@ -130,42 +130,7 @@ class Pets_model extends MY_Model
 		
 		return $this->db->query($sql)->result_array();
 	}
-	
-	# deprecated - in use by manual chip search
-	public function search_by_chip($chip)
-	{
-		$sql = "
-			SELECT 
-				* 
-			FROM 
-				pets
-			WHERE
-				chip = '". $chip ."'	
-		";
 		
-		$prime = $this->db->query($sql)->result_array();
-		$result = array();
-		if ($prime) {
-			foreach ($prime as $owners) {
-				$pets_sql = "
-					SELECT
-					*
-					FROM 
-						pets
-					WHERE
-						pets.owner = " . $owners['id'] . "
-					AND
-						pets.death = 0
-					LIMIT
-						0,2
-				";
-				$owners['pets'] = $this->db->query($pets_sql)->result_array();
-				$result[] = $owners;
-			}
-		}
-		return $result;
-	}
-	
 	public function get_per_type()
 	{
 		$pets_sql = "

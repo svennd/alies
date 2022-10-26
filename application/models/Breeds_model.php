@@ -19,4 +19,45 @@ class Breeds_model extends MY_Model
 				
 		parent::__construct();
 	}
+
+	# must be an exact match
+	# otherwise common patterns generate WAAAY to much results
+	public function search_by_name($query)
+	{
+		# ignore short strings
+		if (strlen($query) < 4) { return array(); }
+
+		$query = $this->db->escape_like_str($query);
+		$sql = "
+			SELECT 
+				breeds.name as breed,
+				pets.name, owners.*
+			FROM
+				breeds
+			LEFT JOIN
+				pets
+			ON
+				pets.breed = breeds.id
+
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+
+			WHERE
+				breeds.name LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+			AND
+				pets.death = 0
+			AND
+				pets.lost = 0
+			AND
+				owners.last_bill != ''
+			ORDER BY
+				owners.last_bill
+			DESC
+			LIMIT 50
+		";
+		
+		return $this->db->query($sql)->result_array();
+	}
 }

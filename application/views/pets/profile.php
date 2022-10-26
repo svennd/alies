@@ -164,6 +164,12 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		}
 	});
+	const current_breed_id = $("#current_breed").val();
+	const current_breed_name = $("#current_breed").attr('name');;
+
+	var newOption = new Option(current_breed_name, current_breed_id, true, true);
+	$('#breeds2').append(newOption).trigger('change');
+
 	$("#birth").change(function() {
 		make_date(this.value);
 	});

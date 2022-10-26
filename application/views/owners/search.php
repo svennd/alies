@@ -76,7 +76,8 @@
 													array($first_name, 'First Name', 'first_name'), 
 													array($street, 'Street', 'street'), 
 													array($pets, 'Pets', 'pets'), 
-													array($phone, 'Phone', 'phone')
+													array($phone, 'Phone', 'phone'),
+													array($breeds, 'Breed', 'breed'),
 													);
 							$active_switch = false;
 							$total_count = 0;
@@ -265,6 +266,33 @@
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
 				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+		<?php foreach ($breeds as $breed): ?>
+		<tr>
+			<td>breeds</td>
+			<td>
+				<a href="<?php echo base_url() . 'owners/detail/' . $breed['id']; ?>" class="text-nowrap">
+					<?php echo $breed['last_name']; ?>
+				</a>
+				<small>(<i class="fas fa-fw fa-dog"></i><?php echo $breed['name'] ?>, <strong><?php echo $breed['breed']; ?></strong>)</small>
+			</td>
+			<td><?php echo $breed['first_name']; ?></td>
+			<td><?php echo $breed['street']; ?></td>
+			<td><?php echo $breed['nr']; ?></td>
+			<td><?php echo $breed['city']; ?></td>
+			<?php if (count($phone)): ?>
+			<td>
+				<?php echo (!empty($breed['telephone'])) ? $breed['telephone'] . '<br/>' : ''; ?>
+				<?php echo (!empty($breed['mobile'])) ? $breed['mobile'] . '<br/>' : ''; ?>
+				<?php echo (!empty($breed['phone2'])) ? $breed['phone2'] . '<br/>' : ''; ?>
+				<?php echo (!empty($breed['phone3'])) ? $breed['phone3'] . '<br/>' : ''; ?>
+			</td>
+			<?php endif; ?>
+			<td><?php echo $breed['last_bill']; ?></td>
+			<td>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $breed['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
