@@ -194,8 +194,16 @@
 					<?php echo (isset($location)) ? $location : '<span style="color:red">location error</span>'; ?>
 
           <!-- Topbar Navbar -->
+
           <ul class="navbar-nav ml-auto">
-						<!-- Nav Item - Messages -->
+
+          <?php if ($this->ion_auth->in_group("admin")): ?>
+	          <li class="nav-item mx-1">
+	              <a class="nav-link" href="#">
+                  <i class="fas fa-user-shield" style="color:#ff5555;"></i>
+	              </a>
+            </li>
+          <?php endif; ?>
 	          <li class="nav-item mx-1">
 	              <a class="nav-link" href="<?php echo base_url('report'); ?>">
 	                  <i class="fas fa-file fa-fw"></i>
