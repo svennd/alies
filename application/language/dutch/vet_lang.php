@@ -133,7 +133,7 @@ $lang['personal_info']         = 'Persoonlijke info';
 $lang['debts']         = 'schulden';
 $lang['low_budget']         = 'laag budget';
 $lang['contact']         = 'contact';
-$lang['comment']         = 'commentaar';
+$lang['comment']         = 'opmerking';
 
 # shortages
 $lang['shortage']         = 'Tekort';
