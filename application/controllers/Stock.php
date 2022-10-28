@@ -14,6 +14,8 @@ class Stock extends Vet_Controller
 		$this->load->model('Product_type_model', 'prod_type');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Stock_limit_model', 'stock_limit');
+		$this->load->model('Delivery_slip_model', 'slip');
+		$this->load->model('Register_in_model', 'registry_in');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -232,7 +234,7 @@ class Stock extends Vet_Controller
 						"products" 		=> $this->stock->with_products('fields: id, name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all(),
 						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 					);
-		$this->_render_page('stock_add', $data);
+		$this->_render_page('stock/add', $data);
 	}
 
 	public function delete_stock($stock_id)
@@ -251,6 +253,27 @@ class Stock extends Vet_Controller
 
 	public function verify_stock()
 	{
+		$slip = $this->slip->insert(array(
+					"vet"		=> $this->user->id,
+					"note"		=> $this->input->post('delivery_slip'),
+					"regdate"	=> $this->input->post('regdate'),
+					"location" 	=> $this->user->current_location
+			));
+		
+		# registry_in
+		$stock = $this->stock->fields('product_id, eol, volume, in_price, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
+		foreach ($stock as $stoc)
+		{
+			$this->registry_in->insert(array(
+						"product" 	=> $stoc['product_id'],
+						"eol" 		=> $stoc['eol'],
+						"volume" 	=> $stoc['volume'],
+						"in_price" 	=> $stoc['in_price'],
+						"lotnr" 	=> $stoc['lotnr'],
+						"delivery_slip"	=> $slip
+			));
+		}
+
 		# all products currently in check state are now considered in use
 		$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
 
@@ -321,7 +344,7 @@ class Stock extends Vet_Controller
 		$data = array(
 						"global_stock" 	=> $result,
 						"locations" 	=> $this->location,
-						"local_stock" 	=> $this->stock->get_local_stock_shortages()
+						"local_stock" 	=> $this->stock_limit->get_local_stock_shortages()
 					);
 		$this->_render_page('stock/shortages', $data);
 	}

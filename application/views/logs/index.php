@@ -10,6 +10,7 @@
 					<li><a href="<?php echo base_url(); ?>logs/write_off">Write Off logs</a> : expired / lost products from the stock.</li>
 					<li><a href="<?php echo base_url(); ?>logs/nlog">Global logs</a> : system logs for alies</li>
 					<li><a href="<?php echo base_url(); ?>logs/software_version">Version logs</a> : software information</li>
+					<li><a href="<?php echo base_url(); ?>logs/delivery">Delivery logs</a> : deliveries</li>
 				</ul>
 			</div>
 		</div>

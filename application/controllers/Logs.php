@@ -9,6 +9,8 @@ class Logs extends Admin_Controller
 
 		# models
 		$this->load->model('Log_stock_model', 'log_stock');
+		$this->load->model('Delivery_slip_model', 'delivery');
+		$this->load->model('Register_in_model', 'regin');
 	}
 
 	public function index()
@@ -54,6 +56,25 @@ class Logs extends Admin_Controller
 		$this->_render_page('logs/global', $data);
 	}
 	
+	public function delivery(int $delivery = 0)
+	{
+		if($delivery)
+		{
+			$data = array(
+				"delivery" => $this->delivery->with_location('fields: name')->with_vet('fields:first_name')->get($delivery),
+				"products" => $this->regin->with_product('fields: name, sell_volume')->where(array('delivery_slip' => $delivery))->get_all(),
+			);
+			$this->_render_page('logs/delivery_detail', $data);
+		}
+		else
+		{
+			$data = array(
+				"logs" 		=> $this->delivery->with_products('fields:name')->with_vet('fields:first_name')->get_all(),
+			);
+			$this->_render_page('logs/delivery', $data);
+		}
+	}
+
 	/* usefull for debugin */
 	public function software_version()
 	{

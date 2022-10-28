@@ -118,7 +118,24 @@
 				</tr>
 			<?php endforeach; ?>
 			</table>
-			<a href="<?php echo base_url(); ?>stock/verify_stock" class="btn btn-success">Verify New Stock</a>
+			
+			<form action="<?php echo base_url(); ?>stock/verify_stock" method="post" autocomplete="off">
+				<hr>
+				<a data-toggle="collapse" href="#collapseExample" role="button" class="btn btn-sm btn-success" aria-expanded="false" aria-controls="collapseExample"><i class="fas fa-clipboard-check"></i> Delivery slip</a>
+				<button type="submit" name="submit" value="1" class="btn btn-sm btn-primary"><i class="fas fa-shipping-fast"></i> Verify Stock</button>
+				<br/>
+				<br/>
+						<div class="collapse" id="collapseExample">
+							<div class="form-group">
+								<label for="delivery_slip">Delivery date</label>
+								<input type="date" name="regdate" class="form-control" id="date" value="<?php echo date('Y-m-d') ?>">
+							</div>
+							<div class="form-group">
+								<label for="delivery_slip"><?php echo $this->lang->line('comment'); ?></label>
+								<textarea class="form-control" name="delivery_slip" id="delivery_slip" rows="3"></textarea>
+							</div>
+						</div> 
+			</form>
 			<?php endif; ?>
 			</div>
 		</div>

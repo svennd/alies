@@ -14,7 +14,6 @@ class Owners_model extends MY_Model
 		$this->soft_deletes = true;
 		
 		$this->has_many['pets'] = array(
-		
 									'foreign_model' => 'Pets_model',
 									'foreign_table' => 'pets',
 									'foreign_key' => 'owner',
