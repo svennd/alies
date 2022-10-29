@@ -59,6 +59,7 @@ class Stock extends Vet_Controller
 									;
 
 		$data = array(
+						"product"		=> $this->product->fields('id, name, unit_sell')->get($pid),
 						"stock_detail" 	=> $stock_detail,
 						"show_all"		=> $all,
 						"stock_usage" 	=> $this->stock->get_usage($pid)

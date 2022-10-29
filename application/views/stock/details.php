@@ -1,20 +1,20 @@
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div><a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $stock_detail[0]['products']['name']; ?> / detail</div>
+		
+		<div><a href="<?php echo base_url('stock/all'); ?>">Stock</a> / <?php echo $product['name']; ?> / detail</div>
 		<div class="dropdown no-arrow">
 			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<?php if($show_all): ?>
-					<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id']); ?>"class="btn btn-outline-info btn-sm">Normal</a>
+					<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-info btn-sm">Normal</a>
 				<?php else: ?>
-					<a href="<?php echo base_url('stock/stock_detail/' . $stock_detail[0]['products']['id'] . '/show_all'); ?>"class="btn btn-outline-info btn-sm">History</a>
+					<a href="<?php echo base_url('stock/stock_detail/' . $product['id'] . '/show_all'); ?>"class="btn btn-outline-info btn-sm">History</a>
 				<?php endif; ?>
-				<a href="<?php echo base_url('logs/product/' . $stock_detail[0]['products']['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> Transaction log</a>
+				<a href="<?php echo base_url('logs/product/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> Transaction log</a>
 			<?php endif; ?>
 		</div>
 	</div>
 	<div class="card-body">
 	<?php if ($stock_detail): ?>
-
 		<table class="table" id="dataTable">
 		<thead>
 		<tr>
@@ -54,18 +54,18 @@
             </tr>
         </tfoot>
 		</table>
-		
-	<?php else: ?>
-		no entries
-	<?php endif; ?>
+			
+		<?php else: ?>
+			no stock found
+		<?php endif; ?>
 		</div>
 </div>
 
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div><a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $stock_detail[0]['products']['name']; ?> / usage last 6m</div>
+		<div><a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $product['name']; ?> / usage last 6m</div>
 		<div class="dropdown no-arrow">
-			<a href="<?php echo base_url('reports/usage/' . $stock_detail[0]['products']['id']); ?>" class="btn btn-outline-info btn-sm">Details</a>
+			<a href="<?php echo base_url('reports/usage/' . $product['id']); ?>" class="btn btn-outline-info btn-sm">Details</a>
 		</div>
 	</div>
 	<div class="card-body">
@@ -82,7 +82,7 @@
 		<tbody>
 		<?php foreach ($stock_usage as $usage): ?>
 		<tr>
-			<td><?php echo $usage['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
+			<td><?php echo $usage['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 			<td><?php echo $usage['month']; ?></td>
 			<td><?php echo $usage['year']; ?></td>
 		</tr>
