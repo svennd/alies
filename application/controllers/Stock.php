@@ -316,63 +316,6 @@ class Stock extends Vet_Controller
 		}
 	}
 
-	public function limit()
-	{
-		# global shortages
-		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
-
-		$result = array();
-
-		if ($r) {
-
-			foreach ($r as $prod) {
-				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
-
-				# false if none found
-				if ($stock && $stock['sum_vol'] < $prod['limit_stock']) {
-					$result[] = array(
-							"id" 				=> $prod['id'],
-							"name" 				=> $prod['name'],
-							"unit_sell" 		=> $prod['unit_sell'],
-							"limit_stock" 		=> $prod['limit_stock'],
-							"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0'),
-						);
-				}
-			}
-		}
-
-		$data = array(
-						"global_stock" 	=> $result,
-						"locations" 	=> $this->location,
-						"local_stock" 	=> $this->stock_limit->get_local_stock_shortages()
-					);
-		$this->_render_page('stock/shortages', $data);
-	}
-
-	public function stock_limit()
-	{
-		if ($this->input->post('submit') == "add") {
-			$added = $this->stock_limit->insert(array(
-									"product_id" 		=> $this->input->post('product_id'),
-									"stock" 			=> $this->input->post('location'),
-									"volume" 			=> $this->input->post('volume')
-								));
-		}
-		$data = array(
-				"products" 			=> $this->product->get_all(),
-				"stock_limit" 		=> $this->stock_limit->with_products()->get_all(),
-				"locations" 		=> $this->location,
-				"added"				=> (isset($added)) ? $added : false,
-			);
-		$this->_render_page('stock_limit', $data);
-	}
-
-	public function stock_limit_rm($id)
-	{
-		$this->stock_limit->delete($id);
-		redirect('/stock/stock_limit', 'refresh');
-	}
-
 	public function edit(int $stock_id)
 	{
 		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }

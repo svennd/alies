@@ -12,6 +12,7 @@ class Welcome extends Vet_Controller
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Products_model', 'product');
 		$this->load->model('Events_model', 'events');
+		$this->load->model('Stock_limit_model', 'stock_limit');
 
 		$this->load->library('migration');
 	}
@@ -49,14 +50,15 @@ class Welcome extends Vet_Controller
 						);
 				}
 			}
+			
 		}
-	
+
 		$data = array(
 							"locations" 				=> $this->location,
 							"update_to_version" 		=> $version,
 
 							"vets" 						=> $this->users->get_active_vets(),
-							"local_stock"				=> ($this->user->current_location != 0) ? $this->stock->get_local_stock_shortages($this->user->current_location) : false,
+							"local_stock"				=> ($this->user->current_location != 0) ? $this->stock_limit->local_shortage($this->user->current_location) : false,
 							"global_stock"				=> $result,
 							"bad_products"				=> ($this->user->current_location != 0) ?
 												$this->stock

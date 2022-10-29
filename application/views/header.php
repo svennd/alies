@@ -104,9 +104,7 @@
             <h6 class="collapse-header">Inventory management :</h6>
 
             <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
-
-
-            <a class="collapse-item" href="<?php echo base_url(); ?>stock" id="stock">Stock</a>
+            <a class="collapse-item" href="<?php echo base_url('stock'); ?>" id="stock">Stock</a>
           </div>
         </div>
       </li>
@@ -128,7 +126,6 @@
         </div>
       </li>
 	  <?php endif; ?>
-
       <!-- Divider -->
       <hr class="sidebar-divider">
 
@@ -167,7 +164,7 @@
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
       <li class="nav-item" id="stock">
-        <a class="nav-link" href="<?php echo base_url(); ?>stock">
+        <a class="nav-link" href="<?php echo base_url('stock/' . $this->user->current_location); ?>">
          <i class="fas fa-fw fa-dolly"></i>
           <span><?php echo $this->lang->line('Stock'); ?></span></a>
       </li>

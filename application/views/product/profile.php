@@ -250,7 +250,7 @@ foreach ($locations as $l)
 								</tr>
 								<?php foreach($product['stock'] as $stock): if($user->current_location != $stock['location']): ?>
 								<tr>
-									<td><?php echo date_format(date_create($stock['eol']), $user->user_date); ?></td>
+									<td><?php echo (is_null($stock['eol'])) ? "???" : date_format(date_create($stock['eol']), $user->user_date); ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
 									<td><?php echo $stock['volume']; ?></td>
 									<td><?php echo $loc[$stock['location']];; ?></td>

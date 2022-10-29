@@ -14,7 +14,7 @@
 <div class="list-group">
 
 <?php if ($local_stock && count($local_stock) > 0): ?>
-  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action list-group-hack">
+  <a href="<?php echo base_url(); ?>limits/local" class="list-group-item list-group-item-action list-group-hack">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1"><?php echo $this->lang->line('local_shortage'); ?></h5>
 		<small class="text-muted"></small>
@@ -24,7 +24,7 @@
 <?php endif; ?>
 
 <?php if (count($global_stock) > 0): ?>
-  <a href="<?php echo base_url(); ?>stock/limit" class="list-group-item list-group-item-action list-group-hack">
+  <a href="<?php echo base_url(); ?>limits/global" class="list-group-item list-group-item-action list-group-hack">
     <div class="d-flex w-100 justify-content-between">
 		<h5 class="mb-1"><?php echo $this->lang->line('global_shortage'); ?></h5>
 		<small class="text-muted"></small>
