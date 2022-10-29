@@ -83,8 +83,6 @@ class Pets_model extends MY_Model
 	
 	public function search_by_chip_ex($chip)
 	{
-		$query = $this->db->escape_like_str($query);
-
 		$sql = "
 			SELECT 
 				pets.name, owners.*
@@ -95,13 +93,13 @@ class Pets_model extends MY_Model
 			ON
 				owners.id = pets.owner
 			WHERE
-				chip LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+				chip LIKE '" . $this->db->escape_like_str($chip) . "%' ESCAPE '!'
 			AND
 				death = 0
 			ORDER BY
 				owners.last_bill
 			DESC
-			LIMIT 250
+			LIMIT 5
 		";
 		
 		return $this->db->query($sql)->result_array();

@@ -309,6 +309,7 @@ class Reports extends Admin_Controller
 
 		$years = array_unique(array_column($r, 'y'));
 		$vets = array_unique(array_column($r, 'vet'));
+		$data = array();
 		foreach ($vets as $vet)
 		{
 			$filter_per_vet = array_filter($r, fn ($n) => $n['vet'] == $vet);

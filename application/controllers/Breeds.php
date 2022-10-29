@@ -34,7 +34,9 @@ class Breeds extends Vet_Controller
             ->order_by('freq', 'DESC')
             ->get_all();
 
-        if (!$results) { var_dump($query); var_dump($where_type); return 0; }
+        if (!$results) { return 0; }
+        
+        $return = array();
         foreach ($results as $r) {
         	$return[] = array(
         				"id"    => $r['id'],
