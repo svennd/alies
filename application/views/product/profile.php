@@ -220,7 +220,17 @@ foreach ($locations as $l)
 								</tr>
 								<?php foreach($product['stock'] as $stock):  ?>
 								<tr <?php echo (($user->current_location == $stock['location'])) ? 'class="table-success"' :''; ?>>
-									<td><?php echo (is_null($stock['eol'])) ? "???" : date_format(date_create($stock['eol']), $user->user_date); ?></td>
+									<td><?php 
+										echo 
+										(is_null($stock['eol'])) ? 
+										"???" : 
+										(
+												(strtotime($stock['eol']) < strtotime(date('Y-m-d'))) ? 
+													'<span style="color:red;"> ' . date_format(date_create($stock['eol']), $user->user_date) . '</span>'
+														: 
+													date_format(date_create($stock['eol']), $user->user_date)
+										)
+										; ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
 									<td><?php echo $stock['volume']; ?></td>
 									<td><?php echo $loc[$stock['location']]; ?></td>

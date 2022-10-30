@@ -14,6 +14,7 @@
 				<tr>
 					<th>Product</th>
 					<th>EOL</th>
+					<th>EOL (user)</th>
 					<th>Lotnr</th>
 					<th>Volume</th>
 					<th>Location</th>
@@ -27,6 +28,7 @@
 				<tr>
 					<td><?php echo $expire['products']['name']; ?></td>
 					<td><?php echo $expire['eol']; ?></td>
+					<td><?php echo date_format(date_create($expire['eol']), $user->user_date); ?></td>
 					<td><?php echo $expire['lotnr']; ?></td>
 					<td><?php echo $expire['volume']; ?> <?php echo $expire['products']['unit_buy']; ?></td>
 					<td><?php echo $expire['stock_locations']['name']; ?></td>
