@@ -116,7 +116,7 @@ $lang['custom_color']   = 'Aangepast Kleur';
 $lang['size']           = 'Dikte';
 $lang['templates']      = 'Templates';
 $lang['wipe']           = 'Wipe';
-$lang['store']          = 'Store';
+$lang['store']          = 'Bewaren';
 $lang['client']         = 'Klant';
 $lang['event']          = 'Event'; # limited space
 $lang['print_invoice']  = 'Print factuur';
@@ -199,3 +199,38 @@ $lang['operation']             = 'operatie';
 $lang['medicine']             = 'medicatie'; 
 $lang['no_history']             = 'verberg'; 
 $lang['history']             = 'toon'; 
+
+# limits
+$lang['local_stock']             = 'Lokale Stock'; 
+$lang['global_stock']             = 'Globale Stock'; 
+$lang['limit']             = 'Limiet'; 
+$lang['global_use']             = 'Globaal verbruik'; 
+$lang['explain_month']      = 'Lokaal en globaal verbruik gedurende de laatste 30 dagen';
+
+
+# product_profile
+$lang['consumer_price']             = 'Consumentenprijs'; 
+$lang['no_price']             = 'Geen prijs ingesteld'; 
+$lang['usage']             = 'Verbruik'; 
+$lang['one_month']             = '1 maand'; 
+$lang['six_months']             = '6 maanden'; 
+$lang['one_year']             = '1 jaar'; 
+
+$lang['product_details']        = 'Product details'; 
+$lang['producer_supplier']      = 'Producent - Leverancier'; 
+$lang['dead_volume']            = 'Dood Volume'; 
+$lang['administration']         = 'Toedieningsweg'; 
+$lang['sell_volume']            = 'Verkoopsvolume'; 
+$lang['catalog_price']          = 'Catalogusprijs'; 
+$lang['input_barcode']          = 'Invoer barcode'; 
+$lang['booking']                = 'Grootboekrekening'; 
+$lang['delay']                  = 'Vertraging'; 
+$lang['vaccin']                 = 'Vaccin'; 
+$lang['vaccin_freq']            = 'Vaccine Frequency'; 
+$lang['product_entered']        = 'Product toegevoegd'; 
+
+$lang['eol']                    = 'Vervaldatum'; 
+$lang['barcode']                = 'Barcode'; 
+$lang['added']                  = 'toegevoegd'; 
+$lang['no_local_stock']         = 'Geen lokale stock.'; 
+$lang['no_global_stock']        = 'Geen globale stock.'; 

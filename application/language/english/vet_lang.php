@@ -42,7 +42,7 @@ $lang['Clients']        = 'Clients';
 $lang['Reports']        = 'Reports';
 $lang['Invoice']        = 'Invoice';
 $lang['Vaccins']         = 'Vaccin';
-$lang['Products']       = 'Products';
+$lang['Products']       = 'Producten';
 $lang['Stock']          = 'Stock';
 
 # owners
@@ -196,3 +196,37 @@ $lang['operation']             = 'operation';
 $lang['medicine']             = 'medication'; 
 $lang['no_history']             = 'hide'; 
 $lang['history']             = 'show'; 
+
+# limits
+$lang['local_stock']             = 'Local Stock'; 
+$lang['global_stock']             = 'Global Stock'; 
+$lang['limit']             = 'Limit'; 
+$lang['global_use']             = 'Global use'; 
+$lang['explain_month']      = 'local & global use over the last 30 days.';
+
+# product_profile
+$lang['consumer_price']             = 'Consumer price'; 
+$lang['no_price']             = 'No price set'; 
+$lang['usage']             = 'Usage'; 
+$lang['one_month']             = '1 month'; 
+$lang['six_months']             = '6 months'; 
+$lang['one_year']             = '1 year'; 
+
+$lang['product_details']        = 'Product Details'; 
+$lang['producer_supplier']      = 'Producer - Supply'; 
+$lang['dead_volume']            = 'Dead Volume'; 
+$lang['administration']         = 'Administration'; 
+$lang['sell_volume']            = 'Sell Volume'; 
+$lang['catalog_price']          = 'Catalog price'; 
+$lang['input_barcode']          = 'Input barcode'; 
+$lang['booking']                = 'Booking'; 
+$lang['delay']                  = 'Delay'; 
+$lang['vaccin']                 = 'Vaccin'; 
+$lang['vaccin_freq']            = 'Vaccine Frequency'; 
+$lang['product_entered']        = 'Product entered'; 
+
+$lang['eol']                    = 'End of Life'; 
+$lang['barcode']                = 'Barcode'; 
+$lang['added']                  = 'added'; 
+$lang['no_local_stock']         = 'No local stock.'; 
+$lang['no_global_stock']        = 'No global stock.'; 

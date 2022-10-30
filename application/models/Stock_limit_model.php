@@ -37,7 +37,7 @@ class Stock_limit_model extends MY_Model
 			stock_limit.product_id as product_detail,
 			products.name, products.unit_sell, products.limit_stock as global_limit,
 			(select sum(stock.volume) from stock where product_id = stock_limit.product_id and state = '" . STOCK_IN_USE . "') as all_volume,
-			(select sum(events_products.volume) from events_products where product_id = stock_limit.product_id and MONTH(created_at) = '" . $last_month . "') as global_use,
+			(select sum(events_products.volume) from events_products where product_id = stock_limit.product_id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 30 DAY)) as global_use,
 			(
 				select 
 					sum(events_products.volume) 
@@ -51,6 +51,8 @@ class Stock_limit_model extends MY_Model
 					product_id = stock_limit.product_id 
 				and 
 					events.location = stock_limit.stock
+				and
+					events_products.created_at > DATE_ADD(NOW(), INTERVAL - 30 DAY)
 			) as local_use
 		FROM
 			stock_limit
