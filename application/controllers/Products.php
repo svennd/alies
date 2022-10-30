@@ -74,6 +74,7 @@ class Products extends Vet_Controller
 		}
 
 		# check the stocks
+		// local is not required anymore 
 		list($local_stock, $global_stock) = $this->stock->get_stock_levels($id, $this->user->current_location);
 
 		# check if there is a local limit

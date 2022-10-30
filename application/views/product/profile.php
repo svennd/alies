@@ -208,35 +208,6 @@ foreach ($locations as $l)
 						?>
 						<div class="row mt-3">
 							<div class="col-sm-12">
-								<h5><?php echo $this->lang->line('local_stock'); ?></h5>
-								<?php if($local_stock_count > 0): ?>
-								<table class="table">
-								<tr>
-									<td><?php echo $this->lang->line('eol'); ?></td>
-									<td><?php echo $this->lang->line('lotnr'); ?></td>
-									<td><?php echo $this->lang->line('volume'); ?></td>
-									<td><?php echo $this->lang->line('barcode'); ?></td>
-									<td><?php echo $this->lang->line('added'); ?></td>
-								</tr>
-								<?php foreach($product['stock'] as $stock): if($user->current_location == $stock['location']): ?>
-								<tr>
-									<td><?php echo date_format(date_create($stock['eol']), $user->user_date); ?></td>
-									<td><?php echo $stock['lotnr']; ?></td>
-									<td><?php echo $stock['volume']; ?></td>
-									<td><?php echo $stock['barcode']; ?></td>
-									<td><?php echo date_format(date_create($stock['created_at']), $user->user_date); ?></td>
-								</tr>
-								<?php endif; ?>
-								<?php endforeach; ?>
-								</table>
-								<?php else : ?>
-									<?php echo $this->lang->line('no_local_stock'); ?>
-								<?php endif; ?>
-								<br/>
-								<br/>
-								<br/>
-							</div>
-							<div class="col-sm-12">
 								<h5><?php echo $this->lang->line('global_stock'); ?></h5>
 								<table class="table">
 								<tr>
