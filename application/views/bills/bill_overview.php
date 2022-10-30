@@ -54,7 +54,7 @@ $now->modify('+1 day');
 				<tbody>
 				<?php foreach ($bills as $bill): ?>
 				<tr>
-					<td>
+					<td data-sort="<?php echo strtotime($bill['created_at']) ?>">
 						<?php echo user_format_date($bill['created_at'], $user->user_date); ?><br/>
 						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
 					</td>
@@ -84,9 +84,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#reportsmgm").show();
 	$("#invoice_report").addClass('active');
 	$("#dataTable").DataTable({"pageLength": 50,
-	"columnDefs": [
-    { "type": "num", "targets": 0 }
-	],
+		"order": [[0, 'desc']],
   "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
 });
 </script>
