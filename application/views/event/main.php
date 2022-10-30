@@ -196,6 +196,10 @@ document.addEventListener("DOMContentLoaded", function(){
 						{
 							stock = suggestion.data.stock[0];
 							$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
+							if (<?php echo $u_location; ?> != stock.location)
+							{
+								$("#stock_select").addClass('is-invalid');
+							}
 						}
 						// multiple
 						else
