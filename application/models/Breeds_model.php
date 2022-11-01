@@ -19,7 +19,7 @@ class Breeds_model extends MY_Model
 				
 		parent::__construct();
 	}
-
+	
 	# must be an exact match
 	# otherwise common patterns generate WAAAY to much results
 	public function search_by_name($query)
@@ -58,6 +58,28 @@ class Breeds_model extends MY_Model
 			LIMIT 50
 		";
 		
+		return $this->db->query($sql)->result_array();
+	}
+
+	public function get_breed_stats(int $breed)
+	{
+		$sql = "select 
+						last_weight, 
+						gender, 
+						(year(NOW()) - YEAR(birth)) as age 
+				from 
+					pets 
+				where 
+					breed = '" . $breed . "' 
+				AND 
+					death = 0 
+				AND 
+					lost = 0 
+				AND
+				(year(NOW()) - YEAR(birth)) < 20
+				AND 
+					last_weight != 0;";
+
 		return $this->db->query($sql)->result_array();
 	}
 }

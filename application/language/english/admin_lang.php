@@ -2,6 +2,7 @@
 
 # <?php echo $this->lang->line('text');
 
+# ENG
  # breeds
 $lang['breeds']           = 'Breeds';
 $lang['breed_name']       = 'Breed';
@@ -20,3 +21,5 @@ $lang['weight_male']        = 'Weight male';
 $lang['weight_female']      = 'Weight female';
 $lang['rebuild_frequency']  = 'Rebuild frequency';
 $lang['frequency']          = 'Frequency';
+
+$lang['only_showing_alive_not_lost'] = 'Only showing alive and not lost pets';

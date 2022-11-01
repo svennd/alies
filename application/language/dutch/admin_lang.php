@@ -17,5 +17,9 @@ $lang['old_breed']        = 'Oud ras';
 $lang['new_breed']        = 'Niew ras';
 
 # 
-$lang['rebuild_frequency']  = 'Frequency herbouwen';
-$lang['frequency']          = 'Frequency';
+$lang['weight_male']        = 'Gewicht male';
+$lang['weight_female']      = 'Gewicht female';
+$lang['rebuild_frequency']  = 'Freq. herbouwen';
+$lang['frequency']          = 'Freq.';
+
+$lang['only_showing_alive_not_lost'] = 'Dit toont enkel levende, niet verloren dieren.';

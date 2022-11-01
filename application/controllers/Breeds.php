@@ -17,16 +17,19 @@ class Breeds extends Vet_Controller
 	{
 		if ($id) {
 			$data = array(
-				"breeds" => $this->pets
+                "stats" => $this->breeds->get_breed_stats($id),
+                "breed" => $this->breeds->with_pets('fields:*count*')->get($id),
+				"pets" => $this->pets
 									->fields('id, name, death')
 									->with_owners('fields:id, last_name, street, city')
-									->where(array("breed" => (int)$id, "death" => 0))
+									->where(array("breed" => (int)$id, "death" => 0, "lost" => 0))
 									->get_all(),
 			);
-			$this->_render_page('admin/breeds_search', $data);
+			$this->_render_page('breeds/detail', $data);
 		} else {			
 			$data = array(
-							"breeds" => $this->breeds->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')->get_all(),
+							// don't add dead / lost (it will filter the breeds)
+							"breeds" => $this->breeds->with_pets('fields:*count*')->get_all(),
 						);
 
 			$this->_render_page('breeds/index', $data);
@@ -37,7 +40,7 @@ class Breeds extends Vet_Controller
     {
         if ($this->input->post('submit')) 
         {
-            $this->breeds->insert(array(
+            $result = $this->breeds->insert(array(
                     "name" => $this->input->post('name'),
                     "type" => $this->input->post('type'),
                     "freq" => 0,
@@ -46,7 +49,10 @@ class Breeds extends Vet_Controller
                     "female_min_weight" => $this->input->post('female_min_weight'),
                     "female_max_weight" => $this->input->post('female_max_weight')
                 ));
-                # do redirect
+            if($result)
+            {
+                redirect('breeds');
+            }
         }
 
         $this->_render_page('breeds/add', array());

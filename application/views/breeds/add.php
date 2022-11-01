@@ -16,7 +16,7 @@
                             <div class="col">
                                 <label for=""><?php echo $this->lang->line('type'); ?></label><br/>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="<?php echo DOG; ?>">
+                                    <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="<?php echo DOG; ?>" checked>
                                     <label class="form-check-label" for="inlineRadio1"><?php echo get_symbol(DOG, true); ?></label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -47,7 +47,7 @@
                                 <div class="form-row">
                                     <div class="col">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="male_min_weight" value="">
+                                            <input type="text" class="form-control" name="male_min_weight" value="0">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">kg (min)</span>
                                             </div>
@@ -55,7 +55,7 @@
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="male_max_weight" value="">
+                                            <input type="text" class="form-control" name="male_max_weight" value="0">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">kg (max)</span>
                                             </div>
@@ -68,7 +68,7 @@
                                 <div class="form-row">
                                     <div class="col">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="female_min_weight" value="">
+                                            <input type="text" class="form-control" name="female_min_weight" value="0">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">kg (min)</span>
                                             </div>
@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="female_max_weight" value="">
+                                            <input type="text" class="form-control" name="female_max_weight" value="0">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">kg (max)</span>
                                             </div>

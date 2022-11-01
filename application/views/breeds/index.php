@@ -28,7 +28,7 @@
 						<tr>
 							<td><?php echo get_symbol($breed['type'], true); ?></td>
 							<td><?php echo $breed['name']; ?></td>
-							<td><?php echo $breed['pets'][0]['counted_rows']; ?></td>
+							<td><a href="<?php echo base_url('breeds/index/' . $breed['id']); ?>"><?php echo isset($breed['pets'][0]['counted_rows']) ? $breed['pets'][0]['counted_rows'] : 0; ?></a></td>
 							<td><?php echo $breed['male_min_weight']; ?> - <?php echo $breed['male_max_weight']; ?></td>
 							<td><?php echo $breed['female_min_weight']; ?> - <?php echo $breed['female_max_weight']; ?></td>
 							<td><?php echo user_format_date($breed['updated_at'], $user->user_date); ?></td>
