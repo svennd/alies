@@ -1,7 +1,9 @@
 <div class="card shadow mb-4">
-	<div class="card-header py-3">
-	  <h6 class="m-0 font-weight-bold text-primary">breeds : rebuild frequenty</h6>
-	</div>
+    <div class="card-header d-flex flex-row align-items-center justify-content-between">
+        <div>
+        <a href="<?php echo base_url('breeds'); ?>"><?php echo $this->lang->line('breeds'); ?></a> / <?php echo $this->lang->line('rebuild_frequency'); ?>
+        </div>
+    </div>
 	<div class="card-body">
     <div class="alert alert-success" role="alert">
     Breeds frequency has been rebuild! Below is a list of the most frequent breeds over a 5 year period (alive), unknown isn't added to frequency levels (it is only shown here)

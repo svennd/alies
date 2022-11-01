@@ -87,12 +87,12 @@
                 <label class="form-check-label" for="inlineRadio3"><?php echo get_bill_status(PAYMENT_UNPAID); ?></label>
                 </div>
                 <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inlineRadio3" value="<?php echo PAYMENT_OPEN; ?>" <?php echo ($bill['status'] == PAYMENT_OPEN) ? "checked" : ""; ?>>
-                <label class="form-check-label" for="inlineRadio3"><?php echo get_bill_status(PAYMENT_OPEN); ?></label>
+                <input class="form-check-input" type="radio" name="status" id="inlineRadio4" value="<?php echo PAYMENT_OPEN; ?>" <?php echo ($bill['status'] == PAYMENT_OPEN) ? "checked" : ""; ?>>
+                <label class="form-check-label" for="inlineRadio4"><?php echo get_bill_status(PAYMENT_OPEN); ?></label>
                 </div>
                 <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="inlineRadio3" value="<?php echo PAYMENT_NON_COLLECTABLE; ?>" <?php echo ($bill['status'] == PAYMENT_NON_COLLECTABLE) ? "checked" : ""; ?>>
-                <label class="form-check-label" for="inlineRadio3"><?php echo get_bill_status(PAYMENT_NON_COLLECTABLE); ?></label>
+                <input class="form-check-input" type="radio" name="status" id="inlineRadio5" value="<?php echo PAYMENT_NON_COLLECTABLE; ?>" <?php echo ($bill['status'] == PAYMENT_NON_COLLECTABLE) ? "checked" : ""; ?>>
+                <label class="form-check-label" for="inlineRadio5"><?php echo get_bill_status(PAYMENT_NON_COLLECTABLE); ?></label>
                 </div>
             </div>
         </div>   
@@ -130,7 +130,7 @@
                         </tr>
                         <tr>
                             <td>Created</td>
-                            <td><?php echo $bill['created_at']; ?></td>
+                            <td><?php echo $bill['created_at']; ?><br/><small><?php echo user_format_date($bill['created_at'], $user->user_date); ?></small></td>
                         </tr>
                     </table>
                 </div>

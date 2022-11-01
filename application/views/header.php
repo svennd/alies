@@ -62,7 +62,7 @@
         <div id="adminmgm" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/booking" id="adminbooking">Booking codes</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/breeds" id="adminbreed">Breeds</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>breeds" id="adminbreed">Breeds</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/locations" id="adminlocation">Locations</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/product_types" id="product_types">Product types</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>logs" id="logs">Logs</a>

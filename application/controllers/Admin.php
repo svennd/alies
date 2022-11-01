@@ -14,77 +14,13 @@ class Admin extends Admin_Controller
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Products_model', 'products');
-		$this->load->model('Breeds_model', 'breeds');
 		$this->load->model('Product_type_model', 'prod_type');
 		$this->load->model('Procedures_model', 'proc');
 		$this->load->model('Products_model', 'prod');
 		$this->load->model('Vaccine_model', 'vac');
 		$this->load->model('Booking_code_model', 'book');
 	}
-		
-	public function breeds($id = false)
-	{
-		if ($id) {
-			$data = array(
-				"breeds" => $this->pets
-									->fields('id, name, death')
-									->with_owners('fields:id, last_name, street, city')
-									->where(array("breed" => (int)$id, "death" => 0))
-									->get_all(),
-			);
-			$this->_render_page('admin/breeds_search', $data);
-		} else {
-			if ($this->input->post('submit') == "edit") {
-				$this->breeds->update(
-					array(
-										"name" => $this->input->post('name')
-									),
-					array(
-										"id" => (int) $this->input->post('id')
-									)
-				);
-			}
-			if ($this->input->post('submit') == "merge") {
-				
-				# don't merge same breed
-				if ($this->input->post('new_breed') != $this->input->post('old_breed_id')) {
-					
-					$this->pets->update(
-						array(
-											"breed" => (int) $this->input->post('new_breed')
-										),
-						array(
-											"breed" => (int) $this->input->post('old_breed_id')
-										)
-					);
-					$this->breeds->delete(array("id" => $this->input->post('old_breed_id')));		
-				}
-			}
 			
-			$data = array(
-							// used for dropdown
-							"breeds" => $this->breeds->get_all(),
-						);
-
-			$this->_render_page('admin/breeds', $data);
-		}
-	}
-	
-	public function a_get_breeds()
-	{
-		$breeds = $this->breeds
-							->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')
-							->get_all();
-		$return = array();
-		// var_dump($breeds);
-		
-		foreach ($breeds as $breed) {
-			$count_rows = (isset($breed['pets'][0]['counted_rows'])) ? $breed['pets'][0]['counted_rows'] : 0;
-			$return [] = array($breed['id'], $breed['name'], $count_rows);
-		}
-		echo json_encode(array("data" => $return));
-	}
-	
 	# proc
 	public function proc()
 	{

@@ -13,6 +13,46 @@ class Breeds extends Vet_Controller
 		$this->load->model('Pets_model', 'pets');
 	}
 
+    public function index($id = false)
+	{
+		if ($id) {
+			$data = array(
+				"breeds" => $this->pets
+									->fields('id, name, death')
+									->with_owners('fields:id, last_name, street, city')
+									->where(array("breed" => (int)$id, "death" => 0))
+									->get_all(),
+			);
+			$this->_render_page('admin/breeds_search', $data);
+		} else {			
+			$data = array(
+							"breeds" => $this->breeds->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')->get_all(),
+						);
+
+			$this->_render_page('breeds/index', $data);
+		}
+	}
+
+    public function add()
+    {
+        if ($this->input->post('submit')) 
+        {
+            $this->breeds->insert(array(
+                    "name" => $this->input->post('name'),
+                    "type" => $this->input->post('type'),
+                    "freq" => 0,
+                    "male_min_weight" => $this->input->post('male_min_weight'),
+                    "male_max_weight" => $this->input->post('male_max_weight'),
+                    "female_min_weight" => $this->input->post('female_min_weight'),
+                    "female_max_weight" => $this->input->post('female_max_weight')
+                ));
+                # do redirect
+        }
+
+        $this->_render_page('breeds/add', array());
+
+    }
+
     # search for types
     public function search_breed(string $query = "")
     {
@@ -97,6 +137,91 @@ class Breeds extends Vet_Controller
 
         $data = array('count' => $count);
 		$this->_render_page('breeds/rebuild_freq', $data);
+    }
+
+    public function merge(int $old_breed)
+    {
+		# only admins have access here
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+
+        # sanity check
+        $new_merged_breed = (int) $this->input->post('new_breed');
+        if($old_breed == $new_merged_breed) {
+            echo "You are trying to merge the same breed ...";
+            return false;
+        }
+
+        # update all pets with this breed to new breed
+        $this->pets->update(
+            array(
+                                "breed" => $new_merged_breed
+                            ),
+            array(
+                                "breed" => $old_breed
+                            )
+        );
+
+        # delete this breed
+        $this->breeds->delete($old_breed);		
+
+    }
+
+    # edit breeds
+    public function edit(int $id)
+    {
+		# only admins have access here
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+
+        $update = false;
+        if ($this->input->post('submit')) 
+        {
+            $update = $this->breeds->update(array(
+                                            "name" => $this->input->post('name'),
+                                            "type" => $this->input->post('type'),
+                                            "freq" => $this->input->post('freq'),
+                                            "male_min_weight" => $this->input->post('male_min_weight'),
+                                            "male_max_weight" => $this->input->post('male_max_weight'),
+                                            "female_min_weight" => $this->input->post('female_min_weight'),
+                                            "female_max_weight" => $this->input->post('female_max_weight'),
+                                            ), $id);
+        }
+
+        $current_breed = $this->breeds
+                                    ->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')
+                                    ->get($id);
+        $data = array(
+                    'breed'     => $current_breed,
+                    'id'        => $id,
+                    'breeds'    => $this->get_breeds($current_breed['type'], true),
+                    'update'    => $update
+                );
+        $this->_render_page('breeds/edit', $data);
+    }
+
+    # get breeds based on types (admin/breeds)
+    public function get_breeds(int $type = -1, bool $array = false)
+    {
+        # no type selected
+        if ($type == -1) 
+        {
+            $breeds = $this->breeds->get_all();
+        }
+        else
+        {
+            $breeds = $this->breeds->where(array('type' => $type))->get_all();
+        }
+
+        $result = array();
+        foreach ($breeds as $breed)
+        {
+            $result[] = array($breed['id'], $breed['name'], $breed['type']);
+        }
+
+        if ($array)
+        {
+            return $breeds;
+        }
+        echo json_encode(array('data' => $result));
     }
 
     # debug
