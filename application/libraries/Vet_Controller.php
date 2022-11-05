@@ -66,14 +66,14 @@ class Vet_Controller extends MY_Controller
 		// $sections = array(
 		// 	'config'  => TRUE,
 		// 	'queries' => TRUE,
-		// 	'query_toggle_count' => 250
+		// 	'query_toggle_count' => 500
 		// );
 		
 		// $this->output->set_profiler_sections($sections);
 		// $this->output->enable_profiler(TRUE);
 
 		$this->lang->load('vet', 'dutch');
-		$this->lang->load('admin', 'english');
+		$this->lang->load('admin', 'dutch');
 		// $this->lang->load('vet', 'english');
 	}
 

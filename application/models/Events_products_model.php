@@ -53,4 +53,36 @@ class Events_products_model extends MY_Model
 				
 		parent::__construct();
 	}
+
+
+	public function get_monthly_earning(datetime $date)
+	{
+		$sql = "
+			SELECT 
+				sum(price) as total,
+				btw
+			FROM
+				events_products
+			WHERE
+				DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
+			AND
+				DATE(created_at) <= LAST_DAY('" . $date->format('Y-m-d') . "')
+			GROUP BY
+				btw
+			";
+	
+		
+		$result = $this->db->query($sql)->result_array();
+
+		if (!$result) {return array("6" => 0, "21" => 0, "total" => 0); }
+		$return = array();
+		$total = 0;
+		foreach ($result as $r)
+		{
+			$return[$r['btw']] = $r['total'];
+			$total += $r['total'];
+		}
+		$return['total'] = $total;
+		return $return;
+	}
 }

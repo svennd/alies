@@ -53,24 +53,11 @@
       <div class="sidebar-heading">
         Administration
       </div>
-
       <li class="nav-item" id="admin">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#adminmgm" aria-expanded="true" aria-controls="adminmgm">
-          <i class="fas fa-user-shield"></i>
-          <span>Admin</span>
-        </a>
-        <div id="adminmgm" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/booking" id="adminbooking">Booking codes</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>breeds" id="adminbreed">Breeds</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/locations" id="adminlocation">Locations</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/product_types" id="product_types">Product types</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>logs" id="logs">Logs</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>backup" id="backup">Backup</a>
-          </div>
-        </div>
-      </li>
-      
+        <a class="nav-link" href="<?php echo base_url('accounting/dashboard'); ?>">
+          <i class="fas fa-fw fa-user-shield"></i>
+          <span>Admin</span></a>
+      </li>      
       <li class="nav-item" id="pricing">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pricingmg" aria-expanded="true" aria-controls="pricingmg">
           <i class="fas fa-fw fa-dollar-sign"></i>
@@ -80,31 +67,6 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc">Procedures</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list">Products</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item" id="usermgm">
-        <a class="nav-link" href="<?php echo base_url(); ?>member">
-         <i class="fas fa-fw fa-users"></i>
-          <span>User Management</span></a>
-      </li>
-
-      <div class="sidebar-heading">
-        Products
-      </div>
-
-      <li class="nav-item" id="products">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#prd" aria-expanded="true" aria-controls="prd">
-          <i class="fas fa-fw fa-shopping-cart"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="prd" class="collapse" aria-labelledby="prd" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Inventory management :</h6>
-
-            <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
-            <a class="collapse-item" href="<?php echo base_url('stock'); ?>" id="stock">Stock</a>
           </div>
         </div>
       </li>
@@ -122,6 +84,21 @@
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/vaccine" id="vaccine_report">Vaccine</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a>
+          </div>
+        </div>
+      </li>
+      
+      <li class="nav-item" id="products">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#prd" aria-expanded="true" aria-controls="prd">
+          <i class="fas fa-fw fa-shopping-cart"></i>
+          <span>Inventory</span>
+        </a>
+        <div id="prd" class="collapse" aria-labelledby="prd" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Inventory management :</h6>
+
+            <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
+            <a class="collapse-item" href="<?php echo base_url('stock'); ?>" id="stock">Stock</a>
           </div>
         </div>
       </li>
@@ -196,8 +173,12 @@
 
           <?php if ($this->ion_auth->in_group("admin")): ?>
 	          <li class="nav-item mx-1">
-	              <a class="nav-link" href="#">
+	              <a class="nav-link" href="<?php echo base_url('admin/enable_vsens'); ?>">
+                <?php if($user->vsens): ?>
+                  <i class="fas fa-user-shield" style="color:#f6c23e;"></i>
+                <?php else: ?>
                   <i class="fas fa-user-shield" style="color:#ff5555;"></i>
+                <?php endif; ?>
 	              </a>
             </li>
           <?php endif; ?>

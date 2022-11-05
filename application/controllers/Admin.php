@@ -19,8 +19,16 @@ class Admin extends Admin_Controller
 		$this->load->model('Products_model', 'prod');
 		$this->load->model('Vaccine_model', 'vac');
 		$this->load->model('Booking_code_model', 'book');
+		$this->load->model('Users_model', 'users');
 	}
-			
+
+	# enable sensitive data to be visible
+	public function enable_vsens()
+	{
+		$this->users->where(array('id' => $this->user->id))->update(array('vsens' => 1));
+		redirect('accounting/dashboard');
+	}
+
 	# proc
 	public function proc()
 	{

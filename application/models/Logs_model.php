@@ -11,13 +11,20 @@ class Logs_model extends MY_Model
 	
 	public function __construct()
 	{
+		parent::__construct();
+
 		$this->has_one['vet'] = array(
 					'foreign_model' => 'Users_model',
 					'foreign_table' => 'users',
 					'foreign_key' => 'id',
 					'local_key' => 'user_id'
 				);
-		parent::__construct();
+		$this->has_one['location'] = array(
+					'foreign_model' => 'Stock_location_model',
+					'foreign_table' => 'stock_location',
+					'foreign_key' => 'id',
+					'local_key' => 'location'
+				);
 	}
 	
 	public function logger($level, $event, $msg)

@@ -49,6 +49,8 @@ class Breeds extends Vet_Controller
                     "female_min_weight" => $this->input->post('female_min_weight'),
                     "female_max_weight" => $this->input->post('female_max_weight')
                 ));
+             
+			$this->logs->logger(INFO, "add_breed", $this->input->post('name'));
             if($result)
             {
                 redirect('breeds');
@@ -142,6 +144,8 @@ class Breeds extends Vet_Controller
         }
 
         $data = array('count' => $count);
+
+        $this->logs->logger(INFO, "rebuild_freq", '');
 		$this->_render_page('breeds/rebuild_freq', $data);
     }
 
@@ -168,7 +172,10 @@ class Breeds extends Vet_Controller
         );
 
         # delete this breed
-        $this->breeds->delete($old_breed);		
+        $this->breeds->delete($old_breed);
+
+        # log
+        $this->logs->logger(INFO, "merge_breeds", "new breed : " . $new_merged_breed . " - old breed :" . $old_breed);
 
     }
 
@@ -181,10 +188,13 @@ class Breeds extends Vet_Controller
         $update = false;
         if ($this->input->post('submit')) 
         {
+            # log
+            $this->logs->logger(DEBUG, "edit_breed", $this->input->post('name'));
+
             $update = $this->breeds->update(array(
                                             "name" => $this->input->post('name'),
                                             "type" => $this->input->post('type'),
-                                            "freq" => $this->input->post('freq'),
+                                            // "freq" => $this->input->post('freq'),
                                             "male_min_weight" => $this->input->post('male_min_weight'),
                                             "male_max_weight" => $this->input->post('male_max_weight'),
                                             "female_min_weight" => $this->input->post('female_min_weight'),
@@ -201,6 +211,8 @@ class Breeds extends Vet_Controller
                     'breeds'    => $this->get_breeds($current_breed['type'], true),
                     'update'    => $update
                 );
+        
+
         $this->_render_page('breeds/edit', $data);
     }
 
@@ -268,6 +280,7 @@ class Breeds extends Vet_Controller
         }
         echo "done found : " . $count_found;
  
+        $this->logs->logger(WARN, "breed_re_import", "mapped : " . $count_found);
     }
 
     # debug 
@@ -288,5 +301,7 @@ class Breeds extends Vet_Controller
             }
         }
         echo "guessed $found types of breeds, of the total ". count($breeds) . " in the database.";
+        
+        $this->logs->logger(WARN, "run_guess_breed_type", "mapped : " . $found . " total : " . count($breeds));
     }
 }

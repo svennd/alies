@@ -3,9 +3,9 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div>Locations</div>
+				<div><?php echo $this->lang->line('locations'); ?></div>
 				<div class="dropdown no-arrow">
-					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> Add Location</a>
+					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_location'); ?></a>
 					<a href="<?php echo base_url(); ?>restore/locations" class="btn btn-outline-danger btn-sm"><i class="fas fa-fw fa-history"></i> Restore</a>
 				</div>
 			</div>
@@ -14,7 +14,7 @@
 			<div id="add_form" style="display:none;">
 				<form method="post" action="<?php echo base_url(); ?>admin/locations" class="form-inline">
 					<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="" />
-					<button type="submit" name="submit" value="add_location" class="btn btn-primary mb-2">Add Location</button>
+					<button type="submit" name="submit" value="add_location" class="btn btn-primary mb-2"><?php echo $this->lang->line('add_location'); ?></button>
 				</form>
 			<br/>
 			<br/>
@@ -23,8 +23,8 @@
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Location</th>
-					<th>edit</th>
+					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('edit'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -38,7 +38,7 @@
 							<form method="post" action="<?php echo base_url(); ?>admin/locations" class="form-inline">
 								<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="<?php echo $loc['name']; ?>" />
 								<input type="hidden" name="id" value="<?php echo $loc['id']; ?>" />
-								<button type="submit" name="submit" value="update_location_name" class="btn btn-primary mb-2">Update</button>
+								<button type="submit" name="submit" value="update_location_name" class="btn btn-primary mb-2"><?php echo $this->lang->line('edit'); ?></button>
 							</form>
 						</div>
 					</td>
@@ -61,10 +61,8 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#adminmgm").show();
+	$("#dataTable").DataTable();
 	$("#admin").addClass('active');
-	$("#adminlocation").addClass('active');
 	
 	$("#add").on('click',function(){
 		$("#add_form").show();

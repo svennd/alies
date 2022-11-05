@@ -39,7 +39,7 @@ class Stock extends Vet_Controller
 					"products" 	=> $products,
 					);
 
-		$this->_render_page('stock_index', $data);
+		$this->_render_page('stock/index', $data);
 	}
 
 	public function stock_detail($pid, $all = false)
@@ -92,8 +92,11 @@ class Stock extends Vet_Controller
 	{
 		if ($this->input->post('submit') == "barcode") {
 			$warnings = array();
-			$new_location = $this->input->post('location');
-			$barcodes 	  = (empty($this->input->post('barcodes'))) ? array() : preg_split("/\r\n|\n|\r/", trim($this->input->post('barcodes')));
+
+			$from_location 	= $this->input->post('from_location');
+			$new_location 	= $this->input->post('to_location');
+			$barcodes 	  	= (empty($this->input->post('barcodes'))) ? array() : explode(",", substr($this->input->post('barcodes'), 0, -1));
+
 			$stock_list	  = array();
 
 			if ($barcodes && count($barcodes) > 0) {
@@ -101,7 +104,7 @@ class Stock extends Vet_Controller
 					if (parse_gs1($barcode)) 
 					{
 						$x = parse_gs1($barcode);
-						$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $this->user->current_location)[0];
+						$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $from_location)[0];
 						if ($stock_product) {
 							$stock_list[$stock_product['barcode']] = array(
 													"name" 		=> $stock_product['pname'],
@@ -121,7 +124,7 @@ class Stock extends Vet_Controller
 					else 
 					{
 						# a stock can be split so multiple results could be generated
-						$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $this->user->current_location, "state" => STOCK_IN_USE))->get();
+						$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
 						# its a known stock product
 						if ($stock_product) {
 							# index : safety check for doubles
@@ -151,6 +154,7 @@ class Stock extends Vet_Controller
 							"locations" => $this->location,
 							"warnings" 	=> $warnings,
 							"move_list" => $stock_list,
+							"from_location" => $from_location,
 							"new_location" => $new_location
 						);
 
@@ -158,8 +162,8 @@ class Stock extends Vet_Controller
 
 		} elseif ($this->input->post('submit') == "quantities") {
 
-			$from 			= $this->user->current_location;
-			$to 			= $this->input->post('location');
+			$from 			= $this->input->post('from_location');
+			$to 			= $this->input->post('new_location');
 			$move_volumes 	= $this->input->post('move_volume');
 
 			foreach ($move_volumes as $barcode => $value) {
@@ -284,7 +288,7 @@ class Stock extends Vet_Controller
 		redirect('stock/add_stock', 'refresh');
 	}
 
-	public function write_off($redir = false)
+	public function write_off(bool $redir = false, string $barcode = '', int $location = -1)
 	{
 		# return the details of the selected product
 		if ($this->input->post('submit') == "writeoff") {
@@ -296,6 +300,18 @@ class Stock extends Vet_Controller
 							"product"	=> $product
 						);
 			$this->_render_page('stock_write_off_quantities', $data);
+		
+		} elseif (!empty($barcode) && $location != -1) {
+
+			$product = $this->stock->with_products('fields:name, unit_sell')
+							->where(array("barcode" => $barcode, "location" => $location))
+							->get();
+			$data = array(
+							"locations" => $this->location,
+							"product"	=> $product
+						);
+			$this->_render_page('stock_write_off_quantities', $data);
+
 		} else {
 			# reduce stock as requested
 			if ($this->input->post('submit') == "write_off_q") {

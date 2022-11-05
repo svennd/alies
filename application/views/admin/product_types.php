@@ -3,9 +3,9 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div>Product types</div>
+				<div><?php echo $this->lang->line('product_types'); ?></div>
 				<div class="dropdown no-arrow">
-					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> Add Product type</a>
+					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_product_type'); ?></a>
 				</div>
 			</div>
             <div class="card-body">
@@ -23,7 +23,7 @@
 				<thead>
 				<tr>
 					<th>Type</th>
-					<th>edit</th>
+					<th><?php echo $this->lang->line('edit'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -60,11 +60,9 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#adminmgm").show();
+	$("#dataTable").DataTable();
 	$("#admin").addClass('active');
-	$("#product_types").addClass('active');
-	
+
 	$("#add").on('click',function(){
 		$("#add_form").show();
 		$(this).hide();

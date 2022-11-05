@@ -26,23 +26,69 @@ class Stock_model extends MY_Model
 		parent::__construct();
 	}
 
+
+	/*
+		called in admin_invoice/rm_bill
+	*/
+	public function increase_stock(int $product_id, float $volume, int $location, string $barcode, bool $add_dead_volume = true)
+	{
+		// in case we need to "reverse" an action
+		if ($add_dead_volume)
+		{
+			// this is always set to 0 if not applicable
+			// we increase the stock with 
+			$volume += $this->get_dead_volume($product_id);
+		}
+
+		# if logging is required also log this 
+		if ($this->logs->min_log_level == DEBUG)
+		{
+			$info = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
+			$this->logs->stock(DEBUG, "increase_stock", $product_id, $volume, $location);
+		}
+
+		// we first try to add to the "active" stock
+		$sql = "UPDATE stock SET volume=volume+" . $volume. " WHERE barcode = '" . $barcode . "' and location = '" . $location . "' and state = '" . STOCK_IN_USE . "' limit 1;";
+		$this->db->query($sql);
+
+		if(!$this->db->affected_rows())
+		{
+			$this->logs->logger(INFO, "increase_stock", "update failed for pid:" . $product_id . " volume:" . $volume . " barcode:" . $barcode . " from:" . $location);
+
+			// the current stock doesn't contain any STOCK_IN_USE with the same info
+			// so we search for one and 're-activate' this one
+			// alternativly we create a new one, but this would definitly lack some info
+			// add to the largest volume (in hope we don't pull out of STOCK_ERROR)
+			$sql = "UPDATE stock SET volume=volume+" . $volume. ", state = '" . STOCK_IN_USE . "' WHERE barcode = '" . $barcode . "' and location = '" . $location . "' ORDER BY volume LIMIT 1;";
+			$this->db->query($sql);
+
+			# this is bad :( so just insert a new line
+			if(!$this->db->affected_rows())
+			{
+				$this->logs->logger(WARN, "increase_stock", "no RECORD found (adding one now) for pid:" . $product_id . " volume:" . $volume . " barcode:" . $barcode . " from:" . $location);
+				// to little info
+				$this->stock->insert(array(
+					"product_id" => $product_id,
+					"location" => $location,
+					"volume" => $volume,
+					"barcode" => $barcode,
+				));
+			}
+
+		}
+	}
+
 	/*
 		called in invoice
 		* take care to deal with dead volume
 	*/
-	public function reduce_stock($product_id, $volume, $location = false, $barcode = false)
+	public function reduce_stock(int $product_id, $volume, $location = false, $barcode = false)
 	{
 		# we aint doing that
-		if ($volume == 0) {
-			return false;
-		}
+		if ($volume == 0) { return false; }
 
-		# get product offset
-		# this is a amount/volume that is lost every
-		# sell; for example dead volume in a needle
-		$sql = "SELECT id, dead_volume FROM products WHERE id = '" . $product_id . "' LIMIT 1;";
-		$product = $this->db->query($sql)->result_array()[0];
-		$volume += $product['dead_volume'];
+		// if there is dead volume, add this to be removed from stock
+		$volume += $this->get_dead_volume($product_id);
 
 		# if we get a barcode and a location, we can substract easy
 		if ($barcode && $location) {
@@ -323,7 +369,7 @@ class Stock_model extends MY_Model
 			# this means we found a "duplicate" where there are only 0 or 1 lines
 			if ($x <= 1)
 			{
-				$this->logs->logger($this->user->id, FATAL, "merge_stock_failed_to_find_lines", "pid:". $product['product_id'] . "debug:" . implode($product));
+				$this->logs->logger(FATAL, "merge_stock_failed_to_find_lines", "pid:". $product['product_id'] . "debug:" . implode($product));
 			}
 
 			$this->insert(array(
@@ -337,11 +383,24 @@ class Stock_model extends MY_Model
 					'state' => STOCK_IN_USE
 			));
 
-			$this->logs->logger($this->user->id, INFO, "merge_stock", "pid:" . $product['product_id'] . " had " . $x . " duplicate lines");
+			$this->logs->logger(INFO, "merge_stock", "pid:" . $product['product_id'] . " had " . $x . " duplicate lines");
 			
 			$new_merged_products++;
 			$lines += $product['product_counter'];
 		}
 		return array('lines_merged' => $lines, 'new_merged' => $new_merged_products);
+	}
+
+
+	/*
+		PRIVATE functions
+	*/
+	# get product offset
+	# this is a amount/volume that is lost every
+	# sell; for example dead volume in a needle
+	private function get_dead_volume(int $product_id)
+	{
+		$sql = "SELECT dead_volume FROM products WHERE id = '" . $product_id . "' LIMIT 1;";
+		return $this->db->query($sql)->result_array()[0]['dead_volume'];
 	}
 }

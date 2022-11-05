@@ -142,6 +142,15 @@
         <button type="submit" name="submit" value="1" class="btn btn-primary">Edit</button>
     </form>
     </div>
+    <form action="<?php echo base_url('admin_invoice/rm_bill/' . $bill['id']); ?>" method="post" autocomplete="off">
+        <div class="form-row mb-3">
+            <div class="col">
+                <label for="exampleFormControlInput3">delete reason</label>
+                <input type="text" class="form-control" name="reason">
+            </div>
+        </div>
+        <button type="submit" name="submit" value="1" class="btn btn-danger">Delete bill</button>
+    </form>
 </div>
 
 <script type="text/javascript">

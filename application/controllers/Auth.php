@@ -79,7 +79,7 @@ class Auth extends CI_Controller
 		// reset location
 		$this->load->model('Users_model', 'users');
 		$user = $this->ion_auth->user()->row();
-		$this->users->update(array("current_location" => 0), $user->id);
+		$this->users->update(array("current_location" => 0, 'vsens' => 0), $user->id);
 		
 		$this->data['title'] = "Logout";
 

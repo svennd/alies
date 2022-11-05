@@ -10,6 +10,7 @@ class Bills_model extends MY_Model
 	
 	public function __construct()
 	{
+		$this->soft_deletes = true;
 		$this->has_one['owner'] = array(
 					'foreign_model' => 'Owners_model',
 					'foreign_table' => 'owners',
@@ -39,9 +40,9 @@ class Bills_model extends MY_Model
 			SET 
 				`vet` = '" . (int) $data['vet'] . "', 
 				`location` = '" . (int) $data['location'] . "', 
-				`amount` = '" . (float) $data['amount'] . "',
-				`cash` = '" . (float) $data['cash'] . "', 
-				`card` = '" . (float) $data['card'] . "', 
+				`amount` = '" . $data['amount'] . "',
+				`cash` = '" . $data['cash'] . "', 
+				`card` = '" . $data['card'] . "', 
 				`status` = '" . (int) $data['status'] . "', 
 				`created_at` = '" . $data['created'] ."' 
 			WHERE 
@@ -56,6 +57,7 @@ class Bills_model extends MY_Model
 		return ($status['status']);
 	}
 	
+	// deprecated ?
 	public function get_last_months_earnings_stack_location($month)
 	{
 		# calculate date from the first day of the month
@@ -86,6 +88,7 @@ class Bills_model extends MY_Model
 		return ($this->db->query($sql)->result_array());
 	}
 	
+	// deprecated ?
 	public function get_income_overview($month)
 	{
 		# calculate date from the first day of the month
@@ -115,6 +118,7 @@ class Bills_model extends MY_Model
 		return ($this->db->query($sql)->result_array());
 	}
 	
+	// deprecated ?
 	public function get_avg_per_consult($month)
 	{
 		# calculate date from the first day of the month
@@ -141,5 +145,81 @@ class Bills_model extends MY_Model
 				";
 	
 		return ($this->db->query($sql)->result_array());
+	}
+
+	// called from accounting
+	public function get_monthly_earning(datetime $date)
+	{
+		$sql = "
+			SELECT 
+				sum(amount) as total
+			FROM
+				bills
+			WHERE
+				DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
+			AND
+				DATE(created_at) <= LAST_DAY('" . $date->format('Y-m-d') . "')
+			AND
+				status = '" . PAYMENT_PAID . "' 
+			";
+
+		$result = $this->db->query($sql)->result_array();
+
+		return (is_null($result[0]['total'])) ? 0 : round($result[0]['total'], 2);
+	}
+
+	// called from accounting
+	public function get_yearly_earnings(datetime $date)
+	{
+		$date->modify('first day of january');
+		$first_day = $date->format('Y-m-d');
+		$date->modify('last day of december');
+		$last_day = $date->format('Y-m-d');
+
+		$sql = "
+			SELECT 
+				sum(amount) as total
+			FROM
+				bills
+			WHERE
+				DATE(created_at) >= STR_TO_DATE('" . $first_day . "', '%Y-%m-%d')
+			AND
+				DATE(created_at) <= STR_TO_DATE('" . $last_day . "', '%Y-%m-%d')
+			AND
+				status = '" . PAYMENT_PAID . "' 
+			";
+
+		$result = $this->db->query($sql)->result_array();
+
+		return (is_null($result[0]['total'])) ? 0 : round($result[0]['total'], 2);
+	}
+
+	// called from accounting
+	public function get_yearly_earnings_by_month(datetime $date)
+	{
+		$selected_date = $date->format('Y-m-d');
+		$date->modify('-11 months');
+
+		$sql = "SELECT 
+					year(bills.created_at) as y, 
+					month(bills.created_at) as m, 
+					sum(amount) as total
+				FROM 
+					bills
+				WHERE 
+					status = '" . PAYMENT_PAID . "' 
+				AND
+					DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
+				AND	
+					DATE(created_at) < LAST_DAY(STR_TO_DATE('" . $selected_date . "', '%Y-%m-%d'))
+				GROUP BY 
+					year(bills.created_at), 
+					month(bills.created_at)
+				ORDER BY
+					bills.created_at ASC				
+			";
+		
+		return ($this->db->query($sql)->result_array());
+
 	}
 }

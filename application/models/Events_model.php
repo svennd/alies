@@ -212,4 +212,25 @@ class Events_model extends MY_Model
 			;
 		return $this->db->query($sql)->result_array();
 	}
+
+
+	// accounting
+	public function get_contacts(datetime $date)
+	{
+		return 
+				$this->events
+						->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+						->where('created_at <= LAST_DAY(STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i"))', null, null, false, false, true)
+						->count_rows();
+	}
+
+	// accounting
+	public function get_contacts_year(datetime $date)
+	{
+		$date->modify('first day of january');
+		return 
+				$this->events
+						->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+						->count_rows();
+	}
 }

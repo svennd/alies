@@ -27,6 +27,7 @@
 				<?php else: ?>
 				<form action="<?php echo base_url(); ?>stock/move_stock" method="post" autocomplete="off">
 				<?php foreach ($move_list as $barcode => $product): ?>
+					
 				<div class="form-row">
 					<div class="form-group col-md-4">
 						<label for="product<?php echo $barcode; ?>">Product</label>
@@ -53,7 +54,8 @@
 					</div>
 				</div>
 				<?php endforeach; ?>
-				<input type="hidden" name="location" value="<?php echo $new_location; ?>"/>
+				<input type="hidden" name="new_location" value="<?php echo $new_location; ?>"/>
+				<input type="hidden" name="from_location" value="<?php echo $from_location; ?>"/>
 				<button type="submit" name="submit" value="quantities" class="btn btn-primary">Submit</button>
 				</form>
 				<?php endif; ?>
