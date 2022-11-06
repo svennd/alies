@@ -259,7 +259,7 @@
                         <tr>
                             <td><?php echo time_ago($log['created_at']); ?></td>
                             <td><?php echo $log['event']; ?></td>
-                            <td><?php echo $log['location']['name']; ?></td>
+                            <td><?php echo isset($log['location']['name']) ? $log['location']['name'] : '-'; ?></td>
                             <td><?php echo $log['vet']['first_name']; ?></td>
                         </tr>
                     <?php endforeach; ?>
