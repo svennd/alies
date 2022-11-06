@@ -200,7 +200,7 @@ $lang['disease']             = 'ziekte';
 $lang['operation']             = 'operatie'; 
 $lang['medicine']             = 'medicatie'; 
 $lang['no_history']             = 'verberg'; 
-$lang['history']             = 'toon'; 
+$lang['show_history']             = 'toon'; 
 
 # limits
 $lang['local_stock']             = 'Lokale Stock'; 

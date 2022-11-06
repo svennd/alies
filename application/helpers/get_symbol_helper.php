@@ -21,6 +21,23 @@ function get_symbol($type, $name = false)
 			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>'. ($name ? " Other" : "");
 	}
 }
+/*
+  draw the correct symbol for the pet_type
+*/
+function get_event_type($type, $name = false)
+{
+	switch($type)
+	{
+		case DISEASE:
+			return '<span style="color:#628395" data-name="disease"><i class="fas fa-virus"></i></span>'. ($name ? " disease" : "");
+		case OPERATION:
+			return '<span style="color:#96897B" data-name="operatie"><i class="fas fa-hand-holding-medical"></i></span>'. ($name ? " operation" : "");
+		case MEDICINE:
+			return '<span style="color:#CF995F" data-name="medicine"><i class="fas fa-prescription-bottle-alt"></i></span>'. ($name ? " medicine" : "");
+		default:
+			return '<span style="color:#DFD5A5" data-name="other"><i class="fas fa-fw"></i></span>';
+	}
+}
 
 /*
   based on the gender draw the correct symbol

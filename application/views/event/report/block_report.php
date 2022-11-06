@@ -7,14 +7,6 @@
 <div class="row">
 	<div class="col-md-8">
 		<div class="form-row">
-			<div class="col-md-2">
-				<div class="form-group">
-					<label>Type :</label>
-				<select name="type" style="width:100%" id="select_type" data-allow-clear="1">
-					<option id="0"></option>
-				</select>
-				</div>
-			</div>
 			<div class="col">
 				<div class="form-group">
 					<label for="exampleFormControlInput3">Title :</label>
@@ -126,11 +118,6 @@ $('#anamnese').trumbowyg({
 		$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
 	}, 750);	
 });
-
-<?php if (!empty($event_info['type'])): ?>
-$('#select_type').val('<?php echo $event_info["type"]; ?>');
-$('#select_type').trigger('change');
-<?php endif; ?>
 
 $(".file_line")
 	.on( "click", function(e) {
@@ -275,21 +262,6 @@ function formatState (state) {
   );
   return $state;
 };
-
-var data = [
-		{ id: 0, text: "Ziekten", title:"fas fa-fw fa-file-medical"},
-		{ id: 1, text: "Vaccinatie", title:"fas fa-fw fa-syringe"},
-		{ id: 2, text: "Tanden", title:"fas fa-fw fa-tooth"},
-		{ id: 3, text: "Operatie", title:"fas fa-fw fa-hammer"},
-		{ id: 4, text: "Hartonderzoek", title:"fas fa-fw fa-heartbeat"},
-	];
-
-$("#select_type").select2({
-	theme: 'bootstrap4',
-	placeholder: 'Select type',
-	data: data,
-	templateResult: formatState
-});
 
 /* populate supporting vets */
 $('#supp_vet_1').select2({

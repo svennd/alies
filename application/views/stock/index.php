@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#products").addClass('active');
 	$("#stock").addClass('active');
 
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+	$("#dataTable").DataTable();
 
 	const move_products = [];
 	$("#dataTable").on('click','.move_product', function() {

@@ -16,12 +16,6 @@ class Pets extends Vet_Controller
 		$this->load->model('Breeds_model', 'breeds');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vacs_pet');
-
-		/*
-			max amount of history we will load
-			on complex pages
-		*/
-		$this->max_history = 10;
 	}
 
 	public function index()
@@ -30,7 +24,7 @@ class Pets extends Vet_Controller
 	}
 
 	# input new weight on weight page
-	public function add_weight($pet_id)
+	public function add_weight(int $pet_id)
 	{
 		if ($this->input->post('submit') && $this->input->post("weight") > 0) {
 			$this->pets_weight->insert(array(
@@ -43,10 +37,10 @@ class Pets extends Vet_Controller
 				$pet_id
 			);
 		}
-		redirect('/pets/history_weight/' . (int) $pet_id, 'refresh');
+		redirect('/pets/history_weight/' . $pet_id, 'refresh');
 	}
 
-	public function history_weight($pet_id)
+	public function history_weight(int $pet_id)
 	{
 		$data = array(
 						"pets"				=> $this->pets->with_owners('fields:last_name, id')->fields('name, id')->where(array("id" => $pet_id))->get(),
@@ -167,29 +161,19 @@ class Pets extends Vet_Controller
 									where(
 										array(
 												"pet" 			=> $pet_id,
-												"no_history" 	=> 0,
-												"type !=" 		=> 1,
+												"no_history" 	=> 0
 												))->
 									order_by('created_at', 'DESC')->
-									limit($this->max_history)->
 									get_all();
-
-		# only check for larger numbers if we hit the
-		# limit on the complex query
-		$history_count = ($pet_history) ? count($pet_history) : 0;
-		if ($history_count == $this->max_history) {
-			$history_count = $this->events->where(array("pet" => $pet_id))->count_rows();
-		}
 
 		$other_pets = $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
 
 		$data = array(
-			"pet"					=> $pet_info,
+			"pet"				=> $pet_info,
 			"owner" 			=> $this->owners->get($pet_info['owner']),
 			"pet_history"		=> $pet_history,
-			"history_count"	=> $history_count,
-			"vaccines" 		=> $this->vacs_pet->view($pet_id),
-			"other_pets"	=> $other_pets,
+			"vaccines" 			=> $this->vacs_pet->view($pet_id),
+			"other_pets"		=> $other_pets,
 		);
 
 		$this->_render_page('pets/fiche', $data);

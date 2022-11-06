@@ -318,7 +318,7 @@ var myPieChart = new Chart(ctx, {
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     },
     {
-      data: [<?php echo $distribution_proc_prod['products']['6'] . "," . $distribution_proc_prod['products']['21']; ?>, <?php echo round($distribution_proc_prod['procedures'], 0); ?>],
+      data: [<?php echo ((isset($distribution_proc_prod['products']['6'])) ? $distribution_proc_prod['products']['6'] : 0) . "," . ((isset($distribution_proc_prod['products']['21'])) ? $distribution_proc_prod['products']['21'] : 0); ?>, <?php echo round($distribution_proc_prod['procedures'], 0); ?>],
       backgroundColor: ['#2596be', '#e28743', '#fff'],
       hoverBackgroundColor: ['#2596be', '#e28743', '#fff']
     },
