@@ -24,6 +24,7 @@ class Migration_breeds extends CI_Migration {
 	public function down()
 	{
 		$sql[] = "ALTER TABLE `breeds` DROP INDEX `type`;";
+		$sql[] = "ALTER TABLE `bills` DROP `deleted_at`;";
 		$sql[] = "ALTER TABLE `users` DROP `vsens`;";
 
 		foreach ($sql as $q)
