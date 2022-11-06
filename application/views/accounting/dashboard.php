@@ -99,7 +99,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="me-3">
-                        <div class="text-black-75 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
+                        <div class="text-black-75 small"><?php echo $this->lang->line('events'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
                         <div class="text-lg fw-bold"><?php echo $client_contacts_year; ?></div>
                         <div class="text-xs fw-bold d-inline-flex align-items-center">
                             <?php if($y > 0): ?>
