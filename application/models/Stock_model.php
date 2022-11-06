@@ -41,11 +41,7 @@ class Stock_model extends MY_Model
 		}
 
 		# if logging is required also log this 
-		if ($this->logs->min_log_level == DEBUG)
-		{
-			$info = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
-			$this->logs->stock(DEBUG, "increase_stock", $product_id, $volume, $location);
-		}
+		$this->logs->stock(DEBUG, "increase_stock", $product_id, $volume, $location);
 
 		// we first try to add to the "active" stock
 		$sql = "UPDATE stock SET volume=volume+" . $volume. " WHERE barcode = '" . $barcode . "' and location = '" . $location . "' and state = '" . STOCK_IN_USE . "' limit 1;";
