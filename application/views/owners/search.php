@@ -72,12 +72,12 @@
 					<nav class="nav nav-borders">
 						<?php 
 							$results = array(
-													array($last_name, 'Last Name', 'last_name'), 
-													array($first_name, 'First Name', 'first_name'), 
-													array($street, 'Street', 'street'), 
-													array($pets, 'Pets', 'pets'), 
-													array($phone, 'Phone', 'phone'),
-													array($breeds, 'Breed', 'breed'),
+													array($last_name, $this->lang->line('last_name'), 'last_name'), 
+													array($first_name, $this->lang->line('first_name'), 'first_name'), 
+													array($street, $this->lang->line('street'), 'street'), 
+													array($pets, $this->lang->line('pets'), 'pets'), 
+													array($phone, $this->lang->line('phone'), 'phone'),
+													array($breeds, $this->lang->line('breed'), 'breed'),
 													);
 							$active_switch = false;
 							$total_count = 0;
@@ -100,7 +100,7 @@
 									echo '<a href="#" class="nav-link filter_type" id="' . $value[2] . '">' . $value[1] . ' <span class="badge badge-primary">' . $current_count . '</span></a>';
 								}
 							}
-							echo '<a href="#" class="nav-link ' . ((!$active_switch) ? "active" : "") .' reset" id="reset_filter">All <span class="badge badge-primary">' . $total_count . '</span></a>';
+							echo '<a href="#" class="nav-link ' . ((!$active_switch) ? "active" : "") .' reset" id="reset_filter">' . $this->lang->line('search_all') . ' <span class="badge badge-primary">' . $total_count . '</span></a>';
 						?>
 					</nav>
 				<?php endif; ?>
@@ -160,7 +160,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -186,7 +186,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -212,7 +212,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -239,7 +239,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -265,7 +265,7 @@
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -292,7 +292,7 @@
 			<?php endif; ?>
 			<td><?php echo $breed['last_bill']; ?></td>
 			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $breed['id']; ?>"><i class="fas fa-edit"></i> Edit</a>
+				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $breed['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -309,9 +309,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#clients").addClass('active');
 	
 	var dt = $("#dataTable").DataTable({
-		"pageLength": 50, 
-		"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-
 		"responsive": {
         	"details": {
             "type": 'column',

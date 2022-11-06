@@ -66,7 +66,7 @@ class Owners extends Vet_Controller
 		$this->_render_page('owners/add', array());
 	}
 	
-	public function edit($owner_id)
+	public function edit(int $owner_id)
 	{
 		if ($this->input->post('submit')) {
 			$this->owners->update(
@@ -93,7 +93,8 @@ class Owners extends Vet_Controller
 							),
 				$owner_id
 			);
-			redirect('/owners/detail/' . (int) $owner_id, 'refresh');
+			$this->logs->logger(INFO, "update_client", "client " . $this->input->post('last_name') . " (". $owner_id . ")");
+			redirect('/owners/detail/' . $owner_id . '/true', 'refresh');
 		}
 		
 		$data = array(
@@ -124,16 +125,16 @@ class Owners extends Vet_Controller
 						"update" 	=> $update
 					);
 					
-		$this->_render_page('owner_detail', $data);
+		$this->_render_page('owners/detail', $data);
 	}
 	
-	public function invoices($id)
+	public function invoices(int $id)
 	{
 		$data = array(
 						"owner" 	=> $this->owners->get($id),
 						"bills"		=> $this->bills->with_vet('fields:first_name')->with_location('fields:name')->where(array("owner_id" => $id))->order_by("id", "desc")->get_all(),
 			);
-		$this->_render_page('owner_invoices', $data);
+		$this->_render_page('owners/invoices', $data);
 	}
 	
 	public function get_zip($zip)

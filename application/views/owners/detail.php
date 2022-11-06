@@ -3,22 +3,20 @@
 	<div class="col-lg-8 col-xl-10">
 
 		<div class="card mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
-				<small>(#<?php echo $owner['id']; ?>)</small>
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div>
+					<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
+					<small>(#<?php echo $owner['id']; ?>)</small>
+				</div>
+				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
+					<a href="<?php echo base_url('owners/edit/' . $owner['id']); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-user fa-fw"></i><?php echo $this->lang->line('edit_client'); ?></a>
+				</div>
 			</div>
 			<div class="card-body">
-				<a href="<?php echo base_url(); ?>owners/invoices/<?php echo $owner['id']; ?>" class="btn btn-success btn-icon-split"><span class="icon text-white-50"><i class="fas fa-history"></i></span><span class="text"><?php echo $this->lang->line('invoices'); ?></span></a>
-				<a href="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" class="btn btn-info btn-icon-split"><span class="icon text-white-50"><i class="fas fa-user"></i></span><span class="text"><?php echo $this->lang->line('edit_client'); ?></span></a>
-			</div>
-		</div>
-
-		<div class="card">
-			<div class="card-header"><?php echo $this->lang->line('pets'); ?></div>
-				<div class="card-body">
-					<?php if (isset($update) && $update) : ?>
+			<?php if (isset($update) && $update) : ?>
 					<div class="alert alert-success alert-dismissible fade show" role="alert">
-						Info updated!
+						<?php echo $this->lang->line('updated_owner'); ?>
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -146,13 +144,12 @@
 							</div>
 						<?php endif; ?>
 					<?php endif; ?>
-				</div>
-
 			</div>
+		</div>
 	</div>
 	
 	<div class="col-md-6 col-lg-4 col-xl-2">
-		<?php include "blocks/block_full_client.php"; ?>
+		<?php include "application/views/blocks/block_full_client.php"; ?>
 
 		<?php if($open_bill): ?>
 		<div class="alert alert-danger" role="alert">

@@ -60,6 +60,7 @@ $lang['edit_client']  = 'Edit Client';
 
 # invoices
 $lang['title_invoice']   = 'Search invoices';
+$lang['no_invoices']     = 'No invoices';
 
 # fiche
 $lang['edit_pet']   = 'Edit pet';
@@ -166,6 +167,7 @@ $lang['pets']      = 'Pets';
 $lang['add_pet']      = 'Add Pet';
 $lang['passed_away']      = 'Passed away';
 $lang['gone_or_lost']      = 'Gone / Lost';
+$lang['updated_owner']      = 'Updated client info!';
 
 # pet fiche
 $lang['dog']      = 'dog';

@@ -65,68 +65,67 @@
 						<label for="exampleFormControlInput3"><?php echo $this->lang->line('mobile'); ?></label>
 						<input type="text" name="mobile" class="form-control" id="exampleFormControlInput3" autocomplete="dezzd">
 					  </div>
-				</div>	  
-				<div class="col-md-6">  
-					<h5><?php echo $this->lang->line('payment_info'); ?></h5>
-					<hr>
-					  <div class="form-group">
-						<label for="btw_nr"><?php echo $this->lang->line('btw_nr'); ?></label>
-						<input type="text" name="btw_nr" class="form-control" id="btw_nr">
-					  </div>
-					  <div class="form-group">
-						<label for="invoice_addr"><?php echo $this->lang->line('invoice_addr'); ?></label>
-						<textarea class="form-control" name="invoice_addr" id="invoice_addr" rows="3" autocomplete="dezzd"></textarea>
-					  </div>
-					  <div class="form-group">
-						<label for="invoice_contact"><?php echo $this->lang->line('invoice_contact'); ?></label>
-						<input type="text" name="invoice_contact" class="form-control" id="invoice_contact" autocomplete="dezzd">
-					  </div>
-					  <div class="form-group">
-						<label for="invoice_tel"><?php echo $this->lang->line('invoice_phone'); ?></label>
-						<input type="text" name="invoice_tel" class="form-control" id="invoice_tel" autocomplete="dezzd">
-					  </div>
-				  
-				</div>	  
-				<div class="col-md-6">
-					<h5><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Varia</a></h5>
-					<hr>
-						<div class="collapse" id="collapseExample">
-							<div class="form-group">
-								<div class="form-check">
-								<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck">
-									<label class="form-check-label" for="gridCheck">
-									<?php echo $this->lang->line('debts'); ?>
-									</label>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="form-check">
-								<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget">
-									<label class="form-check-label" for="low_budget">
-									<?php echo $this->lang->line('low_budget'); ?>
-									</label>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="form-check">
-								<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" checked="checked">
-									<label class="form-check-label" for="contact">
-									<?php echo $this->lang->line('contact'); ?>
-									</label>
-								</div>
-							</div> 
-						</div> 
 					  <div class="form-group">
 						<label for="exampleFormControlTextarea1"><?php echo $this->lang->line('comment'); ?></label>
 						<textarea class="form-control" name="msg" id="exampleFormControlTextarea1" rows="3"></textarea>
 					  </div>
+				</div>	  
+				<div class="col-md-6">  
+					<h5><a data-toggle="collapse" href="#payment_info" role="button" aria-expanded="false" aria-controls="payment_info"><?php echo $this->lang->line('payment_info'); ?></a></h5>
+					<hr>
+						<div class="collapse" id="payment_info">
+							<div class="form-group">
+								<label for="btw_nr"><?php echo $this->lang->line('btw_nr'); ?></label>
+								<input type="text" name="btw_nr" class="form-control" id="btw_nr">
+							</div>
+							<div class="form-group">
+								<label for="invoice_addr"><?php echo $this->lang->line('invoice_addr'); ?></label>
+								<textarea class="form-control" name="invoice_addr" id="invoice_addr" rows="3" autocomplete="dezzd"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="invoice_contact"><?php echo $this->lang->line('invoice_contact'); ?></label>
+								<input type="text" name="invoice_contact" class="form-control" id="invoice_contact" autocomplete="dezzd">
+							</div>
+							<div class="form-group">
+								<label for="invoice_tel"><?php echo $this->lang->line('invoice_phone'); ?></label>
+								<input type="text" name="invoice_tel" class="form-control" id="invoice_tel" autocomplete="dezzd">
+							</div>
+						</div>
+				</div>	  
+					<div class="col-md-6">
+						<h5><a data-toggle="collapse" href="#varia" role="button" aria-expanded="false" aria-controls="varia">Varia</a></h5>
+						<hr>
+							<div class="collapse" id="varia">
+								<div class="form-group">
+									<div class="form-check">
+									<input class="form-check-input" name="debts" type="checkbox" value="1" id="gridCheck">
+										<label class="form-check-label" for="gridCheck">
+										<?php echo $this->lang->line('debts'); ?>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="form-check">
+									<input class="form-check-input" name="low_budget" type="checkbox" value="1" id="low_budget">
+										<label class="form-check-label" for="low_budget">
+										<?php echo $this->lang->line('low_budget'); ?>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="form-check">
+									<input class="form-check-input" name="contact" type="checkbox" value="1" id="contact" checked="checked">
+										<label class="form-check-label" for="contact">
+										<?php echo $this->lang->line('contact'); ?>
+										</label>
+									</div>
+								</div> 
+							</div> 
 
+					</div>	  
 				</div>	  
-				</div>	  
-				  <button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo $this->lang->line('add'); ?></button>
+				<button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo $this->lang->line('add'); ?></button>
 				</form>
-
-
 		</div>
 	</div>
 

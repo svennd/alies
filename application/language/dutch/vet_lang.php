@@ -62,6 +62,7 @@ $lang['edit_client']  = 'Klant bewerken';
 
 # invoices
 $lang['title_invoice']   = 'Facturen opzoeken';
+$lang['no_invoices']     = 'Geen facturen';
 
 
 # fiche
@@ -134,6 +135,7 @@ $lang['debts']         = 'schulden';
 $lang['low_budget']         = 'laag budget';
 $lang['contact']         = 'contact';
 $lang['comment']         = 'opmerking';
+$lang['updated_owner']      = 'Klantinformatie aangepast!';
 
 # shortages
 $lang['shortage']         = 'Tekort';
