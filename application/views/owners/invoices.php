@@ -9,13 +9,13 @@
 	  <thead>
 		<tr>
 		  <th><?php echo $this->lang->line('Invoice'); ?></th>
-		  <th><?php echo $this->lang->line('date'); ?></th>
+		  <th data-priority="1"><?php echo $this->lang->line('date'); ?></th>
 		  <th><?php echo $this->lang->line('state'); ?></th>
-		  <th><?php echo $this->lang->line('amount'); ?></th>
+		  <th data-priority="2"><?php echo $this->lang->line('amount'); ?></th>
 		  <th><?php echo $this->lang->line('card'); ?></th>
 		  <th><?php echo $this->lang->line('cash'); ?></th>
-		  <th><i class="fas fa-user-md"></i> <?php echo $this->lang->line('vet'); ?></th>
-		  <th><?php echo $this->lang->line('location'); ?></th>
+		  <th data-priority="3"><?php echo $this->lang->line('vet'); ?></th>
+		  <th data-priority="4"><?php echo $this->lang->line('location'); ?></th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -43,7 +43,14 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable();
+	$("#dataTable").DataTable({
+		responsive: {
+        	"details": {
+            "type": 'column',
+            "target": 'tr'
+        }
+  	  },
+	});
 	$("#clients").addClass('active');
 });
 </script>

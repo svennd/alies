@@ -2,6 +2,7 @@
 <!-- phone only links -->
 <a href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id']; ?>" class="btn btn-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('consult'); ?></a>
 <a href="<?php echo base_url(); ?>tooth/fiche/<?php echo $pet['id']; ?>" class="btn btn-primary mb-3 d-block d-sm-none d-md-none"><i class="fas fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>
+<a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-info mb-3 d-block d-sm-none d-md-none"><i class="fas fa-paw"></i> <?php echo $this->lang->line('edit_pet'); ?></a>
 
 <!-- full screen -->
 <div class="card mb-4">
@@ -30,10 +31,10 @@
 			<tr>
 				<th><?php echo $this->lang->line('date'); ?></th>
 				<th>type</th>
-				<th><?php echo $this->lang->line('title'); ?></th>
+				<th data-priority="2"><?php echo $this->lang->line('title'); ?></th>
 				<th><?php echo $this->lang->line('vet'); ?></th>
 				<th><?php echo $this->lang->line('location'); ?></th>
-				<th><?php echo $this->lang->line('edit'); ?></th>
+				<th data-priority="1"><?php echo $this->lang->line('edit'); ?></th>
 				<th class="none"><?php echo $this->lang->line('anamnese'); ?></th>
 				<th class="none">products</th>
 			</tr>

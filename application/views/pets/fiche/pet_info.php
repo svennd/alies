@@ -2,7 +2,7 @@
 
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<div><?php echo $this->lang->line('pet_info'); ?></div>
-			<div class="dropdown no-arrow">
+			<div class="dropdown no-arrow d-none d-sm-block">
 				<a href="<?php echo base_url(); ?>tooth/fiche/<?php echo $pet['id']; ?>" class="btn btn-primary btn-icon-split btn-sm"><span class="icon text-white-50"><i class="fas fa-tooth"></i></span><span class="text"><?php echo $this->lang->line('tooth'); ?></span></a>
 				<a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-info btn-icon-split btn-sm"><span class="icon text-white-50"><i class="fas fa-paw"></i></span><span class="text"><?php echo $this->lang->line('edit_pet'); ?></span></a>
 			</div>

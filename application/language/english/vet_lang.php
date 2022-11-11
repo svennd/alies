@@ -83,7 +83,7 @@ $lang['date']  = 'Date';
 $lang['vet']  = 'Vet';
 $lang['location']  = 'Location';
 $lang['anamnese']  = 'Anamnese';
-$lang['no_history']  = 'No history yet.';
+$lang['no_pets_history']  = 'No history yet.';
 
 ## vaccines
 $lang['no_vaccines']  = 'No known vaccines';

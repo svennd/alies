@@ -86,7 +86,7 @@ $lang['date']  = 'Datum';
 $lang['vet']  = 'Dierenarts';
 $lang['location']  = 'Locatie';
 $lang['anamnese']  = 'Anamnese';
-$lang['no_history']  = 'Geen historiek bekend.';
+$lang['no_pets_history']  = 'Geen historiek bekend.';
 
 ## vaccines
 $lang['no_vaccines']  = 'Geen vaccinaties bekend';

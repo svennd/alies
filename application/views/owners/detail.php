@@ -1,5 +1,8 @@
+<!-- normal button : on small screens -->
+<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
+<a href="<?php echo base_url('owners/edit/' . $owner['id']); ?>" class="btn btn-outline-info mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user fa-fw"></i><?php echo $this->lang->line('edit_client'); ?></a>
+				
 <div class="row">
-
 	<div class="col-lg-8 col-xl-10">
 
 		<div class="card mb-4">
@@ -8,7 +11,8 @@
 					<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
 					<small>(#<?php echo $owner['id']; ?>)</small>
 				</div>
-				<div class="dropdown no-arrow">
+				<!-- hide on small screens -->
+				<div class="dropdown no-arrow d-none d-sm-block">
 					<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
 					<a href="<?php echo base_url('owners/edit/' . $owner['id']); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-user fa-fw"></i><?php echo $this->lang->line('edit_client'); ?></a>
 				</div>
@@ -66,11 +70,13 @@
 									</div>
 								<?php endif; ?>
 
-								<div class="col-lg-12 col-xl-4 my-1">
-									<div class="btn-group">
-										<a class="btn btn-outline-success" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>
-										<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
-									</div>
+								<div class="col-lg-12 col-xl-4 d-none d-sm-block">
+									<a class="btn btn-outline-success" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>
+									<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
+								</div>
+								<div class="col-12 d-block d-sm-none d-md-none">
+									<a class="btn btn-outline-success my-3" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>									
+									<a class="btn btn-outline-info ml-5" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
 								</div>
 							</div>
 						</li>
@@ -103,7 +109,7 @@
 						endforeach;
 					?>
 						<?php if($total_dead + $total_lost != 0): ?>
-							<div id="lost_or_passed">
+							<div id="lost_or_passed" class="d-none d-sm-block">
 								<div class="mb-3">
 								<?php if($dead_pet): ?>
 								<a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#passed" role="button" aria-expanded="false" aria-controls="collapseExample"><?php echo $this->lang->line('passed_away'); ?> (<?php echo $total_dead; ?>)</a>
@@ -161,7 +167,7 @@
 			</ul>
 		</div>
 		<?php endif; ?>
-		<a class="btn btn-outline-danger" href="<?php echo base_url() . 'debug/index/' . $owner['id']; ?>"><i class="fas fa-bug"></i> Debug</a>
+		<a class="btn btn-outline-danger d-none d-sm-block" href="<?php echo base_url() . 'debug/index/' . $owner['id']; ?>"><i class="fas fa-bug"></i> Debug</a>
 	</div>
 
 </div>
