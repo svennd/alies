@@ -82,17 +82,6 @@ class Events_model extends MY_Model
 						'foreign_key' => 'id',
 						'get_relate'=> false
 		);
-
-		// $this->has_many_pivot['owner'] = array(
-		// 				'foreign_model'	=> 'Owners_model',
-		// 				'pivot_table'	=> 'pets',
-		// 				'local_key'		=> 'pet',
-		// 				'pivot_local_key' => 'id',
-		// 				'pivot_foreign_key' => 'owner',
-		// 				'foreign_key' => 'id',
-		// 				'get_relate'=> false
-		// );
-
 		parent::__construct();
 	}
 
@@ -177,7 +166,6 @@ class Events_model extends MY_Model
 		return ($status['status']);
 	}
 
-
 	/*
 		used in reports/product_range
 		to get a full list of products used in a certain range
@@ -213,6 +201,38 @@ class Events_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 
+
+	/*
+		used in report (for vet/admin)
+	*/
+	public function get_current_events(bool $admin = false)
+	{
+		$sql = "
+		SELECT 
+			events.id, events.title, events.payment, events.status, events.report, events.updated_at,
+			pets.id as pet_id, pets.type as pet_type, pets.name as pet_name,
+			stock_location.id as loc_id, stock_location.name as loc_name,
+			owners.id as owner_id, owners.last_name as owner_name,
+			users.first_name
+		FROM
+			events
+		JOIN pets ON pets.id = events.pet
+		JOIN stock_location ON stock_location.id = events.location
+		JOIN users ON users.id = events.vet
+		JOIN owners ON owners.id = pets.owner
+		WHERE
+			events.updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
+		AND
+			events.no_history = 0
+		". (($admin) ? "" : "AND ( events.vet = " . $this->user->id . " OR events.vet_support_1 = " . $this->user->id . " OR events.vet_support_2 = " . $this->user->id . ")") ."
+		ORDER BY
+			events.created_at DESC
+		";
+
+		return $this->db->query($sql)->result_array();
+		
+
+	}
 
 	// accounting
 	public function get_contacts(datetime $date)
