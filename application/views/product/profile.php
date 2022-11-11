@@ -7,9 +7,19 @@ foreach ($locations as $l)
 }
 ?>
 <div class="card shadow mb-4">
-	<div class="card-header">
-		<a href="<?php echo base_url(); ?>products"><?php echo $this->lang->line('Products'); ?></a> /
-		<?php echo (isset($product['name'])) ? $product['name']: '' ?>
+	<div class="card-header d-flex flex-row align-items-center justify-content-between">
+		
+		<div>
+			<a href="<?php echo base_url(); ?>products"><?php echo $this->lang->line('Products'); ?></a> /
+			<?php echo (isset($product['name'])) ? $product['name']: '' ?>
+		</div>
+		<div class="dropdown no-arrow">
+			<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
+			<?php if ($this->ion_auth->in_group("admin")): ?>
+				<a href="<?php echo base_url('products/product/' . $product['id']); ?>"class="btn btn-outline-success btn-sm ml-3"><i class="far fa-edit"></i> Edit</a>
+				<a href="<?php echo base_url('products/product_price/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-euro-sign"></i> Pricing</a>
+			<?php endif; ?>
+		</div>
 	</div>
 
 	<div class="card-body">
@@ -226,16 +236,16 @@ foreach ($locations as $l)
 										"???" : 
 										(
 												(strtotime($stock['eol']) < strtotime(date('Y-m-d'))) ? 
-													'<span style="color:red;"> ' . date_format(date_create($stock['eol']), $user->user_date) . '</span>'
+													'<span style="color:red;"> ' . user_format_date($stock['eol'], $user->user_date) . '</span>'
 														: 
-													date_format(date_create($stock['eol']), $user->user_date)
+														user_format_date($stock['eol'], $user->user_date)
 										)
 										; ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
 									<td><?php echo $stock['volume']; ?></td>
 									<td><?php echo $loc[$stock['location']]; ?></td>
 									<td><?php echo $stock['barcode']; ?></td>
-									<td><?php echo date_format(date_create($stock['created_at']), $user->user_date); ?></td>
+									<td><?php echo user_format_date($stock['created_at'], $user->user_date); ?></td>
 								</tr>
 								<?php endforeach; ?>
 								</table>
@@ -254,8 +264,6 @@ foreach ($locations as $l)
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-
 	$("#product_list").addClass('active');
-	
 });
 </script>

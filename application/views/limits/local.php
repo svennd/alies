@@ -123,10 +123,9 @@ foreach ($locations as $l)
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#stock").addClass('active');
-	$("#dataTable2").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]], "order": [[ 4, "desc" ]]	});
+	
+	$("#product_list").addClass('active');
+	$("#dataTable2").DataTable({"order": [[ 4, "desc" ]]});
 });
 </script>
   

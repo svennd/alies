@@ -23,37 +23,36 @@ class Products extends Vet_Controller
 		$this->load->helper('gs1');
 	}
 
-	public function index($success = false)
+	public function index($location = false, $success = false)
 	{
 
+		$products = array();
+		$clocation = ($location) ? $location : $this->user->current_location;
+		
+		$products = ($location == "all") ? 
+					$this->stock->get_all_products_count() 
+					: 
+					$this->stock->get_all_products($clocation);
+
 		$data = array(
-						"last_created" 		=> $this->products->fields('id, name, created_at')->limit(10)->order_by("created_at", "desc")->get_all(),
-						"last_modified" 	=> $this->products->fields('id, name, updated_at')->limit(10)->order_by("updated_at", "desc")->get_all(),
-						"search_q"				=> $this->input->post('name'),
+						"search_q"					=> $this->input->post('name'),
 						"types" 					=> $this->prod_type->get_all(),
 						"expired"					=> $this->stock
 																		->fields('eol, volume')
 																		->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 																		->where('eol > DATE_ADD(NOW(), INTERVAL -10 DAY)', null, null, false, false, true)
-																		->where(array('state' => STOCK_IN_USE))
+																		->where(array('state' => STOCK_IN_USE, 'location' => $this->user->current_location))
 																		->with_products('fields: id, name, unit_sell')
 																		->order_by('eol', 'ASC')
-																		->set_cache('expering_items',3600)
-																		->get_all(),
+																		->count_rows(),
 						"locations" 			=> $this->location,
 						"success" 				=> $success,
-						"current_loc_id"	=> $this->user->current_location,
-						"search"					=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
-						"product_types"		=> $this->prod_type->with_products('fields:*count*')->get_all()
+						"clocation"				=> $clocation,
+						"search"				=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
+						"products" 				=> $products,
 						);
-		if ($this->ion_auth->in_group("admin"))
-		{
-			$this->_render_page('product/index', $data);
-		}
-		else
-		{
-			$this->_render_page('product/info', $data);
-		}
+
+		$this->_render_page('product/index', $data);
 	}
 
 

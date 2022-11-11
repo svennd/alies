@@ -10,7 +10,8 @@ class Stock_location_model extends MY_Model
 	
 	public function __construct()
 	{
-		$this->soft_deletes = true;
 		parent::__construct();
+
+		$this->soft_deletes = true;
 	}
 }

@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>stock">Stock</a> / Expired stock
+				Stock / Expired stock
 			</div>
       <div class="card-body">
 			<p>This table shows products that are expired (up to 360d) or are going to expire soon (90d).
@@ -63,15 +63,12 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#stock").addClass('active');
+
+	$("#product_list").addClass('active');
 
 	const current_date = new Date();
 
 	$("#dataTable").DataTable({
-			"pageLength": 50,
-			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 			"order": [[ 1, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
 				var product_date = new Date(data[1]);

@@ -236,3 +236,16 @@ $lang['barcode']                = 'Barcode';
 $lang['added']                  = 'toegevoegd'; 
 $lang['no_local_stock']         = 'Geen lokale stock.'; 
 $lang['no_global_stock']        = 'Geen globale stock.'; 
+
+# product page
+$lang['search_product']         = 'Product opzoeken'; 
+$lang['new_product']            = 'Nieuw Product'; 
+$lang['product_sheet']          = 'Product fiche'; 
+$lang['expired']                = 'Vervallen'; 
+$lang['add_stock']              = 'Stock toevoegen'; 
+$lang['move_stock']             = 'Stock Verplaatsen'; 
+$lang['move']                   = 'Verplaatsen'; 
+$lang['no_products_in_view']    = 'Geen producten zichtbaar.'; 
+$lang['from_location']          = 'Van'; 
+$lang['to_location']            = 'Naar'; 
+$lang['products_remove_stock']  = 'Producten verwijderd van de stock !'; 

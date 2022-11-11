@@ -21,25 +21,13 @@ class Stock extends Vet_Controller
 		$this->load->helper('gs1');
 	}
 
+	/*
+	remove asap, legacy controller
+	*/
 	public function index($filter = false, $success = false)
 	{
-		$products = array();
-		if ($filter) {
-			if ($filter == "all") {
-				$products = $this->stock->get_all_products();
-			} else {
-				$products = $this->stock->where(array('state' => STOCK_IN_USE, 'location' => (int)$filter))->with_products('fields:name, unit_sell')->get_all();
-			}
-		}
-
-		$data = array(
-					"locations" => $this->location,
-					"filter" 		=> $filter,
-					"success" 	=> $success,
-					"products" 	=> $products,
-					);
-
-		$this->_render_page('stock/index', $data);
+		echo "LEGACY";
+		exit;
 	}
 
 	public function stock_detail($pid, $all = false)

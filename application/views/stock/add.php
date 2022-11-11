@@ -10,7 +10,7 @@
 	<div class="col-lg-5 mb-4">
 		<div class="card shadow mb-4">		
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>stock">Stock</a> / Add
+				Stock / Add
 			</div>
 			<div class="card-body">
 				<form action="<?php echo base_url(); ?>stock/add_stock" method="post" autocomplete="off">
@@ -226,9 +226,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	var _changeInterval = null;
 	var barcode = null;
 	
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#stock").addClass('active');
+
+	$("#product_list").addClass('active');
 	
 	$("#gs1_datamatrix").keyup(function(){
 		barcode = this.value;

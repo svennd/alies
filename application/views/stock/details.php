@@ -1,7 +1,7 @@
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		
-		<div><a href="<?php echo base_url('stock/all'); ?>">Stock</a> / <?php echo $product['name']; ?> / detail</div>
+		<div><a href="<?php echo base_url('products'); ?>">products</a> / <?php echo $product['name']; ?> / detail</div>
 		<div class="dropdown no-arrow">
 			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<?php if($show_all): ?>
@@ -63,9 +63,11 @@
 
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div><a href="<?php echo base_url(); ?>stock/all">Stock</a> / <?php echo $product['name']; ?> / usage last 6m</div>
+		<div><a href="<?php echo base_url('products'); ?>">products</a> / <?php echo $product['name']; ?> / usage last 6m</div>
 		<div class="dropdown no-arrow">
+			<?php if ($this->ion_auth->in_group("admin")): ?>
 			<a href="<?php echo base_url('reports/usage/' . $product['id']); ?>" class="btn btn-outline-info btn-sm">Details</a>
+			<?php endif; ?>
 		</div>
 	</div>
 	<div class="card-body">
@@ -96,13 +98,10 @@
 </div>
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#stock").addClass('active');
+	$("#product_list").addClass('active');
+
 	$("#dataTable").DataTable(
 		{
-			"pageLength": 50, 
-			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 			footerCallback: function (row, data, start, end, display) {
             var api = this.api();
  
@@ -128,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 }, 0);
  
             // Update footer
-            $(api.column(0).footer()).html(pageTotal + '<?php echo $detail['products']['unit_sell']; ?>' + ' (' + total + ' <?php echo $detail['products']['unit_sell']; ?>)' );
+            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>' + ' (' + Math.round(total*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>)' );
        		},
 		});
 });

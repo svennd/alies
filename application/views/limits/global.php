@@ -62,11 +62,10 @@ foreach ($locations as $l)
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#prd").show();
-	$("#products").addClass('active');
-	$("#stock").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#dataTable2").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+
+	$("#product_list").addClass('active');
+	$("#dataTable").DataTable();
+	$("#dataTable2").DataTable();
 });
 </script>
   

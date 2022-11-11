@@ -23,6 +23,7 @@ class Stock_model extends MY_Model
 					'foreign_key' => 'id',
 					'local_key' => 'location'
 				);
+
 		parent::__construct();
 	}
 
@@ -174,24 +175,56 @@ class Stock_model extends MY_Model
 	}
 
 	# group by & count total volume
-	public function get_all_products()
+	public function get_all_products_count()
 	{
 		$sql = "select
 						product_id,
 						SUM(volume) as total_volume,
 						COUNT(stock.id) as total_stock_locations,
 						products.name,
-						products.unit_sell
+						products.unit_sell,
+						products_type.name as type
 				from
 					stock
 				join
 					products
 				on
 					products.id = stock.product_id
+				join
+					products_type
+				on
+					products.type = products_type.id
 				WHERE
 					state = ". STOCK_IN_USE . "
 				group by
 					product_id;";
+
+		return $this->db->query($sql)->result_array();
+	}
+
+	public function get_all_products(int $location)
+	{
+		$sql = "select
+						stock.*,
+						products.name as product_name,
+						products.id as product_id,
+						products.unit_sell,
+						products_type.name as type
+				from
+					stock
+				join
+					products
+				on
+					products.id = stock.product_id
+				join
+					products_type
+				on
+					products.type = products_type.id
+				WHERE
+					state = ". STOCK_IN_USE . "
+				AND
+					location = '" . $location ."'
+				;";
 
 		return $this->db->query($sql)->result_array();
 	}

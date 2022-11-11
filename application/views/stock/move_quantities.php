@@ -2,7 +2,7 @@
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><a href="<?php echo base_url(); ?>stock">Stock</a> / Move stock / Quantities</div>
+				<div><a href="<?php echo base_url('products'); ?>">Products</a> / Move stock / Quantities</div>
 				<div class="dropdown no-arrow">
 					<?php foreach($locations as $location): ?>
 						<?php if ($location['id'] != $new_location) { continue; } ?>
@@ -56,7 +56,8 @@
 				<?php endforeach; ?>
 				<input type="hidden" name="new_location" value="<?php echo $new_location; ?>"/>
 				<input type="hidden" name="from_location" value="<?php echo $from_location; ?>"/>
-				<button type="submit" name="submit" value="quantities" class="btn btn-primary">Submit</button>
+					<button type="submit" name="submit" value="quantities" class="btn btn-primary">Submit</button>
+					<a href="<?php echo base_url('products'); ?>" class="btn btn-danger ml-3">Cancel</a>
 				</form>
 				<?php endif; ?>
 			</div>

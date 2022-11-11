@@ -87,21 +87,6 @@
           </div>
         </div>
       </li>
-      
-      <li class="nav-item" id="products">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#prd" aria-expanded="true" aria-controls="prd">
-          <i class="fas fa-fw fa-shopping-cart"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="prd" class="collapse" aria-labelledby="prd" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Inventory management :</h6>
-
-            <a class="collapse-item" href="<?php echo base_url(); ?>products" id="product_list">Products</a>
-            <a class="collapse-item" href="<?php echo base_url('stock'); ?>" id="stock">Stock</a>
-          </div>
-        </div>
-      </li>
 	  <?php endif; ?>
       <!-- Divider -->
       <hr class="sidebar-divider">
@@ -120,7 +105,7 @@
          <i class="far fa-fw fa-file"></i>
           <span><?php echo $this->lang->line('Reports'); ?></span></a>
       </li>
-	  <?php if (!$this->ion_auth->in_group("admin")): ?>
+	  <?php // if (!$this->ion_auth->in_group("admin")): ?>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
       <?php echo $this->lang->line('Administration'); ?>
@@ -136,16 +121,11 @@
           <span><?php echo $this->lang->line('Vaccins'); ?></span></a>
       </li>
       <li class="nav-item" id="product_list">
-        <a class="nav-link" href="<?php echo base_url(); ?>products">
-         <i class="fas fa-fw fa-shopping-cart"></i>
+        <a class="nav-link" href="<?php echo base_url('products'); ?>">
+          <i class="fas fa-fw fa-dolly"></i>
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
-      <li class="nav-item" id="stock">
-        <a class="nav-link" href="<?php echo base_url('stock/' . $this->user->current_location); ?>">
-         <i class="fas fa-fw fa-dolly"></i>
-          <span><?php echo $this->lang->line('Stock'); ?></span></a>
-      </li>
-	  <?php endif; ?>
+	  <?php // endif; ?>
 
     </ul>
     <!-- End of Sidebar -->
