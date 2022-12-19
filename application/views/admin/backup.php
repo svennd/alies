@@ -3,7 +3,7 @@
 				<div><?php echo $this->lang->line('backup'); ?></div>
 				<div class="dropdown no-arrow">
 					<a class="btn btn-outline-success btn-sm" href="<?php echo base_url(); ?>backup/sql"><i class="fas fa-database"></i> FULL SQL</a>
-					<a class="btn btn-outline-danger btn-sm" href="<?php echo base_url(); ?>backup/sql/all/true"><i class="fas fa-file-archive"></i> FULL ZIP</a>
+					<a class="btn btn-outline-primary btn-sm" href="<?php echo base_url(); ?>backup/sql/all/true"><i class="fas fa-file-archive"></i> FULL ZIP</a>
 				</div>
 			</div>
 	<!-- Card Body -->
@@ -22,7 +22,7 @@
 				<td><?php echo $v['size']; ?> MB</td>
 				<td>
 					<a class="btn btn-outline-success btn-sm" href="<?php echo base_url(); ?>backup/sql/<?php echo $v['table_name']; ?>"><i class="fas fa-database"></i> SQL</a>
-					<a class="btn btn-outline-danger btn-sm" href="<?php echo base_url(); ?>backup/sql/<?php echo $v['table_name']; ?>/true"><i class="fas fa-file-archive"></i> ZIP</a>
+					<a class="btn btn-outline-primary btn-sm" href="<?php echo base_url(); ?>backup/sql/<?php echo $v['table_name']; ?>/true"><i class="fas fa-file-archive"></i> ZIP</a>
 				</td>
 			</tr>
 		<?php endforeach; ?>
