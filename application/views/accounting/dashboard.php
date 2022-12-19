@@ -189,7 +189,15 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col">
+                    <div class="col py-2">
+                        <div class="card h-100" style="width: 12rem;">
+                            <img src="<?php echo base_url('assets/img/wholesale.png'); ?>" class="card-img-top" alt="wholesale">
+                            <div class="card-body text-center">
+                                <a href="<?php echo base_url('import/import_covetrus'); ?>" class="stretched-link"><?php echo $this->lang->line('wholesale'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/breeds.png'); ?>" class="card-img-top" alt="breeds">
                             <div class="card-body text-center">
@@ -197,7 +205,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/locations.png'); ?>" class="card-img-top" alt="Locations">
                             <div class="card-body text-center">
@@ -205,7 +213,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/types.png'); ?>" class="card-img-top" alt="types">
                             <div class="card-body text-center">
@@ -213,7 +221,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/backup.png'); ?>" class="card-img-top" alt="backup">
                             <div class="card-body text-center">
@@ -222,7 +230,7 @@
                         </div>
                     </div>
                     
-                    <div class="col">
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/booking.png'); ?>" class="card-img-top" alt="backup">
                             <div class="card-body text-center">
@@ -230,8 +238,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col">
+                    <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/members.png'); ?>" class="card-img-top" alt="members">
                             <div class="card-body text-center">
