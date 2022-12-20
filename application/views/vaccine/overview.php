@@ -1,4 +1,3 @@
-
 <div class="row">
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
@@ -9,8 +8,8 @@
 			</div>
 		</div>
             <div class="card-body">
-			<a href="<?php echo base_url('vaccine/index/' . ($month_int-1)); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-angle-double-left"></i></a>
-			<a href="<?php echo base_url('vaccine/index/' . ($month_int+1)); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-angle-double-right"></i></a>
+			<a href="<?php echo ($this->ion_auth->in_group("admin") || abs($month_int-1) < 2) ? base_url('vaccine/index/' . ($month_int-1)) : '#'; ?>" class="btn <?php echo ($this->ion_auth->in_group("admin") || abs($month_int-1) < 2) ? 'btn-outline-success' : 'btn-outline-secondary'; ?> btn-sm"><i class="fas fa-angle-double-left"></i></a>
+			<a href="<?php echo ($this->ion_auth->in_group("admin") || abs($month_int+1) < 3) ? base_url('vaccine/index/' . ($month_int+1)) : '#'; ?>" class="btn <?php echo ($this->ion_auth->in_group("admin") || abs($month_int+1) < 3) ? 'btn-outline-success' : 'btn-outline-secondary'; ?> btn-sm"><i class="fas fa-angle-double-right"></i></a>
 			<br/>
 			<br/>
 			<br/>

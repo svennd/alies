@@ -16,7 +16,7 @@ class Welcome extends Vet_Controller
 
 		$this->load->library('migration');
 	}
-
+	
 	public function index()
 	{
 		# upgrade if available

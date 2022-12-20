@@ -17,6 +17,13 @@ class Vaccine extends Vet_Controller
 	
 	public function index(int $month = 1, $export = false)
 	{
+		# safety check
+		if (abs($month) >= 3 && !$this->ion_auth->in_group("admin"))
+		{
+            $this->logs->logger(WARN, "attempt_download_vaccine_list", "month : " . $month);
+			redirect('/');
+		}
+
 		# get first day of the month
 		$date = new DateTime('first day of this month');
 
@@ -24,9 +31,9 @@ class Vaccine extends Vet_Controller
 		$date->modify($month . 'month');
 
 		$data = array(
-				"month" => $date->format('F'),
-				"year" => $date->format('Y'),
-				"month_int"	=> $month,
+				"month" 		=> $date->format('F'),
+				"year" 			=> $date->format('Y'),
+				"month_int"		=> $month,
 				"expiring_vacs" => $this->vacs->get_expiring_vaccines($date->format('Y-m-d H:i:s'))
 		);
 		if ($export)
@@ -39,6 +46,7 @@ class Vaccine extends Vet_Controller
 		}
 		else
 		{
+            $this->logs->logger(DEBUG, "consult_vaccine_list", "month : " . $month);
 			$this->_render_page('vaccine/overview', $data);
 		}
 	}
