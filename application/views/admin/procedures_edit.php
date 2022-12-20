@@ -30,15 +30,9 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#adminmgm").show();
-	$("#admin").addClass('active');
+	$("#pricingmg").show();
+	$("#pricing").addClass('active');
 	$("#adminproc").addClass('active');
-	
-	$("#add").on('click',function(){
-		$("#add_form").show();
-		$(this).hide();
-	});
 });
 </script>
   

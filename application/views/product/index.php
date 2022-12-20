@@ -31,7 +31,7 @@
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div>Stock</div>
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url('limits/local/' . $clocation); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exclamation-triangle"></i> <?php echo $this->lang->line('shortage'); ?></a>
+					<a href="<?php echo base_url('limits/' . (is_numeric($clocation) ? 'local/' . $clocation: 'global')); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exclamation-triangle"></i> <?php echo $this->lang->line('shortage'); ?></a>
 					<a href="<?php echo base_url('stock/expired_stock'); ?>" class="btn btn-outline-danger btn-sm"> <i class="fas fa-prescription-bottle"></i> <?php echo $this->lang->line('expired'); ?> (<?php echo $expired; ?>)</a>
 				</div>
 			</div>
@@ -92,13 +92,13 @@
 					<?php foreach ($products as $product): ?>
 					<tr>
 						<td><a href="<?php echo base_url('products/profile/' . $product['product_id']); ?>"><?php echo $product['product_name']; ?></td>
-						<td data-sort="<?php echo strtotime($product['eol']) ?>"><?php echo user_format_date($product['eol'], $user->user_date); ?></td>
+						<td data-sort="<?php echo ($product['eol']) ? strtotime($product['eol']) : time(); ?>"><?php echo user_format_date($product['eol'], $user->user_date); ?></td>
 						<td><?php echo $product['lotnr']; ?></td>
 						<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 						<td><?php echo $product['type']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>
 						<td>
-							<a href="<?php echo base_url('stock/write_off/0/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm mr-3"><i class="fas fa-ban"></i></a>
+							<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm mr-3"><i class="fas fa-ban"></i></a>
 							<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
 										id="<?php echo $product['product_id']; ?>" 
 										data-id="<?php echo $product['product_id']; ?>"

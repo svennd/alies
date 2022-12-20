@@ -201,61 +201,6 @@ class Reports extends Admin_Controller
 		$this->_render_page('reports/product_range', $data);
 	}
 
-	public function bills()
-	{
-		/* input set default to 30 days */
-		$today = new DateTime();
-		$input_to = ($this->input->post('search_to')) ? $this->input->post('search_to') : $today->format('Y-m-d');
-		$today->modify('-30 day');
-		$input_from = ($this->input->post('search_from')) ? $this->input->post('search_from') : $today->format('Y-m-d');
-
-		$bill_overview = $this->bills
-			->where('created_at > STR_TO_DATE("' . $input_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->where('created_at < STR_TO_DATE("' . $input_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->with_location('fields:name')
-			->with_vet('fields:first_name')
-			->with_owner('fields:last_name,id,low_budget,debts,btw_nr')
-			->order_by('created_at', 'asc')
-			->get_all();
-
-		$data = array(
-			"bills" 			=> $bill_overview,
-			"search_from"	=> $input_from,
-			"search_to"		=> $input_to
-		);
-
-		$this->_render_page('reports/bill', $data);
-	}
-
-
-	public function vaccine()
-	{
-		/* input set default to 30 days */
-		$today = new DateTime();
-		$input_to = ($this->input->post('search_to')) ? $this->input->post('search_to') : $today->format('Y-m-d');
-		$today->modify('-30 day');
-		$input_from = ($this->input->post('search_from')) ? $this->input->post('search_from') : $today->format('Y-m-d');
-
-		$vaccines = $this->vaccine
-			->where('redo > STR_TO_DATE("' . $input_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->where('redo < STR_TO_DATE("' . $input_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->with_location('fields:name')
-			->with_vet('fields:first_name')
-			->with_product('fields:name')
-			->with_owners('fields:id as owner_id, last_name, first_name, street, nr, city, zip, mail, mobile, contact')
-			->with_pet('fields:id, owner, name')
-			->order_by('redo', 'asc')
-			->get_all();
-
-		$data = array(
-			"vaccines" 		=> $vaccines,
-			"search_from"	=> $input_from,
-			"search_to"		=> $input_to
-		);
-		$this->_render_page('reports/vaccine', $data);
-	}
-
-
 	public function clients(int $days = 0)
 	{
 		/* cache this for 6 hours */

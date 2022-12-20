@@ -18,6 +18,7 @@ class Products extends Vet_Controller
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Stock_limit_model', 'stock_limit');
+		$this->load->model('Wholesale_model', 'wholesale');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -62,6 +63,7 @@ class Products extends Vet_Controller
 	public function profile($id)
 	{
 		# update comment
+		$comment_update = false;
 		if ($this->input->post('submit')) {
 			$this->products
 					->where(array(
@@ -70,6 +72,7 @@ class Products extends Vet_Controller
 					->update(array(
 									"comment" => $this->input->post('message'),
 							));
+			$comment_update = true;
 		}
 
 		# check the stocks
@@ -90,13 +93,11 @@ class Products extends Vet_Controller
 				'global_stock' 	=> $global_stock,
 				'local_stock' 	=> $local_stock,
 				'local_limit' 	=> $local_limit,
+				'comment_update'=> $comment_update,
 				'locations'		=> $this->location,
 				'history_1m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_6m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_1y'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
-				"extra_header" => inject_trumbowyg('header'),
-				"extra_footer" =>	'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
-													inject_trumbowyg()
 				);
 
 		$this->_render_page('product/profile', $data);
@@ -174,16 +175,19 @@ class Products extends Vet_Controller
 		$data = array(
 						"product" 		=> $this->products
 												->with_prices('fields:volume, price, id|order_inside:volume asc')
+												->with_wholesale()
 												->where(array("sellable" => 1))
-												->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
+												->fields('id, name, buy_volume, buy_price, updated_at, unit_buy, unit_sell')
 												->get($id),
 
 						"stock_price"	=> $this->stock
-												->where(array("product_id" => $id, "state <" => STOCK_HISTORY, "volume >" => 0))
+												->where(array("product_id" => $id))
 												->fields('in_price, volume, created_at')
+												->order_by('created_at', 'DESC')
+												->limit(5)
 												->get_all()
 					);
-		$this->_render_page('product_price_edit', $data);
+		$this->_render_page('product/price', $data);
 
 	}
 
@@ -241,7 +245,7 @@ class Products extends Vet_Controller
 		$this->_render_page('products_list', $data);
 	}
 
-	public function product($id = false)
+	public function product(int $id)
 	{
 		$update = false;
 		if ($this->input->post('submit')) {
@@ -270,6 +274,7 @@ class Products extends Vet_Controller
 								"delay" 				=> $this->input->post('delay'),
 								"comment" 				=> $this->input->post('comment'),
 								"vhbcode" 				=> $this->input->post('vhbcode'),
+								"wholesale"				=> $this->input->post('wholesale'),
 								"buy_price_date" 		=> $this->input->post('buy_price_date'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"limit_stock" 			=> $this->input->post('limit_stock')
@@ -285,15 +290,15 @@ class Products extends Vet_Controller
 		}
 
 		$data = array(
-						'product' 	=> ($id) ? $this->products->with_prices('fields:id, volume, price|order_inside:volume asc')->get($id) : false,
-						'type' 		=> $this->prod_type->get_all(),
-						'update'	=> $update,
-						'llimit'	=> ($id) ? $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all() : false,
+						'product' 			=> $this->products->with_prices('fields:id, volume, price|order_inside:volume asc')->get($id),
+						'type' 				=> $this->prod_type->get_all(),
+						'update'			=> $update,
+						'llimit'			=> $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all(),
 						'stock_locations'	=> $this->stock_location->get_all(),
-						'booking'	=> $this->booking->get_all(),
-						'history_1m'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
-						'history_6m'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
-						'history_1y'	=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
+						'booking'			=> $this->booking->get_all(),
+						'history_1m'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
+						'history_6m'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
+						'history_1y'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
 						);
 		$this->_render_page('product/details', $data);
 	}

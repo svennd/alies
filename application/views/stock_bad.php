@@ -40,7 +40,7 @@
 
               if($date < $now):
             ?>
-            <form action="<?php echo base_url(); ?>stock/write_off/expired_stock" method="post" autocomplete="off">
+            <form action="<?php echo base_url(); ?>stock/write_off" method="post" autocomplete="off">
     					<input type="hidden" name="volume" value="<?php echo $expire['volume']; ?>">
     					<input type="hidden" name="product_id" value="<?php echo $expire['products']['id']; ?>">
     					<input type="hidden" name="location" value="<?php echo $expire['stock_locations']['id']; ?>">

@@ -27,21 +27,26 @@ class Logs_model extends MY_Model
 				);
 	}
 	
-	public function logger($level, $event, $msg)
+	public function logger(int $level, $event, $msg, int $user = SYSTEM, int $location = SYSTEM)
 	{
+		# using the CI3 file logger
+		log_message('error', $msg);
+		
 		return ($level > $this->min_log_level) ? 
 			true : 
 			$this->insert(array(
 					"event" 	=> $event,
 					"level" 	=> $level,
-					"user_id" 	=> $this->user->id,
 					"msg" 		=> $msg,
-					"location"	=> $this->user->current_location,
+					"user_id" 	=> (isset($this->user) && is_object($this->user) && $this->user->id != SYSTEM) ? $this->user->id : SYSTEM,
+					"location"	=> (isset($this->user) && is_object($this->user) && $this->user->current_location != SYSTEM) ? $this->user->current_location : SYSTEM,
 				));
 	}
 
 	public function stock($level, $event, int $product, $volume, $location = false)
 	{
+		# using the CI3 file logger
+		log_message('error', $msg);
 
 		return ($level > $this->min_log_level) ? 
 			true : 

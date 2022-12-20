@@ -21,34 +21,41 @@ class Invoice extends Vet_Controller
 		$this->load->helper('generate_bill_id_helper');
 	}
 
-	# show bills of last 30 days;
+	# show bills of last 30 days for admin and 7 days for vets;
 	public function index()
 	{
-		// TODO VERIFY THIS
-		// the html is not safe!
-		// $search_from = (strtotime('-14 days') > strtotime($this->input->post('search_from'))) ? strtotime('-14 days') : $this->input->post('search_from');
+		$dt = new DateTime();
+		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
+		
+		if($this->ion_auth->in_group("admin"))
+		{
+			$dt->modify('-30 day');
+		}
+		else
+		{
+			$dt->modify('-7 day');
+		}
 
-		$today = new DateTime();
-		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $today->format('Y-m-d');
+		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
 
-		$today->modify('-1 day');
-
-		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $today->format('Y-m-d');
-
-		// ->where('created_at > DATE_ADD(NOW(), INTERVAL -14 DAY)', null, null, false, false, true)
 		$bill_overview = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
-			->with_owner('fields:last_name')
-			->limit(100)
+			->with_owner('fields:last_name,id,low_budget,debts,btw_nr')
+			->limit(250)
 			->get_all();
 
+		# max search for vets ; 30 days
+		$dt->modify('-23 day');
+		
 		$data = array(
 			"bills" 		=> $bill_overview,
 			"search_from"	=> (isset($search_from)) ? $search_from : '',
 			"search_to"		=> (isset($search_to)) ? $search_to : '',
+			"max_search_from" => ($this->ion_auth->in_group("admin")) ? '2000-01-01' : date_format($dt, 'Y-m-d'),
+
 		);
 		$this->_render_page('bills/bill_overview', $data);
 	}
@@ -98,7 +105,8 @@ class Invoice extends Vet_Controller
 	#		--> for each event there are 1) proc's and 2) prod's
 	# 	-> for the full bill create a line and add the events to bill_events
 	#		so we don't create 2 bills for 1 (or more) event
-	public function get_bill($bill_id, $pdf = false)
+	# report : 0 (html), 1 (pdf), 2 (email)
+	public function get_bill(int $bill_id, int $report = 0)
 	{
 		$bill = $this->bills->get($bill_id);
 		$owner_id = $bill['owner_id'];
@@ -195,9 +203,13 @@ class Invoice extends Vet_Controller
 					"bill"			=> $this->bills->get($bill_id) // can't remove for race condition on calculation
 				);
 
-		if ($pdf)
+		if ($report == 1)
 		{
 			$this->generate_pdf_bill($bill_id, $data);
+		}
+		elseif($report == 2)
+		{
+			return $this->generate_pdf_mail($bill_id, $data);
 		}
 		$this->_render_page('bill_report', $data);
 	}
@@ -313,7 +325,7 @@ class Invoice extends Vet_Controller
 	}
 
 	# logic for generating a pdf
-	private function generate_pdf_bill($bill_id, $data)
+	private function generate_pdf_bill(int $bill_id, $data)
 	{
 		# load library (html->pdf)
 		$this->load->library('pdf'); 
@@ -323,10 +335,31 @@ class Invoice extends Vet_Controller
 
 		# generate the pdf based		
 		$this->pdf->create(
-			$this->load->view('bill_report_print', $data, true), 
+			$this->load->view('bills/report_print', $data, true), 
 			"bill_" . get_bill_id($bill_id, $bill['created_at']), 
 			true
 		);
+	}
+
+	private function generate_pdf_mail(int $bill_id, $data) 
+	{
+		$this->load->library('pdf'); 
+		$this->load->library('mail'); 
+
+		# race condition 
+		$bill = $this->bills->get($bill_id);
+
+		# generate the pdf based		
+		$file = $this->pdf->create_file(
+			$this->load->view('bills/report_print', $data, true), 
+			"rekening_" . get_bill_id($bill_id, $bill['created_at']) . '.pdf');
+
+		$this->mail->attach_file($file);
+		$this->mail->send("svenn.dhert@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
+
+		$this->bills->update(array("mail" => 1), $bill_id);
+		
+		echo json_encode(array("result" => true));
 	}
 
 	# get open_or_unpaid bills other then the one we are creating

@@ -207,6 +207,14 @@
                     </div>
                     <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
+                            <img src="<?php echo base_url('assets/img/stock_list.png'); ?>" class="card-img-top" alt="stock_list">
+                            <div class="card-body text-center">
+                                <a href="<?php echo base_url('reports/stock_list'); ?>" class="stretched-link"><?php echo $this->lang->line('stock_list'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col py-2">
+                        <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/locations.png'); ?>" class="card-img-top" alt="Locations">
                             <div class="card-body text-center">
                                 <a href="<?php echo base_url('admin/locations'); ?>" class="stretched-link"><?php echo $this->lang->line('locations'); ?></a>
@@ -229,7 +237,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/booking.png'); ?>" class="card-img-top" alt="backup">
@@ -267,7 +274,7 @@
                             <td><?php echo time_ago($log['created_at']); ?></td>
                             <td><?php echo $log['event']; ?></td>
                             <td><?php echo isset($log['location']['name']) ? $log['location']['name'] : '-'; ?></td>
-                            <td><?php echo $log['vet']['first_name']; ?></td>
+                            <td><?php echo isset($log['vet']['first_name']) ? $log['vet']['first_name'] : '-'; ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </table>

@@ -78,12 +78,9 @@
         </a>
         <div id="rep" class="collapse" aria-labelledby="rep" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-           <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/graphs" id="charts_report">Charts</a> -->
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/bills" id="invoice_report">Invoices</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a>
+            <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a> -->
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/vaccine" id="vaccine_report">Vaccine</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a>
+            <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a> -->
           </div>
         </div>
       </li>
@@ -105,7 +102,6 @@
          <i class="far fa-fw fa-file"></i>
           <span><?php echo $this->lang->line('Reports'); ?></span></a>
       </li>
-	  <?php // if (!$this->ion_auth->in_group("admin")): ?>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
       <?php echo $this->lang->line('Administration'); ?>
@@ -125,7 +121,6 @@
           <i class="fas fa-fw fa-dolly"></i>
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
-	  <?php // endif; ?>
 
     </ul>
     <!-- End of Sidebar -->

@@ -99,7 +99,14 @@
 						#<?php echo $owner['id'] ?>
 					</div>
 					<div class="col-md-6 text-right">
-						<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>/print" target="_blank" class="btn btn-success"><i class="fas fa-print"></i> print</a><br/>
+						<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>/1" target="_blank" class="btn btn-success"><i class="fas fa-print"></i> print</a> 
+						<?php if($bill['mail'] == 0): ?>
+						<a href="#" <?php if(!empty($owner['mail'])): ?>id="sendmail"<?php endif; ?> class="btn <?php echo (!empty($owner['mail'])) ? "btn-primary" : "btn-secondary"; ?> ml-3">
+							<?php echo (!empty($owner['mail'])) ? '<i class="fas fa-paper-plane"></i>' : '<i class="far fa-frown"></i>'; ?>
+							mail</a><br/>
+						<?php else: ?>
+							<a href="#" class="btn btn-success" ml-3"><i class="fas fa-paper-plane"></i> Send!</a>
+						<?php endif; ?>
 					</div>
 					</div>
 	                <div class="row px-5 py-3">
@@ -238,6 +245,16 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		});
 		window.location.href = this.href;
+	});
+
+	$("#sendmail").click(function() {
+		$("#sendmail").html('<i class="fas fa-sync fa-spin"></i> Sending').addClass("btn-info");
+		$.ajax({
+			method: 'POST',
+			url: '<?php echo base_url(); ?>invoice/get_bill/' + <?php echo $bill['id']; ?> + '/2'
+		}).done(function() {
+			$("#sendmail").html('<i class="fas fa-paper-plane"></i> Send!').addClass("btn-success");
+		});
 	});
 });
 </script>

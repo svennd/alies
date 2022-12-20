@@ -110,7 +110,17 @@
 	<!-- large button : on large screens -->
 	<div class="col-lg-2 mb-4">
 		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3 d-none d-sm-block"><i class="fas fa-user"></i> <?php echo $this->lang->line('New_client'); ?></a>
-	</div>	
+		<?php if (!isset($query) && $this->ion_auth->in_group("admin")): ?>
+		<div class="card border-danger my-3">
+			<div class="card-header text-danger">Client Export (admin)</div>
+			<div class="card-body">
+				<a href="<?php echo base_url(); ?>export/clients/90" class="btn btn-success btn-sm" download><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export_client_90d'); ?></a>
+				<a href="<?php echo base_url(); ?>export/clients" class="btn btn-primary btn-sm ml-3" download><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export_client_all'); ?></a><br/>
+				<?php echo $this->lang->line('export_clients'); ?>
+			</div>
+		</div>
+		<?php endif; ?>
+	</div>
 </div>
 
 <div class="row">
@@ -121,7 +131,7 @@
 		<div class="card shadow mb-4">
 			<div class="card-header"><?php echo $this->lang->line('search_client'); ?></div>
 			<div class="card-body">
-<table class="table table-bordered table-hover display dt-responsive nowrap" width="100%" id="dataTable">
+		<table class="table table-bordered table-hover display dt-responsive nowrap" width="100%" id="dataTable">
 		<thead>
 		<tr>
 			<th>Q</th>

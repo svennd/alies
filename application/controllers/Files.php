@@ -53,6 +53,47 @@ class Files extends Vet_Controller
 		$this->accepted_mime_type = array_unique($accepted_mime_type);
 	}
 
+	
+	/*
+		used in import
+	 */
+	public function append(int $id)
+	{
+		return file_put_contents($this->upload_dir . "tmp_" . $id, file_get_contents($_FILES['data']['tmp_name']), FILE_APPEND | LOCK_EX);
+	}
+
+	/*
+		used in import
+	 */
+	public function file_complete(int $id)
+	{
+		$file_name			= $this->input->post('file_name');
+		$current_file 		= $this->upload_dir . "tmp_" . $id;
+		$mimetype			= $this->get_mime_type($current_file);
+
+		# sanity check
+		if (!file_exists($current_file)) {
+			echo json_encode(array('success' => false, 'error' => 'no file'));
+			return false;
+		}
+
+		# check against allowed_mimetype
+		if (!in_array($mimetype, $this->accepted_mime_type)) {
+			# remove it
+			unlink($current_file);
+			echo json_encode(array('success' => false, 'error' => 'wrong mime type'));
+			return false;
+		}
+
+		// move it from staging to finished
+		rename(
+			$current_file,
+			$this->upload_dir . "stored/f" . $id . "_" . $file_name
+		);
+
+		echo json_encode(array('success' => true, 'file' => "f" . $id . "_" . $file_name));
+	}
+
 	/*
 		store the temp file in our data structure by appending
 		I'm not 100% sure this won't break some file

@@ -51,11 +51,22 @@
 			<input type="text" name="short_name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['short_name'])) ? $product['short_name']: '' ?>">
 			</div>
 		</div>
-	  
+
 		<div class="form-row">
 			<div class="col mb-3">
-			<label for="exampleFormControlInput3">Producer</label>
-			<input type="text" name="producer" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['producer'])) ? $product['producer']: '' ?>">
+			<label for="wholesale">Wholesale article</label>
+			<select name="wholesale" class="<?php echo ($product['wholesale']) ? 'is-valid' : ''; ?>" style="width:100%" id="wholesale" data-allow-clear="1">
+				<?php if($product['wholesale']): ?>
+					<option value="<?php echo $product['wholesale']; ?>" selected>selected</option>
+				<?php endif; ?>
+			</select>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="col mb-3">
+			<label for="input_producer">Producer</label>
+			<input type="text" name="producer" class="form-control" id="input_producer" value="<?php echo (isset($product['producer'])) ? $product['producer']: '' ?>">
 			</div>
 			<div class="col mb-3">
 			<label for="exampleFormControlInput3">Supplier</label>
@@ -72,7 +83,7 @@
 				<option value="0">Other</option>
 			</select>
 		</div>
-		
+
 		<h5>Advanced</h5>
 		<hr />		
 		<div class="form-group">
@@ -235,8 +246,8 @@
 		
 		<div class="form-row">
 			<div class="form-group col">
-				<label for="exampleFormControlInput3">VHB code</label>
-				<input type="text" name="vhbcode" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?>">
+				<label for="vhb_input">VHB code</label>
+				<input type="text" name="vhbcode" class="form-control" id="vhb_input" value="<?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?>">
 			</div>
 		  <div class="col">&nbsp;</div>
 		</div>
@@ -400,7 +411,19 @@ document.addEventListener("DOMContentLoaded", function(){
 		
 		}, 500);
 	});
-	
+
+	$('#wholesale').select2({
+		theme: 'bootstrap4',
+		placeholder: 'Select Article',
+		ajax: {
+			url: '<?php echo base_url(); ?>wholesale/ajax_get_articles',
+			dataType: 'json'
+		},
+	}).on("select2:selecting", function(e) { 
+		// also have bruto, but not sure if we always want to overwrite ...
+		$("#vhb_input").val(e.params.args.data.vhb);
+		$("#input_producer").val(e.params.args.data.distr);
+	});
 });
 </script>
   

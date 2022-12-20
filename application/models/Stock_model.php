@@ -190,7 +190,7 @@ class Stock_model extends MY_Model
 					products
 				on
 					products.id = stock.product_id
-				join
+				left join
 					products_type
 				on
 					products.type = products_type.id
@@ -216,7 +216,7 @@ class Stock_model extends MY_Model
 					products
 				on
 					products.id = stock.product_id
-				join
+				left join
 					products_type
 				on
 					products.type = products_type.id

@@ -276,7 +276,7 @@ class Stock extends Vet_Controller
 		redirect('stock/add_stock', 'refresh');
 	}
 
-	public function write_off(bool $redir = false, string $barcode = '', int $location = -1)
+	public function write_off(string $barcode = '', int $location = -1)
 	{
 		# return the details of the selected product
 		if ($this->input->post('submit') == "writeoff") {
@@ -309,15 +309,7 @@ class Stock extends Vet_Controller
 				# clean stock since most likely this will result in a 0 line, no need to print stuff
 				$this->stock_clean(false);
 			}
-
-			if ($redir)
-			{
-					redirect('stock/' . $redir, 'refresh');
-			}
-			else
-			{
-					redirect('stock/' . $this->input->post("location") . "/" . 2, 'refresh');
-			}
+			redirect('stock/expired_stock', 'refresh');
 		}
 	}
 

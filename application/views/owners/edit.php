@@ -65,6 +65,16 @@
 							<label for="exampleFormControlInput3"><?php echo $this->lang->line('mobile'); ?></label>
 							<input type="text" name="mobile" class="form-control" id="exampleFormControlInput3" autocomplete="dezzd" value="<?php echo (isset($owner['mobile'])) ? $owner['mobile']: '' ?>">
 						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="phone2"><?php echo $this->lang->line('phone_backup'); ?></label>
+								<input type="text" name="phone2" class="form-control" id="phone2" autocomplete="dezzd" value="<?php echo (isset($owner['phone2'])) ? $owner['phone2']: '' ?>">
+							</div>
+							<div class="form-group col">
+								<label for="phone3"><?php echo $this->lang->line('phone_backup_name'); ?></label>
+								<input type="text" name="phone3" class="form-control" id="phone3" autocomplete="dezzd" value="<?php echo (isset($owner['phone3'])) ? $owner['phone3']: '' ?>">
+							</div> 
+						</div>
 						<div class="form-group">
 							<label for="exampleFormControlTextarea1"><?php echo $this->lang->line('comment'); ?></label>
 							<textarea class="form-control" name="msg" id="exampleFormControlTextarea1" rows="3"><?php echo (isset($owner['msg'])) ? $owner['msg']: '' ?></textarea>

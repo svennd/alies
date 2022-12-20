@@ -149,15 +149,15 @@
                 <div class="card-header text-danger">Remove bill</div>
 
                 <div class="card-body">
-    <form action="<?php echo base_url('admin_invoice/rm_bill/' . $bill['id']); ?>" method="post" autocomplete="off">
-        <div class="form-row mb-3">
-            <div class="col text-danger">
-                <label for="exampleFormControlInput3">delete reason</label>
-                <input type="text" class="form-control" name="reason">
-            </div>
-        </div>
-        <button type="submit" name="submit" value="1" class="btn btn-danger">Delete bill</button>
-    </form>
+                    <form action="<?php echo base_url('admin_invoice/rm_bill/' . $bill['id']); ?>" method="post" autocomplete="off">
+                        <div class="form-row mb-3">
+                            <div class="col text-danger">
+                                <label for="exampleFormControlInput3">delete reason</label>
+                                <input type="text" class="form-control" name="reason">
+                            </div>
+                        </div>
+                        <button type="submit" name="submit" value="1" class="btn btn-danger">Delete bill</button>
+                    </form>
                 </div>
                </div>
     </div>

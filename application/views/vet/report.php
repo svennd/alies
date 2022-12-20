@@ -1,12 +1,12 @@
 <div class="row">
-	<?php if($reports): ?>
 		<div class="col-xl-12 col-lg-12">
 			<div class="card mb-4">
 					<div class="card-header">
-					<?php echo $this->lang->line('Reports'); ?>
+						<?php echo $this->lang->line('Reports'); ?> 
 					</div>
 
 					<div class="card-body">
+						<?php if($reports): ?>
 						<table class="table">
 							<tr>
 								<th><?php echo $this->lang->line('client'); ?></th>
@@ -41,10 +41,12 @@
 								</tr>
 						<?php endforeach; ?>
 						</table>
+						<?php else: ?>
+							No recent reports.
+						<?php endif; ?>
 					</div>
 			</div>
 		</div>
-	<?php endif; ?>
 </div>
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){

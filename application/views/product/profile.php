@@ -30,7 +30,7 @@ foreach ($locations as $l)
 			</div>
 			<div class="col-sm-4">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-5">
 						<?php if($local_limit > 0): ?>
 							<?php if($local_limit <= $local_stock): ?>
 								<div class="rounded" style="border:1px solid #9ad99e; padding:5px; background-color:#f3fef3;">
@@ -50,7 +50,7 @@ foreach ($locations as $l)
 								</div>
 						<?php endif; ?>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-5">
 						<?php if($product['limit_stock'] > 0): ?>
 							<?php if($product['limit_stock'] <= $global_stock): ?>
 								<div class="rounded" style="border:1px solid #9ad99e; padding:5px; background-color:#f3fef3;"><!-- green -->
@@ -140,7 +140,7 @@ foreach ($locations as $l)
 								  <div class="form-group">
 									<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
 								  </div>
-								  <button type="submit" name="submit" value="update" class="btn btn-primary"><?php echo $this->lang->line('store'); ?></button>
+								  <button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
 								</form>
 
 							</div>
@@ -175,12 +175,18 @@ foreach ($locations as $l)
 								</tr>
 								<tr>
 									<td><?php echo $this->lang->line('catalog_price'); ?></td>
-									<td><?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?> &euro; / <?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?> <?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?></td>
+									<td><span class="sensitive"><?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?> &euro; / <?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?> <?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?></span></td>
 								</tr>
 								<?php if (!empty($product['input_barcode'])) : ?>
 								<tr>
 									<td><?php echo $this->lang->line('input_barcode'); ?></td>
 									<td><?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?></td>
+								</tr>
+								<?php endif; ?>
+								<?php if (!empty($product['vhbcode'])) : ?>
+								<tr>
+									<td><?php echo $this->lang->line('vhbcode'); ?></td>
+									<td><?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?> <a class="btn btn-sm btn-outline-primary" target="_blank" href="https://geneesmiddelendatabank.fagg-afmps.be/diergeneeskundig-gebruik/geneesmiddelen/?search=%7B%22authorisationNumber%22:%22<?php echo $product['vhbcode']; ?>%22%7D"><i class="fas fa-external-link-alt"></i> fagg-afmps</a></td>
 								</tr>
 								<?php endif; ?>
 								<tr>
@@ -265,5 +271,13 @@ foreach ($locations as $l)
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
+
+	$(".sensitive").hover(
+		function() {
+			$(this).removeClass('sensitive');
+		}, function() {
+			$(this).addClass('sensitive');
+		}
+	);
 });
 </script>
