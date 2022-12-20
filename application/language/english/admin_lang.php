@@ -44,7 +44,8 @@ $lang['logs']               = 'Logs';
 $lang['this_year']          = 'This year';
 $lang['last_year']          = 'Last year';
 $lang['other_logs']         = 'Other logs';
-$lang['global_logs']        = 'Global logs';
+$lang['global_logs']        = 'Full logs';
+$lang['stock_list']         = 'Stock list';
 
 # location
 $lang['add_location']        = 'Add location';
@@ -58,3 +59,10 @@ $lang['known_tables']       = 'Known database tables';
 $lang['table_name']         = 'Table name';
 $lang['est_size']           = 'Estimated size';
 $lang['export']             = 'Export';
+$lang['wholesale']          = 'Wholesale';
+
+# clients
+$lang['title_export_clients']     = 'Export clients. (admin-only)';
+$lang['export_clients']     = 'Export modified clients.';
+$lang['export_client_all']        = 'All clients';
+$lang['export_client_90d']        = '90 days';

@@ -45,7 +45,8 @@ $lang['logs']               = 'Logs';
 $lang['this_year']          = 'dit jaar';
 $lang['last_year']          = 'vorig jaar';
 $lang['other_logs']         = 'Andere logs';
-$lang['global_logs']        = 'Globale logs';
+$lang['global_logs']        = 'Volledige logs';
+$lang['stock_list']         = 'Stock lijst';
 
 # location
 $lang['add_location']        = 'Locatie toevoegen';
@@ -59,3 +60,10 @@ $lang['known_tables']       = 'Gekende databank tabellen';
 $lang['table_name']         = 'Tabel naam';
 $lang['est_size']           = 'Verwachte grootte';
 $lang['export']             = 'Export';
+$lang['wholesale']          = 'Groothandel';
+
+# clients
+$lang['title_export_clients']     = 'Exporteer klanten. (admin-only)';
+$lang['export_clients']           = 'Exporteer gewijzigde klanten.';
+$lang['export_client_all']        = 'Alle klanten';
+$lang['export_client_90d']        = '90 dagen';

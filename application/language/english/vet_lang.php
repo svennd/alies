@@ -245,3 +245,28 @@ $lang['no_products_in_view']    = 'No products in this view.';
 $lang['from_location']          = 'From location'; 
 $lang['to_location']            = 'To location'; 
 $lang['products_remove_stock']  = 'Products removed from stock !'; 
+$lang['updated']                = 'Updated';
+$lang['vhbcode']                = 'vhbcode';
+
+# bills
+$lang['bill_header']            = 'Bill'; 
+$lang['payment_detail']         = '(partially) paid'; 
+$lang['bill_location']          = 'Location'; 
+$lang['description']            = 'Description'; 
+$lang['bill_id']                = 'Bill id'; 
+$lang['bill_date']              = 'Bill date'; 
+$lang['bill_due_date']          = 'Due Date'; 
+
+# prices
+$lang['price_from']             = 'From'; 
+$lang['price_sale']             = 'Sell price'; 
+$lang['price_wholesale']        = 'Wholesale price'; 
+$lang['price_wholesale_sell']   = 'Wholesale suggestion'; 
+$lang['price_dayprice']         = 'Day price'; 
+$lang['price_alies']            = 'Alies price'; 
+$lang['margin']                 = 'Margin'; 
+$lang['remove']                 = 'Delete'; 
+$lang['ref_price']              = 'Reference prices'; 
+$lang['price_setting']          = 'Sell price'; 
+$lang['day_prices']             = 'Prev. day prices'; 
+$lang['price_practice']         = 'Practice price'; 

@@ -39,7 +39,7 @@ $lang['default_date_format']  = 'Standaard datumnotatie';
 # header & menu
 $lang['dashboard']      = 'Home';
 $lang['Veterinary']     = 'Dierenarts';
-$lang['Administration'] = 'Admin';
+$lang['Administration'] = 'Administratie';
 $lang['Clients']        = 'Klanten';
 $lang['Reports']        = 'Verslagen';
 $lang['Invoice']        = 'Factuur';
@@ -59,6 +59,9 @@ $lang['last_visit']     = 'Laatste bezoek';
 $lang['option']         = 'Opties';
 $lang['search_client']  = 'Klant opzoeken';
 $lang['edit_client']  = 'Klant bewerken';
+$lang['phone_backup']         = 'Telefoon Backup';
+$lang['phone_backup_name']    = 'Telefoon Backup (info)';
+$lang['phone_backup_help']    = 'Moeder, broer, zus,...';
 
 # invoices
 $lang['title_invoice']   = 'Facturen opzoeken';
@@ -249,3 +252,28 @@ $lang['no_products_in_view']    = 'Geen producten zichtbaar.';
 $lang['from_location']          = 'Van'; 
 $lang['to_location']            = 'Naar'; 
 $lang['products_remove_stock']  = 'Producten verwijderd van de stock !'; 
+$lang['updated']                = 'Aangepast';
+$lang['vhbcode']                = 'Registratienummer';
+
+# bills
+$lang['bill_header']            = 'Factuur'; 
+$lang['payment_detail']         = '(gedeeltelijk) betaald'; 
+$lang['bill_location']          = 'Praktijk'; 
+$lang['description']            = 'Omschrijving'; 
+$lang['bill_id']                = 'Factuurnummer'; 
+$lang['bill_date']              = 'Factuurdatum'; 
+$lang['bill_due_date']          = 'Vervaldag'; 
+
+# prices
+$lang['price_from']             = 'Van'; 
+$lang['price_sale']             = 'Verkoopsprijs'; 
+$lang['price_wholesale']        = 'Groothandel prijs'; 
+$lang['price_wholesale_sell']   = 'Groothandel suggestie'; 
+$lang['price_dayprice']         = 'Dag prijs'; 
+$lang['price_alies']            = 'Alies prijs'; 
+$lang['margin']                 = 'Marge'; 
+$lang['remove']                 = 'Verwijderen'; 
+$lang['ref_price']              = 'Referentie prijzen'; 
+$lang['price_setting']          = 'Verkoopsprijs'; 
+$lang['day_prices']             = 'Vorige dagprijzen'; 
+$lang['price_practice']         = 'Praktijk prijs'; 
