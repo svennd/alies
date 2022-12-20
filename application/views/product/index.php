@@ -98,14 +98,15 @@
 						<td><?php echo $product['type']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>
 						<td>
-							<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm mr-3"><i class="fas fa-ban"></i></a>
 							<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
 										id="<?php echo $product['product_id']; ?>" 
 										data-id="<?php echo $product['product_id']; ?>"
 										data-name="<?php echo $product['product_name']; ?>"
 										data-lotnr="<?php echo $product['lotnr']; ?>"
 										data-barcode="<?php echo $product['barcode']; ?>"
-							><?php echo $this->lang->line('move'); ?></button></td>
+							><?php echo $this->lang->line('move'); ?></button>
+							<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm ml-3"><i class="fas fa-ban"></i></a>
+						</td>
 					</tr>
 					<?php endforeach; ?>
 					</tbody>
