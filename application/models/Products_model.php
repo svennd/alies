@@ -32,6 +32,13 @@ class Products_model extends MY_Model
 							'local_key' => 'type'
 						);
 						
+		$this->has_one['wholesale'] = array(
+							'foreign_model' => 'Wholesale_model',
+							'foreign_table' => 'wholesale',
+							'foreign_key' => 'id',
+							'local_key' => 'wholesale'
+						);
+						
 		$this->has_one['booking_code'] = array(
 							'foreign_model' => 'Booking_code_model',
 							'foreign_table' => 'booking_codes',
