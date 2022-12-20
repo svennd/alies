@@ -38,6 +38,8 @@ application/config/database.php
 
 # ignore custom
 /application/views/custom/bill_header.php
+/application/views/custom/bill_footer.php
+/application/views/custom/block_iban.php
 /import/
 *.DBF
 *.DBT
