@@ -46,7 +46,7 @@ class Logs_model extends MY_Model
 	public function stock($level, $event, int $product, $volume, $location = false)
 	{
 		# using the CI3 file logger
-		log_message('error', $msg);
+		log_message('error', $event);
 
 		return ($level > $this->min_log_level) ? 
 			true : 
