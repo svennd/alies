@@ -30,12 +30,12 @@
 				<div class="form-row">
 					<div class="form-group col-md-5">
 						<label for="medilab_user">Medilab login</label>
-						<input type="text" class="form-control" id="medilab_user" name="conf_medilab_user" value="<?php echo ($config['medilab_user']) ? base64_decode($config['medilab_user']) : ''; ?>" autocomplete="medilabuser">
+						<input type="text" class="form-control" id="medilab_user" name="conf_medilab_user" value="<?php echo (isset($config['medilab_user'])) ? base64_decode($config['medilab_user']) : ''; ?>" autocomplete="medilabuser">
 						<small id="medilab_userhelp" class="form-text text-muted">Used to synchronize lab results</small>
 					</div>
 					<div class="form-group col-md-5">
 						<label for="medilab_pasw">Medilab pasword</label>
-						<input type="password" class="form-control" id="medilab_pasw" value="<?php echo ($config['medilab_pasw']) ? base64_decode($config['medilab_pasw']) : ''; ?>" name="conf_medilab_pasw" autocomplete="medilabpasw">
+						<input type="password" class="form-control" id="medilab_pasw" value="<?php echo (isset($config['medilab_pasw'])) ? base64_decode($config['medilab_pasw']) : ''; ?>" name="conf_medilab_pasw" autocomplete="medilabpasw">
 					</div>
 					<div class="form-group col-md-1">
 						<label for="test_covetrus">Connection</label><br/>

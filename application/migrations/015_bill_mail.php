@@ -36,8 +36,8 @@ class Migration_bill_mail extends CI_Migration {
 	public function down()
 	{
 		$sql[] = "ALTER TABLE `bills` DROP `mail`;";
-		$sql[] = "DROP TABLE wholesale`;";
-		$sql[] = "DROP TABLE wholesale_price`;";
+		$sql[] = "DROP TABLE `wholesale`;";
+		$sql[] = "DROP TABLE `wholesale_price`;";
 		$sql[] = "ALTER TABLE `products` DROP `wholesale`;";
 
 		foreach ($sql as $q)
