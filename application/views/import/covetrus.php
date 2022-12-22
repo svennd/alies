@@ -78,6 +78,7 @@
 				Product list from wholesale
 			</div>
 			<div class="card-body">
+				<?php if ($product): ?>
 				<table class="table" id="dataTable">
 					<thead>
 						<tr>
@@ -108,6 +109,9 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php else: ?>
+					No products in wholesale.
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>
