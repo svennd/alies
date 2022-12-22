@@ -78,7 +78,7 @@
 				Product list from wholesale
 			</div>
 			<div class="card-body">
-				<?php if ($product): ?>
+				<?php if ($products): ?>
 				<table class="table" id="dataTable">
 					<thead>
 						<tr>
@@ -104,7 +104,7 @@
 							<td><?php echo $p['distributor']; ?></td>
 							<td><?php echo $p['CNK']; ?></td>
 							<td><?php echo $p['VHB']; ?></td>
-							<td><?php echo date_format(date_create($p['updated_at']), $user->user_date); ?></td>
+							<td><?php echo (is_null($p['updated_at'])) ? '-' : date_format(date_create($p['updated_at']), $user->user_date); ?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
