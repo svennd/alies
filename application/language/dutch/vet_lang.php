@@ -46,6 +46,7 @@ $lang['Invoice']        = 'Factuur';
 $lang['Vaccins']        = 'Vaccins';
 $lang['Products']       = 'Producten';
 $lang['Stock']          = 'Stock';
+$lang['Lab']            = 'Labo';
 
 # owners - search
 $lang['title_search']   = 'Zoeken';
@@ -277,3 +278,14 @@ $lang['ref_price']              = 'Referentie prijzen';
 $lang['price_setting']          = 'Verkoopsprijs'; 
 $lang['day_prices']             = 'Vorige dagprijzen'; 
 $lang['price_practice']         = 'Praktijk prijs'; 
+
+# lab
+$lang['lab_id']                 = 'Labo id'; 
+$lang['lab_comment']            = 'Labo opmerking'; 
+$lang['lab_received']           = 'Labo ontvangen'; 
+$lang['lab_update']             = 'Laatste update'; 
+$lang['source']                 = 'Bron'; 
+
+$lang['lab_code']              = 'Labo code'; 
+$lang['value']                 = 'Waarde'; 
+$lang['limit']                 = 'Limiet'; 

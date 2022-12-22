@@ -47,6 +47,7 @@ $lang['last_year']          = 'vorig jaar';
 $lang['other_logs']         = 'Andere logs';
 $lang['global_logs']        = 'Volledige logs';
 $lang['stock_list']         = 'Stock lijst';
+$lang['settings']           = 'Configuratie';
 
 # location
 $lang['add_location']        = 'Locatie toevoegen';
@@ -67,3 +68,6 @@ $lang['title_export_clients']     = 'Exporteer klanten. (admin-only)';
 $lang['export_clients']           = 'Exporteer gewijzigde klanten.';
 $lang['export_client_all']        = 'Alle klanten';
 $lang['export_client_90d']        = '90 dagen';
+
+# config screen
+$lang['settings_screen']        = 'Configuratie';

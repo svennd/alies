@@ -116,6 +116,11 @@
         <i class="fas fa-syringe fa-fw"></i>
           <span><?php echo $this->lang->line('Vaccins'); ?></span></a>
       </li>
+      <li class="nav-item" id="labo">
+        <a class="nav-link" href="<?php echo base_url('lab'); ?>">
+        <i class="fas fa-flask fa-fw"></i>
+          <span><?php echo $this->lang->line('Lab'); ?></span></a>
+      </li>
       <li class="nav-item" id="product_list">
         <a class="nav-link" href="<?php echo base_url('products'); ?>">
           <i class="fas fa-fw fa-dolly"></i>

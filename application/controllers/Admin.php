@@ -122,6 +122,40 @@ class Admin extends Admin_Controller
 					
 		$this->_render_page('admin/booking_codes', $data);
 	}
+
+	# managing of booking codes
+	# for products and procedures
+	public function settings()
+	{
+		
+		$this->load->model('Config_model', 'setting');
+
+		if ($this->input->post('submit')) {
+			foreach($this->input->post() as $k => $v)
+			{
+				# config field & not empty value
+				if (substr($k, 0, 5) == "conf_" && $v != "")
+				{
+					// base64 is only for accidental shoulder surfers protection
+					// we need these credentials in plain text to connect to services
+					$this->setting->store(substr($k, 5), base64_encode($v));
+				}
+			}
+		}
+		
+		$temp_settings = $this->settings->get_all();
+		$conf = array();
+		foreach($temp_settings as $c)
+		{
+			$conf[$c['name']] = $c['value'];
+		}
+
+		$data = array(
+						"config" => $conf,
+					);
+					
+		$this->_render_page('admin/configuration', $data);
+	}
 	
 	# remove booking code
 	public function booking_rm($id)

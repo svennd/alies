@@ -44,6 +44,7 @@ $lang['Invoice']        = 'Invoice';
 $lang['Vaccins']         = 'Vaccin';
 $lang['Products']       = 'Producten';
 $lang['Stock']          = 'Stock';
+$lang['Lab']            = 'Lab';
 
 # owners
 $lang['title_search']     = 'Search';
@@ -270,3 +271,14 @@ $lang['ref_price']              = 'Reference prices';
 $lang['price_setting']          = 'Sell price'; 
 $lang['day_prices']             = 'Prev. day prices'; 
 $lang['price_practice']         = 'Practice price'; 
+
+# lab
+$lang['lab_id']                 = 'Lab id'; 
+$lang['lab_comment']            = 'Lab comment'; 
+$lang['lab_received']           = 'Lab received'; 
+$lang['lab_update']             = 'Last update'; 
+$lang['source']                 = 'Source'; 
+
+$lang['lab_code']              = 'Lab code'; 
+$lang['value']                 = 'Value'; 
+$lang['limit']                 = 'Limit'; 

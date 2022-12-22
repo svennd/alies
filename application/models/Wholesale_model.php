@@ -63,7 +63,7 @@ class Wholesale_model extends MY_Model
 		# product not found, its new
 		else
 		{
-			$x = $this->insert(array(
+			$this->insert(array(
 							"vendor_id" 	=> $art_nr,
 							"description" 	=> $omschrijving,
 							"bruto" 		=> $bruto_format,

@@ -46,6 +46,7 @@ $lang['last_year']          = 'Last year';
 $lang['other_logs']         = 'Other logs';
 $lang['global_logs']        = 'Full logs';
 $lang['stock_list']         = 'Stock list';
+$lang['settings']           = 'Settings';
 
 # location
 $lang['add_location']        = 'Add location';

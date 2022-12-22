@@ -199,6 +199,14 @@
                     </div>
                     <div class="col py-2">
                         <div class="card h-100" style="width: 12rem;">
+                            <img src="<?php echo base_url('assets/img/settings.png'); ?>" class="card-img-top" alt="settings">
+                            <div class="card-body text-center">
+                                <a href="<?php echo base_url('admin/settings'); ?>" class="stretched-link"><?php echo $this->lang->line('settings'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col py-2">
+                        <div class="card h-100" style="width: 12rem;">
                             <img src="<?php echo base_url('assets/img/breeds.png'); ?>" class="card-img-top" alt="breeds">
                             <div class="card-body text-center">
                                 <a href="<?php echo base_url('breeds'); ?>" class="stretched-link"><?php echo $this->lang->line('breeds'); ?></a>
@@ -253,7 +261,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div> 
         </div>

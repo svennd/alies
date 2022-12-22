@@ -13,4 +13,19 @@ class Config_model extends MY_Model
 	{
 		parent::__construct();
 	}
+
+	public function store(string $name, string $value)
+	{
+		$update_tooth = "
+			INSERT INTO 
+				config 
+				(name, value, created_at)
+			VALUES 
+				('". $name ."','". $value . "', '" . date('Y-m-d H:i:s') . "')
+			ON DUPLICATE KEY UPDATE
+				value = '" . $value . "', 
+				updated_at = '" . date('Y-m-d H:i:s') . "';		
+		";
+		return $this->db->query($update_tooth);
+	}
 }
