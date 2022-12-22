@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-class Cron extends CI_Controller
+class Cron extends MY_Controller
 {
 	# constructor
 	public function __construct()
@@ -9,6 +9,20 @@ class Cron extends CI_Controller
 
 		$this->load->model('Lab_model', 'lab');
 		$this->load->model('Lab_detail_model', 'lab_line');
+
+		$this->load->model('Config_model', 'settings');
+        $conf = $this->settings->get_all();
+		if ($conf) {
+			foreach ($conf as $c) {
+				$this->conf[$c['name']] = array(
+												"value" 		=> $c['value'],
+												"updated_at" 	=> $c['updated_at'],
+												"created_at" 	=> $c['created_at']
+											);
+			}
+		} else {
+			$this->conf = array();
+		}
 	}
 
     /*
@@ -185,10 +199,13 @@ class Cron extends CI_Controller
             }
     
         }
-
         if($redirect)
         {
             redirect('lab', 'refresh');
+        }
+        else
+        {
+            echo "sourced : " . count($stalen) . " samples!";
         }
     }
 
