@@ -9,6 +9,7 @@
 				</div>
 			</div>
 			<div class="card-body">
+				<?php if($data): ?>
 				<table class="table" id="dataTable">
 					<thead>
 						<tr>
@@ -34,6 +35,9 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php else: ?>
+					no lab results found!
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>
