@@ -17,9 +17,9 @@ class Migration_bill_mail extends CI_Migration {
 			`updated_at` datetime DEFAULT NULL,
 			`created_at` datetime DEFAULT NULL
 		  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-		  ALTER TABLE `wholesale_price`";
+		  ";
 
-		$sql[] = "ADD KEY `art_nr` (`art_nr`);";
+		$sql[] = "ALTER TABLE `wholesale_price` ADD KEY `art_nr` (`art_nr`);";
 		$sql[] = "ALTER TABLE `products` CHANGE `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL;";
 		$sql[] = "ALTER TABLE `products` CHANGE `short_name` `short_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL;";
 		$sql[] = "ALTER TABLE `products` CHANGE `producer` `producer` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL;";
