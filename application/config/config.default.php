@@ -538,3 +538,20 @@ $config['proxy_ips'] = '';
 	install script
 */
 $config['install'] = false;
+
+/*
+	mail config
+*/
+$config['smtp_host'] = "";
+$config['smtp_user'] = "";
+$config['smtp_pasw'] = "";
+$config['smtp_port'] = 465;
+
+$config['mail_from_user'] = "";
+$config['mail_from_email'] = "";
+
+// set replyto
+$config['mail_reply_to'] = "";
+
+// bcc
+$config['mail_bcc'] = "";
