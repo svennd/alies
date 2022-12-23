@@ -40,6 +40,8 @@ $lang['Veterinary']     = 'Veterinary';
 $lang['Administration'] = 'Administration';
 $lang['Clients']        = 'Clients';
 $lang['Reports']        = 'Reports';
+$lang['Reg_in']         = 'Register In';
+$lang['Reg_out']        = 'Register Out';
 $lang['Invoice']        = 'Invoice';
 $lang['Vaccins']         = 'Vaccin';
 $lang['Products']       = 'Producten';
@@ -234,6 +236,9 @@ $lang['added']                  = 'added';
 $lang['no_local_stock']         = 'No local stock.'; 
 $lang['no_global_stock']        = 'No global stock.'; 
 
+$lang['btw_buy']          = 'btw buy'; 
+$lang['btw_sell']         = 'btw sell'; 
+
 # product page
 $lang['search_product']         = 'Search Product'; 
 $lang['new_product']            = 'New Product'; 
@@ -271,6 +276,7 @@ $lang['ref_price']              = 'Reference prices';
 $lang['price_setting']          = 'Sell price'; 
 $lang['day_prices']             = 'Prev. day prices'; 
 $lang['price_practice']         = 'Practice price'; 
+$lang['price_total_sale']       = 'Total sale price'; 
 
 # lab
 $lang['lab_id']                 = 'Lab id'; 
@@ -282,3 +288,6 @@ $lang['source']                 = 'Source';
 $lang['lab_code']              = 'Lab code'; 
 $lang['value']                 = 'Value'; 
 $lang['limit']                 = 'Limit'; 
+
+# reports
+$lang['Reporting']             = 'Reports'; 

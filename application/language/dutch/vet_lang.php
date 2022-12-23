@@ -42,6 +42,8 @@ $lang['Veterinary']     = 'Dierenarts';
 $lang['Administration'] = 'Administratie';
 $lang['Clients']        = 'Klanten';
 $lang['Reports']        = 'Verslagen';
+$lang['Reg_in']         = 'Register In';
+$lang['Reg_out']        = 'Register Uit';
 $lang['Invoice']        = 'Factuur';
 $lang['Vaccins']        = 'Vaccins';
 $lang['Products']       = 'Producten';
@@ -241,6 +243,9 @@ $lang['added']                  = 'toegevoegd';
 $lang['no_local_stock']         = 'Geen lokale stock.'; 
 $lang['no_global_stock']        = 'Geen globale stock.'; 
 
+$lang['btw_buy']          = 'btw koop'; 
+$lang['btw_sell']         = 'btw verkoop'; 
+
 # product page
 $lang['search_product']         = 'Product opzoeken'; 
 $lang['new_product']            = 'Nieuw Product'; 
@@ -278,6 +283,7 @@ $lang['ref_price']              = 'Referentie prijzen';
 $lang['price_setting']          = 'Verkoopsprijs'; 
 $lang['day_prices']             = 'Vorige dagprijzen'; 
 $lang['price_practice']         = 'Praktijk prijs'; 
+$lang['price_total_sale']       = 'Totale verkoopsprijs'; 
 
 # lab
 $lang['lab_id']                 = 'Labo id'; 
@@ -289,3 +295,6 @@ $lang['source']                 = 'Bron';
 $lang['lab_code']              = 'Labo code'; 
 $lang['value']                 = 'Waarde'; 
 $lang['limit']                 = 'Limiet'; 
+
+# reports
+$lang['Reporting']             = 'Rapport'; 

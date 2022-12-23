@@ -74,12 +74,14 @@
       <li class="nav-item" id="reportsmgm">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rep" aria-expanded="true" aria-controls="rep">
           <i class="fas fa-fw fa-receipt"></i>
-          <span>Reports</span>
+          <span><?php echo $this->lang->line('Reporting'); ?></span>
         </a>
         <div id="rep" class="collapse" aria-labelledby="rep" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a> -->
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_in" id="reg_in"><?php echo $this->lang->line('Reg_in'); ?></a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_out" id="reg_out"><?php echo $this->lang->line('Reg_out'); ?></a>
             <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a> -->
           </div>
         </div>

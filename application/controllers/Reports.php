@@ -18,17 +18,12 @@ class Reports extends Admin_Controller
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vaccine');
+		$this->load->model('Register_in_model', 'register_in');
 		$this->load->model('Booking_code_model', 'booking');
 
 		# helpers
 		$this->load->helper('file_download');
 
-	}
-
-
-	public function index()
-	{
-		$this->_render_page('reports/index', array());
 	}
 
 	public function accounting(string $search_from = "", string $search_to = "", int $booking_id = 0, bool $csv = false)
@@ -139,16 +134,6 @@ class Reports extends Admin_Controller
 		$product = ($this->input->post('submit') == "usage" && $search_from && $search_to) ? $this->get_usage($search_from, $search_to) : false;
 
 		$data = array(
-			"search"	=> ($this->input->post('submit') == "search_product") ?
-											$this->
-											products->
-											group_start()->
-												like('name', $this->input->post('name'), 'both')->
-												or_like('short_name', $this->input->post('name'), 'both')->
-											group_end()->
-												limit(25)
-											->get_all() : false,
-
 			"usage"					=> $product,
 			"search_from"			=> $search_from,
 			"search_to"				=> $search_to,
@@ -181,26 +166,6 @@ class Reports extends Admin_Controller
 		array_to_csv($csv_lines);
 	}
 
-	# show used products for the defined range
-	public function product_range($range)
-	{
-		$accepted_ranges = array('day' => 1, 'week' => 7, 'month' => 31, 'quarter' => 90, 'halfyear' => 182, 'year' => 365);
-
-		if (!array_key_exists($range, $accepted_ranges))
-		{
-			redirect('reports/products');
-		}
-
-		$result = $this->events->get_all_event_products($accepted_ranges[$range]);
-
-
-		$data = array(
-						'results' => $result,
-						);
-
-		$this->_render_page('reports/product_range', $data);
-	}
-
 	public function clients(int $days = 0)
 	{
 		/* cache this for 6 hours */
@@ -226,6 +191,36 @@ class Reports extends Admin_Controller
 		}
 		
 		$this->_render_page('reports/clients', $data);
+	}
+
+	public function register_in()
+	{
+		/* input */
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-1 months")) : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
+
+		$register_in = $this->register_in->date_lookup($search_from, $search_to);
+		
+		$this->_render_page('reports/register_in', array(
+			"register_in" 	=> $register_in,
+			"search_from"	=> $search_from,
+			"search_to"		=> $search_to,
+		));	
+	}
+
+	public function register_out()
+	{
+		/* input */
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-1 months")) : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
+
+		$register_out = $this->events->register_out($search_from, $search_to);
+		
+		$this->_render_page('reports/register_out', array(
+			"register_out" 	=> $register_out,
+			"search_from"	=> $search_from,
+			"search_to"		=> $search_to,
+		));	
 	}
 
 	private function chart_last_bill(int $years = 5)

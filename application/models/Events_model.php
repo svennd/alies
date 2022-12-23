@@ -166,42 +166,62 @@ class Events_model extends MY_Model
 		return ($status['status']);
 	}
 
-	/*
-		used in reports/product_range
-		to get a full list of products used in a certain range
-	*/
-	public function get_all_event_products($day)
+	public function register_out($search_from, $search_to)
 	{
 		$sql = "
-			SELECT
-				e.id as event_id, e.updated_at,
-				ep.volume as volume, ep.net_price as net_price,
-				prod.name as product_name, prod.unit_sell,
-				users.first_name as vet_name,
-				stck.name
-			FROM `events` as e
-			LEFT JOIN events_products as ep
-			ON
-				ep.event_id = e.id
-			LEFT JOIN products as prod
-			ON
-				prod.id = ep.product_id
-			LEFT JOIN users
-			ON
-				e.vet = users.id
-			LEFT JOIN stock_location as stck
-			ON
-				stck.id = e.location
-			WHERE
-				e.created_at > DATE_ADD(NOW(), INTERVAL - " . (int) $day . " DAY)
-			AND
-				e.status <= ". STATUS_CLOSED ."
-			"
-			;
+				SELECT
+					ep.volume as volume, ep.net_price as total_sell_price,
+					prod.name as product_name, prod.unit_sell, prod.buy_price, prod.buy_volume as buy_volume, prod.vhbcode,
+					users.first_name as vet_name,
+					stck.name as stock_name,
+					type.name as product_type,
+					pets.name as pet_name, pets.id as pet_id,
+					owners.id as owner_id, owners.last_name,
+					book.code, book.category, book.btw,
+					(select stock.in_price from stock where stock.barcode = ep.barcode limit 1) as in_price_test
+
+				FROM `events` as e
+				
+				LEFT JOIN events_products as ep
+				ON
+					ep.event_id = e.id
+
+				LEFT JOIN products as prod
+				ON
+					prod.id = ep.product_id
+
+				LEFT JOIN booking_codes as book
+				ON
+					book.id = ep.booking
+
+				LEFT JOIN users
+				ON
+					e.vet = users.id
+
+				LEFT JOIN pets
+				ON
+					e.pet = pets.id
+
+				LEFT JOIN products_type as type
+				ON
+					type.id = prod.type
+
+				LEFT JOIN owners
+				ON
+					pets.owner = owners.id
+
+				LEFT JOIN stock_location as stck
+				ON
+					stck.id = e.location
+
+				WHERE
+					e.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+				AND
+					e.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+			";
 		return $this->db->query($sql)->result_array();
 	}
-
-
+	
 	/*
 		used in report (for vet/admin)
 	*/
