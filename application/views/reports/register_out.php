@@ -60,8 +60,8 @@
 						<td><?php echo $us['btw']; ?>%</td>
 						<td><?php echo $us['vet_name']; ?></td>
 						<td><?php echo $us['stock_name']; ?></td>
-						<td><a href="<?php echo $us['pet_id'] ?>"><?php echo $us['pet_name']; ?></a></td>
-						<td><a href="<?php echo $us['owner_id'] ?>"><?php echo $us['last_name']; ?></a></td>
+						<td><a href="<?php echo base_url('pets/fiche/' . $us['pet_id']); ?>"><?php echo $us['pet_name']; ?></a></td>
+						<td><a href="<?php echo base_url('owners/detail/' . $us['owner_id']) ?>"><?php echo $us['last_name']; ?></a></td>
 					</tr>
 					<?php endforeach; ?>
     			</tbody>
