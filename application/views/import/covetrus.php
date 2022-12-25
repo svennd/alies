@@ -21,7 +21,7 @@
 		<?php if($processed === false): ?>
 			<div class="card shadow mb-4">		
 				<div class="card-header">
-					Upload price list covertrus
+					<a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / Upload price list covertrus
 				</div>
 				<div class="card-body">
 					<div class="dropbox d-flex align-items-center" id="upload_field">
@@ -96,7 +96,7 @@
 					<tbody>
 						<?php foreach($products as $p): ?>
 						<tr>
-							<td><?php echo $p['vendor_id']; ?></td>
+							<td><a href="<?php echo base_url('wholesale/get_history/'. $p['id']); ?>"><?php echo $p['vendor_id']; ?></td>
 							<td><?php echo $p['description']; ?></td>
 							<td><?php echo $p['bruto']; ?></td>
 							<td><?php echo $p['btw']; ?></td>

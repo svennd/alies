@@ -13,6 +13,13 @@ class Wholesale_model extends MY_Model
 		parent::__construct();
 		
 		$this->load->model('Wholesale_price_model', 'wh_price');
+
+		$this->has_many['wholesale_prices'] = array(
+			'foreign_model' => 'Wholesale_price_model',
+			'foreign_table' => 'wholesale_price',
+			'foreign_key' => 'art_nr',
+			'local_key' => 'vendor_id'
+		);
 	}
 
 	public function update_record($art_nr, $omschrijving, $bruto, $btw, $verk_pr_apotheek, $verdeler, $CNK, $VHB)

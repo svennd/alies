@@ -74,8 +74,8 @@
 	</tr>
 	<tr>
 		<td align="center"><?php echo get_bill_id($bill['id'], $bill['created_at']); ?></td>
-		<td align="center"><?php echo $bill['created_at']; ?></td>
-		<td align="center"><?php echo $bill['created_at']; ?></td>
+		<td align="center"><?php echo date_format(date_create($bill['created_at']), "d-m-Y"); ?></td>
+		<td align="center"><?php echo date('d-m-Y', strtotime($bill['created_at']. ' +'. $due_date_days .' days')); ?></td>
 	</tr>
 </table>
   

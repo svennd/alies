@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><?php echo $this->lang->line('locations'); ?></div>
+				<div><a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('locations'); ?></div>
 				<div class="dropdown no-arrow">
 					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_location'); ?></a>
 					<a href="<?php echo base_url(); ?>restore/locations" class="btn btn-outline-danger btn-sm"><i class="fas fa-fw fa-history"></i> Restore</a>

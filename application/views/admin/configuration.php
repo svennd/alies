@@ -3,12 +3,22 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><?php echo $this->lang->line('settings_screen'); ?></div>
+				<div><a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('settings_screen'); ?></div>
 				<div class="dropdown no-arrow">
 				</div>
 			</div>
             <div class="card-body">
 			<form method="post" action="<?php echo base_url('admin/settings'); ?>" autocomplete="integrations">
+				<h4>Bills</h4>
+				
+				<div class="form-row">
+					<div class="form-group col-md-5">
+						<label for="due_date">Due date</label>
+						<input type="text" class="form-control" id="due_date" name="conf_due_date" value="<?php echo (isset($config['due_date'])) ? base64_decode($config['due_date']) : ''; ?>" autocomplete="due_date">
+						<small id="due_datehelp" class="form-text text-muted">Bills are due, this many days. (default : 30)</small>
+					</div>
+				</div>
+
 				<h4>Integrations</h4>
 				<!--
 				<h5>Covetrus, Nerum (NetOrder)</h5>

@@ -200,6 +200,7 @@ class Invoice extends Vet_Controller
 					"open_bills"	=> $this->get_open_or_unpaid_bills($owner_id, $bill_id),
 					"event_info"	=> $event_info,
 					"location_i"	=> $this->location,
+					"due_date_days" => (isset($this->conf['due_date'])) ? (int) base64_decode($this->conf['due_date']['value']) : 30,
 					"bill"			=> $this->bills->get($bill_id) // can't remove for race condition on calculation
 				);
 

@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><?php echo $this->lang->line('breeds'); ?></div>
+				<div><a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('breeds'); ?></div>
 				<div class="dropdown no-arrow">
 					<a href="<?php echo base_url(); ?>breeds/rebuild_frequenty" class="btn btn-outline-warning btn-sm"><i class="fas fa-fw fa-history"></i> rebuild freq</a>
 					<a href="<?php echo base_url(); ?>breeds/add" class="btn btn-outline-success btn-sm"><i class="fas fa-plus fa-fw"></i> <?php echo $this->lang->line('add'); ?></a>

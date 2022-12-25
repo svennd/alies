@@ -38,6 +38,7 @@ $lang['locations']          = 'Locaties';
 $lang['product_types']      = 'Product types';
 $lang['revenue_source']     = 'Omzet bronnen';
 $lang['admin_tools']        = 'Beheer tools';
+$lang['admin']              = 'Beheer';
 $lang['backup']             = 'Backup';
 $lang['booking_codes']      = 'Grootboek rekeningen';
 $lang['user_mgm']           = 'Gebruikers beheer';
@@ -71,3 +72,7 @@ $lang['export_client_90d']        = '90 dagen';
 
 # config screen
 $lang['settings_screen']        = 'Configuratie';
+
+# stocklist
+$lang['stock_list']         = 'Stock lijst';
+$lang['stock_list_explain'] = 'Dit creëert een lijst met alle producten per locatie.';

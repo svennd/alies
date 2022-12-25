@@ -1,9 +1,9 @@
 <div class="row">
-    <div class="col-6">
+    <div class="col-xl-8 col-lg-10 col-md-12">
         <div class="card shadow mb-4">
             <div class="card-header d-flex flex-row align-items-center justify-content-between">
                 <div>
-                <a href="<?php echo base_url('breeds'); ?>"><?php echo $this->lang->line('breeds'); ?></a> / <?php echo $this->lang->line('add'); ?>
+                <a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <a href="<?php echo base_url('breeds'); ?>"><?php echo $this->lang->line('breeds'); ?></a> / <?php echo $this->lang->line('add'); ?>
                 </div>
             </div>
             <div class="card-body">

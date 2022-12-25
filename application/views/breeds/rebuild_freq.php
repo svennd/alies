@@ -1,7 +1,7 @@
 <div class="card shadow mb-4">
     <div class="card-header d-flex flex-row align-items-center justify-content-between">
         <div>
-        <a href="<?php echo base_url('breeds'); ?>"><?php echo $this->lang->line('breeds'); ?></a> / <?php echo $this->lang->line('rebuild_frequency'); ?>
+        <a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <a href="<?php echo base_url('breeds'); ?>"><?php echo $this->lang->line('breeds'); ?></a> / <?php echo $this->lang->line('rebuild_frequency'); ?>
         </div>
     </div>
 	<div class="card-body">

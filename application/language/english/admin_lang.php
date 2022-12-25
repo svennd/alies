@@ -37,6 +37,7 @@ $lang['locations']          = 'Locations';
 $lang['product_types']      = 'Product types';
 $lang['revenue_source']     = 'Revenue Sources';
 $lang['admin_tools']        = 'Admin tools';
+$lang['admin']              = 'Admin';
 $lang['backup']             = 'Backup';
 $lang['booking_codes']      = 'Booking codes';
 $lang['user_mgm']           = 'User Management';
@@ -67,3 +68,10 @@ $lang['title_export_clients']     = 'Export clients. (admin-only)';
 $lang['export_clients']     = 'Export modified clients.';
 $lang['export_client_all']        = 'All clients';
 $lang['export_client_90d']        = '90 days';
+
+# config screen
+$lang['settings_screen']        = 'Configuratie';
+
+# stocklist
+$lang['stock_list']         = 'Stock list';
+$lang['stock_list_explain'] = 'This generates a list with all products in the stock. (that are active, state=2)';

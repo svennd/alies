@@ -42,19 +42,4 @@ class Lab extends Vet_Controller
             "comment_update" => $comment_update
 		));
     }
-
-	// wrapper around some curl setup
-	// may require a specific php extension : php-curl
-	private function req_curl_json(string $url)
-	{
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept: application/json"));
-		$json_response = curl_exec($curl);
-		curl_close($curl);
-
-		return $json_response;
-	}
 }

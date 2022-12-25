@@ -2,25 +2,27 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Stock product list</h6>
+		  <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('stock_list'); ?>
+                </div>
             </div>
             <div class="card-body">
-			This generates a list with all products in the stock. (that are active, state=2)
+			<?php echo $this->lang->line('stock_list_explain'); ?>
 			<br/>
 			<?php if ($locations): ?>
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Location</th>
-					<th>Download</th>
+					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('export'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($locations as $loc): ?>
 				<tr>
 					<td><?php echo $loc['name']; ?></td>
-					<td><a href="<?php echo base_url(); ?>reports/stock_list/<?php echo $loc['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> Download</a></td>
+					<td><a href="<?php echo base_url(); ?>reports/stock_list/<?php echo $loc['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -35,9 +37,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
- 	$("#reportsmgm").addClass('active');
-	$("#rep").show();
-	$("#stock_list").addClass('active');
+	$("#admin").addClass('active');
 });
 </script>
   

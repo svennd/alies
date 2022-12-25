@@ -11,6 +11,13 @@ class Wholesale extends Admin_Controller {
 	}
 
 	/*
+		get history from a single product
+	*/
+	public function get_history(int $id)
+	{
+		$this->_render_page('wholesale/history', array("data" => $this->wholesale->with_wholesale_prices()->get($id)));
+	}
+	/*
 	 * used on product/profile/$id
 	 */
 	public function ajax_get_articles()

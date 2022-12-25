@@ -2,9 +2,9 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0"><a href="<?php echo base_url(); ?>admin/booking/">Ledger codes</a> / Restore</h6>
-            </div>
+	  <div class="card-header d-flex flex-row align-items-center justify-content-between">
+				<div><a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('booking_codes'); ?> / Restore</div>
+			</div>
             <div class="card-body">
 			<?php if ($booking): ?>
 				<table class="table" id="dataTable">

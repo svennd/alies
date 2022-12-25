@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 	 	 <div class="card-header py-3">
-              <h6 class="m-0"><a href="<?php echo base_url(); ?>admin/locations/">Locations</a> / Restore</h6>
+		  <a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <a href="<?php echo base_url(); ?>admin/locations/">Locations</a> / Restore
 		</div>
             <div class="card-body">
 			<?php if ($locations): ?>
@@ -25,6 +25,8 @@
 				<?php endforeach; ?>
 				</tbody>
 				</table>
+			<?php else: ?>
+				no deleted locations found
 			<?php endif; ?>
                 </div>
 		</div>
@@ -35,10 +37,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
-	$("#adminmgm").show();
 	$("#admin").addClass('active');
-	$("#adminlocation").addClass('active');
 });
 </script>
   
