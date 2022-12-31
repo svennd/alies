@@ -306,3 +306,7 @@ $lang['product_wholesale']     = "Groothandel naam";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "of";
+
+
+# stock / product index
+$lang['list_products']         = "Product Lijst";

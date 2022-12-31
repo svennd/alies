@@ -48,6 +48,37 @@ class Products_model extends MY_Model
 		parent::__construct();
 	}
 
+	/*
+		search a product based on name
+	*/
+	public function search_product($name)
+	{
+		return ($name) ?
+					$this->
+					group_start()->
+						like('name', $name, 'both')->
+						or_like('short_name', $name, 'both')->
+					group_end()->
+					limit(25)->
+					get_all() 
+
+					: 
+
+					false;
+	}
+
+	/*
+		update the comment on a product
+	*/
+	public function update_comment(int $pid, $msg)
+	{
+		return (!empty($msg)) ?
+				$this->update(array("comment" => $msg), $pid)
+			:
+				false
+			;
+	}
+
 	public function usage_detail( int $product_id, string $search_from, string $search_to)
 	{
 		$sql = "

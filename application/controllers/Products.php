@@ -26,8 +26,6 @@ class Products extends Vet_Controller
 
 	public function index($location = false, $success = false)
 	{
-
-		$products = array();
 		$clocation = ($location) ? $location : $this->user->current_location;
 		
 		$products = ($location == "all") ? 
@@ -49,31 +47,20 @@ class Products extends Vet_Controller
 						"locations" 			=> $this->location,
 						"success" 				=> $success,
 						"clocation"				=> $clocation,
-						"search"				=> ($this->input->post('submit')) ? $this->products->group_start()->like('name', $this->input->post('name'), 'both')->or_like('short_name', $this->input->post('name'), 'both')->group_end()->limit(25)->get_all() : false,
+						"search"				=> $this->products->search_product($this->input->post('name')),
 						"products" 				=> $products,
 						);
 
 		$this->_render_page('product/index', $data);
 	}
 
-
 	/*
 		semi "public" profile of a product
 	*/
-	public function profile($id)
+	public function profile(int $id)
 	{
 		# update comment
-		$comment_update = false;
-		if ($this->input->post('submit')) {
-			$this->products
-					->where(array(
-									"id" 	=> (int) $id
-							))
-					->update(array(
-									"comment" => $this->input->post('message'),
-							));
-			$comment_update = true;
-		}
+		$comment_update = $this->products->update_comment($id, $this->input->post('message'));
 
 		# check the stocks
 		// local is not required anymore 
@@ -146,30 +133,14 @@ class Products extends Vet_Controller
 		}
 
 		# modification
-		if ($this->input->post('submit') && $this->input->post('submit') == "edit") {
-			# price id
-			$price_id = $this->input->post('price_id');
-			$volume = $this->input->post('volume');
-			$new_price = $this->input->post('price');
+		$modification = false;
+		if ($this->input->post('submit')) {
 
-			# log this change
-			$this->logs->logger(INFO, "modify_price", "Change product_id:" . (int) $id . " on price_id:" . (int) $price_id . " for volume: ". (float) $volume . " to (price)" . (float) $new_price);
-			$this->pprice
-					->where(array(
-									"id" 	=> $price_id
-							))
-					->update(array(
-									"price" => $new_price,
-									"volume" => $volume,
-							));
-			
-		# new price
-		} elseif($this->input->post('submit')) {
-			$this->pprice->insert(array(
-										'volume' 		=> $this->input->post('volume'),
-										'price' 		=> $this->input->post('price'),
-										'product_id' 	=> $id
-								));
+			$modification = ($this->input->post('submit') == "edit") ?
+				$this->pprice->update_price((int) $id, $this->input->post('price_id'), $this->input->post('price'), $this->input->post('volume'))
+				:
+				$this->pprice->add_price((int) $id, $this->input->post('price'), $this->input->post('volume'))
+				;
 		}
 
 		$data = array(
@@ -185,8 +156,10 @@ class Products extends Vet_Controller
 												->fields('in_price, volume, created_at')
 												->order_by('created_at', 'DESC')
 												->limit(5)
-												->get_all()
+												->get_all(),
+						"updated"	=> $modification
 					);
+					
 		$this->_render_page('product/price', $data);
 
 	}
@@ -212,16 +185,16 @@ class Products extends Vet_Controller
 		# only admins have access here
 		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
 
-		$to_remove_price = $this->pprice->get($id);
-		$this->pprice->delete($id);
+		// remove price, log it
+		$pid = $this->pprice->rm_price($id);
 
 		if (!$new)
 		{
-			redirect('/products/product_price/' . $to_remove_price['product_id']);
+			redirect('/products/product_price/' . $pid);
 		}
 		else
 		{
-			redirect('/products/new/2/' . $to_remove_price['product_id']);
+			redirect('/products/new/2/' . $pid);
 		}
 	}
 

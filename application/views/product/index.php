@@ -13,8 +13,9 @@
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>products" method="post" autocomplete="off" class="form-inline">
 					<label class="sr-only" for="name"><?php echo $this->lang->line('product_sheet'); ?></label>
-					<input type="text" class="form-control mb-2 mr-sm-2" id="name" name="name" autocomplete="false" placeholder="<?php echo (isset($search_q)) ? $search_q : $this->lang->line('product_sheet'); ?>">
-					<button type="submit" name="submit" value="search_product" class="btn btn-primary mb-2"><?php echo $this->lang->line('title_search'); ?></button>
+					<input type="text" class="form-control mb-2 mr-sm-2 form-control-sm" id="name" name="name" autocomplete="false" placeholder="<?php echo (isset($search_q)) ? $search_q : $this->lang->line('product_sheet'); ?>">
+					<button type="submit" name="submit" value="search_product" class="btn btn-primary btn-sm mb-2"><?php echo $this->lang->line('title_search'); ?></button>
+					<a href="<?php echo base_url('products/product_list'); ?>" class="btn btn-success btn-sm mb-2 ml-2"><i class="fas fa-list"></i> <?php echo $this->lang->line('list_products'); ?></a>
 				</form>
 			<?php if ($search): ?>
 			<ul>
