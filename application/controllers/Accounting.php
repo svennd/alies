@@ -38,19 +38,19 @@ class Accounting extends Admin_Controller
 		$last_month->modify('-1 month');
 
 		$data = array(
-			"month"				=> $month,
-			"current_date"		=> clone $date,
-			"monthly_earnings" 	=> $this->bills->get_monthly_earning(clone $date),
-			"client_contacts" 	=> $this->events->get_contacts(clone $date),
-			"client_contacts_lm" => $this->events->get_contacts(clone $last_month),
-			"client_contacts_year" 	=> $this->events->get_contacts_year(clone $date),
+			"month"						=> $month,
+			"current_date"				=> clone $date,
+			"monthly_earnings"			=> $this->bills->get_monthly_earning(clone $date),
+			"client_contacts" 			=> $this->events->get_contacts(clone $date),
+			"client_contacts_lm" 		=> $this->events->get_contacts(clone $last_month),
+			"client_contacts_year"		=> $this->events->get_contacts_year(clone $date),
 			"client_contacts_year_ly" 	=> $this->events->get_contacts_year(clone $last_year),
-			"distribution_proc_prod" => $this->get_prod_proc_distribution(clone $date),
-			"yearly_earnings" 		 => $this->bills->get_yearly_earnings(clone $date),
-			"yearly_earnings_ly" 		 => $this->bills->get_yearly_earnings(clone $last_year),
-			"yearly_by_month"		 => $this->bills->get_yearly_earnings_by_month(clone $date),
-			"yearly_by_month_last_year"		 => $this->bills->get_yearly_earnings_by_month($last_year),
-			"logs" 					=> $this->logs
+			"distribution_proc_prod" 	=> $this->get_prod_proc_distribution(clone $date),
+			"yearly_earnings" 		 	=> $this->bills->get_yearly_earnings(clone $date),
+			"yearly_earnings_ly" 		=> $this->bills->get_yearly_earnings(clone $last_year),
+			"yearly_by_month"		 	=> $this->bills->get_yearly_earnings_by_month(clone $date),
+			"yearly_by_month_last_year"	=> $this->bills->get_yearly_earnings_by_month($last_year),
+			"logs" 						=> $this->logs
 												->with_vet('fields:first_name')
 												->with_location('fields:name')
 												->where("LEVEL", "<=", WARN)

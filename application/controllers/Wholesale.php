@@ -49,6 +49,5 @@ class Wholesale extends Admin_Controller {
 		}
 
 		echo json_encode(array("results" => $article_list));
-
 	}
 }

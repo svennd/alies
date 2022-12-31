@@ -21,15 +21,6 @@ class Stock extends Vet_Controller
 		$this->load->helper('gs1');
 	}
 
-	/*
-	remove asap, legacy controller
-	*/
-	public function index($filter = false, $success = false)
-	{
-		echo "LEGACY";
-		exit;
-	}
-
 	public function stock_detail($pid, $all = false)
 	{
 		// for charts this function from model can be used
@@ -343,14 +334,10 @@ class Stock extends Vet_Controller
 					);
 		$this->_render_page('stock/edit.admin.php', $data);
 	}
-	/*
-		house hold functions
-	*/
-
+	
 	# if some remaining data is still visible this can be used to hide it
 	public function stock_clean($print = true)
 	{
-
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 
 		# make this traceable
@@ -367,5 +354,59 @@ class Stock extends Vet_Controller
 				"<a href='" . base_url('stock') . "'> return</a>"
 				:
 				"";
+	}
+
+	/*
+	covetrus specific output
+	*/
+	public function quick_stock()
+	{
+		// not ready
+		exit;
+		$this->load->model('Delivery_model', 'delivery');
+
+		if ($this->input->post('submit')) 
+		{
+			$data = $this->input->post('text');
+			$lines = explode("\n", $data);
+			$data_lines = array();
+			$updated = array();
+
+			foreach($lines as $line)
+			{
+				if(empty($line)) { continue; }
+
+				# Besteldatum|Bestelbonnr|Mijn Referentie|Art. nr.|Omschrijving|CNK nummer|Leveringsdatum|Leveringsbon nummer|bruto prijs|netto prijs|verk.pr.  apoth.|BTW|aantal|Lotnummer|Vervaldatum|Facturatie
+				list($order_date, $order_nr, $my_ref, $art_nr, $description, $cnk, $delivery_date, $delivery_nr, $bruto, $netto, $suggetion_price, $btw, $amount, $lotnr, $due_date, $facturatie) = explode("|", $line);
+				
+				# skip header || footer
+				if ($order_date == "Besteldatum" || empty($order_date)) { continue; }
+				
+				// insert it into 
+				$intel = $this->delivery->record(array(
+					"order_date"	=> $order_date,
+					"order_nr" 		=> $order_nr,
+					"my_ref" 		=> $my_ref,
+					"wholesale_artnr" => $art_nr,
+					"delivery_date" => $delivery_date,
+					"delivery_nr" 	=> $delivery_nr,
+					"bruto_price" 	=> $bruto,
+					"netto_price" 	=> $netto,
+					"amount"		=> $amount,
+					"lotnr" 		=> $lotnr,
+					"due_date" 		=> $due_date,
+				));
+				$data_lines[] = $intel['id'];
+				$updated[$intel['id']] = $intel['updated_bruto_price'];
+			}
+
+			$delivery_data = $this->delivery->where("id", $data_lines)->with_wholesale()->with_product()->get_all();
+		}
+		$this->_render_page('stock/quick', array(
+				"delivery" => $delivery_data, 
+				"updated" => $updated, 
+				"lines" => count($lines), 
+				"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
+	));		
 	}
 }

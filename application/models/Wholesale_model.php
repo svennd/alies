@@ -22,6 +22,32 @@ class Wholesale_model extends MY_Model
 		);
 	}
 
+	public function get_wh_id(string $wh_artnr)
+	{
+		$wh_info = $this->fields('id')->where(array("vendor_id" => $wh_artnr))->get();
+		return (int) ($wh_info) ? $wh_info['id'] : false;
+	}
+
+	public function update_price(int $id, $new_bruto)
+	{
+		// check if required
+		$wh_info = $this->fields('vendor_id, bruto')->get($id);
+
+		// the price remains the same
+		if ($wh_info && $wh_info['bruto'] == $new_bruto)
+		{
+			return false;
+		}
+
+		// update new bruto price for this product
+		$this->update(array("bruto" => $new_bruto), $id);
+	
+		// store old bruto price
+		$this->wh_price->insert(array("art_nr" => $wh_info['vendor_id'], "bruto" => $wh_info['bruto']));
+
+		return true;
+	}
+
 	public function update_record($art_nr, $omschrijving, $bruto, $btw, $verk_pr_apotheek, $verdeler, $CNK, $VHB)
 	{
 		// no buy data (product gone/out of stock/...)

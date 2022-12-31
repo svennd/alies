@@ -390,25 +390,38 @@ class Products extends Vet_Controller
 		# too short
 		if (strlen($query) <= 1) { echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
 
-		# products
-		$result = $this->products
+		/*
+			if string is 26 chars long try to check if its a gs1 code
+		*/
+		$gsl = (strlen($query) >= 26) ? parse_gs1($query) : false;
+
+		// gs1 lookup or generic product name
+		$result = ($gsl) ? 
+						$this->products
+							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
+							->with_type()
+							->where(array('input_barcode' => $gsl['pid']))
+							->get()
+						:
+						$this->products
 							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 							->with_type()
 							->where('name', 'like', $query, true)
+							->where('short_name', 'like', $query, true) // not always visible
 							->limit(20)
 							->order_by("type", "ASC")
-							->get_all();
-
+							->get_all()
+						;
 		# in case no results
-		if (!$result) {	echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
+		if (!$result) { echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
 
 		$return = array();
 		foreach ($result as $r) {
 			$return[] = array(
 						"value" => $r['name'],
 						"data" 	=> array(
-											"type" 					=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
-											"id" 						=> $r['id'],
+											"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
+											"id" 				=> $r['id'],
 											"buy_volume"		=> $r['buy_volume'],
 											"unit_buy"			=> $r['unit_buy'],
 											"sell_volume"		=> $r['sell_volume'],

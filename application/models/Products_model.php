@@ -188,4 +188,12 @@ class Products_model extends MY_Model
 
 		return $this->db->query($sql)->result_array();
 	}
+
+	/*
+		get product id or return false if not linked
+	*/
+	public function get_product_id(int $wholesale_id) {
+		$product_info = $this->fields('id')->where(array("wholesale" => $wholesale_id))->get();
+		return ($product_info) ? (int) $product_info['id']: false;
+	}
 }

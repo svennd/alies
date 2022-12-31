@@ -40,15 +40,15 @@
       <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 	  
 	  	<h5>Product info</h5>
-	<hr />
+		<hr />
 		<div class="form-row">
 			<div class="col mb-3">
 			<label for="exampleFormControlInput3">Name</label>
 			<input type="text" name="name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['name'])) ? $product['name']: '' ?>" required>
 			</div>
 			<div class="col mb-3">
-			<label for="exampleFormControlInput3">Abbreviation</label>
-			<input type="text" name="short_name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['short_name'])) ? $product['short_name']: '' ?>">
+			<label for="abbr">Abbreviation</label>
+			<input type="text" name="short_name" class="form-control" id="abbr" value="<?php echo (isset($product['short_name'])) ? $product['short_name']: '' ?>">
 			</div>
 		</div>
 
@@ -423,6 +423,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		// also have bruto, but not sure if we always want to overwrite ...
 		$("#vhb_input").val(e.params.args.data.vhb);
 		$("#input_producer").val(e.params.args.data.distr);
+		$("#abbr").val(e.params.args.data.text);
 	});
 });
 </script>

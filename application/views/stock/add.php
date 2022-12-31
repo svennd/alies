@@ -10,17 +10,17 @@
 	<div class="col-lg-5 mb-4">
 		<div class="card shadow mb-4">		
 			<div class="card-header">
-				Stock / Add
+				Stock / <?php echo $this->lang->line('add'); ?>
 			</div>
 			<div class="card-body">
 				<form action="<?php echo base_url(); ?>stock/add_stock" method="post" autocomplete="off">
-				  <div class="form-group">
+				  <div class="form-group" id="matrix" style="display:none;">
 					<label for="gs1_datamatrix">GS1 DataMatrix</label>
-					<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" autofocus>
+					<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix">
 				  </div>
 				  <div class="form-group">
-					<label for="product">product</label>
-					<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>">
+					<label for="product"><?php echo $this->lang->line('product') . ' ' . $this->lang->line('or') . ' ' . $this->lang->line('gs1_barcode'); ?></label>
+					<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>" autofocus>
 					<input type="hidden" name="pid" id="pid" value="<?php echo ($preselected) ? $preselected['id']: '' ?>">
 					<input type="hidden" name="new_barcode_input" id="new_barcode_input" value="0">
 					<input type="hidden" name="barcode_gs1" id="barcode_gs1" value="">
@@ -29,18 +29,18 @@
 				  
 					<div class="form-row mb-3">
 					  <div class="col">
-						<label for="lotnr">lot nr</label>
+						<label for="lotnr"><?php echo $this->lang->line('lotnr'); ?></label>
 						<input type="text" name="lotnr" class="form-control" id="lotnr" value="">
 					  </div>
 					  <div class="col">
-						<label for="date">End of Life</label>
+						<label for="date"><?php echo $this->lang->line('eol'); ?></label>
 						<input type="date" name="eol" class="form-control" id="date" value="">
 					  </div>
 				  </div>
 				  
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="exampleFormControlInput3">New Volume (sellable)</label>
+							<label for="exampleFormControlInput3"><?php echo $this->lang->line('sellable_volume'); ?></label>
 							<div class="input-group mb-3">
 							  <input type="text" class="form-control" name="new_volume" id="sell" value="">
 							  <div class="input-group-append">
@@ -53,7 +53,7 @@
 					
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="current_buy_price">Current Buy Price</label>
+							<label for="current_buy_price"><?php echo $this->lang->line('price_dayprice'); ?></label>
 							<div class="input-group mb-3">
 							  <input type="text" class="form-control" name="in_price" id="current_buy_price" value="">
 							  <div class="input-group-append">
@@ -63,7 +63,7 @@
 							<small id="tip">Does not impact selling price!</small>
 						</div>
 						<div class="col">
-							<label for="exampleFormControlInput3">Catalog Price</label>
+							<label for="exampleFormControlInput3"><?php echo $this->lang->line('price_alies'); ?></label>
 							<input type="text" class="form-control" name="catalog_price" disabled id="catalog_price" value="">
 						</div>
 					</div>
@@ -144,9 +144,6 @@
 
 <script type="text/javascript">
 function process_datamatrix(barcode) {
-	// console.log(barcode);
-	// console.log(barcode.length);
-	
 	// GS1 data matrix 
 	// 01 05420036903635 17 210400 10 111219
 	// length : ~30 
@@ -155,27 +152,26 @@ function process_datamatrix(barcode) {
 	// 10 barcode (variable length)
 	// 6 + 14 + 6 + x
 	/**
-0: "0105060249176305109947450-2 172209302124100317851583 "
-1: "05060249176305"
-2: "109947450-2 172209302124100317851583 "
-3: "9947450-2 "
-4: "220930"
-5: "24100317851583 "
-6: undefined
-7: undefined
+	0: "0105060249176305109947450-2 172209302124100317851583 "
+	1: "05060249176305"
+	2: "109947450-2 172209302124100317851583 "
+	3: "9947450-2 "
+	4: "220930"
+	5: "24100317851583 "
+	6: undefined
+	7: undefined
 
-0: "01040072210261671722050010KP0EDBR"
-1: "04007221026167"
-2: "1722050010KP0EDBR"
-3: undefined
-4: undefined
-5: undefined
-6: "220500"
-7: "KP0EDBR"
+	0: "01040072210261671722050010KP0EDBR"
+	1: "04007221026167"
+	2: "1722050010KP0EDBR"
+	3: undefined
+	4: undefined
+	5: undefined
+	6: "220500"
+	7: "KP0EDBR"
 	*/
 	if (barcode.length > 26)
 	{
-		// result = barcode.match(/01([0-9]{14})17([0-9]{6})10(.*)/);
 		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
 		if(result)
 		{
@@ -184,14 +180,15 @@ function process_datamatrix(barcode) {
 			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
 			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
 			
-			$("#lotnr").val(lotnr);
-			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day);
+			// enter lotnr + date and disable them
+			$("#lotnr").val(lotnr).prop("readonly", true);
+			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day).prop("readonly", true);
 			
 			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
 				if (data.state)
 				{
 					$("#pid").val(data[0].id);
-					$("#autocomplete").val(data[0].name);
+					$("#autocomplete").val(data[0].name).prop("readonly", true);
 					$("#sell").val(1);
 					$("#buy").focus();
 
@@ -201,31 +198,40 @@ function process_datamatrix(barcode) {
 			
 					$("#catalog_price").val(data[0].buy_price + " € / " + data[0].buy_volume + " " + data[0].unit_sell);
 					$("#current_buy_price").val(data[0].buy_price);
+					$("#sell").focus();
+
+					$('#autocomplete').autocomplete().disable();
 				}
 				else 
-				{ 
+				{
+					// need to re-enable everything.
 					$("#new_barcode_input").val(1);
 					$("#barcode_gs1").val(gsbarcode);
-					$("#product_tip").html("unknown gs1, please select product!"); 
-					$("#autocomplete").focus();
+					$("#product_tip").html("unknown GS1, please select product!"); 
+				
+					$("#autocomplete").val("").focus();
+					$("#gs1_datamatrix").val(barcode);
+					$("#matrix").show();
 				}
 			});
+			
+			// getJSON is out of sync
+			return true;
 		}
 		else 
 		{
-			$("#product_tip").html("invalid code not recognized"); 
+			$("#product_tip").html("invalid code; not recognized"); 
 		}
 	}
-	else
-	{
-		$("#product_tip").html("code to short not recognized"); 
-	}	
+	return false;
 }
 
 document.addEventListener("DOMContentLoaded", function(){
 	var _changeInterval = null;
 	var barcode = null;
 	
+	// if html autofocus fails
+	$("#autocomplete").focus();
 
 	$("#product_list").addClass('active');
 	
@@ -238,12 +244,11 @@ document.addEventListener("DOMContentLoaded", function(){
 		
 		}, 500);
 	});
-		$('#autocomplete').autocomplete({
+	$('#autocomplete').autocomplete({
 		
 		serviceUrl: '<?php echo base_url(); ?>products/get_product',
 		
 		onSelect: function (suggestion) {
-			
 			var res = suggestion.data;
 			$("#pid").val(res.id);
 			$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_buy);
@@ -252,8 +257,24 @@ document.addEventListener("DOMContentLoaded", function(){
 			$("#unit_buy").html(res.unit_buy);
 			$("#unit_sell").html(res.unit_sell);
 			$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
+			$("#lotnr").focus();
 		},
-		groupBy: 'type',
+		onSearchComplete: function (query, suggestion) { 
+			if(query.length > 26)
+			{
+				clearInterval(_changeInterval)
+				_changeInterval = setInterval(function() {
+					clearInterval(_changeInterval)
+					process_datamatrix(query);
+				}, 500);
+
+			}
+			else if(suggestion.length == 1)
+			{
+				$(this).autocomplete().onSelect(0);
+			}
+		},
+		autoSelectFirst: true,
 		minChars: '2'
 	});
 });

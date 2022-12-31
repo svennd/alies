@@ -291,3 +291,11 @@ $lang['limit']                 = 'Limit';
 
 # reports
 $lang['Reporting']             = 'Reports'; 
+
+# add stock
+$lang['sellable_volume']       = "New Volume (sellable)";
+$lang['product_name']          = "Product name";
+$lang['product_wholesale']     = "Wholesale name";
+$lang['product']               = "Product";
+$lang['gs1_barcode']           = "GS1 Barcode";
+$lang['or']                    = "or";

@@ -298,3 +298,11 @@ $lang['limit']                 = 'Limiet';
 
 # reports
 $lang['Reporting']             = 'Rapport'; 
+
+# add stock
+$lang['sellable_volume']       = "Volume (verkoopbaar)";
+$lang['product_name']          = "Product naam";
+$lang['product_wholesale']     = "Groothandel naam";
+$lang['product']               = "Product";
+$lang['gs1_barcode']           = "GS1 Barcode";
+$lang['or']                    = "of";
