@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("a[href='" + strHash + "']").click();
 	}
 
+	/* grootboekhoud rekeningen */
 	$("#show_booking_select").click(function() {
 		$("#show_booking_select").hide();
 		$("#booking_select").show();
@@ -116,37 +117,23 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#barcode_booking_select").show();
 	});
 
-	$('#barcode_field').on('input', function() {
-		var barcode = $("#barcode_field").val();
-		if (barcode.length >= 5)
-		{
-			$.getJSON("<?php echo base_url(); ?>products/get_product_by_barcode?loc=<?php echo $u_location; ?>&barcode=" + barcode , function(data, status){
+	// automatically put the input here
+	$("#autocomplete").focus();
 
-				$("#name_by_barcode").val(data.products.name);
-				$("#barcode_new_pid").val(data.product_id);
-				$("#barcode_barcode").val(data.barcode);
-				$("#barcode_unit_sell").html("/ " + data.volume + " " + data.products.unit_sell);
-				$("#barcode_btw_sell").val(data.products.btw_sell);
-				$("#barcode_show_booking_select").html(data.products.btw_sell + "%");
-
-				/* color & select the default booking code */
-				var select = $('[id=barcode_hidden_booking] option[value="' + data.products.booking_code + '"]');
-					select.addClass("bg-success");
-					select.prop("selected", true)
-			});
-		}
-	});
-
+	// search box for products
 	$('#autocomplete').autocomplete({
 
 		serviceUrl: '<?php echo base_url(); ?>products/get_product_or_procedure?loc=<?php echo $u_location; ?>',
 		onSelect: function (suggestion) {
-			// console.log(suggestion.data);
+
 			$('#new_pid').val(suggestion.data.id);
 			$('#prod').val(suggestion.data.prod);
 			$("#btw_sell").val(suggestion.data.btw);
 			$("#booking_default").val(suggestion.data.booking);
 			$("#show_booking_select").html(suggestion.data.btw + "%");
+
+			// we selected a product, now give me the amount!
+			$("#amount").focus();
 
 			/* color the default booking code */
 			var select = $('[id=hidden_booking] option[value="' + suggestion.data.booking + '"]');
@@ -168,7 +155,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					// set init
 					$('#unit_sell').html(suggestion.data.unit);
 					$('#stock_select').prop('disabled', false);
-					$("#stock_select").children().remove();
 					$('#product_or_proc').val(1);
 					$('#vaccin_or_no').val(suggestion.data.vaccin);
 					$('#vaccin_freq').val(suggestion.data.vaccin_freq);
@@ -189,43 +175,28 @@ document.addEventListener("DOMContentLoaded", function(){
 					// check if there is stock
 					if (suggestion.data.stock != null)
 					{
-						var stock = "";
+						var stock = suggestion.data.stock;
 
-						// only 1 (preselect)
-						if (suggestion.data.stock.length == 1)
-						{
-							stock = suggestion.data.stock[0];
-							$("#stock_select").append(new Option(stock.barcode + " // " + stock.lotnr, stock.barcode, true, true));
-							if (<?php echo $u_location; ?> != stock.location)
+						// since this is not sorted take
+						// current location first
+						for (let i = 0; i < stock.length; i++) {
+							let s = stock[i];
+
+							if (<?php echo $u_location; ?> == s.location)
 							{
-								$("#stock_select").addClass('is-invalid');
+								$("#stock_select").append(new Option(s.lotnr +" (" + parseFloat(s.volume).toPrecision() + ") - " + s.barcode, s.barcode));
+								
 							}
 						}
-						// multiple
-						else
-						{
-							// since this is not sorted take
-							// current location first
-							for (let i = 0; i < suggestion.data.stock.length; i++) {
-								stock = suggestion.data.stock[i];
+						// other locations
+						for (let i = 0; i < stock.length; i++) {
+							let s = stock[i];
 
-								if (<?php echo $u_location; ?> == stock.location)
-								{
-									var option = new Option(stock.lotnr +" (" + parseFloat(stock.volume).toPrecision() + ") - " + stock.barcode, stock.barcode);
-									$("#stock_select").append(option);
-								}
-							}
-
-							// other locations
-							for (let i = 0; i < suggestion.data.stock.length; i++) {
-								stock = suggestion.data.stock[i];
-
-								if (<?php echo $u_location; ?> != stock.location)
-								{
-									var option = new Option(stock.lotnr +" (" + parseFloat(stock.volume).toPrecision() + ") - " + stock.barcode, stock.barcode);
+							if (<?php echo $u_location; ?> != s.location)
+							{
+								var option = new Option(s.lotnr +" (" + parseFloat(s.volume).toPrecision() + ") - " + s.barcode, s.barcode);
 									option.setAttribute("class", "bg-warning");
-									$("#stock_select").append(option);
-								}
+								$("#stock_select").append(option);
 							}
 						}
 
@@ -234,9 +205,16 @@ document.addEventListener("DOMContentLoaded", function(){
 				}
 			}
 		},
+		onSearchComplete: function (query, suggestion) { 
+			// fire onselect if only 1 results
+			if(suggestion.length == 1 && query.length > 10)
+			{
+				$(this).autocomplete().onSelect(0);
+				$("#amount").focus();
+			}
+		},
 		autoSelectFirst: true,
 		showNoSuggestionNotice: true,
-		groupBy: 'type',
 		minChars: '2'
 	});
 
