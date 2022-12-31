@@ -31,7 +31,7 @@ class Product_price_model extends MY_Model
 		return $this->insert(array(
 					'volume' 		=> $volume,
 					'price' 		=> $price,
-					'product_id' 	=> $id
+					'product_id' 	=> $pid
 				));
 	}
 
