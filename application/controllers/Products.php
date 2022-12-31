@@ -401,7 +401,7 @@ class Products extends Vet_Controller
 							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
 							->with_type()
 							->where(array('input_barcode' => $gsl['pid']))
-							->get()
+							->get_all() // only 1 can return but code expects an array!
 						:
 						$this->products
 							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
