@@ -350,35 +350,6 @@ class Products extends Vet_Controller
 		echo ($result) ? json_encode($result) : json_encode(array());
 	}
 
-	# get product by barcode, ajax return
-	public function get_product_by_barcode()
-	{
-		/* this should be deprecated : perhaps for internal barcodes ? */
-
-		// $query = $this->input->get('barcode');
-		// $loc = $this->input->get('loc');
-		// $gsl = parse_gs1($query);
-		// var_dump($gsl);
-		// // not right format
-		// if (!$gsl) { return $return; }
-		//
-		// // search for product w/ this barcode
-		// $return = $this->get_gs1_barcode($gsl);
-		//
-		// echo json_encode(array("query" => $query, "suggestions" => $return));
-
-		$result = $this->stock
-					->fields('eol, barcode, volume')
-					->with_products('fields: name, unit_sell, btw_sell, booking_code')
-				->where(array(
-					'barcode' 	=> $this->input->get('barcode'),
-					'location' 	=> $this->input->get('loc')
-				))->get();
-
-		echo ($result) ? json_encode($result) : json_encode(array());
-	}
-
-
 	/*
 		get_product is used in stock_add
 		cause we can only add stock products
