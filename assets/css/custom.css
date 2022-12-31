@@ -26,3 +26,9 @@
   filter: blur(8px);
   -webkit-filter: blur(8px);
 }
+
+
+/* sb-admin and boostrap give a margin to p elements */
+.trumbowyg-editor p {
+	margin: 0px;
+}

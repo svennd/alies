@@ -1,8 +1,4 @@
 <style>
-.trumbowyg-editor, .trumbowyg-textarea {
-	line-height: 0.6;
-}
-
 .dropbox{
     border:2px dashed #d3d8e8;
 }

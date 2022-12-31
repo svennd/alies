@@ -1,8 +1,3 @@
-<style>
-.trumbowyg-editor, .trumbowyg-textarea {
-	line-height: 0.6;
-}
-</style>
 <!-- report form -->
 <div class="row">
 	<div class="col-md-8">
