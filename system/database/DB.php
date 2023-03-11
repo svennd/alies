@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -45,8 +46,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link	https://codeigniter.com/userguide3/database/
  *
  * @param 	string|string[]	$params
+ * @param 	bool		$query_builder_override
+ *				Determines if query builder should be used or not
  */
-function &DB($params = '')
+function &DB($params = '', $query_builder_override = NULL)
 {
 	// Load the DB config file if a DSN string wasn't passed
 	if (is_string($params) && strpos($params, '://') === FALSE)
@@ -80,7 +83,7 @@ function &DB($params = '')
 			}
 		}
 
-		if (empty($db))
+		if ( ! isset($db) OR count($db) === 0)
 		{
 			show_error('No database connection settings were found in the database config file.');
 		}
@@ -147,29 +150,52 @@ function &DB($params = '')
 		show_error('You have not selected a database type to connect to.');
 	}
 
+	// Load the DB classes. Note: Since the query builder class is optional
+	// we need to dynamically create a class that extends proper parent class
+	// based on whether we're using the query builder class or not.
+	if ($query_builder_override !== NULL)
+	{
+		$query_builder = $query_builder_override;
+	}
+	// Backwards compatibility work-around for keeping the
+	// $active_record config variable working. Should be
+	// removed in v3.1
+	elseif ( ! isset($query_builder) && isset($active_record))
+	{
+		$query_builder = $active_record;
+	}
+
 	require_once(BASEPATH.'database/DB_driver.php');
-	require_once(BASEPATH.'database/DB_query_builder.php');
-	if ( ! class_exists('CI_DB', FALSE))
+
+	if ( ! isset($query_builder) OR $query_builder === TRUE)
+	{
+		require_once(BASEPATH.'database/DB_query_builder.php');
+		if ( ! class_exists('CI_DB', FALSE))
+		{
+			/**
+			 * CI_DB
+			 *
+			 * Acts as an alias for both CI_DB_driver and CI_DB_query_builder.
+			 *
+			 * @see	CI_DB_query_builder
+			 * @see	CI_DB_driver
+			 */
+			class CI_DB extends CI_DB_query_builder { }
+		}
+	}
+	elseif ( ! class_exists('CI_DB', FALSE))
 	{
 		/**
-		 * CI_DB
-		 *
-		 * Acts as an alias for both CI_DB_driver and CI_DB_query_builder.
-		 *
-		 * @see	CI_DB_query_builder
-		 * @see	CI_DB_driver
+		 * @ignore
 		 */
-		class CI_DB extends CI_DB_query_builder {}
+		class CI_DB extends CI_DB_driver { }
 	}
 
 	// Load the DB driver
 	$driver_file = BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver.php';
+
 	file_exists($driver_file) OR show_error('Invalid DB driver');
 	require_once($driver_file);
-
-	// Load the result classes as well
-	require_once(BASEPATH.'database/DB_result.php');
-	require_once(BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_result.php');
 
 	// Instantiate the DB adapter
 	$driver = 'CI_DB_'.$params['dbdriver'].'_driver';

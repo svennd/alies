@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -556,17 +557,25 @@ abstract class CI_DB_forge {
 	/**
 	 * Column Add
 	 *
+	 * @todo	Remove deprecated $_after option in 3.1+
 	 * @param	string	$table	Table name
 	 * @param	array	$field	Column definition
+	 * @param	string	$_after	Column for AFTER clause (deprecated)
 	 * @return	bool
 	 */
-	public function add_column($table, $field)
+	public function add_column($table, $field, $_after = NULL)
 	{
 		// Work-around for literal column definitions
 		is_array($field) OR $field = array($field);
 
 		foreach (array_keys($field) as $k)
 		{
+			// Backwards-compatibility work-around for MySQL/CUBRID AFTER clause (remove in 3.1+)
+			if ($_after !== NULL && is_array($field[$k]) && ! isset($field[$k]['after']))
+			{
+				$field[$k]['after'] = $_after;
+			}
+
 			$this->add_field(array($k => $field[$k]));
 		}
 
@@ -887,33 +896,21 @@ abstract class CI_DB_forge {
 			return;
 		}
 
-		if ( ! array_key_exists('DEFAULT', $attributes))
+		if (array_key_exists('DEFAULT', $attributes))
 		{
-			return;
+			if ($attributes['DEFAULT'] === NULL)
+			{
+				$field['default'] = empty($this->_null) ? '' : $this->_default.$this->_null;
+
+				// Override the NULL attribute if that's our default
+				$attributes['NULL'] = TRUE;
+				$field['null'] = empty($this->_null) ? '' : ' '.$this->_null;
+			}
+			else
+			{
+				$field['default'] = $this->_default.$this->db->escape($attributes['DEFAULT']);
+			}
 		}
-
-		if ($attributes['DEFAULT'] === NULL)
-		{
-			$field['default'] = empty($this->_null) ? '' : $this->_default.$this->_null;
-
-			// Override the NULL attribute if that's our default
-			$attributes['NULL'] = TRUE;
-			$field['null'] = empty($this->_null) ? '' : ' '.$this->_null;
-			return;
-		}
-
-		// White-list CURRENT_TIMESTAMP & similar (e.g. Oracle has stuff like SYSTIMESTAMP) defaults for date/time fields
-		if (
-			isset($attributes['TYPE'])
-			&& (stripos($attributes['TYPE'],    'time') !== FALSE OR stripos($attributes['TYPE'],    'date') !== FALSE)
-			&& (stripos($attributes['DEFAULT'], 'time') !== FALSE OR stripos($attributes['DEFAULT'], 'date') !== FALSE)
-		)
-		{
-			$field['default'] = $this->_default.$attributes['DEFAULT'];
-			return;
-		}
-
-		$field['default'] = $this->_default.$this->db->escape($attributes['DEFAULT']);
 	}
 
 	// --------------------------------------------------------------------
