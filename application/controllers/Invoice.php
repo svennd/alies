@@ -27,14 +27,19 @@ class Invoice extends Vet_Controller
 		$dt = new DateTime();
 		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
 		
-		if($this->ion_auth->in_group("admin"))
+		# restrict normal vets to 250 (todo: make config variable)
+		$search_limit = 250;
+		# set default lookback to 7 days for vets
+		$dt->modify('-7 day');
+
+		if ($this->ion_auth->in_group("admin"))
 		{
-			$dt->modify('-30 day');
-		}
-		else
-		{
-			$dt->modify('-7 day');
-		}
+			# set default lookback to ~1month
+			$dt->modify('-23 day');
+			# set restriction for admin loose
+			$search_limit = 5000;
+		}  
+
 
 		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
 
@@ -44,7 +49,8 @@ class Invoice extends Vet_Controller
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
 			->with_owner('fields:last_name,id,low_budget,debts,btw_nr')
-			->limit(250)
+			->limit($search_limit)
+			->order_by('created_at', 'desc')
 			->get_all();
 
 		# max search for vets ; 30 days
@@ -338,7 +344,7 @@ class Invoice extends Vet_Controller
 		$this->pdf->create(
 			$this->load->view('bills/report_print', $data, true), 
 			"bill_" . get_bill_id($bill_id, $bill['created_at']), 
-			true
+			false
 		);
 	}
 

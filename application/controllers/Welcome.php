@@ -19,6 +19,7 @@ class Welcome extends Vet_Controller
 	
 	public function index()
 	{
+		
 		# upgrade if available
 		# if success = version
 		# if none = true
