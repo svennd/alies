@@ -76,7 +76,7 @@
 		<?php endif; ?>
 
 		<?php if ($bill['status'] == PAYMENT_PAID): ?>
-		<p class="lead"><?php echo $this->lang->line('payment'); ?>: <?php echo get_bill_status($bill['status']); ?>!</p>
+		<p class="lead"><?php echo $this->lang->line('payment'); ?>: <?php echo get_bill_status($bill['status']); ?>! </p>
 		<?php
 			$cash = round((float) $bill['cash'], 2);
 			$card = round((float) $bill['card'], 2);
