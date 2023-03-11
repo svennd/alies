@@ -1,14 +1,17 @@
 <?php 
     $str_monthly = ($month == 0) ? $this->lang->line('monthly') : $current_date->Format('F');
 
+    $cclm = ($client_contacts_lm == 0) ? 1 : $client_contacts_lm;
     $c = ($month == 0) ? 
-        ((($client_contacts*(1/(date("j") / date("t"))))-$client_contacts_lm)/$client_contacts_lm)*100
+        ((($client_contacts*(1/(date("j") / date("t"))))-$cclm)/$cclm)*100
         : 
-        (($client_contacts-$client_contacts_lm)/$client_contacts_lm)*100;
+        (($client_contacts-$cclm)/$cclm)*100;
     
     # approximate a year
-    $p = ((($yearly_earnings*(1/(date("z") / 365))) - $yearly_earnings_ly) / $yearly_earnings_ly) * 100;
-    $y = ((($client_contacts_year*(1/(date("z") / 365))) - $client_contacts_year_ly) / $client_contacts_year_ly) * 100;
+    $yearly = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
+    $yearlyc = ($client_contacts_year_ly == 0 ) ? 1 : $client_contacts_year_ly;
+    $p = ((($yearly_earnings*(1/(date("z")+1 / 365))) - $yearly) / $yearly) * 100;
+    $y = ((($client_contacts_year*(1/(date("z")+1 / 365))) - $yearlyc) / $yearlyc) * 100;
 ?>
 
 
