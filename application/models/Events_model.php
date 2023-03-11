@@ -135,7 +135,7 @@ class Events_model extends MY_Model
 		}
 		/* get procedures on every event */
 		$sql = "
-				SELECT procedures_id, amount, net_price, booking, events_procedures.price, btw, procedures.name
+				SELECT procedures_id, amount, net_price, booking, events_procedures.price, btw, procedures.name, events_procedures.created_at
 				FROM `events_procedures`
 				JOIN
 					`procedures`
