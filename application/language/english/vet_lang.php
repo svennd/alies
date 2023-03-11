@@ -154,6 +154,7 @@ $lang['amount']      = 'Amount';
 $lang['search_range']      = 'Search Range';
 $lang['open_invoices']      = 'Open invoices';
 $lang['Quantity']      = 'Quantity';
+$lang['Unit_price']      = 'Unit price';
 $lang['Price']      = 'Price';
 $lang['VAT']                  = 'VAT';
 $lang['Total']                = 'Total';
@@ -262,6 +263,8 @@ $lang['description']            = 'Description';
 $lang['bill_id']                = 'Bill id'; 
 $lang['bill_date']              = 'Bill date'; 
 $lang['bill_due_date']          = 'Due Date'; 
+$lang['Total_net_excl']         = 'Total excl. vat'; 
+$lang['Total_inc']              = 'Total incl. vat'; 
 
 # prices
 $lang['price_from']             = 'From'; 

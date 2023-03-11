@@ -161,6 +161,7 @@ $lang['amount']      = 'Bedrag';
 $lang['search_range']      = 'Zoek';
 $lang['open_invoices']      = 'Open facturen';
 $lang['Quantity']      = 'Hoeveelheid';
+$lang['Unit_price']      = 'Eenheidsprijs';
 $lang['Price']      = 'Prijs';
 $lang['VAT']      = 'BTW';
 $lang['Total']      = 'Totaal';
@@ -263,12 +264,14 @@ $lang['vhbcode']                = 'Registratienummer';
 
 # bills
 $lang['bill_header']            = 'Factuur'; 
-$lang['payment_detail']         = '(gedeeltelijk) betaald'; 
+$lang['payment_detail']         = 'Detail'; 
 $lang['bill_location']          = 'Praktijk'; 
 $lang['description']            = 'Omschrijving'; 
 $lang['bill_id']                = 'Factuurnummer'; 
 $lang['bill_date']              = 'Factuurdatum'; 
 $lang['bill_due_date']          = 'Vervaldag'; 
+$lang['Total_net_excl']         = 'Totaal excl. btw'; 
+$lang['Total_inc']              = 'Totaal incl. btw'; 
 
 # prices
 $lang['price_from']             = 'Van'; 
