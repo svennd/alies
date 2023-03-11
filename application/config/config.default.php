@@ -535,11 +535,6 @@ $config['rewrite_short_tags'] = false;
 $config['proxy_ips'] = '';
 
 /*
-	install script
-*/
-$config['install'] = false;
-
-/*
 	mail config
 */
 $config['smtp_host'] = "";
