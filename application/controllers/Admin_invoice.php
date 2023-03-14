@@ -39,6 +39,7 @@ class Admin_invoice extends Admin_Controller
     }
 
 	# this is very tricky
+	# A bill can only be deleted if there is no invoice_id assigned !!!
 	public function rm_bill(int $bill_id)
 	{
 		$this->load->model('Vaccine_model', 'vaccine');
@@ -50,6 +51,16 @@ class Admin_invoice extends Admin_Controller
 
 		# this bill
 		$bill = $this->bills->get($bill_id);
+
+		# verify there is not a invoice id assigned
+		if (!is_null($bill['invoice_id'])) 
+		{
+			$this->logs->logger(ERROR, "attempt_rm_invoice", "failed attempt to rm bill : " . $bill_id . " with invoice_id = " . $bill['invoice_id'] . " reason : " . $this->input->post('reason'));
+			
+			redirect('admin_invoice/edit_bill/' . $bill_id, 'refresh');
+
+			return 0;
+		}
 
 		# get all events from this bill
 		$events_from_bill = $this->events->where(array('payment' => $bill_id))->get_all();

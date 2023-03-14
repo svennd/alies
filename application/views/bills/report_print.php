@@ -42,7 +42,7 @@
 <body>
 <?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>  
 	<br/>
-	<h3><?php echo $this->lang->line('bill_header'); ?></h3>
+	<h3><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?></h3>
   <table width="100%">
     <tr>
         <td>
@@ -71,12 +71,12 @@
 
 <table width="100%">
 	<tr>
-		<th><?php echo $this->lang->line('bill_id'); ?></th>
-		<th><?php echo $this->lang->line('bill_date'); ?></th>
+		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_id'); ?></th>
+		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
 		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
 	</tr>
 	<tr>
-		<td align="center"><?php echo get_bill_id($bill['id'], $bill['created_at']); ?></td>
+		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id'], $bill['created_at']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></td>
 		<td align="center"><?php echo date_format(date_create($bill['created_at']), "d-m-Y"); ?></td>
 		<td align="center">
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>

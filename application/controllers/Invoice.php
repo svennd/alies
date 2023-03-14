@@ -244,7 +244,7 @@ class Invoice extends Vet_Controller
 
 	# remove products from stock
 	# set bill amount to payed part
-	public function bill_pay($bill_id)
+	public function bill_pay(int $bill_id)
 	{
 		$bill = $this->bills->get($bill_id);
 
@@ -266,6 +266,10 @@ class Invoice extends Vet_Controller
 
 			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value, "msg" => $this->input->post('msg')), $bill_id);
 
+			# generate an invoice id, these HAVE to be +1 everytime. 
+			# every new year we start at 1 again
+			$this->bills->set_invoice_id($bill_id);
+			
 			# remove products from stock
 			# only do this when the payment is not yet processed once before
 			# if it was open->partial->done this could be ran twice, generating another stock reduction
@@ -277,6 +281,12 @@ class Invoice extends Vet_Controller
 			}
 
 		}
+		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
+	}
+
+	public function make_invoice_id(int $bill_id)
+	{
+		$this->bills->set_invoice_id($bill_id);
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 

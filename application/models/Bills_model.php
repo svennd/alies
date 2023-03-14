@@ -222,4 +222,39 @@ class Bills_model extends MY_Model
 		return ($this->db->query($sql)->result_array());
 
 	}
+
+	public function set_invoice_id(int $bill_id)
+	{
+		// if the last id has year == last_year we should reset to 1
+		// basically count + 1 and every year reset to 1
+		// COALESCE(MAX(invoice_id),0) ==> IFNULL(MAX(invoice_id, 0))
+		// limit 1 is overkill 
+		$sql = "
+			UPDATE 
+				bills
+			SET
+				invoice_id = (
+					SELECT 
+						COALESCE(MAX(invoice_id),0)
+					FROM 
+						bills
+					WHERE
+						year(created_at) = '" . date('Y') . "'
+					) + 1
+			WHERE
+				id = '" . $bill_id . "'
+				AND
+				invoice_id IS NULL
+			LIMIT
+				1
+			;
+		";
+		$this->db->trans_start();
+		$this->db->query($sql);
+		$this->db->trans_complete();
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->logs->logger(ERROR, "set_invoice_id", "failed to do transaction for bill_id:" . (int) $bill_id);
+		}
+	}
 }

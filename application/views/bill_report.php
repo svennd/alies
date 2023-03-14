@@ -6,7 +6,6 @@
 ?>
 <div class="row">
 	<div class="col-lg-12 mb-4">
-
 	<?php if ($open_bills): ?>
 	<div class="alert alert-danger" role="alert">
 	<?php echo $this->lang->line('open_invoices'); ?> !<br/>
@@ -17,14 +16,21 @@
 	<?php endif; ?>
 
 	<div class="card mb-4">
-		<div class="card-header">
+		<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div>
 			<a href="<?php echo base_url(); ?>invoice"><?php echo $this->lang->line('Invoice'); ?></a> /
 			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-			<?php echo $this->lang->line('bill'); ?> (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>)
+			<?php echo $this->lang->line('check'); ?> (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>) 
+			</div>
+			<div class="dropdown no-arrow">
+				<?php if($bill['status'] == PAYMENT_PAID || !is_null($bill['invoice_id'])): ?>
+					<strong>#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></strong>
+				<?php else: ?>
+					<a href="<?php echo base_url('invoice/make_invoice_id/' . (int) $bill['id']); ?>" class="btn btn-outline-success btn-sm"><?php echo $this->lang->line('create_invoice'); ?></a>
+				<?php endif; ?>
+			</div>
 		</div>
 		<div class="card-body">
-
-
 			<div class="card-body p-0">
 
 				<div class="row">

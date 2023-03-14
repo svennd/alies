@@ -113,6 +113,10 @@
                 <div class="card-body text-success">
                     <table class="table">
                         <tr>
+                            <td><?php echo $this->lang->line('bill_id'); ?></td>
+                            <td><?php echo (!is_null($bill['invoice_id'])) ? get_invoice_id($bill['invoice_id'], $bill['created_at']) : 'not assigned'; ?></td>
+                        </tr>
+                        <tr>
                             <td>Client</td>
                             <td><a href="<?php echo base_url('owners/detail/' . $bill['owner_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
                         </tr>
@@ -146,7 +150,7 @@
     
     <div class="col-lg-6">
             <div class="card border-danger my-3" style="height:100%;">
-                <div class="card-header text-danger">Remove bill</div>
+                <div class="card-header <?php echo (!is_null($bill['invoice_id'])) ? "text-secondary" : "text-danger"; ?>">Remove bill</div>
 
                 <div class="card-body">
                     <form action="<?php echo base_url('admin_invoice/rm_bill/' . $bill['id']); ?>" method="post" autocomplete="off">
@@ -156,7 +160,7 @@
                                 <input type="text" class="form-control" name="reason">
                             </div>
                         </div>
-                        <button type="submit" name="submit" value="1" class="btn btn-danger">Delete bill</button>
+                        <button type="submit" name="submit" value="1" class="btn btn-danger" <?php echo (!is_null($bill['invoice_id'])) ? "disabled" : ""; ?>>Delete bill</button>
                     </form>
                 </div>
                </div>
