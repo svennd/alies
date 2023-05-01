@@ -9,7 +9,22 @@
 				</div>
 			</div>
 			<div class="card-body">
+				<form action="<?php echo base_url('lab/detail/' . $lab_info['id']); ?>" method="post" autocomplete="off">
 				<table class="table">
+					<tr>
+						<td><?php echo $this->lang->line('pet_info'); ?></td>
+						<td>
+							<?php if ($lab_info['pet']): ?>
+								<a href="<?php echo base_url('pets/fiche/' . $lab_info['pet']['id']); ?>"><?php echo $lab_info['pet']['name']; ?></a>
+							<?php else: ?>
+								<select name="pet_id" style="width:100%" id="pet_id" data-allow-clear="1">
+									<?php if($lab_info['pet']): ?>
+									<option value="<?php echo $lab_info['pet']['id']; ?>" selected></option>
+									<?php endif; ?>
+								</select>
+							<?php endif; ?>
+						</td>
+					</tr>
 					<tr>
 						<td><?php echo $this->lang->line('lab_received'); ?></td>
 						<td><?php echo $lab_info['lab_date']; ?></td>
@@ -23,15 +38,14 @@
 					<tr>
 						<td><?php echo $this->lang->line('comment'); ?></td>
 						<td>
-							<form action="<?php echo base_url('lab/detail/' . $lab_info['id']); ?>" method="post" autocomplete="off">
-								<div class="form-group">
-									<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($lab_info['comment'])) ? $lab_info['comment']: '' ?></textarea>
-								</div>
-								<button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
-							</form>
+							<div class="form-group">
+								<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($lab_info['comment'])) ? $lab_info['comment']: '' ?></textarea>
+							</div>
+							<button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
 						</td>
 					</tr>
 				</table>
+				</form>
 
 				<table class="table" id="dataTable">
 					<thead>
@@ -64,5 +78,16 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({responsive: true});
 	$("#labo").addClass('active');
+
+	/* populate supporting vets */
+	$('#pet_id').select2({
+		theme: 'bootstrap4',
+		placeholder: 'Select Pet',
+	ajax: {
+		url: '<?php echo base_url(); ?>pets/get_pet_name',
+		dataType: 'json'
+	},
+	});
+
 });
 </script>

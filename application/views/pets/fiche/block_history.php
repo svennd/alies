@@ -48,12 +48,18 @@
 	<tr>
 		<td data-sort="<?php echo strtotime($history['created_at']) ?>"><?php echo user_format_date($history['created_at'], $user->user_date); ?></td>
 		<td><?php echo get_event_type($history['type'], true); ?></td>
-		<td><?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?></td>
+		<td>
+		<?php if(preg_match('/lab:(\d*)/', $history['title'], $match)): ?>
+			<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" style="padding: 0.05rem 0.5rem;" target="_blank"><?php echo get_event_type($history['type']); ?> <?php echo $this->lang->line('Lab'); ?></a>
+		<?php else: ?>
+			<?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?>
+		<?php endif; ?>
+		</td>
 		<td><?php echo (isset($history['vet']['first_name'])) ? $history['vet']['first_name'] : 'unknown' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
 			<button class="btn btn-sm btn-outline-primary ana"><?php echo $this->lang->line('show'); ?></button>
-			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-sm btn-outline-info"><?php echo $this->lang->line('edit'); ?></a></div>
+			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-sm btn-outline-info"><?php echo $this->lang->line('edit'); ?></a>
 		</td>
 		<td><?php echo nl2br ($history['anamnese']); ?></td>
 		<td><ul>

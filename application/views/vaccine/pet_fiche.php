@@ -11,27 +11,28 @@
 			  <thead>
 				<tr>
 				  <th>Vaccine</th>
+				  <th>Date Event</th>
 				  <th>Date Expire</th>
 				  <th>Event</th>
-				  <th>Location</th>
-				  <th>Vet</th>
-				  <th>Created</th>
+				<th><?php echo $this->lang->line('vet'); ?></th>
+					<th><?php echo $this->lang->line('location'); ?></th>
 				</tr>
 			  </thead>
 			  <tbody>
 				<?php foreach($vaccines as $vac): ?>
 				<tr>
-				  <td><?php echo $vac['product']['name']; ?></td>
-				  <td><?php echo $vac['redo']; ?></td>
-				  <td>
-					<?php if($vac['event_id'] == 0): ?>
-						imported
-					<?php else: ?>
-						<a href="<?php echo base_url(); ?>events/event/<?php echo $vac['event_id']; ?>"><?php echo $vac['event_id']; ?></a></td>
-					<?php endif; ?>
+					<td><?php echo $vac['product']['name']; ?></td>
+					<td><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
+					<td><?php echo $vac['redo']; ?></td>
+					<td>
+						<?php if($vac['event_id'] == 0): ?>
+							imported
+						<?php else: ?>
+							<a href="<?php echo base_url(); ?>events/event/<?php echo $vac['event_id']; ?>"><?php echo $vac['event_id']; ?></a>
+						<?php endif; ?>
+					</td>
 				  <td><?php echo $vac['location']['name']; ?></td>
 				  <td><?php echo $vac['vet']['first_name']; ?></td>
-				  <td><?php echo $vac['created_at']; ?></td>
 				</tr>
 				<?php endforeach; ?>
 			  </tbody>
@@ -52,9 +53,9 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({
 			"pageLength": 50,
 			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-			"order": [[ 1, "desc" ]],
+			"order": [[ 2, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
-				var product_date = new Date(data[1]);
+				var product_date = new Date(data[2]);
 				date_diff = (current_date - product_date);
 				if( date_diff > 0){
 					$(row).addClass("table-secondary");

@@ -153,7 +153,10 @@ class Cron extends MY_Controller
             "17874" => "Niersteen analyse",
 
             // extra? 
-            "18070" => "Bijkomende bepaling"
+            "18070" => "Bijkomende bepaling",
+
+            // Vogels - but also dog/cat
+            "13519" => "DGGR Lipase"
         );
 
         // request

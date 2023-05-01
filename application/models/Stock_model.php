@@ -29,6 +29,14 @@ class Stock_model extends MY_Model
 
 
 	/*
+		normal way to add stock from stock/add & stock/quick
+	*/
+	public function add_stock(int $product_id, $eol, int $location, $in_price, $lotnr, $volume, $barcode = false)
+	{
+
+	}
+
+	/*
 		called in admin_invoice/rm_bill
 	*/
 	public function increase_stock(int $product_id, float $volume, int $location, string $barcode, bool $add_dead_volume = true)
@@ -45,7 +53,19 @@ class Stock_model extends MY_Model
 		$this->logs->stock(DEBUG, "increase_stock", $product_id, $volume, $location);
 
 		// we first try to add to the "active" stock
-		$sql = "UPDATE stock SET volume=volume+" . $volume. " WHERE barcode = '" . $barcode . "' and location = '" . $location . "' and state = '" . STOCK_IN_USE . "' limit 1;";
+		$sql = "UPDATE 
+					stock 
+				SET 
+					volume=volume+" . $volume. " 
+				WHERE 
+					product_id = '". $product_id ."'
+					and
+					barcode = '" . $barcode . "' 
+					and 
+					location = '" . $location . "' 
+					and 
+					state = '" . STOCK_IN_USE . "' 
+				limit 1;";
 		$this->db->query($sql);
 
 		if(!$this->db->affected_rows())

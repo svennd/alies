@@ -20,21 +20,32 @@
 						<?php foreach($reports as $report): ?>
 								<tr>
 									<td><a href="<?php echo base_url('owners/detail/' . $report['owner_id']); ?>"><?php echo $report['owner_name']; ?></a> (<small><?php echo get_symbol($report['pet_type']) ; ?> <?php echo $report['pet_name']; ?></small>)</td>
-									<td><?php echo $report['title']; ?></td>
-									<td>
-										<?php if($report['payment'] == 0): ?>
-										---
-										<?php else : ?>
-										<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm <?php echo ($report['status']) ? 'btn-outline-success' : 'btn-outline-danger'; ?>"><?php echo $this->lang->line('Invoice'); ?></a>
-										<?php endif; ?>
-									</td>
-									<td>
-										<?php if ($report['report'] == REPORT_DONE): ?>
-											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm btn-outline-success"><?php echo $this->lang->line('finished'); ?></a>
-										<?php else : ?>
-											<a href="<?php echo base_url('events/event/'. $report['id']); ?>" class="btn btn-sm btn-outline-danger"><?php echo $this->lang->line('invoice_open'); ?></a>
-										<?php endif; ?>
-									</td>	
+									
+									<?php if(preg_match('/lab:(\d*)/', $report['title'], $match)): ?>
+										<td>
+											<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" target="_blank"><?php echo get_event_type(LAB); ?> <?php echo $this->lang->line('Lab'); ?></a>
+										</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>	
+									<?php else: ?>
+										<td>
+											<?php echo $report['title']; ?>
+										</td>
+										<td>
+											<?php if($report['payment'] == 0): ?>
+											---
+											<?php else : ?>
+											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm <?php echo ($report['status']) ? 'btn-outline-success' : 'btn-outline-danger'; ?>"><?php echo $this->lang->line('Invoice'); ?></a>
+											<?php endif; ?>
+										</td>
+										<td>
+											<?php if ($report['report'] == REPORT_DONE): ?>
+												<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm btn-outline-success"><?php echo $this->lang->line('finished'); ?></a>
+											<?php else : ?>
+												<a href="<?php echo base_url('events/event/'. $report['id']); ?>" class="btn btn-sm btn-outline-danger"><?php echo $this->lang->line('invoice_open'); ?></a>
+											<?php endif; ?>
+										</td>
+									<?php endif; ?>
 									<td><?php echo $report['loc_name']; ?></td>
 									<td><?php echo $report['first_name']; ?></td>
 									<td><?php echo user_format_date($report['updated_at'], $user->user_date); ?></td>

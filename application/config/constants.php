@@ -145,3 +145,4 @@ define('REPORT_DONE', 2);
 define('DISEASE', 0);
 define('OPERATION', 1);
 define('MEDICINE', 2);
+define('LAB', 3);

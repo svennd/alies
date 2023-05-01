@@ -16,7 +16,7 @@ class Lab extends Vet_Controller
 	public function index()
     {
     	$this->_render_page('lab/index', array(
-			"data" => $this->lab->get_all(),
+			"data" => $this->lab->with_pet('fields: name,id')->get_all(),
 		));
 	}
 
@@ -26,20 +26,42 @@ class Lab extends Vet_Controller
 		# update comment
 		$comment_update = false;
 		if ($this->input->post('submit')) {
-			$this->lab
-					->where(array(
-									"id" 	=> (int) $lab_id
-							))
-					->update(array(
-									"comment" => $this->input->post('message'),
-							));
+			$this->lab->
+				update(
+					array( "pet" => (int) $this->input->post('pet_id'), "comment" => $this->input->post('message')),
+					$lab_id
+				);
 			$comment_update = true;
 		}
 
+		$lab_info = $this->lab->with_pet('fields: name, id')->get($lab_id);
+
+		# check if we need to add event
+		if (!is_null($lab_info['pet']) && $this->input->post('pet_id') == $lab_info['pet']['id'])
+		{
+			$this->add_lab_event($lab_id, $lab_info['pet']['id']);
+		}
+
     	$this->_render_page('lab/detail', array(
-			"lab_info" => $this->lab->get($lab_id),
+			"lab_info" => $lab_info,
 			"lab_details" => $this->lab_line->where(array('lab_id' => $lab_id))->get_all(),
             "comment_update" => $comment_update
 		));
+		
     }
+
+	# set the internal pet id
+	private function add_lab_event(int $lab_id, int $pet_id)
+	{
+		$this->events->insert(array(
+				"title" 	=> "lab:" . $lab_id,
+				"pet"		=> $pet_id,
+				"type"		=> LAB,
+				"status"	=> STATUS_CLOSED, # might require status_history
+				"payment" 	=> PAYMENT_PAID,
+				"location"	=> $this->user->current_location,
+				"vet"		=> $this->user->id,
+				"report"	=> REPORT_DONE
+		));
+	}
 }

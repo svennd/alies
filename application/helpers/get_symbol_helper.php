@@ -34,6 +34,8 @@ function get_event_type($type, $name = false)
 			return '<span style="color:#96897B" data-name="operatie"><i class="fas fa-hand-holding-medical"></i></span>'. ($name ? " operation" : "");
 		case MEDICINE:
 			return '<span style="color:#CF995F" data-name="medicine"><i class="fas fa-prescription-bottle-alt"></i></span>'. ($name ? " medicine" : "");
+		case LAB:
+			return '<span style="color:#1da855" data-name="medicine"><i class="fas fa-flask"></i></span>'. ($name ? " lab" : "");
 		default:
 			return '<span style="color:#DFD5A5" data-name="other"><i class="fas fa-fw"></i></span>';
 	}

@@ -23,6 +23,7 @@ class Vet_Controller extends MY_Controller
 		$this->load->model('Stock_location_model', 'stock_location');
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Events_model', 'events');
+		$this->load->model('Sticky_model', 'sticky');
 
 		// $conf = $this->settings->set_cache('all_config')->get_all();
 		$conf = $this->settings->get_all();
@@ -44,19 +45,20 @@ class Vet_Controller extends MY_Controller
 		# required on every page
 		$this->page_data = array(
 								"user" 						=> $this->user,
+								"user" 						=> $this->user,
 								"location" 					=> $this->_get_compass_locations(),
 								"current_location" 			=> $this->_get_current_location(),
 								"mondal" 					=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
+								"cnt_sticky"				=> $this->sticky->count_rows(),
+								"report_count"				=> $this->events
+																->where(array(
+																					'vet' 			=> $this->user->id,
+																					'no_history' 	=> 0,
+																					'report' 		=> 1
+																				))
+																->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
+																->count_rows()
 						);
-
-		$this->page_data['report_count'] = $this->events
-																	->where(array(
-																						'vet' 			=> $this->user->id,
-																						'no_history' 	=> 0,
-																						'report' 		=> 1
-																					))
-																	->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
-																	->count_rows();
 
 		// $sections = array(
 		// 	'config'  => TRUE,

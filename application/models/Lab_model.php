@@ -10,6 +10,15 @@ class Lab_model extends MY_Model
 
 	public function __construct()
 	{
+		/*
+			has_one
+		*/
+		$this->has_one['pet'] = array(
+							'foreign_model' => 'Pets_model',
+							'foreign_table' => 'pets',
+							'foreign_key' => 'id',
+							'local_key' => 'pet'
+						);
 		parent::__construct();
 	}
 

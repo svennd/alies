@@ -56,12 +56,13 @@ class Pets_model extends MY_Model
 		parent::__construct();
 	}
 	
-	public function search_by_name($query)
+	# used in search + search pet in lab
+	public function search_by_name($query, int $limit = 250)
 	{
 		$query = $this->db->escape_like_str($query);
 		$sql = "
 			SELECT 
-				pets.name, owners.*
+				pets.id as pet_id, pets.name, owners.*
 			FROM 
 				pets
 			LEFT JOIN
@@ -75,7 +76,7 @@ class Pets_model extends MY_Model
 			ORDER BY
 				owners.last_bill
 			DESC
-			LIMIT 250
+			LIMIT " . $limit . "
 		";
 		
 		return $this->db->query($sql)->result_array();

@@ -186,7 +186,7 @@ class Events_model extends MY_Model
 				ON
 					ep.event_id = e.id
 
-				LEFT JOIN products as prod
+				RIGHT JOIN products as prod
 				ON
 					prod.id = ep.product_id
 

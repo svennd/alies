@@ -14,6 +14,7 @@
 					<thead>
 						<tr>
 							<th><?php echo $this->lang->line('lab_id'); ?></th>
+							<th><?php echo $this->lang->line('pet_info'); ?></th>
 							<th><?php echo $this->lang->line('lab_comment'); ?></th>
 							<th><?php echo $this->lang->line('lab_received'); ?></th>
 							<th><?php echo $this->lang->line('lab_update'); ?></th>
@@ -24,6 +25,13 @@
 						<?php foreach($data as $d): ?>
 						<tr>
 							<td><a href="<?php echo base_url('lab/detail/'. $d["id"]); ?>"><?php echo $d["lab_id"]; ?></a></td>
+							<td>
+								<?php if(!is_null($d['pet'])): ?>
+								<a href="<?php echo base_url('pets/fiche/' . $d['pet']['id']); ?>"><?php echo $d['pet']['name']; ?></a>
+								<?php else: ?>
+									-
+								<?php endif; ?>
+							</td>
 							<td><?php echo $d["lab_comment"]; ?></td>
 							<td><?php echo $d["lab_date"]; ?></td>
 							<td>

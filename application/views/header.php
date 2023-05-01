@@ -21,6 +21,9 @@
 	<!-- select 2 -->
 	<link href="<?php echo base_url(); ?>vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
 	<link href="<?php echo base_url(); ?>assets/css/select2-bootstrap4.min.css" rel="stylesheet">
+
+  <!-- sweetalert2 -->
+  <link href="<?php echo base_url(); ?>assets/css/sweetalert2.min.css" rel="stylesheet">
 	<?php echo (isset($extra_header)) ? $extra_header : ""; ?>
 
 
@@ -82,7 +85,6 @@
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_in" id="reg_in"><?php echo $this->lang->line('Reg_in'); ?></a>
             <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_out" id="reg_out"><?php echo $this->lang->line('Reg_out'); ?></a>
-            <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/stock_list" id="stock_list">Stock List</a> -->
           </div>
         </div>
       </li>
@@ -101,8 +103,14 @@
       </li>
       <li class="nav-item" id="reports">
         <a class="nav-link" href="<?php echo base_url(); ?>report">
-         <i class="far fa-fw fa-file"></i>
-          <span><?php echo $this->lang->line('Reports'); ?></span></a>
+        <i class="far fa-fw fa-file"></i>
+        <span><?php echo $this->lang->line('Reports'); ?></span></a>
+      </li>
+      </li>
+      <li class="nav-item" id="sticky">
+        <a class="nav-link" href="<?php echo base_url('sticky'); ?>">
+        <i class="far fa-fw fa-sticky-note"></i>
+        <span><?php echo $this->lang->line('sticky'); ?></span></a>
       </li>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
@@ -152,7 +160,6 @@
           <!-- Topbar Navbar -->
 
           <ul class="navbar-nav ml-auto">
-
           <?php if ($this->ion_auth->in_group("admin")): ?>
 	          <li class="nav-item mx-1">
 	              <a class="nav-link" href="<?php echo base_url('admin/enable_vsens'); ?>">
@@ -164,7 +171,14 @@
 	              </a>
             </li>
           <?php endif; ?>
-	          <li class="nav-item mx-1">
+            <li class="nav-item" id="sticky_messages">
+                <a class="nav-link " href="#">
+                    <i style="color:#f6c23e;" class="far fa-sticky-note"></i>
+                    <!-- Counter - Messages -->
+                    <span style="background-color:#f6c23e;" class="badge badge-info badge-counter"><?php echo $cnt_sticky; ?></span>
+                </a>
+            </li>
+	          <li class="nav-item">
 	              <a class="nav-link" href="<?php echo base_url('report'); ?>">
 	                  <i class="fas fa-file fa-fw"></i>
 										<?php if ($report_count > 0): ?>
@@ -186,22 +200,16 @@
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
 				        <a class="dropdown-item" href="<?php echo base_url(); ?>vet/profile">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
+                  <?php echo $this->lang->line('profile'); ?>
                 </a>
                 <a class="dropdown-item" href="<?php echo base_url(); ?>vet/change_password">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
+                  <?php echo $this->lang->line('settings'); ?>
                 </a>
-				<!--
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
-                </a>
-				-->
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
+                  <?php echo $this->lang->line('logout'); ?>
                 </a>
               </div>
             </li>

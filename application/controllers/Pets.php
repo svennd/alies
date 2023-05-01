@@ -263,4 +263,43 @@ class Pets extends Vet_Controller
 		$this->pets->update(array("owner" => $new_owner), $pet_id);
 		redirect('owners/detail/' . $new_owner, 'refresh');
 	}
+
+	# used in lab lookups if we don't know who it is for
+	# best to use the ID, but the name can be done also
+	# the results of name lookup is limited to the last 5
+	# ordered by last_bill of the client
+	public function get_pet_name()
+	{
+		# if nothing given don't present random options.
+		$query = $this->input->get("term");
+		if (!$query)
+		{
+			echo json_encode(array("results" => array()));
+			return;
+		}
+
+		$pets = array();
+		if (is_numeric($query))
+		{
+			# search by id
+			$name = $this->pets->with_owners()->get($query);
+			$pets[] = array(
+				"id" 	=> $name['id'], 
+				"text" 	=> $name['name'] . "(#". $name['id'] . ") - " . $name['owners']['last_name']
+			);
+		}
+		else
+		{
+			# search by string
+			$names = $this->pets->search_by_name(strtolower($query), 5);
+			foreach ($names as $name)
+			{
+				$pets[] = array(
+						"id" 	=> $name['pet_id'], 
+						"text" 	=> $name['name'] . "(#". $name['pet_id'] . ") - " . $name['last_name']
+					);
+			}
+		}
+		echo json_encode(array("results" => $pets));
+	}
 }
