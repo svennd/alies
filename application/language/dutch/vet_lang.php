@@ -28,6 +28,7 @@ $lang['products_expiring']  = 'product(en) komen binnenkort te vervallen.';
 $lang['last_login']  = 'Laatste login';
 
 # profile
+$lang['profile']              = 'Profiel';
 $lang['profile_picture']      = 'Profiel Foto';
 $lang['profile_settings']     = 'Profiel Settings';
 $lang['profile_picture_warning']  = 'Large images, might not upload; Consider offline reducing file size';
@@ -49,6 +50,11 @@ $lang['Vaccins']        = 'Vaccins';
 $lang['Products']       = 'Producten';
 $lang['Stock']          = 'Stock';
 $lang['Lab']            = 'Labo';
+$lang['settings']       = 'Instellingen';
+$lang['sticky']            = 'Plakbriefjes';
+$lang['type_your_sticky']            = 'Schrijf uw bericht hier ...';
+$lang['sticky_saved']            = 'Plakbriefje bewaard!';
+$lang['logout']         = 'Uitloggen';
 
 # owners - search
 $lang['title_search']   = 'Zoeken';

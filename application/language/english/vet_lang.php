@@ -26,6 +26,7 @@ $lang['products_expiring']  = 'product(s) are about to expire.';
 $lang['last_login']  = 'Last login';
 
 # profile
+$lang['profile']              = 'Profile';
 $lang['profile_picture']  = 'Profile Picture';
 $lang['profile_settings']  = 'Profile Settings';
 $lang['profile_picture_warning']  = 'Large images, might not upload; Consider offline reducing file size';
@@ -47,6 +48,11 @@ $lang['Vaccins']         = 'Vaccin';
 $lang['Products']       = 'Producten';
 $lang['Stock']          = 'Stock';
 $lang['Lab']            = 'Lab';
+$lang['settings']            = 'Settings';
+$lang['sticky']            = 'Sticky Notes';
+$lang['type_your_sticky']            = 'Type your message here...';
+$lang['sticky_saved']            = 'Sticky saved!';
+$lang['logout']         = 'logout';
 
 # owners
 $lang['title_search']     = 'Search';
