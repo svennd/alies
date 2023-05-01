@@ -176,7 +176,7 @@ class Breeds extends Vet_Controller
 
         # log
         $this->logs->logger(INFO, "merge_breeds", "new breed : " . $new_merged_breed . " - old breed :" . $old_breed);
-
+        redirect('breeds');
     }
 
     # edit breeds
