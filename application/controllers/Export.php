@@ -178,6 +178,7 @@ class Export extends Admin_Controller
 	public function facturen($search_from, $search_to, int $status = 0)
 	{
 		$bill_overview = $this->bills
+			->where('invoice_id IS NOT NULL', null, null, false, false, true)
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->order_by('created_at', 'asc')
@@ -292,7 +293,7 @@ class Export extends Admin_Controller
 				array(
 							'Customer_Prime'	=> $factuur['owner_id'],
 							'DocType' 			=> '10',
-							'DocNumber'			=> date("Y") . substr(str_pad($factuur['id'], 5, "0", STR_PAD_LEFT), 0, 5),
+							'DocNumber'			=> get_invoice_id($factuur['invoice_id'], $factuur['created_at']),
 							'DocDate' 			=> $dt->format('d/m/Y'),
 							'Amount' 			=> $this->amount($factuur['amount']),
 							'VATAmount' 		=> $this->amount($total_btw),
