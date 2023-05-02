@@ -219,11 +219,10 @@ class Export extends Admin_Controller
 					- Year_Alfa 		: Jaar
 
 			*/
-			$bill_id = $factuur['id'];
 
 			/* query events */
 			$events = $this->events
-				->where(array("payment" => $bill_id))
+				->where(array("payment" => $factuur['id']))
 				->fields('id, pet, payment')
 				->get_all();
 
@@ -232,23 +231,7 @@ class Export extends Admin_Controller
 				continue;
 			}
 
-			$event_tally = array();
-			$event_booking = array();
-
-			foreach ($events as $e) {
-				$event_bill = $this->events->get_products_and_procedures($e['id']);
-				
-				if (count($event_bill['tally']) == 0) {
-					continue;
-				}
-
-				foreach ($event_bill['tally'] as $btw => $value) {
-					$event_tally[$btw] = (isset($event_tally[$btw])) ? $event_tally[$btw] + $value : $value;
-				}
-				foreach ($event_bill['booking'] as $booking => $value) {
-					$event_booking[$booking] = (isset($event_booking[$booking])) ? $event_booking[$booking] + $value: $value;
-				}
-			}
+			list($event_tally, $event_booking) = $this->event_tally_booking($events);
 
 			/* set item */
 			$Sale = $domtree->createElement("Sale");
@@ -344,26 +327,58 @@ class Export extends Admin_Controller
 				));
 
 			# booking codes
-			foreach ($event_booking	as $booking => $tally) {
-				$current_booking_code = $this->booking->fields('code, btw')->get($booking);
-
-				$detail = $domtree->createElement("Detail");
-				$detail = $Details->appendChild($detail);
-
-				$this->append_child_element($detail, $domtree,
-					array(
-								'Account'			=> $current_booking_code['code'],
-								'Amount' 			=> $this->amount($tally),
-								'DebCre'			=> -1,
-								'Ventil' 			=> $this->get_btw_id($current_booking_code['btw']), // btw
-								// 1:0%, 2:6%, 3:12%, 4:21%
-
-					));
-			}
+			$this->generate_booking_xml($event_booking, $domtree, $Details);
 		}
 		/* get the xml printed */
 		Header('Content-type: text/xml');
 		echo $domtree->saveXML();
+	}
+
+	/*
+		generate booking codes
+	*/
+	private function generate_booking_xml(array $event_booking, $domtree, $Details)
+	{
+		foreach ($event_booking	as $booking => $tally) {
+			$current_booking_code = $this->booking->fields('code, btw')->get($booking);
+
+			$detail = $domtree->createElement("Detail");
+			$detail = $Details->appendChild($detail);
+
+			$this->append_child_element($detail, $domtree,
+				array(
+							'Account'			=> $current_booking_code['code'],
+							'Amount' 			=> $this->amount($tally),
+							'DebCre'			=> -1,
+							'Ventil' 			=> $this->get_btw_id($current_booking_code['btw']), // btw
+							// 1:0%, 2:6%, 3:12%, 4:21%
+
+				));
+		}
+		return $domtree;
+	}
+
+	/*
+
+	*/
+	private function event_tally_booking(array $events)
+	{
+		foreach ($events as $e) {
+			$event_bill = $this->events->get_products_and_procedures($e['id']);
+			
+			if (count($event_bill['tally']) == 0) {
+				continue;
+			}
+
+			foreach ($event_bill['tally'] as $btw => $value) {
+				$event_tally[$btw] = (isset($event_tally[$btw])) ? $event_tally[$btw] + $value : $value;
+			}
+			foreach ($event_bill['booking'] as $booking => $value) {
+				$event_booking[$booking] = (isset($event_booking[$booking])) ? $event_booking[$booking] + $value: $value;
+			}
+		}
+
+		return array($event_tally, $event_booking);
 	}
 
 	/*
