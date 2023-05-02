@@ -31,10 +31,7 @@
 			  <tbody>
 				<?php foreach($expiring_vacs as $vac): ?>
 				<tr>
-				  
-					<td><?php echo $report['loc_name']; ?></td>
-					<td><?php echo $report['first_name']; ?></td>
-					<td><?php echo user_format_date($report['updated_at'], $user->user_date); ?></td><td><a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
+					<td><a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
 					<td><?php echo ($vac['last_bill']) ? time_ago($vac['last_bill']) : '-'; ?></td>
 					<td><?php echo user_format_date($vac['redo_date'],  $user->user_date); ?></td>
 					<td><?php echo $vac['product_name']; ?></td>
