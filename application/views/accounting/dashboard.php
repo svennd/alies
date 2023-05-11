@@ -278,6 +278,7 @@
                     </div>
                 </div>
                 <div class="card-body overflow-auto" style="height:150px;">
+                    <?php if($logs): ?>
                     <table class="table table-sm">
                     <?php foreach($logs as $log): ?>
                         <tr>
@@ -288,6 +289,7 @@
                         </tr>
                     <?php endforeach; ?>
                     </table>
+                    <?php endif; ?>
                 </div>
             </div>
 	</div>
