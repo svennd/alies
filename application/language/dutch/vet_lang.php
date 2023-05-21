@@ -105,6 +105,7 @@ $lang['no_vaccines']  = 'Geen vaccinaties bekend';
 $lang['vaccines']  = 'Vaccin';
 $lang['title_vaccines']  = 'Vaccinatie';
 $lang['exp_date']  = 'Vervaldatum';
+$lang['disable']  = 'Uit';
 
 ## menu
 $lang['new_consult']    = 'Raadpleging';
@@ -208,6 +209,7 @@ $lang['options']     = 'Opties';
 $lang['sum']             = 'Som'; 
 $lang['create_invoice']     = 'Factuur maken'; 
 $lang['show_bill']     = 'Toon factuur';
+$lang['reminder']     = 'Rappel';
 
 # event types
 $lang['disease']             = 'ziekte'; 

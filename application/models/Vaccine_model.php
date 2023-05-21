@@ -138,6 +138,8 @@ class Vaccine_model extends MY_Model
 				pets.death = 0
 			AND
 				pets.lost = 0
+			AND
+				vac.no_rappel = 0
 			GROUP BY
 				owners.id
 

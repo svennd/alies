@@ -51,17 +51,21 @@
 		<tr>
 			<td colspan="7">
 				<form action="<?php echo base_url(); ?>events/edit_vaccin/<?php echo $event_id; ?>/<?php echo $product['vaccine']['id']; ?>" id="form_vaccin_<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
-				  <div class="form-group mb-2">
-					<span class="fa-stack" style="vertical-align: top;">
+				  <div class="form-group">
+					<span class="fa-stack <?php if($product['vaccine']['no_rappel']): ?>text-danger<?php else: ?>text-success<?php endif; ?>" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
 					  <i class="fas fa-level-up-alt fa-rotate-90 fa-stack-1x"></i>
-					</span>		
+					</span>
 				  </div>
-				  <div class="form-group mb-2 mx-3">
+				  <div class="form-group">
 					<label for="redo<?php echo $product['vaccine']['id']; ?>" class="sr-only">Redo</label>
-					<input type="date" name="redo" class="form-control" value="<?php echo $product['vaccine']['redo']; ?>" id="redo<?php echo $product['vaccine']['id']; ?>">
+					<input type="date" name="redo" class="form-control form-control-sm" value="<?php echo $product['vaccine']['redo']; ?>" id="redo<?php echo $product['vaccine']['id']; ?>">
 				  </div>
-				  <button type="submit" class="btn btn-success mb-2 btn-sm">Change Expiry</button>
+				  <div class="btn-group ml-4" role="group" aria-label="Basic example">
+					<button type="submit" class="btn btn-success btn-sm"><i class="fas fa-wrench"></i> <?php echo $this->lang->line('reminder'); ?></button>
+					<button type="submit" name="disable" value="1" class="btn btn-danger btn-sm"><i class="far fa-bell-slash"></i> <?php echo $this->lang->line('disable'); ?></button>
+				</div>
+				<div class="ml-5" id="msg_redo<?php echo $product['vaccine']['id']; ?>">&nbsp;</div>
 				</form>
 			</td>
 		</tr>

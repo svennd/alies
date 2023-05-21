@@ -1,0 +1,42 @@
+# 
+#   last bill not set = null
+#   last bill year
+#   number of owners that have the last bill in that year
+#   amount of animals that are connected to those owners (dead/alive)
+#   amount of events linked to those pets
+#
+SELECT 
+    YEAR(last_bill), COUNT(DISTINCT owners.id), COUNT(DISTINCT pets.id), count(events.id)
+FROM 
+    owners 
+LEFT JOIN
+    pets ON pets.owner = owners.id
+LEFT JOIN
+    events ON events.pet = pets.id
+GROUP BY YEAR(last_bill);
+
+
+YEAR(last_bill)	COUNT(DISTINCT owners.id)	COUNT(DISTINCT pets.id)	count(events.id)	
+NULL	3273	5088	61	
+2002	250	512	0	
+2003	213	371	1	
+2004	242	460	4	
+2005	246	419	0	
+2006	207	416	0	
+2007	263	530	284	
+2008	215	471	478	
+2009	232	428	585	
+2010	245	487	691	
+2011	241	392	707	
+2012	282	493	1096	
+2013	295	521	1148	
+2014	312	586	1063	
+2015	302	515	1258	
+2016	343	618	1801	
+2017	287	576	1637	
+2018	340	579	1813	
+2019	353	627	1733	
+2020	384	747	2317	
+2021	397	686	2243	
+2022	675	1330	5530	
+2023	671	1626	9916	

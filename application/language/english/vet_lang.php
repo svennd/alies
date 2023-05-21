@@ -99,6 +99,7 @@ $lang['no_vaccines']  = 'No known vaccines';
 $lang['vaccines']  = 'Vaccine';
 $lang['title_vaccines']  = 'Vaccinations';
 $lang['exp_date']  = 'Expiry date';
+$lang['disable']  = 'Disable';
 
 ## menu
 $lang['new_consult']    = 'New Consult';
@@ -110,7 +111,7 @@ $lang['export']         = 'Export';
 # report
 $lang['report']         = 'Report';
 $lang['enable_report']         = 'Enable Report';
-$lang['disable_report']         = 'Disable Report';
+$lang['disable_report']         = 'disable Report';
 $lang['media']         = 'Media';
 $lang['files']         = 'Files';
 $lang['save_report']         = 'Save Report';
@@ -202,6 +203,7 @@ $lang['options']     = 'Options';
 $lang['sum']        = 'Sum'; 
 $lang['create_invoice']     = 'Create invoice'; 
 $lang['show_bill']     = 'Show bill';
+$lang['reminder']     = 'Reminder';
 
 # event types
 $lang['disease']             = 'disease'; 

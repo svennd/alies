@@ -53,7 +53,7 @@ class Events extends Vet_Controller
 										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, barcode')
 										->with_prices('fields: volume, price|order_inside:volume asc')
-										->with_vaccine('fields: id, redo')
+										->with_vaccine('fields: id, redo, no_rappel')
 										->where(array("event_id" => $event_id))
 										->get_all();
 										
@@ -227,6 +227,7 @@ class Events extends Vet_Controller
 											"event_line"	=> $prod_line,
 											"pet" 				=> $event['pet'],
 											"redo"				=> $date->format('Y-m-d'),
+											"no_rappel"		=> 0,
 											"location"		=> $this->user->current_location,
 											"vet"					=> $this->user->id
 										));
@@ -304,7 +305,14 @@ class Events extends Vet_Controller
 
 	public function edit_vaccin($event_id, $id)
 	{
-		$this->vaccine->update(array("redo" => $this->input->post('redo')), $id);
+		if ($this->input->post('disable'))
+		{
+			$this->vaccine->update(array("no_rappel" => 1), $id);
+		}
+		else
+		{
+			$this->vaccine->update(array("redo" => $this->input->post('redo'), "no_rappel" => 0), $id);
+		}
 		redirect('events/event/' . $event_id);
 	}
 

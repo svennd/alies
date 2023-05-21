@@ -1,308 +1,401 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
 --
--- Tabelstructuur voor tabel `alerts`
---
+-- Host: localhost
+-- Generation Time: May 18, 2023 at 08:59 AM
+-- Server version: 10.11.2-MariaDB-1
+-- PHP Version: 8.2.5
 
-DROP TABLE IF EXISTS `alerts`;
-CREATE TABLE IF NOT EXISTS `alerts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `level` int(11) NOT NULL,
-  `msg` text NOT NULL,
-  `user_accepted` int(11) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `alies`
+--
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `bills`
+-- Table structure for table `badges`
 --
 
-DROP TABLE IF EXISTS `bills`;
-CREATE TABLE IF NOT EXISTS `bills` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `badges` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `description` text NOT NULL,
+  `value` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bills`
+--
+
+CREATE TABLE `bills` (
+  `id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
   `vet` int(11) NOT NULL,
   `location` int(11) NOT NULL,
-  `amount` float(10,2) DEFAULT NULL,
-  `cash` float(10,2) DEFAULT NULL,
-  `card` float(10,2) DEFAULT NULL,
-  `status` int(3) NOT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `cash` decimal(10,2) DEFAULT NULL,
+  `card` decimal(10,2) DEFAULT NULL,
+  `transfer` decimal(10,2) NOT NULL,
+  `invoice_id` int(11) DEFAULT NULL,
+  `status` int(11) NOT NULL,
+  `msg` text NOT NULL,
+  `mail` tinyint(1) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `owner_id` (`owner_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `booking_codes`
+-- Table structure for table `booking_codes`
 --
 
-DROP TABLE IF EXISTS `booking_codes`;
-CREATE TABLE IF NOT EXISTS `booking_codes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `booking_codes` (
+  `id` int(11) NOT NULL,
   `category` varchar(255) NOT NULL,
   `code` varchar(255) NOT NULL,
-  `btw` int(11) NOT NULL,
+  `btw` tinyint(4) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `category` (`category`,`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `breeds`
+-- Table structure for table `breeds`
 --
 
-DROP TABLE IF EXISTS `breeds`;
-CREATE TABLE IF NOT EXISTS `breeds` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `male_min_weight` int(11) NOT NULL,
-  `male_max_weight` int(11) NOT NULL,
-  `female_min_weight` int(11) NOT NULL,
-  `female_max_weight` int(11) NOT NULL,
+CREATE TABLE `breeds` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `type` tinyint(4) DEFAULT -1,
+  `freq` int(10) UNSIGNED NOT NULL,
+  `male_min_weight` decimal(5,2) NOT NULL,
+  `male_max_weight` decimal(5,2) NOT NULL,
+  `female_min_weight` decimal(5,2) NOT NULL,
+  `female_max_weight` decimal(5,2) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `config`
+-- Table structure for table `ci_sessions`
 --
 
-DROP TABLE IF EXISTS `config`;
-CREATE TABLE IF NOT EXISTS `config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ci_sessions` (
+  `id` varchar(128) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `timestamp` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `data` blob NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `config`
+--
+
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `events`
+-- Table structure for table `delivery`
 --
 
-DROP TABLE IF EXISTS `events`;
-CREATE TABLE IF NOT EXISTS `events` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `delivery` (
+  `id` int(11) NOT NULL,
+  `order_date` date NOT NULL,
+  `order_nr` int(11) NOT NULL,
+  `my_ref` varchar(255) NOT NULL,
+  `wholesale_artnr` varchar(255) NOT NULL,
+  `wholesale_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `delivery_date` date NOT NULL,
+  `delivery_nr` int(11) NOT NULL,
+  `bruto_price` decimal(5,2) NOT NULL,
+  `netto_price` decimal(5,2) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `lotnr` varchar(255) NOT NULL,
+  `due_date` date NOT NULL,
+  `imported` tinyint(1) NOT NULL DEFAULT 0,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_slip`
+--
+
+CREATE TABLE `delivery_slip` (
+  `id` int(11) NOT NULL,
+  `vet` int(11) NOT NULL,
+  `note` text NOT NULL,
+  `regdate` date NOT NULL,
+  `location` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events`
+--
+
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `anamnese` text NOT NULL,
   `pet` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
-  `status` int(2) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `status` tinyint(4) NOT NULL,
   `payment` int(11) NOT NULL,
-  `location` int(11) NOT NULL,
-  `vet` int(11) NOT NULL,
-  `vet_support_1` int(11) NOT NULL,
-  `vet_support_2` int(11) NOT NULL,
-  `no_history` int(1) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `payment` (`payment`),
-  KEY `pet` (`pet`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `location` tinyint(4) NOT NULL,
+  `vet` tinyint(4) NOT NULL,
+  `vet_support_1` tinyint(4) NOT NULL,
+  `vet_support_2` tinyint(4) NOT NULL,
+  `report` tinyint(1) NOT NULL DEFAULT 0,
+  `no_history` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `events_procedures`
+-- Table structure for table `events_procedures`
 --
 
-DROP TABLE IF EXISTS `events_procedures`;
-CREATE TABLE IF NOT EXISTS `events_procedures` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `procedures_id` int(11) NOT NULL,
+CREATE TABLE `events_procedures` (
+  `id` int(11) NOT NULL,
+  `procedures_id` smallint(6) NOT NULL,
   `event_id` int(11) NOT NULL,
-  `amount` int(11) NOT NULL,
-  `net_price` float(10,2) NOT NULL,
-  `price` float(10,2) NOT NULL,
-  `btw` int(11) NOT NULL,
-  `booking` int(11) NOT NULL,
-  `calc_net_price` float(10,2) NOT NULL,
+  `amount` tinyint(4) NOT NULL,
+  `net_price` decimal(10,2) NOT NULL,
+  `price` decimal(10,4) NOT NULL,
+  `btw` tinyint(4) NOT NULL,
+  `booking` tinyint(11) NOT NULL,
+  `calc_net_price` decimal(10,2) NOT NULL,
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `events_products`
+-- Table structure for table `events_products`
 --
 
-DROP TABLE IF EXISTS `events_products`;
-CREATE TABLE IF NOT EXISTS `events_products` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
+CREATE TABLE `events_products` (
+  `id` int(11) NOT NULL,
+  `product_id` mediumint(9) NOT NULL,
   `event_id` int(11) NOT NULL,
-  `volume` float(10,2) NOT NULL,
-  `net_price` float(10,2) NOT NULL,
-  `price` float(10,2) NOT NULL,
-  `btw` int(11) NOT NULL,
-  `booking` int(11) NOT NULL,
-  `calc_net_price` float(10,2) NOT NULL,
+  `volume` decimal(10,2) NOT NULL,
+  `net_price` decimal(10,2) NOT NULL,
+  `price` decimal(10,4) NOT NULL,
+  `btw` tinyint(4) NOT NULL,
+  `booking` tinyint(4) NOT NULL,
+  `calc_net_price` decimal(10,2) NOT NULL,
   `barcode` varchar(255) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `events_upload`
+-- Table structure for table `events_upload`
 --
 
-DROP TABLE IF EXISTS `events_upload`;
-CREATE TABLE IF NOT EXISTS `events_upload` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `events_upload` (
+  `id` int(11) NOT NULL,
   `event` int(11) NOT NULL,
   `filename` varchar(255) NOT NULL,
   `size` int(11) NOT NULL,
   `mime` varchar(255) NOT NULL,
-  `user` int(11) NOT NULL,
-  `location` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `user` tinyint(4) NOT NULL,
+  `location` tinyint(4) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `event` (`event`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `groups`
+-- Table structure for table `groups`
 --
 
-DROP TABLE IF EXISTS `groups`;
-CREATE TABLE IF NOT EXISTS `groups` (
-  `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `groups` (
+  `id` mediumint(8) UNSIGNED NOT NULL,
   `name` varchar(20) NOT NULL,
-  `description` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+  `description` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `groups`
+--
+
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+(1, 'admin', 'Administrator'),
+(2, 'members', 'General User'),
+(3, 'vet', 'Veterinarian');
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `log`
+-- Table structure for table `lab`
 --
 
-DROP TABLE IF EXISTS `log`;
-CREATE TABLE IF NOT EXISTS `log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `event` varchar(255) NOT NULL,
-  `level` int(5) NOT NULL,
-  `msg` text NOT NULL,
+CREATE TABLE `lab` (
+  `id` int(11) NOT NULL,
+  `lab_id` int(11) NOT NULL,
+  `lab_date` date DEFAULT NULL,
+  `lab_patient_id` int(11) DEFAULT NULL,
+  `pet` int(11) DEFAULT NULL,
+  `lab_updated_at` datetime DEFAULT NULL,
+  `lab_created_at` datetime DEFAULT NULL,
+  `lab_comment` text NOT NULL,
+  `source` varchar(255) NOT NULL,
+  `comment` text NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `login_attempts`
+-- Table structure for table `lab_detail`
 --
 
-DROP TABLE IF EXISTS `login_attempts`;
-CREATE TABLE IF NOT EXISTS `login_attempts` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lab_detail` (
+  `id` int(11) NOT NULL,
+  `lab_id` int(11) NOT NULL,
+  `sample_id` int(11) NOT NULL,
+  `value` decimal(5,2) NOT NULL,
+  `string_value` varchar(255) NOT NULL,
+  `upper_limit` decimal(5,2) NOT NULL,
+  `lower_limit` decimal(5,2) NOT NULL,
+  `report` tinyint(1) NOT NULL,
+  `lab_code` int(11) NOT NULL,
+  `lab_code_text` varchar(255) NOT NULL,
+  `lab_updated_at` datetime DEFAULT NULL,
+  `comment` varchar(255) NOT NULL,
+  `unit` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log`
+--
+
+CREATE TABLE `log` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `user_id` tinyint(3) UNSIGNED NOT NULL,
+  `event` varchar(255) NOT NULL,
+  `level` tinyint(3) UNSIGNED NOT NULL,
+  `msg` text NOT NULL,
+  `location` tinyint(4) NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_attempts`
+--
+
+CREATE TABLE `login_attempts` (
+  `id` int(10) UNSIGNED NOT NULL,
   `ip_address` varchar(15) NOT NULL,
   `login` varchar(100) NOT NULL,
-  `time` int(11) UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `time` int(10) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `migrations`
+-- Table structure for table `log_stock`
 --
 
-DROP TABLE IF EXISTS `migrations`;
-CREATE TABLE IF NOT EXISTS `migrations` (
+CREATE TABLE `log_stock` (
+  `id` int(11) NOT NULL,
+  `user_id` tinyint(4) NOT NULL,
+  `product` int(11) NOT NULL,
+  `event` varchar(255) NOT NULL,
+  `volume` decimal(10,2) NOT NULL,
+  `location` tinyint(4) NOT NULL,
+  `level` tinyint(3) NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
   `version` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `migrations`
+--
+
+INSERT INTO `migrations` (`version`) VALUES
+(17);
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `msg_messages`
+-- Table structure for table `owners`
 --
 
-DROP TABLE IF EXISTS `msg_messages`;
-CREATE TABLE IF NOT EXISTS `msg_messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `body` text NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `msg_participants`
---
-
-DROP TABLE IF EXISTS `msg_participants`;
-CREATE TABLE IF NOT EXISTS `msg_participants` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `msg_id` int(11) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `msg_state`
---
-
-DROP TABLE IF EXISTS `msg_state`;
-CREATE TABLE IF NOT EXISTS `msg_state` (
-  `msg_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `status` int(3) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  UNIQUE KEY `msg_id` (`msg_id`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `owners`
---
-
-DROP TABLE IF EXISTS `owners`;
-CREATE TABLE IF NOT EXISTS `owners` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `owners` (
+  `id` int(11) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `telephone` varchar(255) DEFAULT NULL,
-  `mobile` varchar(255) DEFAULT NULL,
-  `phone3` varchar(255) NOT NULL,
-  `phone2` varchar(255) NOT NULL,
+  `telephone` varchar(50) DEFAULT NULL,
+  `mobile` varchar(50) DEFAULT NULL,
+  `phone3` varchar(50) NOT NULL,
+  `phone2` varchar(50) NOT NULL,
   `street` varchar(255) NOT NULL,
   `nr` varchar(10) NOT NULL,
   `city` varchar(255) NOT NULL,
@@ -312,285 +405,288 @@ CREATE TABLE IF NOT EXISTS `owners` (
   `mail` varchar(255) DEFAULT NULL,
   `msg` text NOT NULL,
   `btw_nr` varchar(255) DEFAULT NULL,
-  `invoice_addr` text,
+  `invoice_addr` text DEFAULT NULL,
   `invoice_contact` varchar(255) DEFAULT NULL,
   `invoice_tel` varchar(255) DEFAULT NULL,
-  `debts` int(1) DEFAULT NULL,
-  `low_budget` int(1) NOT NULL,
-  `language` int(10) NOT NULL,
-  `contact` int(1) NOT NULL,
+  `debts` tinyint(1) DEFAULT NULL,
+  `low_budget` tinyint(1) NOT NULL,
+  `language` tinyint(1) NOT NULL,
+  `contact` tinyint(1) NOT NULL,
   `last_bill` date DEFAULT NULL,
   `initial_vet` int(11) NOT NULL,
   `initial_loc` int(11) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `telephone` (`telephone`),
-  KEY `mobile` (`mobile`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `pets`
+-- Table structure for table `pets`
 --
 
-DROP TABLE IF EXISTS `pets`;
-CREATE TABLE IF NOT EXISTS `pets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL,
+CREATE TABLE `pets` (
+  `id` int(11) NOT NULL,
+  `type` tinyint(1) NOT NULL,
   `name` varchar(255) NOT NULL,
   `birth` date DEFAULT NULL,
-  `death` int(1) NOT NULL,
-  `breed` int(6) NOT NULL DEFAULT '0',
-  `gender` varchar(3) NOT NULL,
+  `death` tinyint(1) NOT NULL,
+  `death_date` date DEFAULT NULL,
+  `breed` int(11) NOT NULL DEFAULT 0,
+  `gender` tinyint(1) NOT NULL,
   `color` varchar(255) NOT NULL,
-  `last_weight` float(6,2) NOT NULL,
-  `lost` int(1) NOT NULL,
+  `last_weight` decimal(6,2) NOT NULL,
+  `lost` tinyint(1) NOT NULL,
   `chip` varchar(30) NOT NULL,
   `nr_vac_book` varchar(255) NOT NULL,
   `note` text NOT NULL,
+  `nutritional_advice` text NOT NULL,
   `owner` int(11) NOT NULL,
-  `location` int(1) NOT NULL,
+  `location` int(11) NOT NULL,
   `init_vet` int(11) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `owner` (`owner`),
-  KEY `death` (`death`),
-  KEY `owner_2` (`owner`),
-  KEY `death_2` (`death`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `pets_weight`
+-- Table structure for table `pets_weight`
 --
 
-DROP TABLE IF EXISTS `pets_weight`;
-CREATE TABLE IF NOT EXISTS `pets_weight` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `pets_weight` (
+  `id` int(11) NOT NULL,
   `pets` int(11) NOT NULL,
-  `weight` float(6,2) NOT NULL,
+  `weight` decimal(6,2) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `procedures`
+-- Table structure for table `procedures`
 --
 
-DROP TABLE IF EXISTS `procedures`;
-CREATE TABLE IF NOT EXISTS `procedures` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `procedures` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `price` float(11,2) NOT NULL,
-  `booking_code` int(11) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `price` decimal(11,2) NOT NULL,
+  `booking_code` tinyint(3) UNSIGNED NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `products`
+-- Table structure for table `products`
 --
 
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE IF NOT EXISTS `products` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `short_name` varchar(255) NOT NULL,
   `producer` varchar(255) NOT NULL,
   `supplier` varchar(255) NOT NULL,
   `posologie` text NOT NULL,
   `toedieningsweg` varchar(50) NOT NULL,
-  `type` int(11) NOT NULL,
-  `offset` float(11,2) NOT NULL,
-  `buy_volume` int(5) NOT NULL,
-  `sell_volume` float(10,2) NOT NULL,
-  `buy_price` float(5,2) NOT NULL,
+  `type` tinyint(3) UNSIGNED NOT NULL,
+  `dead_volume` decimal(4,2) DEFAULT NULL,
+  `buy_volume` smallint(6) NOT NULL,
+  `sell_volume` decimal(10,2) NOT NULL,
+  `buy_price` decimal(10,2) NOT NULL,
+  `buy_price_date` date DEFAULT NULL,
   `unit_buy` varchar(10) NOT NULL,
   `unit_sell` varchar(10) NOT NULL,
-  `input_barcode` varchar(255) NOT NULL,
-  `btw_buy` int(2) NOT NULL,
-  `btw_sell` int(2) NOT NULL,
-  `booking_code` int(11) NOT NULL,
+  `input_barcode` varchar(20) DEFAULT NULL,
+  `btw_buy` tinyint(4) NOT NULL,
+  `btw_sell` tinyint(4) NOT NULL,
+  `booking_code` tinyint(4) NOT NULL,
   `delay` int(11) NOT NULL,
   `comment` text NOT NULL,
-  `sellable` int(1) NOT NULL,
-  `limit_stock` int(11) NOT NULL,
-  `vaccin` int(11) NOT NULL DEFAULT '0',
-  `vaccin_freq` int(11) NOT NULL,
+  `sellable` tinyint(1) NOT NULL,
+  `limit_stock` smallint(5) UNSIGNED NOT NULL,
+  `vaccin` tinyint(1) NOT NULL DEFAULT 0,
+  `vaccin_freq` smallint(5) UNSIGNED NOT NULL,
+  `vhbcode` varchar(255) NOT NULL,
+  `wholesale` int(11) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `products_price`
+-- Table structure for table `products_price`
 --
 
-DROP TABLE IF EXISTS `products_price`;
-CREATE TABLE IF NOT EXISTS `products_price` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `volume` float(5,2) NOT NULL,
-  `price` float(5,2) NOT NULL,
+CREATE TABLE `products_price` (
+  `id` int(11) NOT NULL,
+  `product_id` mediumint(8) UNSIGNED NOT NULL,
+  `volume` decimal(5,2) NOT NULL,
+  `price` decimal(5,2) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `products_type`
+-- Table structure for table `products_type`
 --
 
-DROP TABLE IF EXISTS `products_type`;
-CREATE TABLE IF NOT EXISTS `products_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `products_type` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `stock`
+-- Table structure for table `register_in`
 --
 
-DROP TABLE IF EXISTS `stock`;
-CREATE TABLE IF NOT EXISTS `stock` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
+CREATE TABLE `register_in` (
+  `id` int(11) NOT NULL,
+  `product` int(11) NOT NULL,
+  `volume` decimal(10,2) NOT NULL,
+  `eol` date NOT NULL,
+  `in_price` decimal(10,2) NOT NULL,
+  `lotnr` varchar(255) NOT NULL,
+  `delivery_slip` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sticky`
+--
+
+CREATE TABLE `sticky` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `location` int(11) NOT NULL,
+  `note` text NOT NULL,
+  `private` tinyint(1) NOT NULL DEFAULT 0,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock`
+--
+
+CREATE TABLE `stock` (
+  `id` int(11) NOT NULL,
+  `product_id` mediumint(8) UNSIGNED NOT NULL,
   `eol` date DEFAULT NULL,
   `location` varchar(255) NOT NULL,
-  `in_price` float(10,2) NOT NULL,
-  `lotnr` int(11) NOT NULL,
-  `volume` float(10,2) NOT NULL,
+  `in_price` decimal(10,2) NOT NULL,
+  `lotnr` varchar(255) NOT NULL,
+  `volume` decimal(10,2) NOT NULL,
   `barcode` varchar(255) NOT NULL,
   `verify` datetime DEFAULT NULL,
-  `state` int(11) NOT NULL,
+  `state` tinyint(3) UNSIGNED NOT NULL,
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `stock_limit`
+-- Table structure for table `stock_input`
 --
 
-DROP TABLE IF EXISTS `stock_limit`;
-CREATE TABLE IF NOT EXISTS `stock_limit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `stock` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `volume` int(11) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `stock` (`stock`,`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+CREATE TABLE `stock_input` (
+  `id` int(11) NOT NULL,
+  `user` int(11) NOT NULL,
+  `location` int(11) NOT NULL,
+  `msg` text NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `stock_location`
+-- Table structure for table `stock_limit`
 --
 
-DROP TABLE IF EXISTS `stock_location`;
-CREATE TABLE IF NOT EXISTS `stock_location` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `stock_limit` (
+  `id` int(11) NOT NULL,
+  `stock` tinyint(3) UNSIGNED NOT NULL,
+  `product_id` mediumint(8) UNSIGNED NOT NULL,
+  `volume` smallint(5) UNSIGNED NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock_location`
+--
+
+CREATE TABLE `stock_location` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `stock_write_off`
+-- Table structure for table `tooth`
 --
 
-DROP TABLE IF EXISTS `stock_write_off`;
-CREATE TABLE IF NOT EXISTS `stock_write_off` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `volume` float NOT NULL,
-  `location` int(11) NOT NULL,
-  `barcode` varchar(255) NOT NULL,
-  `vet` int(11) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `tooth`
---
-
-DROP TABLE IF EXISTS `tooth`;
-CREATE TABLE IF NOT EXISTS `tooth` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tooth` (
+  `id` int(11) NOT NULL,
   `pet` int(11) NOT NULL,
-  `vet` int(11) NOT NULL,
-  `tooth` int(11) NOT NULL,
+  `vet` smallint(5) UNSIGNED NOT NULL,
+  `tooth` tinyint(3) UNSIGNED NOT NULL,
   `tooth_status` varchar(255) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pet` (`pet`,`tooth`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `tooth_msg`
+-- Table structure for table `tooth_msg`
 --
 
-DROP TABLE IF EXISTS `tooth_msg`;
-CREATE TABLE IF NOT EXISTS `tooth_msg` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tooth_msg` (
+  `id` int(11) NOT NULL,
   `pet` int(11) NOT NULL,
-  `vet` int(11) NOT NULL,
-  `location` int(11) NOT NULL,
+  `vet` tinyint(3) UNSIGNED NOT NULL,
+  `location` tinyint(3) UNSIGNED NOT NULL,
   `msg` text NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `pet` (`pet`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `users`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
   `ip_address` varchar(15) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -598,82 +694,112 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(100) NOT NULL,
   `activation_code` varchar(40) DEFAULT NULL,
   `forgotten_password_code` varchar(40) DEFAULT NULL,
-  `forgotten_password_time` int(11) UNSIGNED DEFAULT NULL,
+  `forgotten_password_time` int(10) UNSIGNED DEFAULT NULL,
   `remember_code` varchar(40) DEFAULT NULL,
-  `created_on` int(11) UNSIGNED NOT NULL,
-  `last_login` int(11) UNSIGNED DEFAULT NULL,
-  `active` tinyint(1) UNSIGNED DEFAULT NULL,
+  `created_on` int(10) UNSIGNED NOT NULL,
+  `last_login` int(10) UNSIGNED DEFAULT NULL,
+  `active` tinyint(3) UNSIGNED DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `company` varchar(100) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `current_location` int(3) NOT NULL,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `user_date` varchar(9) NOT NULL DEFAULT 'd-m-Y',
+  `search_config` tinyint(1) NOT NULL DEFAULT 0,
+  `current_location` tinyint(3) UNSIGNED NOT NULL,
+  `updated_at` datetime DEFAULT current_timestamp(),
   `created_at` datetime DEFAULT NULL,
   `image` varchar(255) NOT NULL,
   `sidebar` varchar(15) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+  `vsens` tinyint(1) NOT NULL DEFAULT 0,
+  `activation_selector` varchar(255) DEFAULT NULL,
+  `remember_selector` varchar(255) DEFAULT NULL,
+  `forgotten_password_selector` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `users_groups`
+-- Table structure for table `users_groups`
 --
 
-DROP TABLE IF EXISTS `users_groups`;
-CREATE TABLE IF NOT EXISTS `users_groups` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `group_id` mediumint(8) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
-  KEY `fk_users_groups_users1_idx` (`user_id`),
-  KEY `fk_users_groups_groups1_idx` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+CREATE TABLE `users_groups` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `group_id` mediumint(8) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `vaccine_pet`
+-- Table structure for table `vaccine_pet`
 --
 
-DROP TABLE IF EXISTS `vaccine_pet`;
-CREATE TABLE IF NOT EXISTS `vaccine_pet` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `vaccine_pet` (
+  `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
   `event_line` int(11) NOT NULL,
   `pet` int(11) NOT NULL,
   `redo` date NOT NULL,
-  `location` int(11) NOT NULL,
-  `vet` int(11) NOT NULL,
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `location` tinyint(3) UNSIGNED NOT NULL,
+  `vet` tinyint(3) UNSIGNED NOT NULL,
+  `updated_at` datetime DEFAULT current_timestamp(),
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `zipcodes`
+-- Table structure for table `wholesale`
 --
 
-DROP TABLE IF EXISTS `zipcodes`;
-CREATE TABLE IF NOT EXISTS `zipcodes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `wholesale` (
+  `id` int(11) NOT NULL,
+  `vendor_id` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_520_ci NOT NULL,
+  `bruto` decimal(7,2) NOT NULL,
+  `btw` smallint(6) NOT NULL,
+  `sell_price` decimal(7,2) NOT NULL,
+  `distributor` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `CNK` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_520_ci NOT NULL,
+  `VHB` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_520_ci NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wholesale_price`
+--
+
+CREATE TABLE `wholesale_price` (
+  `id` int(11) NOT NULL,
+  `art_nr` varchar(25) NOT NULL,
+  `bruto` decimal(7,2) NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `zipcodes`
+--
+
+CREATE TABLE `zipcodes` (
+  `id` int(11) NOT NULL,
   `zip` varchar(16) NOT NULL,
   `city` varchar(255) NOT NULL,
   `main_city` varchar(255) NOT NULL,
   `province` varchar(255) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `zip` (`zip`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Gegevens worden geëxporteerd voor tabel `zipcodes`
+-- Dumping data for table `zipcodes`
 --
 
 INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_at`, `created_at`) VALUES
@@ -684,7 +810,7 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (5, '3800', 'Aalst', 'SINT-TRUIDEN', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (6, '8700', 'Aarsele', 'TIELT', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (7, '8211', 'Aartrijke', 'ZEDELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
-(8, '4557', 'Ab?e', 'TINLOT', 'LUIK', NULL, '2020-07-22 15:14:24'),
+(8, '4557', 'Abe', 'TINLOT', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (9, '4280', 'Abolens', 'HANNUT', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (10, '3930', 'Achel', 'HAMONT-ACHEL', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (11, '5590', 'Ach?ne', 'CINEY', 'NAMEN', NULL, '2020-07-22 15:14:24'),
@@ -804,7 +930,7 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (125, '4052', 'Beaufays', 'CHAUDFONTAINE', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (126, '6980', 'Beausaint', 'LA ROCHE-EN-ARDENNE', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
 (127, '6594', 'Beauwelz', 'MOMIGNIES', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
-(128, '7532', 'B?clers', 'TOURNAI', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
+(128, '7532', 'Beclers', 'TOURNAI', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
 (129, '3960', 'Beek', 'BREE', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (130, '9630', 'Beerlegem', 'ZWALM', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (131, '8600', 'Beerst', 'DIKSMUIDE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
@@ -840,8 +966,8 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (161, '3830', 'Berlingen', 'WELLEN', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (162, '4607', 'Berneau', 'DALHEM', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (163, '6560', 'Bersillies-L\'Abbaye', 'ERQUELINNES', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
-(164, '4280', 'Bertr?e', 'HANNUT', 'LUIK', NULL, '2020-07-22 15:14:24'),
-(165, '5651', 'Berz?e', 'WALCOURT', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(164, '4280', 'Bertre', 'HANNUT', 'LUIK', NULL, '2020-07-22 15:14:24'),
+(165, '5651', 'Berze', 'WALCOURT', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (166, '8980', 'Beselare', 'ZONNEBEKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (167, '3130', 'Betekom', 'BEGIJNENDIJK', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (168, '4300', 'Bettincourt', 'WAREMME', 'LUIK', NULL, '2020-07-22 15:14:24'),
@@ -855,14 +981,14 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (176, '3581', 'Beverlo', 'BERINGEN', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (177, '3740', 'Beverst', 'BILZEN', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (178, '6543', 'Bienne-Lez-Happart', 'LOBBES', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
-(179, '6533', 'Bierc?e', 'THUIN', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
+(179, '6533', 'Bierce', 'THUIN', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
 (180, '1301', 'Bierges', 'WAVRE', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (181, '1430', 'Bierghes', 'REBECQ', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (182, '4460', 'Bierset', 'GR?CE-HOLLOGNE', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (183, '5380', 'Bierwart', 'FERNELMONT', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (184, '5640', 'Biesme', 'METTET', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (185, '6531', 'Biesme-Sous-Thuin', 'THUIN', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
-(186, '5640', 'Biesmer?e', 'METTET', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(186, '5640', 'Biesmere', 'METTET', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (187, '1390', 'Biez', 'GREZ-DOICEAU', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (188, '6690', 'Bihain', 'VIELSALM', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
 (189, '8920', 'Bikschote', 'LANGEMARK-POELKAPELLE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
@@ -891,7 +1017,7 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (212, '8904', 'Boezinge', 'IEPER', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (213, '1670', 'Bogaarden', 'PEPINGEN', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (214, '5550', 'Bohan', 'VRESSE-SUR-SEMOIS', 'NAMEN', NULL, '2020-07-22 15:14:24'),
-(215, '5140', 'Boign?e', 'SOMBREFFE', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(215, '5140', 'Boigne', 'SOMBREFFE', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (216, '4690', 'Boirs', 'BASSENGE', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (217, '7170', 'Bois-D\'Haine', 'MANAGE', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
 (218, '7866', 'Bois-De-Lessines', 'LESSINES', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
@@ -921,7 +1047,7 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (242, '6941', 'Borlon', 'DURBUY', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
 (243, '1404', 'Bornival', 'NIVELLES', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (244, '9552', 'Borsbeke', 'HERZELE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
-(245, '5032', 'Bossi?re', 'GEMBLOUX', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(245, '5032', 'Bossire', 'GEMBLOUX', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (246, '8583', 'Bossuit', 'AVELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (247, '1390', 'Bossut-Gottechain', 'GREZ-DOICEAU', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (248, '3300', 'Bost', 'TIENEN', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:24'),
@@ -957,8 +1083,8 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (278, '8900', 'Brielen', 'IEPER', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:24'),
 (279, '2520', 'Broechem', 'RANST', 'ANTWERPEN', NULL, '2020-07-22 15:14:24'),
 (280, '3840', 'Broekom', 'BORGLOON', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
-(281, '5660', 'Br?ly', 'COUVIN', 'NAMEN', NULL, '2020-07-22 15:14:24'),
-(282, '5660', 'Br?ly-De-Pesche', 'COUVIN', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(281, '5660', 'Brely', 'COUVIN', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(282, '5660', 'Brely-De-Pesche', 'COUVIN', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (283, '1785', 'Brussegem', 'MERCHTEM', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (284, '3800', 'Brustem', 'SINT-TRUIDEN', 'LIMBURG', NULL, '2020-07-22 15:14:24'),
 (285, '7641', 'Bruyelle', 'ANTOING', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
@@ -988,16 +1114,16 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (309, '5650', 'Castillon', 'WALCOURT', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (310, '4317', 'Celles', 'FAIMES', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (311, '5561', 'Celles', 'HOUYET', 'NAMEN', NULL, '2020-07-22 15:14:24'),
-(312, '4632', 'C?rexhe-Heuseux', 'SOUMAGNE', 'LUIK', NULL, '2020-07-22 15:14:24'),
-(313, '1341', 'C?roux-Mousty', 'OTTIGNIES-LOUVAIN-LA-NEUVE', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
+(312, '4632', 'Cerexhe-Heuseux', 'SOUMAGNE', 'LUIK', NULL, '2020-07-22 15:14:24'),
+(313, '1341', 'Ceroux-Mousty', 'OTTIGNIES-LOUVAIN-LA-NEUVE', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:24'),
 (314, '4650', 'Chaineux', 'HERVE', 'LUIK', NULL, '2020-07-22 15:14:24'),
-(315, '5550', 'Chairi?re', 'VRESSE-SUR-SEMOIS', 'NAMEN', NULL, '2020-07-22 15:14:24'),
+(315, '5550', 'Chairiere', 'VRESSE-SUR-SEMOIS', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (316, '5020', 'Champion', 'NAMUR', 'NAMEN', NULL, '2020-07-22 15:14:24'),
 (317, '6971', 'Champlon', 'TENNEVILLE', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
 (318, '6921', 'Chanly', 'WELLIN', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
 (319, '6742', 'Chantemelle', 'ETALLE', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
-(320, '7903', 'Chapelle-?-Oie', 'LEUZE-EN-HAINAUT', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
-(321, '7903', 'Chapelle-?-Wattines', 'LEUZE-EN-HAINAUT', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
+(320, '7903', 'Chapelle-e-Oie', 'LEUZE-EN-HAINAUT', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
+(321, '7903', 'Chapelle-e-Wattines', 'LEUZE-EN-HAINAUT', 'HENEGOUWEN', NULL, '2020-07-22 15:14:24'),
 (322, '4537', 'Chapon-Seraing', 'VERLAINE', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (323, '4654', 'Charneux', 'HERVE', 'LUIK', NULL, '2020-07-22 15:14:24'),
 (324, '6824', 'Chassepierre', 'FLORENVILLE', 'LUXEMBURG', NULL, '2020-07-22 15:14:24'),
@@ -2894,7 +3020,7 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (2212, '2020', 'Antwerpen', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2213, '2030', 'Antwerpen', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2214, '2040', 'Antwerpen', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-(2215, '2050', 'Antwerpen', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2215, '2050', 'Antwerpen - Linkeroever', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2216, '2060', 'Antwerpen', 'ANTWERPEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2217, '8570', 'Anzegem', 'ANZEGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
 (2218, '8850', 'Ardooie', 'ARDOOIE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
@@ -3357,90 +3483,546 @@ INSERT INTO `zipcodes` (`id`, `zip`, `city`, `main_city`, `province`, `updated_a
 (2674, '2290', 'Vorselaar', 'VORSELAAR', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
 (2675, '1190', 'Vorst', 'VORST', 'BRUSSEL', NULL, '2020-07-22 15:14:25'),
 (2676, '2350', 'Vosselaar', 'VOSSELAAR', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
-CREATE TABLE IF NOT EXISTS `zipcodes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `zip` varchar(16) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `main_city` varchar(255) NOT NULL,
-  `province` varchar(255) NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `zip` (`zip`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+(2677, '5550', 'Vresse-Sur-Semois', 'VRESSE-SUR-SEMOIS', 'NAMEN', NULL, '2020-07-22 15:14:25'),
+(2678, '9250', 'Waasmunster', 'WAASMUNSTER', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2679, '9185', 'Wachtebeke', 'WACHTEBEKE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2680, '5650', 'Walcourt', 'WALCOURT', 'NAMEN', NULL, '2020-07-22 15:14:25'),
+(2681, '4520', 'Wanze', 'WANZE', 'LUIK', NULL, '2020-07-22 15:14:25'),
+(2682, '8790', 'Waregem', 'WAREGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2683, '4300', 'Waremme', 'WAREMME', 'LUIK', NULL, '2020-07-22 15:14:25'),
+(2684, '4219', 'Wasseiges', 'WASSEIGES', 'LUIK', NULL, '2020-07-22 15:14:25'),
+(2685, '1410', 'Waterloo', 'WATERLOO', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2686, '1170', 'Watermaal-Bosvoorde', 'WATERMAAL-BOSVOORDE', 'BRUSSEL', NULL, '2020-07-22 15:14:25'),
+(2687, '1300', 'Wavre', 'WAVRE', 'WAALS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2688, '4950', 'Weismes', 'WEISMES', 'LUIK', NULL, '2020-07-22 15:14:25'),
+(2689, '4840', 'Welkenraedt', 'WELKENRAEDT', 'LUIK', NULL, '2020-07-22 15:14:25'),
+(2690, '3830', 'Wellen', 'WELLEN', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
+(2691, '6920', 'Wellin', 'WELLIN', 'LUXEMBURG', NULL, '2020-07-22 15:14:25'),
+(2692, '1780', 'Wemmel', 'WEMMEL', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2693, '8940', 'Wervik', 'WERVIK', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2694, '2260', 'Westerlo', 'WESTERLO', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2695, '9230', 'Wetteren', 'WETTEREN', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2696, '8560', 'Wevelgem', 'WEVELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2697, '1970', 'Wezembeek-Oppem', 'WEZEMBEEK-OPPEM', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2698, '9260', 'Wichelen', 'WICHELEN', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2699, '8710', 'Wielsbeke', 'WIELSBEKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2700, '2110', 'Wijnegem', 'WIJNEGEM', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2701, '2830', 'Willebroek', 'WILLEBROEK', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2702, '8750', 'Wingene', 'WINGENE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2703, '2160', 'Wommelgem', 'WOMMELGEM', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2704, '2990', 'Wuustwezel', 'WUUSTWEZEL', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2705, '5530', 'Yvoir', 'YVOIR', 'NAMEN', NULL, '2020-07-22 15:14:25'),
+(2706, '2240', 'Zandhoven', 'ZANDHOVEN', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2707, '1930', 'Zaventem', 'ZAVENTEM', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2708, '8210', 'Zedelgem', 'ZEDELGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2709, '9240', 'Zele', 'ZELE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2710, '9060', 'Zelzate', 'ZELZATE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2711, '1980', 'Zemst', 'ZEMST', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2712, '2980', 'Zoersel', 'ZOERSEL', 'ANTWERPEN', NULL, '2020-07-22 15:14:25'),
+(2713, '3520', 'Zonhoven', 'ZONHOVEN', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
+(2714, '8980', 'Zonnebeke', 'ZONNEBEKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2715, '9620', 'Zottegem', 'ZOTTEGEM', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2716, '3440', 'Zoutleeuw', 'ZOUTLEEUW', 'VLAAMS-BRABANT', NULL, '2020-07-22 15:14:25'),
+(2717, '8377', 'Zuienkerke', 'ZUIENKERKE', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2718, '9870', 'Zulte', 'ZULTE', 'OOST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2719, '3690', 'Zutendaal', 'ZUTENDAAL', 'LIMBURG', NULL, '2020-07-22 15:14:25'),
+(2720, '8550', 'Zwevegem', 'ZWEVEGEM', 'WEST-VLAANDEREN', NULL, '2020-07-22 15:14:25'),
+(2721, '2070', 'Zwijndrecht', 'ZWIJNDRECHT', 'ANTWERPEN', NULL, '2020-07-22 15:14:25');
 
 --
--- Beperkingen voor geëxporteerde tabellen
+-- Indexes for dumped tables
 --
 
 --
--- Beperkingen voor tabel `users_groups`
+-- Indexes for table `bills`
+--
+ALTER TABLE `bills`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `owner_id` (`owner_id`);
+
+--
+-- Indexes for table `booking_codes`
+--
+ALTER TABLE `booking_codes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `dedzedzed` (`category`,`code`) USING BTREE;
+
+--
+-- Indexes for table `breeds`
+--
+ALTER TABLE `breeds`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ci_sessions`
+--
+ALTER TABLE `ci_sessions`
+  ADD KEY `ci_sessions_timestamp` (`timestamp`);
+
+--
+-- Indexes for table `config`
+--
+ALTER TABLE `config`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `delivery`
+--
+ALTER TABLE `delivery`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `order_nr` (`order_nr`,`wholesale_artnr`,`delivery_nr`,`lotnr`,`due_date`);
+
+--
+-- Indexes for table `delivery_slip`
+--
+ALTER TABLE `delivery_slip`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `payment` (`payment`),
+  ADD KEY `pet` (`pet`),
+  ADD KEY `vet` (`vet`);
+
+--
+-- Indexes for table `events_procedures`
+--
+ALTER TABLE `events_procedures`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `procedures_id` (`procedures_id`),
+  ADD KEY `event_id` (`event_id`);
+
+--
+-- Indexes for table `events_products`
+--
+ALTER TABLE `events_products`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `event_id` (`event_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `events_upload`
+--
+ALTER TABLE `events_upload`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `event` (`event`);
+
+--
+-- Indexes for table `groups`
+--
+ALTER TABLE `groups`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lab`
+--
+ALTER TABLE `lab`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `lab_id` (`lab_id`);
+
+--
+-- Indexes for table `lab_detail`
+--
+ALTER TABLE `lab_detail`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `sample_id` (`sample_id`,`lab_code`),
+  ADD KEY `lab_id` (`lab_id`);
+
+--
+-- Indexes for table `log`
+--
+ALTER TABLE `log`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `owners`
+--
+ALTER TABLE `owners`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `telephone` (`telephone`),
+  ADD KEY `mobile` (`mobile`),
+  ADD KEY `street` (`street`),
+  ADD KEY `first_name` (`first_name`),
+  ADD KEY `last_name` (`last_name`);
+
+--
+-- Indexes for table `pets`
+--
+ALTER TABLE `pets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `owner` (`owner`),
+  ADD KEY `death` (`death`);
+
+--
+-- Indexes for table `pets_weight`
+--
+ALTER TABLE `pets_weight`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `procedures`
+--
+ALTER TABLE `procedures`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `barcode` (`input_barcode`),
+  ADD KEY `name` (`name`),
+  ADD KEY `wholesale` (`wholesale`);
+
+--
+-- Indexes for table `products_price`
+--
+ALTER TABLE `products_price`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `products_type`
+--
+ALTER TABLE `products_type`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `register_in`
+--
+ALTER TABLE `register_in`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sticky`
+--
+ALTER TABLE `sticky`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stock`
+--
+ALTER TABLE `stock`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `gsl_lookup` (`eol`,`location`,`lotnr`);
+
+--
+-- Indexes for table `stock_input`
+--
+ALTER TABLE `stock_input`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stock_limit`
+--
+ALTER TABLE `stock_limit`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `stock` (`stock`,`product_id`);
+
+--
+-- Indexes for table `stock_location`
+--
+ALTER TABLE `stock_location`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tooth`
+--
+ALTER TABLE `tooth`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `pet` (`pet`,`tooth`);
+
+--
+-- Indexes for table `tooth_msg`
+--
+ALTER TABLE `tooth_msg`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pet` (`pet`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users_groups`
 --
 ALTER TABLE `users_groups`
-  ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
+  ADD KEY `fk_users_groups_users1_idx` (`user_id`),
+  ADD KEY `fk_users_groups_groups1_idx` (`group_id`);
+
+--
+-- Indexes for table `vaccine_pet`
+--
+ALTER TABLE `vaccine_pet`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `wholesale`
+--
+ALTER TABLE `wholesale`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `vendor_id` (`vendor_id`);
+
+--
+-- Indexes for table `wholesale_price`
+--
+ALTER TABLE `wholesale_price`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `art_nr` (`art_nr`);
+
+--
+-- Indexes for table `zipcodes`
+--
+ALTER TABLE `zipcodes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `zip` (`zip`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bills`
+--
+ALTER TABLE `bills`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `booking_codes`
+--
+ALTER TABLE `booking_codes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `breeds`
+--
+ALTER TABLE `breeds`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `config`
+--
+ALTER TABLE `config`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT for table `delivery`
+--
+ALTER TABLE `delivery`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `delivery_slip`
+--
+ALTER TABLE `delivery_slip`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `events`
+--
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `events_procedures`
+--
+ALTER TABLE `events_procedures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `events_products`
+--
+ALTER TABLE `events_products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `events_upload`
+--
+ALTER TABLE `events_upload`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `lab`
+--
+ALTER TABLE `lab`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `lab_detail`
+--
+ALTER TABLE `lab_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `log`
+--
+ALTER TABLE `log`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+
+--
+-- AUTO_INCREMENT for table `owners`
+--
+ALTER TABLE `owners`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pets`
+--
+ALTER TABLE `pets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pets_weight`
+--
+ALTER TABLE `pets_weight`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `procedures`
+--
+ALTER TABLE `procedures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `products_price`
+--
+ALTER TABLE `products_price`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `products_type`
+--
+ALTER TABLE `products_type`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `register_in`
+--
+ALTER TABLE `register_in`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sticky`
+--
+ALTER TABLE `sticky`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `stock`
+--
+ALTER TABLE `stock`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `stock_input`
+--
+ALTER TABLE `stock_input`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `stock_limit`
+--
+ALTER TABLE `stock_limit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `stock_location`
+--
+ALTER TABLE `stock_location`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tooth`
+--
+ALTER TABLE `tooth`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tooth_msg`
+--
+ALTER TABLE `tooth_msg`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+
+--
+-- AUTO_INCREMENT for table `vaccine_pet`
+--
+ALTER TABLE `vaccine_pet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wholesale`
+--
+ALTER TABLE `wholesale`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wholesale_price`
+--
+ALTER TABLE `wholesale_price`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `zipcodes`
+--
+ALTER TABLE `zipcodes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2722;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
---
--- Gegevens worden geëxporteerd voor tabel `groups`
---
-INSERT INTO `groups` (`id`, `name`, `description`) VALUES
-(1, 'admin', 'Administrator'),
-(2, 'members', 'General User'),
-(3, 'vet', 'Veterinarian');
-
-
---
--- Gegevens worden geëxporteerd voor tabel `users`
---
-INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `current_location`, `updated_at`, `created_at`, `image`, `sidebar`) VALUES
-(1, '127.0.0.1', 'admin', '$2y$08$88sN20bkm4KQ5KO4aaDp2O7AHJab0bICtzrOkobNKjj3B1BJCCn06', '', 'admin@dommel.org', '', NULL, NULL, NULL, 1268889823, 1600178715, 1, 'admin', 'dommel', 'ADMIN', '0', 4, '2020-08-16 21:30:02', NULL, 'user_1_1600186804.png', '');
-
---
--- Gegevens worden geëxporteerd voor tabel `users_groups`
---
-INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 3);
-
---
--- Gegevens worden geëxporteerd voor tabel `config`
---
-INSERT INTO `config` (`id`, `name`, `value`, `updated_at`, `created_at`) VALUES
-(1, 'backup_count', '1', '2020-09-13 09:16:18', '2020-02-08 13:54:27'),
-(2, 'alert_last_backup', '7', NULL, '2020-02-08 13:54:27');
-
-INSERT INTO `migrations` (`version`) VALUES
-(7);
-
---- migrations
-ALTER TABLE `stock` CHANGE `lotnr` `lotnr` VARCHAR(255) NOT NULL;
-ALTER TABLE `pets` ADD `nutritional_advice` TEXT NOT NULL AFTER `note`;
-ALTER TABLE `users` ADD `remember_selector` varchar(255) NULL DEFAULT NULL;
-ALTER TABLE `users` ADD `forgotten_password_selector` varchar(255) NULL DEFAULT NULL;
-ALTER TABLE `pets` ADD `death_date` DATE NULL DEFAULT NULL AFTER `death`;
-
-ALTER TABLE `owners` ADD INDEX(`street`);
-ALTER TABLE `owners` ADD INDEX(`first_name`);
-ALTER TABLE `owners` ADD INDEX(`last_name`);
-
-ALTER TABLE `stock` ADD INDEX `gsl_lookup` (`eol`, `location`, `lotnr`);
-
-ALTER TABLE `products` CHANGE `input_barcode` `input_barcode` VARCHAR(255) NULL;
-ALTER TABLE `products` ADD UNIQUE `barcode` (`input_barcode`);
-ALTER TABLE `users` ADD `search_config` TINYINT(1) NOT NULL DEFAULT '0' AFTER `phone`;
-ALTER TABLE `users` ADD `user_date` varchar(9) NOT NULL DEFAULT 'd-m-Y' AFTER `phone`;
-
-CREATE TABLE `stock_input` (
-      `id` int(11) NOT NULL,
-      `user` int(11) NOT NULL,
-      `location` int(11) NOT NULL,
-      `msg` text NOT NULL,
-      `updated_at` datetime NOT NULL,
-      `created_at` datetime NOT NULL
-    ) ENGINE=InnoDB;
-ALTER TABLE `stock_input` ADD PRIMARY KEY (`id`);
-ALTER TABLE `stock_input` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-alter table products change column `offset` `dead_volume` float(4,2);
-ALTER TABLE `events` ADD `report` TINYINT(1) NOT NULL DEFAULT '0' AFTER `vet_support_2`;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

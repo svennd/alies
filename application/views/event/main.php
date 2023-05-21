@@ -218,6 +218,26 @@ document.addEventListener("DOMContentLoaded", function(){
 		minChars: '2'
 	});
 
+	// rappel related functions 
+	// warn that it only sends mail
+	$('[id^="redo"]').blur(function() {
+		var enteredDate = new Date($(this).val());
+		var currentDate = new Date();
+		currentDate.setMonth(currentDate.getMonth() - 2);
+		if (enteredDate < currentDate) {
+			$('#msg_' + $(this).attr('id')).html('<span class="badge badge-info">Mail only!</span>');   
+		}
+		else
+		{
+			$('#msg_' + $(this).attr('id')).html('&nbsp;');   
+		}
+ 	});
+	// set to no rappel
+	// $('[id^="disable_rappel"]').click(function() {
+	// 	event.preventDefault();
+ 	// 	var disable_rappel_id = this.id.replace('disable_rappel', '');
+    // 	$('#redo' + disable_rappel_id).val('2000-01-01').prop('disabled', true);
+  	// });
 });
 
 </script>

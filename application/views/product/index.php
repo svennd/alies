@@ -38,9 +38,11 @@
 			</div>
             <div class="card-body">
 			<p>
-				<?php foreach ($locations as $loc): ?>
-					<a href="<?php echo base_url(); ?>products/index/<?php echo $loc['id'] ?>" class="btn <?php echo ($loc['id'] == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm"><?php echo $loc['name']; ?></a>
-				<?php endforeach; ?>
+				<?php if($locations): ?>
+					<?php foreach ($locations as $loc): ?>
+						<a href="<?php echo base_url(); ?>products/index/<?php echo $loc['id'] ?>" class="btn <?php echo ($loc['id'] == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm"><?php echo $loc['name']; ?></a>
+					<?php endforeach; ?>
+				<?php endif; ?>
 					<a href="<?php echo base_url(); ?>products/index/all" class="btn <?php echo ($clocation == 'all') ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm"><?php echo $this->lang->line('search_all'); ?></a>
 			</p>
 
