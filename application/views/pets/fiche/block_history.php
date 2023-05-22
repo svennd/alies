@@ -55,7 +55,11 @@
 			<?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?>
 		<?php endif; ?>
 		</td>
-		<td><?php echo (isset($history['vet']['first_name'])) ? $history['vet']['first_name'] : 'unknown' ; ?></td>
+		<td><?php echo (isset($history['vet']['first_name'])) ? 
+							$history['vet']['first_name'] 
+							. ((isset($history['vet_1_sup'])) ? ', ' . $history['vet_1_sup']['first_name'] : '')
+							. ((isset($history['vet_2_sup'])) ? ', ' . $history['vet_2_sup']['first_name'] : '')
+							: 'unknown' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
 			<button class="btn btn-sm btn-outline-primary ana"><?php echo $this->lang->line('show'); ?></button>

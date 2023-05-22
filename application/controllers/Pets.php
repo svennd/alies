@@ -157,6 +157,8 @@ class Pets extends Vet_Controller
 									with_products('fields:events_products.volume, unit_sell, name')->
 									with_procedures('fields:events_procedures.amount, name')->
 									with_vet('fields:first_name')->
+									with_vet_1_sup('fields:first_name')->
+									with_vet_2_sup('fields:first_name')->
 									with_location('fields:name')->
 									where(
 										array(
