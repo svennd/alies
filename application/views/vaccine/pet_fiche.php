@@ -10,11 +10,11 @@
 			<table class="table" id="dataTable">
 			  <thead>
 				<tr>
-				  <th>Vaccine</th>
-				  <th>Date Event</th>
-				  <th>Date Expire</th>
-				  <th>Event</th>
-				<th><?php echo $this->lang->line('vet'); ?></th>
+				  <th><?php echo $this->lang->line('vaccines'); ?></th>
+				  <th><?php echo $this->lang->line('injection'); ?></th>
+				  <th><?php echo $this->lang->line('rappel_date'); ?></th>
+				  <th><?php echo $this->lang->line('consult'); ?></th>
+					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
 				</tr>
 			  </thead>

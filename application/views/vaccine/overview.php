@@ -18,14 +18,15 @@
 			<table class="table" id="dataTable">
             <thead>
 				<tr>
-				  <th>Owner</th>
-				  <th>Last Visit</th>
-				  <th>Date Expire</th>
-				  <th>Vaccine</th>
-				  <th>Pets</th>
-				  <th>Mail</th>
-				  <th>Vet</th>
-				  <th>Location</th>
+				  <th><?php echo $this->lang->line('client'); ?></th>
+				  <th><?php echo $this->lang->line('last_visit'); ?></th>
+				  <th><?php echo $this->lang->line('injection'); ?></th>
+				  <th><?php echo $this->lang->line('rappel_date'); ?></th>
+				  <th><?php echo $this->lang->line('vaccines'); ?></th>
+				  <th><?php echo $this->lang->line('pet_info'); ?></th>
+				  <th><?php echo $this->lang->line('email'); ?></th>
+				  <th><?php echo $this->lang->line('Veterinary'); ?></th>
+				  <th><?php echo $this->lang->line('location'); ?></th>
 				</tr>
 			  </thead>
 			  <tbody>
@@ -33,6 +34,7 @@
 				<tr>
 					<td><a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
 					<td><?php echo ($vac['last_bill']) ? time_ago($vac['last_bill']) : '-'; ?></td>
+					<td><?php echo user_format_date($vac['injection_date'],  $user->user_date); ?></td>
 					<td><?php echo user_format_date($vac['redo_date'],  $user->user_date); ?></td>
 					<td><?php echo $vac['product_name']; ?></td>
 					<td><?php echo $vac['pet_name']; ?></td>

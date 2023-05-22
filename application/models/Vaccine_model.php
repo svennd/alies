@@ -61,21 +61,23 @@ class Vaccine_model extends MY_Model
 		$sql = "
 			SELECT 
 				GROUP_CONCAT(event_id) as event_ids,
-				MAX(redo) as max_redo,
+				MAX(vac.redo) as max_rappel,
+				MAX(vac.created_at) as max_injection,
+				MIN(no_rappel) as min_no_rappel,
 				products.name
 			FROM 
-				" . $this->table . " 
+				" . $this->table . " as vac
 			JOIN
 				products
 			ON
-				products.id = vaccine_pet.product_id
+				products.id = vac.product_id
 			WHERE 
 				pet = " . (int) $pet_id . "
 			group by 
 				product_id
 			order by 
-				max_redo 
-			asc
+				max_injection 
+			desc
 		";
 		
 		return ($this->db->query($sql)->result_array());
@@ -85,6 +87,7 @@ class Vaccine_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
+				MIN(vac.created_at) as injection_date,
 				MIN(vac.redo) as redo_date,
 
 				GROUP_CONCAT(DISTINCT products.name) as product_name,

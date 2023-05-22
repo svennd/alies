@@ -14,10 +14,10 @@
 		<div class="dropdown no-arrow d-none d-sm-block">
 
 			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
-				<a class="btn btn-outline-primary filter" data-search="disease" href="#" role="button"><i class="fas fa-fw fa-virus"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="clear" href="#" role="button"><i class="fas fa-fw fa-undo-alt"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="disease" href="#" role="button" data-toggle="tooltip" data-placement="top" title="disease"><i class="fas fa-fw fa-virus"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button" data-toggle="tooltip" data-placement="top" title="operations"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button" data-toggle="tooltip" data-placement="top" title="medicine"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="clear" href="#" role="button" data-toggle="tooltip" data-placement="top" title="reset"><i class="fas fa-fw fa-undo-alt"></i></a>
 			</div>
 			<a href="<?php echo base_url(); ?>pets/export/<?php echo $pet['id']; ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
 			<a href="<?php echo base_url(); ?>pets/change_owner/<?php echo $pet['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
@@ -121,5 +121,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			.draw();
 		}
 	});
+
+	// tooltip 
+	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>

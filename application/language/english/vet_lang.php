@@ -99,7 +99,9 @@ $lang['no_vaccines']  = 'No known vaccines';
 $lang['vaccines']  = 'Vaccine';
 $lang['title_vaccines']  = 'Vaccinations';
 $lang['exp_date']  = 'Expiry date';
+$lang['rappel_date']  = 'Rappel Date';
 $lang['disable']  = 'Disable';
+$lang['injection']  = 'Injection';
 
 ## menu
 $lang['new_consult']    = 'New Consult';

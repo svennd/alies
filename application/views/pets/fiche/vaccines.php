@@ -6,14 +6,16 @@
 		  <thead>
 			<tr>
 			  <th><?php echo $this->lang->line('vaccines'); ?></th>
-			  <th><?php echo $this->lang->line('exp_date'); ?></th>
+			  <th><?php echo $this->lang->line('injection'); ?></th>
+			  <th><?php echo $this->lang->line('rappel_date'); ?></th>
 			</tr>
 		  </thead>
 		  <tbody>
 			<?php foreach($vaccines as $vac):?>
 			<tr>
 			  <td><?php echo $vac['name']; ?></td>
-			  <td><?php echo user_format_date( $vac['max_redo'], $user->user_date); ?></td>
+			  <td><?php echo user_format_date( $vac['max_injection'], $user->user_date); ?></td>
+			  <td><?php echo (!$vac['min_no_rappel']) ? user_format_date( $vac['max_rappel'], $user->user_date) : '---'; ?></td>
 			</tr>
 			<?php endforeach; ?>
 		  </tbody>

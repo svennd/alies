@@ -3,18 +3,7 @@
 <?php if(isset($invalid) && $invalid): ?><div class="alert alert-danger" role="alert">Required fields where not filled in!</div><?php endif; ?>
 	
 <div class="form-row">
-	<div class="form-group col-md-4 pr-4">
-		<div class="form-group">
-			<label for="name"><b><?php echo $this->lang->line('pet_name'); ?></b>*</label>
-			<input type="text" name="name" class="form-control" id="name" value="<?php echo ($edit_mode && isset($pet['name'])) ? $pet['name']: '' ?>" required>
-		</div>
-		<div class="form-group">
-			<label for="birth"><b><?php echo $this->lang->line('birth'); ?></b>*</label>
-			<input type="date" name="birth" class="form-control" id="birth" value="<?php echo ($edit_mode && isset($pet['birth'])) ? $pet['birth']: '' ?>" required>
-			<?php if($edit_mode && !$pet['death']): ?><i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i><?php endif; ?>
-		</div>
-	</div>
-	<div class="form-group col-md-4 pl-4">
+<div class="form-group col-md-2 pl-4">
 		<label for="type"><b>Type</b>*</label>
 		<div class="col">
 			<div class="form-check">
@@ -60,7 +49,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-group col-md-4">
+	<div class="form-group col-md-2">
 		<label for="name"><b><?php echo $this->lang->line('gender'); ?></b>*</label>
 		<div class="col">
 			<div class="form-check">
@@ -98,21 +87,29 @@
 			</div>
 		</div>
 	</div>
+	<div class="form-group col-md-4 pr-4">
+		<div class="form-group">
+			<label for="name"><b><?php echo $this->lang->line('pet_name'); ?></b>*</label>
+			<input type="text" name="name" class="form-control" id="name" value="<?php echo ($edit_mode && isset($pet['name'])) ? $pet['name']: '' ?>" required>
+		</div>
+		<div class="form-group">
+			<label for="birth"><b><?php echo $this->lang->line('birth'); ?></b>*</label>
+			<input type="date" name="birth" class="form-control" id="birth" value="<?php echo ($edit_mode && isset($pet['birth'])) ? $pet['birth']: '' ?>" required>
+			<?php if($edit_mode && !$pet['death']): ?><i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i><?php endif; ?>
+		</div>
+		<div class="form-group">
+			<label for="breed"><b><?php echo $this->lang->line('breed'); ?></b>*</label>
+			<select name="breed" class="form-control" id="breeds2"></select>
+			<input type="hidden" id="current_breed" name="<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
+		</div>
+	</div>
 </div>
 <div class="form-group">
-    <label for="breed"><?php echo $this->lang->line('breed'); ?></label>
+    <label for="breed"></label>
 	<div class="form-row">
+
 		<div class="col">
-		<select name="breed" class="form-control" id="breeds2"></select>
-		<input type="hidden" id="current_breed" name="<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
-		</div>
-		<div class="col">
-		<div class="input-group input-group mb-2 mr-sm-2">
-			<div class="input-group-prepend">
-				<div class="input-group-text">or add</div>
-			</div>
-			<input name="breed_custom" type="text" class="form-control form-control" <?php echo ($edit_mode)? 'disabled' : ''; ?> placeholder="custom breed">
-		</div>
+		
 		</div>
 	 </div>
   </div>
