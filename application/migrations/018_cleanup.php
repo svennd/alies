@@ -12,6 +12,8 @@ class Migration_cleanup extends CI_Migration {
 		  $sql[] = "DROP TABLE `msg_messages`";
 		  $sql[] = "DROP TABLE `msg_participants`";
 		  $sql[] = "DROP TABLE `msg_state`";
+		  $sql[] = "ALTER TABLE `products` ADD `discontinued` TINYINT(1) NOT NULL DEFAULT '0' AFTER `sellable`;";
+		  $sql[] = "ALTER TABLE `products` ADD `wholesale_name` VARCHAR(255) NOT NULL AFTER `name`;";
 
 		  # no rappel binary
 		  $sql[] = "ALTER TABLE `vaccine_pet` ADD `no_rappel` TINYINT(1) NOT NULL AFTER `redo`;`";

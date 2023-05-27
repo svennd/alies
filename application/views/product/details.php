@@ -1,3 +1,9 @@
+<style>
+	.light-grey-hover:hover {
+  background-color: #f3f6ff;
+}
+</style>
+
 <div class="card shadow mb-4">
 	<div class="card-header">
 		<a href="<?php echo base_url(); ?>products">Products</a> /
@@ -21,18 +27,11 @@
 			<div class="col-2">
 				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 					<a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Product Info</a>
+					<a class="nav-link light-grey-hover" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Transaction Info</a>
 					<?php if ($this->ion_auth->in_group("admin")): ?>
-						<a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Stock</a>
+						<a class="nav-link light-grey-hover" id="v-pills-price-tab" data-toggle="pill" href="#v-pills-price" role="tab" aria-controls="v-pills-varia" aria-selected="false">Price</a>
 					<?php endif; ?>
-					<a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Transaction Info</a>
-					<a class="nav-link" id="v-pills-vaccine-tab" data-toggle="pill" href="#v-pills-vaccine" role="tab" aria-controls="v-pills-settings" aria-selected="false">Vaccine</a>
-					<?php if ($this->ion_auth->in_group("admin")): ?>
-						<a class="nav-link" id="v-pills-price-tab" data-toggle="pill" href="#v-pills-price" role="tab" aria-controls="v-pills-varia" aria-selected="false">Price</a>
-					<?php endif; ?>
-					<a class="nav-link" id="v-pills-varia-tab" data-toggle="pill" href="#v-pills-varia" role="tab" aria-controls="v-pills-varia" aria-selected="false">Varia</a>
-					<?php if ($this->ion_auth->in_group("admin")): ?>
-					<a class="nav-link" id="v-pills-danger-tab" data-toggle="pill" href="#v-pills-danger" role="tab" aria-controls="v-pills-danger" aria-selected="false">Danger</a>
-				<?php endif; ?>
+					<a class="nav-link light-grey-hover" id="v-pills-varia-tab" data-toggle="pill" href="#v-pills-varia" role="tab" aria-controls="v-pills-varia" aria-selected="false">Varia</a>
 				</div>
 			</div>
 			<div class="col-10">
@@ -43,58 +42,119 @@
 		<hr />
 		<div class="form-row">
 			<div class="col mb-3">
-			<label for="exampleFormControlInput3">Name</label>
-			<input type="text" name="name" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['name'])) ? $product['name']: '' ?>" required>
+				<label for="product_name"><?php echo $this->lang->line('product_name') ?>*</label>
+				<input type="text" name="name" class="form-control" id="product_name" value="<?php echo (isset($product['name'])) ? $product['name']: '' ?>" required>
 			</div>
 			<div class="col mb-3">
-			<label for="abbr">Abbreviation</label>
-			<input type="text" name="short_name" class="form-control" id="abbr" value="<?php echo (isset($product['short_name'])) ? $product['short_name']: '' ?>">
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" name="sellable" value="1" id="sellable" <?php echo ($product) ? (($product['sellable']) ? "checked" : "" ) : "checked"; ?>>
+					<label class="form-check-label" for="sellable"><?php echo $this->lang->line('saleable'); ?></label>
+				</div>
+					
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" name="discontinued" value="1" id="discontinued" <?php echo ($product) ? (($product['discontinued']) ? "checked" : "" ) : "checked"; ?>>
+					<label class="form-check-label" for="discontinued"><?php echo $this->lang->line('discontinued'); ?></label>
+				</div>
 			</div>
 		</div>
 
 		<div class="form-row">
 			<div class="col mb-3">
-			<label for="wholesale">Wholesale article</label>
-			<select name="wholesale" class="<?php echo ($product['wholesale']) ? 'is-valid' : ''; ?>" style="width:100%" id="wholesale" data-allow-clear="1">
-				<?php if($product['wholesale']): ?>
-					<option value="<?php echo $product['wholesale']; ?>" selected>selected</option>
-				<?php endif; ?>
-			</select>
+				<label for="abbr"><?php echo $this->lang->line('abbreviation'); ?></label>
+				<input type="text" name="short_name" class="form-control" id="abbr" value="<?php echo (isset($product['short_name'])) ? $product['short_name']: '' ?>">
+			</div>
+			<div class="col mb-3">
+				<label for="supplier">Supplier</label>
+				<input type="text" name="supplier" class="form-control" id="supplier" value="<?php echo (isset($product['supplier'])) ? $product['supplier']: '' ?>">
 			</div>
 		</div>
 
 		<div class="form-row">
 			<div class="col mb-3">
-			<label for="input_producer">Producer</label>
-			<input type="text" name="producer" class="form-control" id="input_producer" value="<?php echo (isset($product['producer'])) ? $product['producer']: '' ?>">
+				<div class="form-row">
+					<div class="col">
+						<label for="wholesale"><?php echo $this->lang->line('wholesale_link'); ?></label>
+						<select name="wholesale" class="<?php echo ($product['wholesale']) ? 'is-valid' : 'is-invalid'; ?>" style="width:100%" id="wholesale" data-allow-clear="1">
+							<?php if($product['wholesale']): ?>
+								<option value="<?php echo $product['wholesale']; ?>" selected>selected : id <?php echo $product['wholesale']; ?></option>
+							<?php endif; ?>
+						</select>
+					</div>
+					<div class="col">
+						<label for="input_wh_name"><?php echo $this->lang->line('product_wholesale'); ?></label>
+						<input type="text" name="input_wh_name" class="form-control" id="input_wh_name" value="<?php echo (isset($product['wholesale_name'])) ? $product['wholesale_name']: '' ?>">
+					</div>
+				</div>
 			</div>
 			<div class="col mb-3">
-			<label for="exampleFormControlInput3">Supplier</label>
-			<input type="text" name="supplier" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['supplier'])) ? $product['supplier']: '' ?>">
+				<label for="input_producer">Producer</label>
+				<input type="text" name="producer" class="form-control" id="input_producer" value="<?php echo (isset($product['producer'])) ? $product['producer']: '' ?>">
 			</div>
 		</div>
-		<div class="form-group">
-			<label for="type">Type</label>
-			<select name="type" class="form-control" id="type">
-				<?php foreach($type as $t):?>
-					<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['type']) ? "selected='selected'" : ""; ?>>
-					<?php echo $t['name']; ?></option>
-				<?php endforeach; ?>
-				<option value="0">Other</option>
-			</select>
-		</div>
 
-		<h5>Advanced</h5>
-		<hr />		
-		<div class="form-group">
-			<label for="exampleFormControlTextarea1">Dead volume</label>
-			<input type="text" name="offset" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['offset'])) ? $product['offset']: '0' ?>">
-			<small id="offsetHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
-		</div> 		
-	  </div>
-      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-	  
-	<h5>Stock Requirements</h5>
+		<div class="form-row">
+			<div class="col mb-3">
+				<label for="type">Type</label>
+				<select name="type" class="form-control" id="type">
+					<?php foreach($type as $t):?>
+						<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['type']) ? "selected='selected'" : ""; ?>>
+						<?php echo $t['name']; ?></option>
+					<?php endforeach; ?>
+					<option value="0">Other</option>
+				</select>
+			</div>
+			<div class="col mb-3">
+				<label for="vhb_input">VHB code</label>
+				<input type="text" name="vhbcode" class="form-control" id="vhb_input" value="<?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?>">
+			</div>
+		</div>
+		<h5 class="pt-5">Advanced</h5>
+		<hr />
+		<div class="form-row">
+			<div class="col">
+				<div class=" input-group mb-3">
+					<label for="vaccin">Vaccin (Rappel)</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">
+								<input type="checkbox" id="vaccin" name="vaccin" aria-label="Checkbox for following text input" <?php echo ($product && $product['vaccin']) ? "checked" : ""; ?>>
+							</div>
+						</div>
+						<input type="text" class="form-control" name="vaccin_freq" aria-label="Text input with checkbox" value="<?php echo (isset($product['vaccin_freq'])) ? $product['vaccin_freq']: '0' ?>">
+					</div>
+					<small id="offsetHelp" class="form-text text-muted">0 for no autogenerated rappel date (in days)</small>
+				</div>
+			</div>
+
+			<div class="col mb-3">
+				<div class="form-group">
+					<label for="offset"><?php echo $this->lang->line('dead_volume'); ?></label>
+					<input type="text" name="offset" class="form-control" id="offset" value="<?php echo (isset($product['offset'])) ? $product['offset']: '0' ?>">
+					<small id="offsetHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
+				</div> 	
+			</div> 	
+		</div> 	
+
+		<div class="form-row">
+			<div class="col">
+				<div class="form-row">
+					<div class="col">
+						<label for="gs1_datamatrix"><i class="fas fa-barcode"></i> Scan barcode</label>
+						<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
+						<small class="form-text text-danger">Scan a full GS1 code. Will overwrite Product code.</small>
+					</div>
+					<div class="col">
+						<label for="input_barcode">Product code</label>
+						<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
+						<small class="form-text text-muted" id="extra_info">Used to identify products that use GS1.</small>
+					</div>
+				</div>
+			</div> 	
+			<div class="col">
+			</div> 	
+		</div>
+		
+		<h5 class="pt-5">Stock Requirements</h5>
 
 	<?php if ($product):  ?>
 	<?php $total_1m = 0.0; if ($history_1m) : foreach ($history_1m as $h) { $total_1m += $h['volume']; } endif; ?>
@@ -105,7 +165,7 @@
 
 	<div class="form-row">
 			<div class="form-group col">
-				<label for="exampleFormControlInput3">Limit (global)</label>
+				<label for="limits">Limit (global)</label>
 
 				<div class="input-group mb-3">
 					<input type="text" name="limit_stock" class="form-control" id="limits" value="<?php echo (isset($product['limit_stock'])) ? $product['limit_stock']: '' ?>">
@@ -132,7 +192,7 @@
 				</table>
 			</div>
 		</div>
-		<h5>Local limits</h5>
+		<h5 class="pt-5">Local limits</h5>
 		<hr />
 		<p>The mimimal volume that should be in each location.</p>
 
@@ -157,10 +217,10 @@
 			?>
 		<div class="form-group col-md-6">
 			<div class="form-group row">
-				<label for="inputPassword" class="col-sm-4 col-form-label"><?php echo $stock['name']; ?></label>
+				<label for="limits<?php echo $local_limit_id; ?>" class="col-sm-4 col-form-label"><?php echo $stock['name']; ?></label>
 				<div class="col-sm-4">
 					<div class="input-group mb-3">
-						<input type="text" name="limit[<?php echo $stock['id']; ?>][<?php echo $local_limit_id; ?>]" class="form-control" id="limits" value="<?php echo $local_limit_value; ?>">
+						<input type="text" name="limit[<?php echo $stock['id']; ?>][<?php echo $local_limit_id; ?>]" class="form-control" id="limits<?php echo $local_limit_id; ?>" value="<?php echo $local_limit_value; ?>">
 						<div class="input-group-append">
 							<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
 						</div>
@@ -172,34 +232,36 @@
 		<?php endforeach; ?>
 		</div>
 
+
+	  </div>
+      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+	  
+	
+
 	  </div>
       <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
 	  	<h5>Transaction info</h5>
 	<hr />				  
-	  <div class="form-group form-check">
-		<input type="checkbox" class="form-check-input" name="sellable" value="1" id="exampleCheck1" <?php echo ($product) ? (($product['sellable']) ? "checked" : "" ) : "checked"; ?>>
-		<label class="form-check-label" for="exampleCheck1">saleable</label>
-	  </div>	  
-	  
+
 		<div class="form-row">
 			<div class="col">
-			<label for="exampleFormControlInput3">Buy volume</label>
-			<input type="text" name="buy_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?>" required>
+			<label for="buy_volume">Buy volume</label>
+			<input type="text" name="buy_volume" class="form-control" id="buy_volume" value="<?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?>" required>
 			</div>
 			<div class="col-md-2">
-			<label for="exampleFormControlInput3">Buy unit</label>
-			<input type="text" name="unit_buy" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?>" required>
+			<label for="unit_buy">Buy unit</label>
+			<input type="text" name="unit_buy" class="form-control" id="unit_buy" value="<?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?>" required>
 			<small id="unitHelp" class="form-text text-muted">kg, fles, doos</small>
 			</div>
-			<div class="col-md-1"><label for="exampleFormControlInput3">==></label></div>
+			<div class="col-md-1">==></div>
 			<div class="col">
-			<label for="exampleFormControlInput3">Sell volume</label>
-			<input type="text" name="sell_volume" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['sell_volume'])) ? $product['sell_volume']: '' ?>" required>
+			<label for="sell_volume">Sell volume</label>
+			<input type="text" name="sell_volume" class="form-control" id="sell_volume" value="<?php echo (isset($product['sell_volume'])) ? $product['sell_volume']: '' ?>" required>
 			<small class="form-text text-muted">min. 2 box, containing 4 strips : "8" "strips"</small>
 			</div>
 			<div class="col-md-2">
-			<label for="exampleFormControlInput3">Sell Unit</label>
-			<input type="text" name="unit_sell" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?>" required>
+			<label for="unit_sell">Sell Unit</label>
+			<input type="text" name="unit_sell" class="form-control" id="unit_sell" value="<?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?>" required>
 			</div>
 		</div>
 
@@ -211,18 +273,18 @@
 		
 		<div class="form-row">
 			<div class="col">
-			<label for="exampleFormControlInput3">BTW buy</label>
+			<label for="btw_buy">BTW buy</label>
 			<div class="input-group mb-3">
-			  <input type="text" class="form-control" name="btw_buy" value="<?php echo (isset($product['btw_buy'])) ? $product['btw_buy']: '' ?>">
+			  <input type="text" class="form-control" name="btw_buy" id="btw_buy" value="<?php echo (isset($product['btw_buy'])) ? $product['btw_buy']: '' ?>">
 			  <div class="input-group-append">
 				<span class="input-group-text" id="basic-addon2">%</span>
 			  </div>
 			</div>
 			</div>
 			<div class="col">
-			<label for="exampleFormControlInput3">BTW sell</label>
+			<label for="booking_code">BTW sell</label>
 			<div class="input-group mb-3">
-				<select name="booking_code" class="form-control" id="type">
+				<select name="booking_code" class="form-control" id="booking_code">
 					<?php foreach($booking as $t): ?>
 						<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['booking_code']) ? "selected='selected'":"";?>><?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?></option>
 					<?php endforeach; ?>
@@ -231,56 +293,26 @@
 			</div>
 
 		</div>
-		
-
-		<div class="form-row">
-			<div class="form-group col">
-				<label for="exampleFormControlInput3">Catalog Price</label>
-				<input type="text" name="buy_price" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?>">
-			</div>
-			<div class="form-group col">
-				<label for="exampleFormControlInput3">Catalog Update</label>
-				<input type="date" name="buy_price_date" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['buy_price_date'])) ? $product['buy_price_date']: '' ?>">
-			</div>
-		</div>
-		
-		<div class="form-row">
-			<div class="form-group col">
-				<label for="vhb_input">VHB code</label>
-				<input type="text" name="vhbcode" class="form-control" id="vhb_input" value="<?php echo (isset($product['vhbcode'])) ? $product['vhbcode']: '' ?>">
-			</div>
-		  <div class="col">&nbsp;</div>
-		</div>
-		
-		<div class="form-row">
-				<div class="col mb-3">
-				<label for="gs1_datamatrix">Scan barcode</label>
-				<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
-				<small class="form-text text-danger">Will overwrite input_barcode! (scan with a reader)</small>
-				</div>
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">input_barcode</label>
-				<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="<?php echo (isset($product['input_barcode'])) ? $product['input_barcode']: '' ?>">
-				<small class="form-text text-muted" id="extra_info">Set the barcode manually</small>
-				</div>
-		</div>
+			
 
 	  </div>
-
-      <div class="tab-pane fade" id="v-pills-vaccine" role="tabpanel" aria-labelledby="v-pills-vaccine-tab">
-		  <div class="form-group form-check">
-			<input type="checkbox" class="form-check-input" name="vaccin" value="1" id="exampleCheck1" <?php echo ($product && $product['vaccin']) ? "checked" : ""; ?>>
-			<label class="form-check-label" for="exampleCheck1">Vaccin</label>
-		  </div>	
-			<div class="form-group">
-				<label for="exampleFormControlTextarea1">Expire : </label>
-				<input type="text" name="vaccin_freq" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['vaccin_freq'])) ? $product['vaccin_freq']: '0' ?>">
-				<small id="offsetHelp" class="form-text text-muted">0 for no expire date</small>
-			</div>
-	  </div>	
 	  
 		<div class="tab-pane fade" id="v-pills-price" role="tabpanel" aria-labelledby="v-pills-price-tab">
+
+		<div class="form-row">
+			<div class="form-group col">
+				<label for="buy_price">Catalog Price</label>
+				<input type="text" name="buy_price" class="form-control" id="buy_price" value="<?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?>">
+				<small id="offsetHelp" class="form-text text-muted">Manually tracking pricing</small>
+			</div>
+			<div class="form-group col">
+				<label for="buy_price_date">Catalog Update</label>
+				<input type="date" name="buy_price_date" class="form-control" id="buy_price_date" value="<?php echo (isset($product['buy_price_date'])) ? $product['buy_price_date']: '' ?>">
+			</div>
+		</div>
+		<hr />
 		<?php if($product['sellable']): ?>
+		<h5>Current price</h5>
 		<?php 
 		if (!isset($product['prices']))
 		{
@@ -303,8 +335,10 @@
 				echo $product['prices']['0']['price'] . "&euro; / " . $product['prices']['0']['volume'] . " ". $product['unit_sell'];
 			}
 		}
-		?><br/>
-		<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-success">Edit Price</a>
+		?><br/><br/>
+		<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" target="_blank" class="btn btn-outline-success"><i class="fas fa-external-link-alt"></i> Edit Price </a>
+		<small id="offsetHelp" class="form-text text-muted">This will open in a new window, changes currently made are <b>not</b> saved untill edit is complete.</small>
+
 		<?php else: ?>
 			<span style='color:red;'><b>Product is set as non-can't be sold.</b></span>
 		<?php endif; ?>
@@ -314,33 +348,29 @@
 	  
       <div class="tab-pane fade" id="v-pills-varia" role="tabpanel" aria-labelledby="v-pills-varia-tab">
 		   <div class="form-group">
-			<label for="exampleFormControlTextarea1">Posologie</label>
-			<textarea class="form-control" name="posologie" id="exampleFormControlTextarea1" rows="3"><?php echo (isset($product['posologie'])) ? $product['posologie']: '' ?></textarea>
+			<label for="posologie">Posologie</label>
+			<textarea class="form-control" name="posologie" id="posologie" rows="3"><?php echo (isset($product['posologie'])) ? $product['posologie']: '' ?></textarea>
 		  </div>
 		  
 		<div class="form-row">
 			<div class="col">
-			<label for="exampleFormControlInput3">Toedieningsweg</label>
-			<input type="text" name="toedieningsweg" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['toedieningsweg'])) ? $product['toedieningsweg']: '' ?>">
+			<label for="toedieningsweg">Toedieningsweg</label>
+			<input type="text" name="toedieningsweg" class="form-control" id="toedieningsweg" value="<?php echo (isset($product['toedieningsweg'])) ? $product['toedieningsweg']: '' ?>">
 			</div>
 			<div class="col">
-			<label for="exampleFormControlInput3">delay</label>
-			<input type="text" name="delay" class="form-control" id="exampleFormControlInput3" value="<?php echo (isset($product['delay'])) ? $product['delay']: '' ?>">
+			<label for="delay">delay</label>
+			<input type="text" name="delay" class="form-control" id="delay" value="<?php echo (isset($product['delay'])) ? $product['delay']: '' ?>">
 			</div>
 		</div>		
 		<div class="form-group">
-			<label for="exampleFormControlTextarea1">comment</label>
-			<textarea class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
-		  </div>
-	  </div>
-	  
-	  
-		<?php if ($product) : ?>
-		<div class="tab-pane fade" id="v-pills-danger" role="tabpanel" aria-labelledby="v-pills-danger-tab">
-			<a href="<?php echo base_url(); ?>products/delete_product/<?php echo $product['id']; ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i> Remove Product</a><br/>
-			<small>Note: product won't be removed from database, for accountancy reasons; But won't be available any longer.</small>
+			<label for="comment">comment</label>
+			<textarea class="form-control" name="comment" id="comment" rows="3"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
 		</div>
-		<?php endif; ?>
+		<h5 class="pt-5">Danger</h5>
+		<hr />
+	  		<a href="<?php echo base_url(); ?>products/delete_product/<?php echo $product['id']; ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i> Remove Product</a><br/>
+			<small>Note: product won't be removed from database, for accountancy reasons; But won't be available any longer.</small>
+	  </div>		
     </div>
   </div>
 </div>
@@ -420,10 +450,11 @@ document.addEventListener("DOMContentLoaded", function(){
 			dataType: 'json'
 		},
 	}).on("select2:selecting", function(e) { 
+		$(this).addClass('is-valid');
 		// also have bruto, but not sure if we always want to overwrite ...
-		$("#vhb_input").val(e.params.args.data.vhb);
-		$("#input_producer").val(e.params.args.data.distr);
-		$("#abbr").val(e.params.args.data.text);
+		$("#vhb_input").val(e.params.args.data.vhb).addClass('is-valid');
+		$("#input_producer").val(e.params.args.data.distr).addClass('is-valid');
+		$("#input_wh_name").val(e.params.args.data.text).addClass('is-valid');
 	});
 });
 </script>

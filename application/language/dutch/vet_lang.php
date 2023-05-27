@@ -252,6 +252,8 @@ $lang['product_entered']        = 'Product toegevoegd';
 $lang['eol']                    = 'Vervaldatum'; 
 $lang['barcode']                = 'Barcode'; 
 $lang['added']                  = 'toegevoegd'; 
+$lang['saleable']               = 'verkoopbaar'; 
+$lang['discontinued']           = 'niet leverbaar'; 
 $lang['no_local_stock']         = 'Geen lokale stock.'; 
 $lang['no_global_stock']        = 'Geen globale stock.'; 
 
@@ -299,6 +301,7 @@ $lang['price_setting']          = 'Verkoopsprijs';
 $lang['day_prices']             = 'Vorige dagprijzen'; 
 $lang['price_practice']         = 'Praktijk prijs'; 
 $lang['price_total_sale']       = 'Totale verkoopsprijs'; 
+$lang['abbreviation']           = 'Alias'; 
 
 # lab
 $lang['lab_id']                 = 'Labo id'; 
@@ -318,6 +321,7 @@ $lang['Reporting']             = 'Rapport';
 $lang['sellable_volume']       = "Volume (verkoopbaar)";
 $lang['product_name']          = "Product naam";
 $lang['product_wholesale']     = "Groothandel naam";
+$lang['wholesale_link']     = "Groothandel link";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "of";

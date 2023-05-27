@@ -11,6 +11,11 @@ $lang['weight_male']      = 'Gewicht man'; # cat, dog, ...
 $lang['weight_female']    = 'Gewicht vrouw'; # cat, dog, ...
 $lang['breed_updated']    = 'Ras aangepast'; # cat, dog, ...
 
+# menu
+$lang['pricing']           = 'Prijzen';
+$lang['procedures']           = 'Procedures';
+$lang['products']           = 'Producten';
+
 # merge
 $lang['breed_merge']      = 'Samenvoegen';
 $lang['old_breed']        = 'Oud ras';

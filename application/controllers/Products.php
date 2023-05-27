@@ -227,6 +227,7 @@ class Products extends Vet_Controller
 			$input = array(
 								"name" 					=> $this->input->post('name'),
 								"short_name" 			=> $this->input->post('short_name'),
+								"wholesale_name" 		=> $this->input->post('input_wh_name'),
 								"producer" 				=> $this->input->post('producer'),
 								"supplier" 				=> $this->input->post('supplier'),
 								"posologie" 			=> $this->input->post('posologie'),
@@ -250,6 +251,7 @@ class Products extends Vet_Controller
 								"wholesale"				=> $this->input->post('wholesale'),
 								"buy_price_date" 		=> $this->input->post('buy_price_date'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
+								"discontinued" 				=> (is_null($this->input->post('discontinued')) ? 0 : 1),
 								"limit_stock" 			=> $this->input->post('limit_stock')
 							);
 

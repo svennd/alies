@@ -245,6 +245,8 @@ $lang['product_entered']        = 'Product entered';
 $lang['eol']                    = 'End of Life'; 
 $lang['barcode']                = 'Barcode'; 
 $lang['added']                  = 'added'; 
+$lang['saleable']                  = 'saleable'; 
+$lang['discontinued']           = 'discontinued';
 $lang['no_local_stock']         = 'No local stock.'; 
 $lang['no_global_stock']        = 'No global stock.'; 
 
@@ -291,6 +293,7 @@ $lang['price_setting']          = 'Sell price';
 $lang['day_prices']             = 'Prev. day prices'; 
 $lang['price_practice']         = 'Practice price'; 
 $lang['price_total_sale']       = 'Total sale price'; 
+$lang['abbreviation']           = 'abbreviation'; 
 
 # lab
 $lang['lab_id']                 = 'Lab id'; 
@@ -310,6 +313,7 @@ $lang['Reporting']             = 'Reports';
 $lang['sellable_volume']       = "New Volume (sellable)";
 $lang['product_name']          = "Product name";
 $lang['product_wholesale']     = "Wholesale name";
+$lang['wholesale_link']     = "Wholesale link";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "or";

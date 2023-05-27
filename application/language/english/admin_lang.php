@@ -11,6 +11,11 @@ $lang['weight_male']      = 'Weight male'; # cat, dog, ...
 $lang['weight_female']    = 'Weight female'; # cat, dog, ...
 $lang['breed_updated']    = 'Breed was succesfully updated'; # cat, dog, ...
 
+# menu
+$lang['pricing']           = 'Pricing';
+$lang['procedures']           = 'Procedures';
+$lang['products']           = 'Products';
+
 # merge
 $lang['breed_merge']      = 'Merge';
 $lang['old_breed']        = 'Old breed';

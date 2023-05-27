@@ -64,12 +64,12 @@
       <li class="nav-item" id="pricing">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pricingmg" aria-expanded="true" aria-controls="pricingmg">
           <i class="fas fa-fw fa-dollar-sign"></i>
-          <span>Pricing</span>
+          <span><?php echo $this->lang->line('pricing'); ?></span>
         </a>
         <div id="pricingmg" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc">Procedures</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list">Products</a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc"><?php echo $this->lang->line('procedures'); ?></a>
+            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list"><?php echo $this->lang->line('products'); ?></a>
           </div>
         </div>
       </li>
