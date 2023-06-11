@@ -22,8 +22,8 @@
 				<?php foreach($vaccines as $vac): ?>
 				<tr>
 					<td><?php echo $vac['product']['name']; ?></td>
-					<td><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
-					<td><?php echo $vac['redo']; ?></td>
+					<td data-sort="<?php echo strtotime($vac['created_at']); ?>"><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
+					<td data-sort="<?php echo strtotime($vac['redo']); ?>"><?php echo user_format_date($vac['redo'], $user->user_date); ?></td>
 					<td>
 						<?php if($vac['event_id'] == 0): ?>
 							imported
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 			"order": [[ 2, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
-				var product_date = new Date(data[2]);
+				var product_date = new Date(data[2]["@data-sort"]*1000);
 				date_diff = (current_date - product_date);
 				if( date_diff > 0){
 					$(row).addClass("table-secondary");

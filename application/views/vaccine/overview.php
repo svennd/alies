@@ -13,7 +13,6 @@
 			<br/>
 			<br/>
 			<br/>
-			
 			<?php if($expiring_vacs): ?>
 			<table class="table" id="dataTable">
             <thead>
@@ -55,7 +54,6 @@
 	  </div>
 	</div>
 </div>
-
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
