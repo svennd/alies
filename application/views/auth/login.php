@@ -36,15 +36,20 @@
                   </div>
                   <?php echo form_open("auth/login");?>
                     <div class="form-group">
-                      <input type="email" name="identity" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                      <input type="email" name="identity" class="form-control form-control-user" id="email" aria-describedby="emailHelp" placeholder="Enter Email Address...">
                     </div>
                     <div class="form-group">
-                      <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                    <div class="input-group">
+                      <input type="password" name="password" class="form-control form-control-user" id="password" placeholder="Password" required>
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-info" type="button" id="togglePassword">Show</button>
+                      </div>
+                    </div>
                     </div>
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
                         <input type="checkbox" name="password" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
+                        <label class="custom-control-label" for="customCheck">Remember Metest</label>
                       </div>
                     </div>
 					<input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Login">
@@ -62,6 +67,20 @@
 
   </div>
 
+  <script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      var passwordField = document.getElementById('password');
+      
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        this.textContent = 'Hide';
+      } else {
+        passwordField.type = 'password';
+        this.textContent = 'Show';
+      }
+    });
+  </script>
 </body>
 
 </html>

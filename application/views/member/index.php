@@ -24,7 +24,7 @@
 				<td>
 					<?php foreach ($user['groups'] as $group):?>
 						<!-- <?php echo anchor("auth/edit_group/".$group->id, $group->name) ;?><br /> -->
-						<?php echo $group->name;?><br />
+						<?php echo $group->description;?><br />
 					<?php endforeach?>
 				</td>
 				<td>

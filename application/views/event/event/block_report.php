@@ -155,49 +155,39 @@ $("#my_old_browser")
 
 /* add files to event */
 $("#upload_field")
-  .on( "click", function(e) {
-			$("#my_old_browser").click();
-	})
-	.on( "dragover", function(e) {
-		$(this).addClass('drag-over');
-		e.preventDefault();
-		e.stopPropagation();
-	})
-	.on( "dragenter", function(e) {
-		$(this).addClass('drag-over');
-		e.preventDefault();
-		e.stopPropagation();
-	})
-	.on( "dragleave", function(e) {
-		$(this).removeClass('drag-over');
-		e.preventDefault();
-		e.stopPropagation();
-	})
-	.on( "drop", function(e) {
-		$(this).addClass('drag-over');
-		$(this).html("");
+  .on("click", function() {
+    $("#my_old_browser").click();
+  })
+  .on("dragover dragenter", function(e) {
+    $(this).addClass('drag-over');
+    e.preventDefault();
+    e.stopPropagation();
+  })
+  .on("dragleave", function(e) {
+    $(this).removeClass('drag-over');
+    e.preventDefault();
+    e.stopPropagation();
+  })
+  
+  .on("drop", function(e) {
+    $(this).addClass('drag-over');
+    $(this).html("");
 
-		e.preventDefault();
-		e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-		// console.log(e.originalEvent.dataTransfer);
-		if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
-			var filelist = e.originalEvent.dataTransfer.files;
-			for(var i=0;i<filelist.length;i++){
-					var file = filelist[i];
-					var file_loader =
-						'<h4 class="small font-weight-bold m-3">'+file.name+'<span class="float-right" id="text_status_' + file.name + '">&nbsp;</span></h4>' +
-						'<div class="progress m-3"><div id="bar_' + file.name + '" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>';
-					$(this).append(file_loader);
-			}
-			for(var i=0;i<filelist.length;i++){
-					var file = filelist[i];
-					uploadFile(file);
-			}
-		}
-
-	})
-;
+    if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
+      var filelist = e.originalEvent.dataTransfer.files;
+      for (var i = 0; i < filelist.length; i++) {
+        var file = filelist[i];
+        var file_loader =
+          '<h4 class="small font-weight-bold m-3">' + file.name + '<span class="float-right" id="text_status_' + file.name + '">&nbsp;</span></h4>' +
+          '<div class="progress m-3"><div id="bar_' + file.name + '" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>';
+        $(this).append(file_loader);
+        uploadFile(file);
+      }
+    }
+  });
 
 async function uploadFile(file) {
 	// const chunkSize = 40000;

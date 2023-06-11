@@ -68,7 +68,7 @@
 				<?php if ($cgroup->id == $group['id']): ?>checked="checked"<?php endif; ?>
 			<?php endforeach; ?>
 			>
-			<label class="form-check-label" for="<?php echo $group['name']; ?>"><?php echo $group['name']; ?></label>
+			<label class="form-check-label" for="<?php echo $group['name']; ?>"><?php echo $group['description']; ?></label>
         </div>
        <?php endforeach?>
       </div>
