@@ -14,12 +14,11 @@
 				<tr>
 					<th>Product</th>
 					<th>EOL</th>
-					<th>EOL (user)</th>
 					<th>Lotnr</th>
 					<th>Volume</th>
 					<th>Location</th>
 					<th>Barcode</th>
-          <th>Options</h>
+        			<th>Options</h>
 				</tr>
 				</thead>
 				<tbody>
@@ -27,8 +26,7 @@
 				?>
 				<tr>
 					<td><?php echo $expire['products']['name']; ?></td>
-					<td><?php echo $expire['eol']; ?></td>
-					<td><?php echo date_format(date_create($expire['eol']), $user->user_date); ?></td>
+					<td data-sort="<?php echo strtotime($expire['eol']); ?>"><?php echo date_format(date_create($expire['eol']), $user->user_date); ?></td>
 					<td><?php echo $expire['lotnr']; ?></td>
 					<td><?php echo $expire['volume']; ?> <?php echo $expire['products']['unit_buy']; ?></td>
 					<td><?php echo $expire['stock_locations']['name']; ?></td>
@@ -71,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({
 			"order": [[ 1, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
-				var product_date = new Date(data[1]);
+				var product_date = new Date(data[1]["@data-sort"]*1000);
 				date_diff = (current_date - product_date);
 				if( date_diff > 0){
 					$(row).addClass("table-secondary");
