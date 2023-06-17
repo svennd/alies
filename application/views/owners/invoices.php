@@ -21,7 +21,15 @@
 	  <tbody>
 		<?php foreach($bills as $bill): ?>
 		<tr>
-		  <td><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>">#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?></a></td>
+		  <td>
+			<?php if($bill['invoice_id']): // imported have no invoice_id ?>
+			<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>">
+		  		#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at']); ?>
+			</a>
+			<?php else: ?>
+				#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>
+			<?php endif; ?>
+		</td>
 		  <td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
 		  <td><?php echo get_bill_status($bill['status']); ?></td>
 		  <td><?php echo $bill['amount']; ?></td>
