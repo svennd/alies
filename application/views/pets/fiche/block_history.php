@@ -53,6 +53,9 @@
 			<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" style="padding: 0.05rem 0.5rem;" target="_blank"><?php echo get_event_type($history['type']); ?> <?php echo $this->lang->line('Lab'); ?></a>
 		<?php else: ?>
 			<?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?>
+			<?php if($history['report'] != REPORT_DONE): ?>
+				<i class="fas fa-unlock" data-toggle="tooltip" data-placement="top" title="not finished"></i>
+			<?php endif; ?>
 		<?php endif; ?>
 		</td>
 		<td><?php echo (isset($history['vet']['first_name'])) ? 
@@ -63,7 +66,7 @@
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
 			<button class="btn btn-sm btn-outline-primary ana"><?php echo $this->lang->line('show'); ?></button>
-			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-sm btn-outline-info"><?php echo $this->lang->line('edit'); ?></a>
+			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-warning<?php else: ?> btn-outline-info<?php endif; ?>"><?php echo $this->lang->line('edit'); ?></a>
 		</td>
 		<td><?php echo nl2br ($history['anamnese']); ?></td>
 		<td><ul>

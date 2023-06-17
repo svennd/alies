@@ -100,7 +100,10 @@
 		<hr />
 		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
 		<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> <?php echo $this->lang->line('save_report'); ?></button>
-		<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
+
+		<?php if($event_info['report'] != REPORT_DONE): ?>
+			<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
+		<?php endif; ?>
 	</div>
 	</form>
 </div>
