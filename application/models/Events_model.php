@@ -241,7 +241,7 @@ class Events_model extends MY_Model
 		JOIN users ON users.id = events.vet
 		JOIN owners ON owners.id = pets.owner
 		WHERE
-			events.updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
+			events.created_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
 		AND
 			events.no_history = 0
 		". (($admin) ? "" : "AND ( events.vet = " . $this->user->id . " OR events.vet_support_1 = " . $this->user->id . " OR events.vet_support_2 = " . $this->user->id . ")") ."
