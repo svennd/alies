@@ -35,6 +35,7 @@ class Pdf
 		$this->dompdf->loadHtml($html);
 		$this->dompdf->render();
 		$this->dompdf->stream($filename.'.pdf', array("Attachment" => $download));
+		exit;
 	}
 
 	public function create_file($html, $file)
