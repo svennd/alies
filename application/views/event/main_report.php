@@ -55,14 +55,14 @@
 		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 			<?php echo $this->lang->line('report'); ?>
 			<div class="dropdown no-arrow">
-				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/print" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> <?php echo $this->lang->line('print_invoice'); ?></a>
+				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/1" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> <?php echo $this->lang->line('print_invoice'); ?></a>
 				<?php if($event_info['no_history'] == 1): ?>
-				<a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
-				<i class="fas fa-eye"></i> <?php echo $this->lang->line('enable_report'); ?>
+				<a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-danger btn-sm">
+				<i class="fas fa-eye-slash"></i> <?php echo $this->lang->line('enable_report'); ?>
 				</a>
 				<?php else: ?>
 				<a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
-				<i class="fas fa-eye-slash"></i> <?php echo $this->lang->line('disable_report'); ?>
+				<i class="fas fa-eye"></i> <?php echo $this->lang->line('disable_report'); ?>
 				</a>
 				<?php endif; ?>
 			</div>
@@ -99,6 +99,7 @@
 
 		<hr />
 		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
+
 		<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> <?php echo $this->lang->line('save_report'); ?></button>
 
 		<?php if($event_info['report'] != REPORT_DONE): ?>

@@ -18,6 +18,7 @@
 				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button" data-toggle="tooltip" data-placement="top" title="operations"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
 				<a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button" data-toggle="tooltip" data-placement="top" title="medicine"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a>
 				<a class="btn btn-outline-primary filter" data-search="clear" href="#" role="button" data-toggle="tooltip" data-placement="top" title="reset"><i class="fas fa-fw fa-undo-alt"></i></a>
+				<a class="btn btn-outline-danger" data-search="" href="#" role="button" data-toggle="tooltip" data-placement="top" title="no history" id="toggleHidden"><i class="far fa-fw fa-eye-slash"></i></a>
 			</div>
 			<a href="<?php echo base_url(); ?>pets/export/<?php echo $pet['id']; ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
 			<a href="<?php echo base_url(); ?>pets/change_owner/<?php echo $pet['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
@@ -47,7 +48,7 @@
 	?>
 	<tr>
 		<td data-sort="<?php echo strtotime($history['created_at']) ?>"><?php echo user_format_date($history['created_at'], $user->user_date); ?></td>
-		<td><?php echo get_event_type($history['type'], true); ?></td>
+		<td><?php echo ($history['no_history']) ? "nohistory" : get_event_type($history['type'], true); ?></td>
 		<td>
 		<?php if(preg_match('/lab:(\d*)/', $history['title'], $match)): ?>
 			<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" style="padding: 0.05rem 0.5rem;" target="_blank"><?php echo get_event_type($history['type']); ?> <?php echo $this->lang->line('Lab'); ?></a>
@@ -110,6 +111,16 @@ document.addEventListener("DOMContentLoaded", function(){
 	 ]
 	});
 
+	// hide nohistory first
+	table.rows().every(function() {
+		var value = this.data()[1];
+
+		if (value === 'nohistory') {
+		this.nodes().to$().hide();
+		}
+	});
+
+	// filter for types
 	$(".filter").click(function() {
 		let search = $(this).data("search");
 		$(".filter").removeClass("btn-outline-success");
@@ -128,8 +139,35 @@ document.addEventListener("DOMContentLoaded", function(){
 			.draw();
 		}
 	});
+	
+	// toggle nohistory
+	function toggleHiddenRows() {
+        table.rows().every(function() {
+          var value = this.data()[1]; 
 
-	// tooltip 
+          if (value === 'nohistory') {
+            var row = this.nodes().to$();
+
+            if (row.is(":hidden")) {
+              row.show();
+            } else {
+              row.hide();
+            }
+          }
+        });
+      }
+
+	$('#toggleHidden').on('click', function() {
+		$(this).toggleClass('btn-outline-danger btn-outline-success');
+		toggleHiddenRows();
+		
+		if ($(this).hasClass('btn-outline-success')) {
+        	$(this).html('<i class="fas fa-fw fa-eye"></i>');
+        } else {
+			$(this).html('<i class="far fa-fw fa-eye-slash"></i>');
+        }
+	});
+	
 	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>

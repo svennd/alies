@@ -13,6 +13,11 @@
 </style>
 
 <div class="dropdown no-arrow">
+    <?php if($event_info['no_history'] == 1): ?>
+    <a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-success btn-sm details-button">
+        <i class="fas fa-eye"></i><span>&nbsp;<?php echo $this->lang->line('show_history'); ?></span>
+    </a>
+    <?php else: ?>
     <a href="<?php echo base_url(); ?>events_report/set_type/<?php echo $event_id . "/" . DISEASE; ?>" role="button" class="btn btn-outline-primary btn-sm <?php echo ($event_info["type"] == DISEASE) ? "btn-outline-success" : "details-button" ?>">
         <i class="fas fa-virus"></i><span>&nbsp;<?php echo $this->lang->line('disease'); ?></span>
     </a>
@@ -22,13 +27,7 @@
     <a href="<?php echo base_url(); ?>events_report/set_type/<?php echo $event_id . "/" . MEDICINE; ?>" role="button" class="btn btn-outline-primary btn-sm <?php echo ($event_info["type"] == MEDICINE) ? "btn-outline-success" : "details-button" ?>">
         <i class="fas fa-prescription-bottle-alt"></i><span>&nbsp;<?php echo $this->lang->line('medicine'); ?></span>
     </a>
-
-    <?php if($event_info['no_history'] == 1): ?>
-    <a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm details-button">
-        <i class="fas fa-eye"></i><span>&nbsp;<?php echo $this->lang->line('show_history'); ?></span>
-    </a>
-    <?php else: ?>
-    <a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm details-button">
+    <a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-danger btn-sm details-button">
         <i class="fas fa-eye-slash"></i><span>&nbsp;<?php echo $this->lang->line('no_history'); ?></span>
     </a>
     <?php endif; ?>
