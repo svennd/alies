@@ -30,7 +30,7 @@
 								<small><?php echo time_ago($d["created_at"]);?></small>
 							</td>
                             <td>
-                                <?php if($d['user_id'] == $user->id): ?>
+                                <?php if($d['user_id'] == $user->id || $this->ion_auth->in_group('admin')): ?>
                                     <a href="<?php echo base_url('sticky/delete/' . $d['id']); ?>" class="file_line btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></a>
                                 <?php endif; ?>
                             </td>

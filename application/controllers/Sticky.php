@@ -33,7 +33,14 @@ class Sticky extends Vet_Controller
 
 	public function delete(int $id)
 	{
-		$this->sticky->where(array("user_id" => $this->user->id))->delete($id);
+		if (!$this->ion_auth->in_group('admin')) 
+		{
+			$this->sticky->delete($id);
+		}
+		else
+		{
+			$this->sticky->where(array("user_id" => $this->user->id))->delete($id);
+		}
 		redirect('sticky');
 	}
 }
