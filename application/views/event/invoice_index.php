@@ -1,4 +1,5 @@
 <?php $total = 0; ?>
+<?php $total_excl = 0; ?>
 <div class="table-responsive">
     <table class="table">
     <thead>
@@ -25,9 +26,17 @@
             <td>&nbsp;</td>
             <td><i><?php echo $this->lang->line('sum'); ?></i></td>
             <td><i><?php echo round($total, 2); ?> &euro;</i></td>
-            <td>&nbsp;</td>
+            <td class="sensitive"><i><?php echo round($total_excl,2); ?> &euro;</i></td>
             <td>&nbsp;</td>
         </tr>
     </tfoot>
     </table>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  $(".sensitive").hover(function() {
+    $(this).toggleClass('sensitive', 300);
+  });
+});
+
+</script>

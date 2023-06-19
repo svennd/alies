@@ -37,6 +37,7 @@
 			
 			<td><?php echo round($product['price'],2); ?> &euro; 
 				<?php $total += $product['price']; ?>
+				<?php $total_excl += $product['net_price']; ?>
 			</td>
 			<td>
 				<small><?php echo round($product['net_price'],2); ?> &euro;</small>
