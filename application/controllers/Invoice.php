@@ -346,14 +346,11 @@ class Invoice extends Vet_Controller
 	{
 		# load library (html->pdf)
 		$this->load->library('pdf'); 
-	
-		# race condition 
-		$bill = $this->bills->get($bill_id);
 
 		# generate the pdf based		
 		$this->pdf->create(
 			$this->load->view('bills/report_print', $data, true), 
-			"bill_" . get_bill_id($bill_id, $bill['created_at']), 
+			(!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']), 
 			false
 		);
 	}
