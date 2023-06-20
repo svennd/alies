@@ -2,7 +2,7 @@
     "require": {
         "nnnick/chartjs": "3.7.*",
         "components/bootstrap": "4.*",
-        "components/font-awesome": "5.*",
+        "fortawesome/font-awesome": "6.*",
         "components/jquery": "3.4.1",
         "select2/select2": "4.*",
         "ttskch/select2-bootstrap4-theme": "*",
