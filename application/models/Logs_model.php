@@ -31,15 +31,15 @@ class Logs_model extends MY_Model
 	{
 		# using the CI3 file logger
 		log_message('error', $msg);
-		
+
 		return ($level > $this->min_log_level) ? 
 			true : 
 			$this->insert(array(
 					"event" 	=> $event,
 					"level" 	=> $level,
 					"msg" 		=> $msg,
-					"user_id" 	=> (isset($this->user) && is_object($this->user) && $this->user->id != SYSTEM) ? $this->user->id : SYSTEM,
-					"location"	=> (isset($this->user) && is_object($this->user) && $this->user->current_location != SYSTEM) ? $this->user->current_location : SYSTEM,
+					"user_id" 	=> (is_object($this->user) && $this->user->id != SYSTEM) ? $this->user->id : SYSTEM,
+					"location"	=> (is_object($this->user) && $this->user->current_location != SYSTEM) ? $this->user->current_location : SYSTEM,
 				));
 	}
 
