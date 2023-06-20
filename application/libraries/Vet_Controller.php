@@ -45,7 +45,6 @@ class Vet_Controller extends MY_Controller
 		# required on every page
 		$this->page_data = array(
 								"user" 						=> $this->user,
-								"user" 						=> $this->user,
 								"location" 					=> $this->_get_compass_locations(),
 								"current_location" 			=> $this->_get_current_location(),
 								"mondal" 					=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
