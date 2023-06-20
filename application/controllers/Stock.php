@@ -150,7 +150,7 @@ class Stock extends Vet_Controller
 				$this->stock->reduce_product($barcode, $from, $value);
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}
-			redirect('/stock/' . $to . '/' . 1);
+			redirect('/products/index/' . 1);
 		}
 	}
 
