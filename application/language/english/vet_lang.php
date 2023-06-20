@@ -321,3 +321,4 @@ $lang['or']                    = "or";
 
 # stock / product index
 $lang['list_products']         = "Product List";
+$lang['writeoff']                = "Writeoff";

@@ -330,3 +330,4 @@ $lang['or']                    = "of";
 
 # stock / product index
 $lang['list_products']         = "Product Lijst";
+$lang['writeoff']                = "Uitschrijven";
