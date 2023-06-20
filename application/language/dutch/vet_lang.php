@@ -16,6 +16,7 @@ $lang['show']          = 'Toon';
 $lang['edit']          = 'Bewerk';
 $lang['add']          = 'Toevoegen';
 $lang['required']          = 'Verplicht';
+$lang['cancel']          = 'Annuleer';
 
 
 # welcome page
