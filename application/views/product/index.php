@@ -58,7 +58,7 @@
 			<br/>
 			<?php if ($products): ?>
 				<?php if($clocation == "all"): ?>
-					<table class="table" id="dataTable">
+					<table class="table" id="full_stock">
 					<thead>
 					<tr>
 						<th><?php echo $this->lang->line('Products'); ?></th>
@@ -101,14 +101,18 @@
 						<td><?php echo $product['type']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>
 						<td>
-							<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
-										id="<?php echo $product['product_id']; ?>" 
-										data-id="<?php echo $product['product_id']; ?>"
-										data-name="<?php echo $product['product_name']; ?>"
-										data-lotnr="<?php echo $product['lotnr']; ?>"
-										data-barcode="<?php echo $product['barcode']; ?>"
-							><?php echo $this->lang->line('move'); ?></button>
-							<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm ml-3"><i class="fas fa-ban"></i></a>
+							<?php if($clocation != $this->user->current_location): ?>
+								<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
+											id="<?php echo $product['product_id']; ?>" 
+											data-id="<?php echo $product['product_id']; ?>"
+											data-name="<?php echo $product['product_name']; ?>"
+											data-lotnr="<?php echo $product['lotnr']; ?>"
+											data-barcode="<?php echo $product['barcode']; ?>"
+								><?php echo $this->lang->line('move'); ?></button>
+							<?php else: ?>
+								&nbsp;
+							<?php endif; ?>
+							<!--<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm ml-3"><i class="fas fa-ban"></i></a> -->
 						</td>
 					</tr>
 					<?php endforeach; ?>
@@ -127,7 +131,6 @@
       <div class="col-lg-3 mb-4">
 
       <a href="<?php echo base_url(); ?>stock/add_stock" class="btn btn-success btn-lg"><i class="fas fa-shopping-cart"></i> <?php echo $this->lang->line('add_stock'); ?></a> <br/><br/>
-      
       <div class="card shadow mb-4" id="move_stock_tab" style="display:none;">
 			<form action="<?php echo base_url(); ?>stock/move_stock" method="post" autocomplete="off">
 				<div class="card-header text-success">
@@ -144,13 +147,8 @@
 						</div>
 						<div class="col mb-3">
 							<label for="exampleFormControlInput1"><?php echo $this->lang->line('to_location'); ?></label>
-							<select name="to_location" class="form-control" id="location">
-								<?php foreach($locations as $location): ?>
-									<?php if ($location['id'] == $clocation) { continue; } ?>
-									<option value="<?php echo $location['id']; ?>"><?php echo $location['name']; ?></option>
-								<?php endforeach; ?>
-							</select>
-
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="<?php foreach($locations as $location): ?><?php echo ($location['id'] == $this->user->current_location) ? $location['name'] : ''; ?><?php endforeach; ?>" readonly>
+							<input type="hidden" name="to_location" value="<?php echo $this->user->current_location; ?>" />
 						</div>
 					</div>
 					<input type="hidden" name="barcodes" id="barcodes" value="" />
@@ -171,23 +169,24 @@ document.addEventListener("DOMContentLoaded", function(){
 
   var requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/1";
 
-  var table = $("#table-info").DataTable({
-    ajax: requestUrl,
-    "columnDefs": [
-      { "targets": 0, "data": null, "render": function ( data, type, row ) {
-        return "<a href='<?php echo base_url(); ?>products/profile/" + row[0] + "'>" + row[1] + "</a>";
-        }
-      },
-      { "targets": 1, "data": null, "render": function ( data, type, row ) {
-        var result = row[3] +" "+ row[2];
-        return result;
-        }
-      },
-      { "visible": false, "targets": [2,3]},
-    ],
+  // no longer used ?
+//   var table = $("#table-info").DataTable({
+//     ajax: requestUrl,
+//     "columnDefs": [
+//       { "targets": 0, "data": null, "render": function ( data, type, row ) {
+//         return "<a href='<?php echo base_url(); ?>products/profile/" + row[0] + "'>" + row[1] + "</a>";
+//         }
+//       },
+//       { "targets": 1, "data": null, "render": function ( data, type, row ) {
+//         var result = row[3] +" "+ row[2];
+//         return result;
+//         }
+//       },
+//     //   { "visible": false, "targets": [2,3]},
+//     ],
 
-    "order": [[ 3, "desc" ]]
-  });
+//     "order": [[ 3, "desc" ]]
+//   });
 
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
@@ -196,9 +195,16 @@ document.addEventListener("DOMContentLoaded", function(){
       table.ajax.url( requestUrl ).load();
   });
 
+// main table
 $("#dataTable").DataTable({
-	responsive: true
+	responsive: true,
+	"columnDefs": [
+		{ "visible": false, "targets": [5]}
+	]
 });
+
+// if selected "ALL" -> less columns
+$("#full_stock").DataTable({ responsive: true });
 
 const move_products = [];
 $("#dataTable").on('click','.move_product', function() {

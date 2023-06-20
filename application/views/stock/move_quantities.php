@@ -2,11 +2,14 @@
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><a href="<?php echo base_url('products'); ?>">Products</a> / Move stock / Quantities</div>
+				<div><a href="<?php echo base_url('products'); ?>">Products</a> / <?php echo $this->lang->line('move_stock'); ?> / <?php echo $this->lang->line('Quantity'); ?></div>
 				<div class="dropdown no-arrow">
 					<?php foreach($locations as $location): ?>
-						<?php if ($location['id'] != $new_location) { continue; } ?>
-						<a href="#" class="btn btn-outline-success btn-sm"><i class="fas fa-shipping-fast"></i> <?php echo $location['name']; ?></a>
+						<?php if ($location['id'] != $from_location) { continue; } ?>
+						<a href="#" class="btn btn-outline-success btn-sm">
+						<?php echo $location['name']; ?> 
+							<i class="fa-solid fa-truck-arrow-right"></i>
+						<?php echo $current_location; ?></a>
 					<?php endforeach; ?>
 				</div>
 			</div>
@@ -30,19 +33,19 @@
 					
 				<div class="form-row">
 					<div class="form-group col-md-4">
-						<label for="product<?php echo $barcode; ?>">Product</label>
+						<label for="product<?php echo $barcode; ?>"><?php echo $this->lang->line('product'); ?></label>
 						<input type="text" readonly class="form-control-plaintext" id="product" value="<?php echo $product['name']; ?>">
 					</div>
 					<div class="form-group col-md-2">
-						<label for="eol<?php echo $barcode; ?>">eol</label>
+						<label for="eol<?php echo $barcode; ?>"><?php echo $this->lang->line('eol'); ?></label>
 						<input type="text" readonly class="form-control-plaintext" id="eol" value="<?php echo $product['eol']; ?>">
 					</div>
 					<div class="form-group col-md-2">
-						<label for="lotnr<?php echo $barcode; ?>">lotnr</label>
+						<label for="lotnr<?php echo $barcode; ?>"><?php echo $this->lang->line('lotnr'); ?></label>
 						<input type="text" readonly class="form-control-plaintext" id="lotnr" value="<?php echo $product['lotnr']; ?>">
 					</div>
 					<div class="form-group col-md-4">
-						<label for="move_volume<?php echo $barcode; ?>">move volume</label>
+						<label for="move_volume<?php echo $barcode; ?>"><?php echo $this->lang->line('volume'); ?></label>
 						<div class="input-group">
 						  <input type="text" class="form-control" id="move_volume<?php echo $barcode; ?>" name="move_volume[<?php echo $barcode; ?>]" required>
 						  <div class="input-group-append">
@@ -56,8 +59,8 @@
 				<?php endforeach; ?>
 				<input type="hidden" name="new_location" value="<?php echo $new_location; ?>"/>
 				<input type="hidden" name="from_location" value="<?php echo $from_location; ?>"/>
-					<button type="submit" name="submit" value="quantities" class="btn btn-primary">Submit</button>
-					<a href="<?php echo base_url('products'); ?>" class="btn btn-danger ml-3">Cancel</a>
+					<button type="submit" name="submit" value="quantities" class="btn btn-success"><?php echo $this->lang->line('move'); ?></button>
+					<a href="<?php echo base_url('products'); ?>" class="btn btn-danger ml-3"><?php echo $this->lang->line('cancel'); ?></a>
 				</form>
 				<?php endif; ?>
 			</div>
