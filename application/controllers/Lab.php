@@ -32,6 +32,7 @@ class Lab extends Vet_Controller
 					$lab_id
 				);
 			$comment_update = true;
+			$this->logs->logger(INFO, "lab_modify", " lab_id : " . $lab_id . " data:" . var_export($this->input->post(), true));
 		}
 
 		$lab_info = $this->lab->with_pet('fields: name, id')->get($lab_id);

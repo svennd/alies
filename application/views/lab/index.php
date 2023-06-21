@@ -26,7 +26,7 @@
 						<tr>
 							<td><a href="<?php echo base_url('lab/detail/'. $d["id"]); ?>"><?php echo $d["lab_id"]; ?></a></td>
 							<td>
-								<?php if(!is_null($d['pet'])): ?>
+								<?php if(!is_null($d['pet']) && isset($d['pet']['id'])): ?>
 								<a href="<?php echo base_url('pets/fiche/' . $d['pet']['id']); ?>"><?php echo $d['pet']['name']; ?></a>
 								<?php else: ?>
 									-
