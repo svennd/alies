@@ -3,22 +3,22 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				Stock / Expired stock
+				<a href="<?php echo base_url('products'); ?>">Stock</a> / <?php echo $this->lang->line('expired_stock'); ?>
 			</div>
       <div class="card-body">
-			<p>This table shows products that are expired (up to 360d) or are going to expire soon (90d).
+			<p><?php echo $this->lang->line('expired_stock_expl'); ?>
         <span class="p-1 bg-danger text-white">Expiring soon (30d)</span>, <span class="p-1 bg-secondary text-white">Expired</span>.<br/></p>
 			<?php if ($stock_gone_bad): ?>
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Product</th>
-					<th>EOL</th>
-					<th>Lotnr</th>
-					<th>Volume</th>
-					<th>Location</th>
-					<th>Barcode</th>
-        			<th>Options</h>
+					<th><?php echo $this->lang->line('product'); ?></th>
+					<th><?php echo $this->lang->line('eol'); ?></th>
+					<th><?php echo $this->lang->line('lotnr'); ?></th>
+					<th><?php echo $this->lang->line('volume'); ?></th>
+					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('barcode'); ?></th>
+					<th><?php echo $this->lang->line('option'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	const current_date = new Date();
 
 	$("#dataTable").DataTable({
-			"order": [[ 1, "desc" ]],
+			"order": [[ 1, "asc" ]],
 			"createdRow": function( row, data, dataIndex){
 				var product_date = new Date(data[1]["@data-sort"]*1000);
 				date_diff = (current_date - product_date);

@@ -330,4 +330,6 @@ $lang['or']                    = "of";
 
 # stock / product index
 $lang['list_products']         = "Product Lijst";
-$lang['writeoff']                = "Uitschrijven";
+$lang['writeoff']              = "Uitschrijven";
+$lang['expired_stock']         = "Vervallen stock";
+$lang['expired_stock_expl']         = "Deze tabel toont producten (1)die vervallen zijn (tot 360 dagen), (2)producten die binnenkort komen te vervallen (30 dagen).";

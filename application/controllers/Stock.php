@@ -64,7 +64,7 @@ class Stock extends Vet_Controller
 		$data = array(
 						"stock_gone_bad" => $expired
 						);
-		$this->_render_page('stock_bad', $data);
+		$this->_render_page('stock/expired', $data);
 	}
 
 	public function move_stock()

@@ -322,3 +322,5 @@ $lang['or']                    = "or";
 # stock / product index
 $lang['list_products']         = "Product List";
 $lang['writeoff']                = "Writeoff";
+$lang['expired_stock']         = "Expired Stock";
+$lang['expired_stock_expl']         = "This table shows products that are expired (up to 360d) or are going to expire soon (90d).";
