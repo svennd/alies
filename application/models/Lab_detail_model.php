@@ -17,6 +17,7 @@ class Lab_detail_model extends MY_Model
 	// sample_id : link to external resource
 	public function add_line(int $lab_id, int $sample_id, array $lab_info) 
 	{
+
 		$add_sample = "
 		INSERT INTO lab_detail
 			(
@@ -43,6 +44,10 @@ class Lab_detail_model extends MY_Model
 				'" . date('Y-m-d H:i:s') . "', '" . date('Y-m-d H:i:s') . "'
 			)
 		ON DUPLICATE KEY UPDATE
+			value = '". $lab_info['resultaat'] ."',
+			string_value = '". $lab_info['sp_resultaat'] ."',
+			lab_updated_at = '". $lab_info['updated_at'] ."',
+			comment = '". $lab_info['commentaar'] ."',
 			updated_at = '" . date('Y-m-d H:i:s') . "';		
 		";
 		return $this->db->query($add_sample);
