@@ -16,12 +16,15 @@
 						<td>
 							<?php if ($lab_info['pet']): ?>
 								<a href="<?php echo base_url('pets/fiche/' . $lab_info['pet']['id']); ?>"><?php echo $lab_info['pet']['name']; ?></a>
+								<input type="hidden" name="pet_id" value="<?php echo $lab_info['pet']['id']; ?>" />
+								<input type="hidden" name="no_event" value="1" />
 							<?php else: ?>
 								<select name="pet_id" style="width:100%" id="pet_id" data-allow-clear="1">
 									<?php if($lab_info['pet']): ?>
 									<option value="<?php echo $lab_info['pet']['id']; ?>" selected></option>
 									<?php endif; ?>
 								</select>
+								<input type="hidden" name="no_event" value="0" />
 							<?php endif; ?>
 						</td>
 					</tr>

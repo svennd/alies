@@ -192,7 +192,7 @@ class Cron extends MY_Controller
                                                 'bovenlimiet'     => $line['bovenlimiet'],  
                                                 'onderlimiet'     => $line['onderlimiet'],  
                                                 'rapport'         => ($line['rapport'] == "J") ? 1 : 0,  
-                                                'eenheid'         => $line['eenheid'],  
+                                                'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),  
                                                 'updated_at'      => $line['updated_at'],  
                                                 'tabulatie_code'  => $line['tabulatie_code'],  
                                                 'lab_code_text'   => (isset($test_id_to_names[$line["tabulatie_code"]]) ? $test_id_to_names[$line["tabulatie_code"]] : '---'),  

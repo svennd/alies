@@ -35,16 +35,14 @@ class Lab extends Vet_Controller
 			$this->logs->logger(INFO, "lab_modify", " lab_id : " . $lab_id . " data:" . var_export($this->input->post(), true));
 		}
 
-		$lab_info = $this->lab->with_pet('fields: name, id')->get($lab_id);
-
 		# check if we need to add event
-		if (!is_null($lab_info['pet']) && $this->input->post('pet_id') == $lab_info['pet']['id'])
+		if ($this->input->post('pet_id') && !$this->input->post('no_event'))
 		{
-			$this->add_lab_event($lab_id, $lab_info['pet']['id']);
+			$this->add_lab_event($lab_id, (int) $this->input->post('pet_id'));
 		}
 
     	$this->_render_page('lab/detail', array(
-			"lab_info" => $lab_info,
+			"lab_info" => $this->lab->with_pet('fields: name, id')->get($lab_id),
 			"lab_details" => $this->lab_line->where(array('lab_id' => $lab_id))->get_all(),
             "comment_update" => $comment_update
 		));
