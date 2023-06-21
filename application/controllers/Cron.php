@@ -208,7 +208,7 @@ class Cron extends MY_Controller
         }
         else
         {
-            echo "sourced : " . count($stalen) . " samples!";
+            echo date("m.d.y H:i") . " " . count($stalen) . " samples!";
         }
     }
 
