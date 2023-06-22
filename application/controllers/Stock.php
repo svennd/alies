@@ -303,9 +303,6 @@ class Stock extends Vet_Controller
 			if ($this->input->post('submit') == "write_off_q") {
 				$this->stock->reduce_product($this->input->post("barcode"), $this->input->post("location"), $this->input->post("volume"));
 				$this->logs->stock(WARN, "writeoff", $this->input->post("product_id"), -$this->input->post("volume"), $this->input->post("location"));
-
-				# clean stock since most likely this will result in a 0 line, no need to print stuff
-				$this->stock_clean(false);
 			}
 			redirect('stock/expired_stock', 'refresh');
 		}
