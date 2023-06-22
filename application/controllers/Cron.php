@@ -220,7 +220,7 @@ class Cron extends Frontend_Controller
     }
 
 	# if some remaining data is still visible this can be used to hide it
-	public function stock_clean($print = true)
+	public function stock_clean()
 	{
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 
