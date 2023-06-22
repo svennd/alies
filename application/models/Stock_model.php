@@ -305,6 +305,7 @@ class Stock_model extends MY_Model
 
 	/*
 		get stock level (local & global)
+		used : stock.php/move_stock (and other places)
 	*/
 	public function get_stock_levels(int $product_id, int $location)
 	{

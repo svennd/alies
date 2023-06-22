@@ -80,6 +80,8 @@ class Stock extends Vet_Controller
 
 			if ($barcodes && count($barcodes) > 0) {
 				foreach ($barcodes as $barcode) {
+					// probably unlikely to be used atm
+					// gs1 code means we know the product/eol/... but not the location
 					if (parse_gs1($barcode)) 
 					{
 						$x = parse_gs1($barcode);
@@ -103,9 +105,10 @@ class Stock extends Vet_Controller
 					else 
 					{
 						# a stock can be split so multiple results could be generated
-						$stock_product = $this->stock->with_products()->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
+						$stock_product = $this->stock->with_products('fields:name, unit_sell')->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
 						# its a known stock product
 						if ($stock_product) {
+							
 							# index : safety check for doubles
 							$stock_list[$barcode] = array(
 													"name" 		=> $stock_product['products']['name'],
@@ -113,6 +116,10 @@ class Stock extends Vet_Controller
 													"lotnr" 	=> $stock_product['lotnr'],
 													"volume" 	=> $stock_product['volume'],
 													"barcode"	=> $barcode,
+													"from_stock"=> $this->stock->get_stock_levels($stock_product['products']['id'], $from_location),
+													"to_stock" 	=> $this->stock->get_stock_levels($stock_product['products']['id'], $new_location),
+													"from_limit"=> $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $from_location))->get(),
+													"to_limit"  => $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $new_location))->get(),
 													"sell_unit" => $stock_product['products']['unit_sell']
 												);
 						}
@@ -335,27 +342,6 @@ class Stock extends Vet_Controller
 		$this->_render_page('stock/edit.admin.php', $data);
 	}
 	
-	# if some remaining data is still visible this can be used to hide it
-	public function stock_clean($print = true)
-	{
-		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
-
-		# make this traceable
-		$this->logs->logger(WARN, "stock_clean", "archived: " . $r);
-
-		# make a call for duplicate products that are exactly identical
-		# eg. multiple same lotnr & dates entered on a different date
-		$duplicates = $this->stock->fix_duplicates();
-
-		$this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
-		echo ($print) ? 
-				"0 volume lines : " . $r . "<br/>" .
-				$duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products <br/>" .
-				"<a href='" . base_url('stock') . "'> return</a>"
-				:
-				"";
-	}
-
 	/*
 	covetrus specific output
 	*/

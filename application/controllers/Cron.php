@@ -1,7 +1,14 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-class Cron extends MY_Controller
+class Cron extends Frontend_Controller
 {
+    protected $conf = array();
+    public $stock;
+    public $lab;
+    public $lab_line;
+    public $settings;
+    public $logs;
+
 	# constructor
 	public function __construct()
 	{
@@ -9,6 +16,8 @@ class Cron extends MY_Controller
 
 		$this->load->model('Lab_model', 'lab');
 		$this->load->model('Lab_detail_model', 'lab_line');
+
+		$this->load->model('Stock_model', 'stock');
 
 		$this->load->model('Config_model', 'settings');
         $conf = $this->settings->get_all();
@@ -20,8 +29,6 @@ class Cron extends MY_Controller
 												"created_at" 	=> $c['created_at']
 											);
 			}
-		} else {
-			$this->conf = array();
 		}
 	}
 
@@ -210,6 +217,23 @@ class Cron extends MY_Controller
         {
             echo date("m.d.y H:i") . " " . count($stalen) . " samples!\n";
         }
+    }
+
+	# if some remaining data is still visible this can be used to hide it
+	public function stock_clean($print = true)
+	{
+		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
+
+		# make this traceable
+		$this->logs->logger(WARN, "stock_clean", "archived: " . $r);
+
+		# make a call for duplicate products that are exactly identical
+		# eg. multiple same lotnr & dates entered on a different date
+		$duplicates = $this->stock->fix_duplicates();
+
+		$this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
+
+		echo "0 volume lines : " . $r . "\n" . $duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products \n";
     }
 
 	// wrapper around some curl setup
