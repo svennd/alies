@@ -30,6 +30,13 @@ class Pets_model extends MY_Model
 							'local_key' => 'breed'
 						);
 						
+		$this->has_one['breeds2'] = array(
+							'foreign_model' => 'Breeds_model',
+							'foreign_table' => 'breeds',
+							'foreign_key' => 'id',
+							'local_key' => 'breed2'
+						);
+						
 		/*
 			has_many
 		*/

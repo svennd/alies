@@ -62,6 +62,9 @@
 									<?php if (isset($pet['breeds'])): ?>
 										<?php echo $pet['breeds']['name']; ?>
 									<?php endif; ?>
+									<?php if (isset($pet['breeds2'])): ?>
+										x <?php echo $pet['breeds2']['name']; ?>
+									<?php endif; ?>
 								</div>
 
 								<?php if ($pet['last_weight']): ?>

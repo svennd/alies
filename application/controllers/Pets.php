@@ -60,38 +60,34 @@ class Pets extends Vet_Controller
 			}
 			else
 			{
-				$breed = $this->input->post('breed');
-				if (!empty($this->input->post('breed_custom'))) {
-					$breed = $this->breeds->insert(array("name" => $this->input->post('breed_custom')));
-				}
-
+				$weight = $this->input->post('weight');
 				$pet_id = $this->pets->insert(array(
 												"type" 			=> (int) $this->input->post('type'),
 												"name" 			=> $this->input->post('name'),
 												"gender" 		=> $this->input->post('gender'),
 												"birth" 		=> $this->input->post('birth'),
-												"breed" 		=> $breed,
+												"breed" 		=> $this->input->post('breed'),
+												"breed2" 		=> $this->input->post('breed2'),
 												"color" 		=> $this->input->post('color'),
 												"chip" 			=> $this->input->post('chip'),
-												"last_weight" 	=> $this->input->post('weight'),
+												"last_weight" 	=> $weight,
 												"nr_vac_book" 	=> $this->input->post('vacbook'),
-												// "nutritional_advice" => $this->input->post('nutritional_advice'),
 												"note" 			=> $this->input->post('msg'),
-												// "lost" 			=> (is_null($this->input->post('lost'))) ? 0 : $this->input->post('lost'),
-												// "death" 		=> (is_null($this->input->post('dead'))) ? 0 : $this->input->post('dead'),
 												"owner" 		=> $this->input->post('owner'),
 												"location"		=> $this->user->current_location,
 												"init_vet"		=> $this->user->id
 											));
 				# add weight to history
-				$this->pets_weight->insert(array(
-										"pets" => $pet_id,
-										"weight" => $this->input->post("weight")
-									));
-
+				if ($weight)
+				{
+					$this->pets_weight->insert(array(
+											"pets" => $pet_id,
+											"weight" => $this->input->post("weight")
+										));
+				}
 				$this->logs->logger(INFO, "add_pet", "Added pet " . $this->input->post('name') . " (". $pet_id . ")");
 
-				redirect('/owners/detail/' . (int)  $this->input->post('owner'));
+				redirect('/pets/fiche/' . (int) $pet_id);
 			}
 		}
 
@@ -107,10 +103,19 @@ class Pets extends Vet_Controller
 	public function edit($pet_id)
 	{
 		if ($this->input->post('submit')) {
-			$breed = $this->input->post('breed');
-			if (!empty($this->input->post('breed_custom'))) {
-				$this->breeds->insert(array("name" => $this->input->post('breed_custom'), "type" => (int) $this->input->post('type')));
-			}
+
+			# if breed isn't defined check current_breed
+			$breed = (!$this->input->post('breed')) ? $this->input->post('current_breed') : $this->input->post('breed');
+
+			# second breed options :
+			#	- no second given, but there is one in current_breed2 ==> current_breed2
+			#	- second set to -1 ==> NULL
+			#	- second given ==> int
+			$breed2_input = $this->input->post('breed2');
+			$breed2 = ($breed2_input) ? 
+									(($breed2_input == -1) ? NULL: (int) $breed2_input) 
+									: 
+									$this->input->post('current_breed2');
 
 			$this->pets->update(
 				array(
@@ -119,6 +124,7 @@ class Pets extends Vet_Controller
 											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender')),
 											"birth" 		=> $this->input->post('birth'),
 											"breed" 		=> $breed,
+											"breed2" 		=> $breed2,
 											"color" 		=> $this->input->post('color'),
 											"chip" 			=> $this->input->post('chip'),
 											"last_weight" 	=> $this->input->post('weight'),
@@ -136,10 +142,10 @@ class Pets extends Vet_Controller
 									"weight" 	=> $this->input->post("weight")
 								));
 
-			redirect('/pets/fiche/' . (int)  $pet_id);
+			// redirect('/pets/fiche/' . (int)  $pet_id);
 		}
 
-		$pet_info = $this->pets->with_owners()->with_breeds('fields: name')->get($pet_id);
+		$pet_info = $this->pets->with_owners()->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
 		$data = array(
 						"pet" => $pet_info,
 						"owner" => $pet_info['owners']
@@ -150,7 +156,7 @@ class Pets extends Vet_Controller
 
 	public function fiche($pet_id)
 	{
-		$pet_info = $this->pets->with_breeds()->with_pets_weight()->get($pet_id);
+		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->with_pets_weight()->get($pet_id);
 
 		$pet_history = $this->
 									events->
@@ -183,7 +189,7 @@ class Pets extends Vet_Controller
 
 	public function export($pet_id)
 	{
-		$pet_info = $this->pets->with_breeds('fields: name')->get($pet_id);
+		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
 		$pet_history = $this->
 							events->
 							with_products('fields:events_products.volume, unit_sell, name')->

@@ -125,7 +125,7 @@ class Owners extends Vet_Controller
 		$data = array(
 						"owner" 	=> $this->owners->get($id),
 						"open_bill"	=> $open_bill,
-						"pets" 		=> $this->pets->with_breeds()->where(array("owner" => (int) $id))->order_by(array("birth, death"), "desc")->get_all(),
+						"pets" 		=> $this->pets->with_breeds('field:name')->with_breeds2('field:name')->where(array("owner" => (int) $id))->order_by(array("birth, death"), "desc")->get_all(),
 						"update" 	=> $update
 					);
 					

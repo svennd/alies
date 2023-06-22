@@ -22,7 +22,7 @@ $edit_mode = (isset($pet)) ? true : false;
 			<div class="card-body">
 <form action="<?php echo ($edit_mode) ?
 						base_url() . 'pets/edit/' . $pet['id'] :
-						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off">
+						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off" name="<?php echo ($edit_mode) ? 'edit_pet':'new_pet'; ?>">
 
 <?php include 'profile/required.php'; ?>
 <?php include 'profile/details.php'; ?>
@@ -151,7 +151,8 @@ function get_chip_info(chip)
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-	$("#breeds2").select2({
+
+	$("#breeds").select2({
 		theme: 'bootstrap4',
 		ajax: {
 			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + ((params.term === undefined) ? '' : params.term); },
@@ -164,11 +165,30 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		}
 	});
-	const current_breed_id = $("#current_breed").val();
-	const current_breed_name = $("#current_breed").attr('name');;
 
-	var newOption = new Option(current_breed_name, current_breed_id, true, true);
-	$('#breeds2').append(newOption).trigger('change');
+	$("#second_breed").select2({
+		theme: 'bootstrap4',
+		ajax: {
+			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + ((params.term === undefined) ? '' : params.term); },
+			dataType: 'json',
+			data: function (params) {
+				let query = {
+					type: $("input:radio[name ='type']:checked").val()
+				}
+				return query;
+			},
+			processResults: function (data) {
+				let resultsArray = data.results;
+				resultsArray.unshift({
+					id: '-1',
+					text: '---'
+				});
+				return {
+					results: resultsArray
+				};
+			}
+		}
+	});
 
 	$("#birth").change(function() {
 		make_date(this.value);
