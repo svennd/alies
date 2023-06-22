@@ -213,6 +213,7 @@ $lang['disease']             = 'disease';
 $lang['operation']             = 'operation'; 
 $lang['medicine']             = 'medication'; 
 $lang['no_history']             = 'hide'; 
+$lang['no_history_txt']             = 'No history'; 
 $lang['history']             = 'show'; 
 
 # limits

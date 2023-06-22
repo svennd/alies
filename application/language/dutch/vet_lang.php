@@ -219,6 +219,7 @@ $lang['disease']             = 'ziekte';
 $lang['operation']             = 'operatie'; 
 $lang['medicine']             = 'medicatie'; 
 $lang['no_history']             = 'verberg'; 
+$lang['no_history_txt']             = 'Geen events.'; 
 $lang['show_history']             = 'toon'; 
 
 # limits

@@ -85,7 +85,7 @@
 	</table>
 
 	<?php else : ?>
-		<?php echo $this->lang->line('no_history'); ?>
+		<?php echo $this->lang->line('no_history_txt'); ?>
 	<?php endif; ?>
 	</div>
 </div>
