@@ -282,7 +282,7 @@ class Auth extends CI_Controller
 		$this->viewdata = (empty($data)) ? $this->data: $data;
 
 		if ($view != "auth/login") {
-			$view_html = $this->load->view('header', $this->viewdata, $render);
+			$this->load->view('header', $this->viewdata, $render);
 		}
 		$view_html = $this->load->view($view, $this->viewdata, $render);
 		

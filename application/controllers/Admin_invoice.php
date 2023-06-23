@@ -81,11 +81,11 @@ class Admin_invoice extends Admin_Controller
 					$this->logs->logger(DEBUG, "rm_bill_prod", "increasing product ". $p['product_id']);
 				}
 				# if finished remove from eprod
-				$products = $this->eprod->where(array('event_id' => $ev['id']))->delete();
+				$this->eprod->where(array('event_id' => $ev['id']))->delete();
 				$this->logs->logger(DEBUG, "rm_bill_prod", "deleting all prod with event_id : ". $ev['id']);
 				
 				# in case there was a vaccine mapped on this bill
-				$products = $this->vaccine->where(array('event_id' => $ev['id']))->delete();
+				$this->vaccine->where(array('event_id' => $ev['id']))->delete();
 				$this->logs->logger(DEBUG, "rm_bill_vaccine", "deleting all vaccines with event_id : ". $ev['id']);
 
 				# update this event

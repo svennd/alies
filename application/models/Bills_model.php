@@ -65,15 +65,16 @@ class Bills_model extends MY_Model
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 
-		# init
-		$bill_total_tally = array();
-
 		$bill = $this->fields('id, status, owner_id')->get($bill_id);
 			$owner_id = $bill['owner_id'];
 			$bill_status = $bill['status'];
 
 		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
 
+		if (!$pets) { 
+			return false; 
+		}
+		
 		list($print_bill, $bill_total_tally, $event_info, $pet_id_array) = $this->bill_per_pet($pets, $bill_id, $bill_status);
 		
 		# calculate the full bill

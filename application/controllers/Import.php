@@ -28,7 +28,8 @@ class Import extends Admin_Controller {
         {
 			$handle = fopen('data/stored/' . $this->input->post('file'), 'r');
 
-			$header = fgetcsv($handle, 0, "|");
+			// header
+			fgetcsv($handle, 0, "|");
 			
 			$count = 0;
 			for ($i = 0; $row = fgetcsv($handle, 0, "|"); ++$i)
@@ -59,18 +60,5 @@ class Import extends Admin_Controller {
 					"changes" => $list_with_changes,
 					"products" => $this->wholesale->get_all(),
 				));
-	}
-
-	private function req_curl_json(string $url)
-	{
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array("Accept: application/json"));
-		$json_response = curl_exec($curl);
-		curl_close($curl);
-
-		return $json_response;
 	}
 }
