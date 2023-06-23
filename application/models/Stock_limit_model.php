@@ -28,7 +28,6 @@ class Stock_limit_model extends MY_Model
 
 	public function local_shortage(int $location)
 	{
-		$last_month = date('m', strtotime(date('Y-m-d')." -1 month"));
 		$sql = "
 		SELECT
 			sum(stock.volume) as available_volume,
