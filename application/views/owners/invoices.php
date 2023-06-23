@@ -27,7 +27,7 @@
 		  		#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at']); ?>
 			</a>
 			<?php else: ?>
-				#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>
+				#<?php echo get_bill_id($bill['id']); ?>
 			<?php endif; ?>
 		</td>
 		  <td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>

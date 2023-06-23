@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title><?php echo $this->lang->line('bill_header'); ?> #<?php echo get_bill_id($bill['id'], $bill['created_at']); ?></title>
+<title><?php echo $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></title>
 
 <style type="text/css">
     * {
@@ -76,7 +76,7 @@
 		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
 	</tr>
 	<tr>
-		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id'], $bill['created_at']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></td>
+		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></td>
 		<td align="center"><?php echo date_format(date_create($bill['created_at']), "d-m-Y"); ?></td>
 		<td align="center">
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>

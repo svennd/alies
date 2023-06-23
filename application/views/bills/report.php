@@ -20,7 +20,7 @@
 			<div>
 			<a href="<?php echo base_url(); ?>invoice"><?php echo $this->lang->line('Invoice'); ?></a> /
 			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-			<?php echo $this->lang->line('check'); ?> (#<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>) 
+			<?php echo $this->lang->line('check'); ?> (#<?php echo get_bill_id($bill['id']); ?>) 
 			</div>
 			<div class="dropdown no-arrow">
 				<?php if($bill['status'] == PAYMENT_PAID || !is_null($bill['invoice_id'])): ?>
@@ -181,7 +181,10 @@
                     </div>
 					<hr/>
 	                <div class="row px-5 py-3">
-                        <div class="col-md-4 offset-md-8">
+						<div class="col-md-4">
+							<!-- <textarea>comment on the bill</textarea> -->
+						</div>
+                        <div class="col-md-4 offset-md-4">
 							<table class="table">
 							<tr>
 								<th class="border-0 text-uppercase small font-weight-bold">BTW%</th>

@@ -3,7 +3,7 @@
 		<div>
         <a href="<?php echo base_url('reports'); ?>">Report</a> /
         <a href="<?php echo base_url('reports/bills'); ?>">Invoices</a> /
-         Edit #<?php echo get_bill_id($bill['id'], $bill['created_at']); ?>
+         Edit #<?php echo get_bill_id($bill['id']); ?>
         </div>
 	</div>
 	<div class="card-body">

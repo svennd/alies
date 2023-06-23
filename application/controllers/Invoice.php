@@ -113,7 +113,15 @@ class Invoice extends Vet_Controller
 	# report : 0 (html), 1 (pdf), 2 (email)
 	public function get_bill(int $bill_id, int $report = 0)
 	{
-		list($print_bill, $bill_total_tally, $event_info, $pet_id_array, $bill_total) = $this->bills->get_bill_details($bill_id);
+		$bill_model = $this->bills->get_bill_details($bill_id);
+		if (!$bill_model)
+		{
+			$this->_render_page('bill_invalid', array('bill' => $bill));
+			return 0;
+		}
+
+		list($print_bill, $bill_total_tally, $event_info, $pet_id_array, $bill_total) = $bill_model;
+
 
 		$bill = $this->bills->get($bill_id);
 		
@@ -142,7 +150,7 @@ class Invoice extends Vet_Controller
 		{
 			return $this->generate_pdf_mail($bill_id, $data);
 		}
-		$this->_render_page('bill_report', $data);
+		$this->_render_page('bills/report', $data);
 	}
 
 	# in case the client does not pay
@@ -294,7 +302,7 @@ class Invoice extends Vet_Controller
 		# generate the pdf based		
 		$file = $this->pdf->create_file(
 			$this->load->view('bills/report_print', $data, true), 
-			"rekening_" . get_bill_id($bill_id, $bill['created_at']) . '.pdf');
+			"rekening_" . get_bill_id($bill_id) . '.pdf');
 
 		$this->mail->attach_file($file);
 		$this->mail->send("svenn.dhert@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
@@ -334,18 +342,5 @@ class Invoice extends Vet_Controller
 					->where("id", "!=", $bill_id)
 				->where(array("owner_id" => $owner_id))
 				->get_all();;
-	}
-
-	// get pets for billing
-	private function get_pets(int $owner_id, $bill)
-	{
-		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
-
-		# no pets on this owner
-		if (!$pets) {
-			$this->_render_page('bill_invalid', array('bill' => $bill));
-			return 0;
-		}
-		return $pets;
 	}
 }

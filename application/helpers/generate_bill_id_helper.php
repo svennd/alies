@@ -1,6 +1,6 @@
 <?php
 
-function get_bill_id(int $id, $input_date = false)
+function get_bill_id(int $id)
 {
     return str_pad($id, 6, '0', STR_PAD_LEFT);
 }
