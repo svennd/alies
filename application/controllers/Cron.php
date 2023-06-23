@@ -35,8 +35,14 @@ class Cron extends Frontend_Controller
     /*
        cron function for samples from online.medilab.be
     */
-    public function medilab($redirect = false, int $days = 14)
+    public function medilab($redirect = false, string $cron_key = "", int $days = 14)
     {
+        if ($cron_key != config_item('cron_key'))
+        {
+            show_404();
+		    $this->logs->logger(ERROR, "wrong_cron_key", "key is wrong");
+        }
+
         // static
         $url = "https://" . base64_decode($this->conf['medilab_user']['value']) . ":". base64_decode($this->conf['medilab_pasw']['value']) . "@online.medilab.be/dokter/";
 
@@ -220,8 +226,14 @@ class Cron extends Frontend_Controller
     }
 
 	# if some remaining data is still visible this can be used to hide it
-	public function stock_clean()
+	public function stock_clean(string $cron_key)
 	{
+        if ($cron_key != config_item('cron_key'))
+        {
+            show_404();
+		    $this->logs->logger(ERROR, "wrong_cron_key", "key is wrong");
+        }
+
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
 
 		# make this traceable

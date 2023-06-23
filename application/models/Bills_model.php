@@ -29,6 +29,7 @@ class Bills_model extends MY_Model
 					'foreign_key' => 'id',
 					'local_key' => 'location'
 				);
+
 		parent::__construct();
 	}
 	
@@ -56,95 +57,107 @@ class Bills_model extends MY_Model
 		$status = $this->fields('status')->get($bill_id);
 		return ($status['status']);
 	}
-	
-	// deprecated ?
-	public function get_last_months_earnings_stack_location($month)
+
+
+	// 
+	public function get_bill_details(int $bill_id)
 	{
-		# calculate date from the first day of the month
-		$date = date("Y-m-1 00:00", strtotime("-" . $month . " months"));
+		$this->load->model('Pets_model', 'pets');
+		$this->load->model('Events_model', 'events');
+
+		# init
+		$bill_total_tally = array();
+
+		$bill = $this->fields('id, status, owner_id')->get($bill_id);
+			$owner_id = $bill['owner_id'];
+			$bill_status = $bill['status'];
+
+		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
+
+		list($print_bill, $bill_total_tally, $event_info, $pet_id_array) = $this->bill_per_pet($pets, $bill_id, $bill_status);
 		
-		$sql = "select 
-					year(bills.created_at) as y, 
-					month(bills.created_at) as m, 
-					sum(amount) as p,
-					name
-				from 
-					bills 
-				join
-					stock_location
-				on
-					stock_location.id = bills.location
-				where 
-					status = '" . PAYMENT_PAID . "' 
-				and
-					bills.created_at > '" . $date . "'
-				group by 
-					year(bills.created_at), 
-					month(bills.created_at),
-					name
-				
-			";
-	
-		return ($this->db->query($sql)->result_array());
+		# calculate the full bill
+		$bill_total = 0.0;
+		foreach ($bill_total_tally as $btw => $total) {
+			$bill_total += $total * (1 + ($btw/100));
+		}
+
+		return array($print_bill, $bill_total_tally, $event_info, $pet_id_array, $bill_total);
 	}
-	
-	// deprecated ?
-	public function get_income_overview($month)
+
+	private function bill_per_pet(array $pets, int $bill_id, int $bill_status)
 	{
-		# calculate date from the first day of the month
-		$date = date("Y-m-1 00:00", strtotime("-" . $month . " months"));
-		
-		// echo $date;
-		$sql = "select 
-					sum(amount) as p,
-					first_name
-				from 
-					bills 
-				join
-					users
-				on bills.vet = users.id
-				where 
-					status = '" . PAYMENT_PAID . "' 
-				and
-					bills.created_at > '" . $date . "'
-				group by 
-					vet
-				order by
-					p
-				asc
-				
-			";
-	
-		return ($this->db->query($sql)->result_array());
+		$print_bill = array();
+		$bill_total_tally = array();
+		$event_info = array();
+		$pet_id_array = array();
+
+		foreach ($pets as $pet) {
+			# for easy access
+			$pet_id = $pet['id'];
+
+			# get all events for this pet that have an open payment
+			# this could be multiple (consult + op) for example
+			$pet_events = $this->events
+									->where("pet", "=", $pet['id'])
+										->group_start()
+											->where("payment", "=", NO_BILL)
+											->where("payment", "=", $bill_id, true)
+										->group_end()
+									->fields("id, location, payment, created_at, updated_at")
+									->get_all();
+
+			# no event for this pet, skip all togheter
+			if (!$pet_events) {
+				continue;
+			}
+
+			# create array if there is going to be
+			# events linked to this animal
+			$print_bill[$pet_id] = array();
+
+			# should generally only be 1 event
+			# but in case of open events
+			# could be more
+			foreach ($pet_events as $event) {
+				#
+				$event_id = $event['id'];
+
+				# get the calculated bill
+				# for all procedures and products for this pet
+				$event_bill = $this->events->get_products_and_procedures($event_id);
+
+				# update event if its not part of this bill yet
+				# only if creating a new bill, else we would add events to a closed invoice
+				$this->link_events_to_bill($event_id, $event['payment'], $bill_id, $bill_status);
+
+				# add to the total
+				foreach ($event_bill['tally'] as $btw => $total) {
+					$bill_total_tally[$btw] = (isset($bill_total_tally[$btw])) ? $bill_total_tally[$btw] + $total : $total;
+				}
+
+				# printable
+				$print_bill[$pet_id][$event_id] = $event_bill;
+
+				# a list with event description
+				$event_info[$pet_id][$event_id] = $event;
+			}
+
+			# for making a printable bill
+			$pet_id_array[$pet_id] = $pet;
+		}
+
+		return array($print_bill, $bill_total_tally, $event_info, $pet_id_array);
 	}
-	
-	// deprecated ?
-	public function get_avg_per_consult($month)
+
+	# update events so they are linked
+	# to this bill
+	private function link_events_to_bill(int $event_id, int $event_link, int $bill_id, int $bill_status)
 	{
-		# calculate date from the first day of the month
-		$date = date("Y-m-1 00:00", strtotime("-" . $month . " months"));
-		
-		$sql = "select 
-					year(bills.created_at) as y, 
-					month(bills.created_at) as m, 
-					avg(amount) as avg,
-					first_name
-				from 
-					bills 
-				join
-					users
-				on bills.vet = users.id
-				where 
-					status = '" . PAYMENT_PAID . "' 
-				and
-					bills.created_at > '" . $date . "'
-				group by 
-					year(bills.created_at), 
-					month(bills.created_at),
-					vet
-				";
-	
-		return ($this->db->query($sql)->result_array());
+		if ($event_link != $bill_id && $bill_status != PAYMENT_PAID) {
+			# update event so that we know on what bill it was placed (and its no longer NO_BILL)
+			$this->events->update(array("payment" => $bill_id), $event_id);
+		}
 	}
 
 	// called from accounting
@@ -257,4 +270,5 @@ class Bills_model extends MY_Model
 			$this->logs->logger(ERROR, "set_invoice_id", "failed to do transaction for bill_id:" . (int) $bill_id);
 		}
 	}
+
 }

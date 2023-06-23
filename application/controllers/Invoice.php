@@ -40,7 +40,6 @@ class Invoice extends Vet_Controller
 			$search_limit = 5000;
 		}  
 
-
 		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
 
 		$bill_overview = $this->bills
@@ -114,100 +113,25 @@ class Invoice extends Vet_Controller
 	# report : 0 (html), 1 (pdf), 2 (email)
 	public function get_bill(int $bill_id, int $report = 0)
 	{
+		list($print_bill, $bill_total_tally, $event_info, $pet_id_array, $bill_total) = $this->bills->get_bill_details($bill_id);
+
 		$bill = $this->bills->get($bill_id);
-		$owner_id = $bill['owner_id'];
-		$bill_status = $bill['status'];
-
-		$bill_total_tally = array();
-
-		# init
-		$pet_id_array = array();
-		$print_bill = array();
-		$event_info = array();
-
-		# get all pets
-		$pets = $this->get_pets($owner_id, $bill);
-
-		foreach ($pets as $pet) {
-			# for easy access
-			$pet_id = $pet['id'];
-
-			# get all events for this pet that have an open payment
-			# this could be multiple (consult + op) for example
-			$pet_events = $this->events
-									->where("pet", "=", $pet['id'])
-										->group_start()
-											->where("payment", "=", NO_BILL)
-											->where("payment", "=", $bill_id, true)
-										->group_end()
-									->fields("id, location, payment, created_at, updated_at")
-									->get_all();
-
-			# no event for this pet, skip all togheter
-			if (!$pet_events) {
-				continue;
-			}
-
-			# create array if there is going to be
-			# events linked to this animal
-			$print_bill[$pet_id] = array();
-
-			# should generally only be 1 event
-			# but in case of open events
-			# could be more
-			foreach ($pet_events as $event) {
-				#
-				$event_id = $event['id'];
-
-				# get the calculated bill
-				# for all procedures and products for this pet
-				$event_bill = $this->events->get_products_and_procedures($event_id);
-
-				# update event if its not part of this bill yet
-				# only if creating a new bill, else we would add events to a closed invoice
-				if ($event['payment'] != $bill_id && $bill_status != PAYMENT_PAID) {
-					# update event so that we know on what bill it was placed (and its no longer NO_BILL)
-					$this->events->update(array("payment" => $bill_id), $event_id);
-				}
-
-				# add to the total
-				foreach ($event_bill['tally'] as $btw => $total) {
-					$bill_total_tally[$btw] = (isset($bill_total_tally[$btw])) ? $bill_total_tally[$btw] + $total : $total;
-				}
-
-				# printable
-				$print_bill[$pet_id][$event_id] = $event_bill;
-
-				# a list with event description
-				$event_info[$pet_id][$event_id] = $event;
-			}
-
-			# for making a printable bill
-			$pet_id_array[$pet_id] = $pet;
-		}
-
-		# calculate the full bill
-		$bill_total = 0.0;
-		foreach ($bill_total_tally as $btw => $total) {
-			// var_dump($bill_total_tally);
-			$bill_total += $total * (1 + ($btw/100));
-		}
-
+		
 		# check if the calculated price is equal to the price in the database
 		# if not, something got added or this is the initial call, and we need to update it
 		$this->check_for_updates_in_the_bill($bill_id, $bill['status'], $bill_total, $bill['amount']);
 
 		$data = array(
-					"owner" 		=> $this->owners->get($owner_id),
+					"owner" 		=> $this->owners->get($bill['owner_id']),
 					"pets" 			=> $pet_id_array,
 					"print_bill"	=> $print_bill,
 					"bill_total_tally" => $bill_total_tally,
 					"bill_id"		=> $bill_id,
-					"open_bills"	=> $this->get_open_or_unpaid_bills($owner_id, $bill_id),
+					"open_bills"	=> $this->get_open_or_unpaid_bills($bill['owner_id'], $bill_id),
 					"event_info"	=> $event_info,
 					"location_i"	=> $this->location,
 					"due_date_days" => (isset($this->conf['due_date'])) ? (int) base64_decode($this->conf['due_date']['value']) : 30,
-					"bill"			=> $this->bills->get($bill_id) // can't remove for race condition on calculation
+					"bill"			=> $this->bills->get($bill_id)// can't remove for race condition on calculation
 				);
 
 		if ($report == 1)
@@ -347,11 +271,15 @@ class Invoice extends Vet_Controller
 		# load library (html->pdf)
 		$this->load->library('pdf'); 
 
+		# check if we can store 
+		$store_pdf = $this->check_storage($data['bill']);
+
 		# generate the pdf based		
 		$this->pdf->create(
 			$this->load->view('bills/report_print', $data, true), 
 			(!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']), 
-			false
+			false, // download
+			($store_pdf) ?  $store_pdf : ''
 		);
 	}
 
@@ -374,6 +302,23 @@ class Invoice extends Vet_Controller
 		$this->bills->update(array("mail" => 1), $bill_id);
 		
 		echo json_encode(array("result" => true));
+	}
+
+	# check if pdf is stored here
+	private function check_storage(array $bill)
+	{
+		// check if its a check or a bill
+		if ($bill['invoice_id'])
+		{
+			$date = strtotime($bill['created_at']);
+			$full_path = 'data/stored/.bills/' . date('Y', $date) . '/' . date('m', $date);
+
+			if (!file_exists($full_path)) {
+				mkdir($full_path, 0700, true);
+			}
+			return $full_path . '/bill_' . $bill['invoice_id'] . '.pdf';
+		}
+		return false;
 	}
 
 	# get open_or_unpaid bills other then the one we are creating
