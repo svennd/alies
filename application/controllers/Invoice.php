@@ -116,7 +116,7 @@ class Invoice extends Vet_Controller
 		$bill_model = $this->bills->get_bill_details($bill_id);
 		if (!$bill_model)
 		{
-			$this->_render_page('bill_invalid', array('bill' => $bill));
+			$this->_render_page('bill_invalid', array('bill' => $this->bills->get($bill_id)));
 			return 0;
 		}
 
@@ -295,9 +295,6 @@ class Invoice extends Vet_Controller
 	{
 		$this->load->library('pdf'); 
 		$this->load->library('mail'); 
-
-		# race condition 
-		$bill = $this->bills->get($bill_id);
 
 		# generate the pdf based		
 		$file = $this->pdf->create_file(
