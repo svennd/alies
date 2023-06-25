@@ -30,26 +30,22 @@ class Pdf
 	    $this->dompdf = new Dompdf($options);
 	}
 
-	public function create($html, $filename, $download = false, $store = false)
+	public function create($html, $filename, $download = false)
 	{
 		$this->dompdf->loadHtml($html);
 		$this->dompdf->render();
-		if ($store)
-		{
-			file_put_contents($store, $this->dompdf->output());
-		}
 		$this->dompdf->stream($filename.'.pdf', array("Attachment" => $download));
 		exit;
 	}
 
-	public function create_file($html, $file)
+	public function create_file($html, $filename)
 	{
 		$this->dompdf->loadHtml($html);
 		$this->dompdf->render();
 
 		// data is overwritten if it exists
-		file_put_contents('data/stored/' . $file, $this->dompdf->output());
+		file_put_contents($filename. '.pdf', $this->dompdf->output());
 
-		return 'data/stored/' . $file;
+		return $filename . ".pdf";
 	}
 }

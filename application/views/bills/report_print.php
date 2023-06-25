@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title><?php echo $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></title>
+<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></title>
 
 <style type="text/css">
     * {
@@ -20,8 +20,11 @@
     }
     .enlarge {
         font-weight: bold;
-        font-size: medium;
+        font-size: 18px;
     }
+	.letterhead {
+		font-size: 14px;
+	}
 	.nobold {
 		font-weight: normal;
 	}
@@ -42,12 +45,14 @@
 <body>
 <?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>  
 	<br/>
-	<h3><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?></h3>
   <table width="100%">
     <tr>
-        <td>
-			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?> (#<?php echo $owner['id'] ?>)<br>
-			<?php echo $owner['street'] . ' ' . $owner['nr']; ?><br>
+		<td valign="top" width="60%">
+			<h3 class="enlarge"><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?></h3>
+		</td>
+        <td align="left" valign="top" class="letterhead">
+			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br>
+			<?php echo $owner['street'] . ', ' . $owner['nr']; ?><br>
 			<?php echo $owner['zip'] . ' ' . $owner['city']; ?><br>
 			<br>
 			<?php if ($owner['btw_nr']) : ?><?php echo $this->lang->line('VAT'); ?> : <?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
@@ -58,22 +63,15 @@
 				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><br/><?php endif; ?>
 			<?php endif; ?>
 		</td>
-        <td align="right" valign="top">
-			<?php if($bill['card'] > 0 || $bill['cash'] > 0): ?>
-				<strong><?php echo $this->lang->line('payment_detail'); ?></strong><br/>
-				<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
-				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><br/><?php endif; ?>
-				<br/>
-			<?php endif; ?>
-		</td>
     </tr>
   </table>
-
+ <hr />
 <table width="100%">
 	<tr>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_id'); ?></th>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
 		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
+		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != PAYMENT_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
 	</tr>
 	<tr>
 		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></td>
@@ -83,6 +81,12 @@
 				<?php echo date('d-m-Y', strtotime($bill['created_at']. ' +'. $due_date_days .' days')); ?>
 			<?php else: ?>
 				<i><?php echo ($bill['status'] == PAYMENT_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
+			<?php endif; ?>
+		</td>
+		<td align="center">
+			<?php if($bill['card'] > 0 || $bill['cash'] > 0): ?>
+				<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
+				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><?php endif; ?>
 			<?php endif; ?>
 		</td>
 	</tr>
@@ -102,7 +106,7 @@
 	  <td>
 		  <?php echo $this->lang->line('pet_info'); ?> : <?php echo $pets_list; ?><br/>
 	  </td>
-	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php //echo $location_i[$event_location]['name']; ?></td>
+	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php  echo $bill['location']['name']; ?></td>
   </tr>
 </table>
 
@@ -136,8 +140,8 @@ foreach ($print_bill as $pet_id => $event):
 
 <?php $total_net = 0; ?>
 	<?php foreach ($proc as $procedure): ?>
-		<tr>
-			<td align="left"><?php echo $procedure['name']; ?> <small>(<?php echo date_format(date_create($procedure['created_at']), "d-m-y"); ?>)</small></td>
+		<tr><?php $date_proc = date_format(date_create($procedure['created_at']), "d-m-y"); ?>
+			<td align="left"><?php echo $procedure['name']; ?><?php echo (strtotime($date_proc) === strtotime($bill['created_at'])) ? " <small>(" . $date_proc. ")</small>" : ""; ?></td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format($procedure['amount'], 2); ?></div>
 				<div style="display: inline-block; width:15px;">&nbsp;</div>

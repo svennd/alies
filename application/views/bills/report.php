@@ -1,9 +1,3 @@
-<?php
-	foreach ($location_i as $loc)
-	{
-		$l[$loc['id']] = $loc['name'];
-	}
-?>
 <div class="row">
 	<div class="col-lg-12 mb-4">
 	<?php if ($open_bills): ?>

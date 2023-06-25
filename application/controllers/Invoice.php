@@ -19,6 +19,9 @@ class Invoice extends Vet_Controller
 
 		# helpers
 		$this->load->helper('generate_bill_id_helper');
+
+		# load library (html->pdf)
+		$this->load->library('pdf'); 
 	}
 
 	# show bills of last 30 days for admin and 7 days for vets;
@@ -137,10 +140,10 @@ class Invoice extends Vet_Controller
 					"bill_id"		=> $bill_id,
 					"open_bills"	=> $this->get_open_or_unpaid_bills($bill['owner_id'], $bill_id),
 					"event_info"	=> $event_info,
-					"location_i"	=> $this->location,
 					"due_date_days" => (isset($this->conf['due_date'])) ? (int) base64_decode($this->conf['due_date']['value']) : 30,
-					"bill"			=> $this->bills->get($bill_id)// can't remove for race condition on calculation
+					"bill"			=> $this->bills->with_location('fields:name')->get($bill_id)// can't remove for race condition on calculation
 				);
+
 
 		if ($report == 1)
 		{
@@ -149,6 +152,13 @@ class Invoice extends Vet_Controller
 		elseif($report == 2)
 		{
 			return $this->generate_pdf_mail($bill_id, $data);
+		}
+		else
+		{
+			# note : we can only generate one PDF at a time :( 
+			# check & see if we can generate a finale bill
+			# in pdf to store
+			$this->generate_final_bill($data);
 		}
 		$this->_render_page('bills/report', $data);
 	}
@@ -275,43 +285,23 @@ class Invoice extends Vet_Controller
 
 	# logic for generating a pdf
 	private function generate_pdf_bill(int $bill_id, $data)
-	{
-		# load library (html->pdf)
-		$this->load->library('pdf'); 
-
-		# check if we can store 
-		$store_pdf = $this->check_storage($data['bill']);
+	{		
+		# merge pagedate
+		$data = array_merge($data, $this->page_data);
 
 		# generate the pdf based		
 		$this->pdf->create(
-			$this->load->view('bills/report_print', $data, true), 
+			$this->load->view('bills/report_print', $data, true),
 			(!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']), 
-			false, // download
-			($store_pdf) ?  $store_pdf : ''
+			false // download
 		);
 	}
 
-	private function generate_pdf_mail(int $bill_id, $data) 
+	// generate a bill that has been payed in full
+	private function generate_final_bill(array $data)
 	{
-		$this->load->library('pdf'); 
-		$this->load->library('mail'); 
+		$bill = $data['bill'];
 
-		# generate the pdf based		
-		$file = $this->pdf->create_file(
-			$this->load->view('bills/report_print', $data, true), 
-			"rekening_" . get_bill_id($bill_id) . '.pdf');
-
-		$this->mail->attach_file($file);
-		$this->mail->send("svenn.dhert@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
-
-		$this->bills->update(array("mail" => 1), $bill_id);
-		
-		echo json_encode(array("result" => true));
-	}
-
-	# check if pdf is stored here
-	private function check_storage(array $bill)
-	{
 		// check if its a check or a bill
 		if ($bill['invoice_id'])
 		{
@@ -321,9 +311,35 @@ class Invoice extends Vet_Controller
 			if (!file_exists($full_path)) {
 				mkdir($full_path, 0700, true);
 			}
-			return $full_path . '/bill_' . $bill['invoice_id'] . '.pdf';
+			$this->pdf->create_file(
+				$this->load->view('bills/report_print', $data, true), 
+				$full_path . '/bill_' . get_invoice_id($bill['invoice_id'], $bill['created_at'])
+			);
+			return true;
 		}
+
+		// can't make the bill
 		return false;
+	}
+
+	private function generate_pdf_mail(int $bill_id, $data) 
+	{
+		$this->load->library('mail'); 
+
+		# generate the pdf based
+		$full_path = 'data/stored/rekening_' . (!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']);
+
+		$file = $this->pdf->create_file(
+			$this->load->view('bills/report_print', $data, true), 
+			$full_path
+			);
+
+		$this->mail->attach_file($file);
+		$this->mail->send("svenn.dhert@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
+
+		$this->bills->update(array("mail" => 1), $bill_id);
+		
+		echo json_encode(array("result" => true));
 	}
 
 	# get open_or_unpaid bills other then the one we are creating
