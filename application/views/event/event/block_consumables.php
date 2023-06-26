@@ -26,7 +26,7 @@
 			</td>
 			<td>
 			<?php if (!empty($product['barcode'])) : ?>
-				<small>eol: <?php echo $product['stock']['eol']; ?> lot: <?php echo $product['stock']['lotnr']; ?></small>
+				<small>eol: <?php echo user_format_date($product['stock']['eol'], $user->user_date); ?> lot: <?php echo $product['stock']['lotnr']; ?></small>
 			<?php else: ?>
 				<small>-</small>
 			<?php endif; ?>
