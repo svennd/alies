@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Migration_breed2 extends CI_Migration {
 
-	protected $up_version = "018";
-	protected $down_version = "017";
+	protected $up_version = "019";
+	protected $down_version = "018";
 
 
 	public function up()

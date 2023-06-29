@@ -127,7 +127,7 @@ class Bills_model extends MY_Model
 				# get the calculated bill
 				# for all procedures and products for this pet
 				$event_bill = $this->events->get_products_and_procedures($event_id);
-
+			
 				# update event if its not part of this bill yet
 				# only if creating a new bill, else we would add events to a closed invoice
 				$this->link_events_to_bill($event_id, $event['payment'], $bill_id, $bill_status);
@@ -237,7 +237,24 @@ class Bills_model extends MY_Model
 
 	}
 
-	public function set_invoice_id(int $bill_id)
+	// check if events under this bill were
+	// manually changed by a vet
+	public function is_bill_modified(int $bill_id) 
+	{
+		$this->load->model('Events_model', 'events');
+		$events = $this->events->fields('id')->where(array('payment' => $bill_id))->get_all();
+		if($events)
+		{
+			foreach($events as $event)
+			{
+				$is_event_modified = $this->events->is_modified($event['id']);
+				if($is_event_modified) { return true; }
+			}
+		}
+		return false;
+	}
+
+	public function set_invoice_id(int $bill_id, bool $is_modified)
 	{
 		// if the last id has year == last_year we should reset to 1
 		// basically count + 1 and every year reset to 1
@@ -254,7 +271,9 @@ class Bills_model extends MY_Model
 						bills
 					WHERE
 						year(created_at) = '" . date('Y') . "'
-					) + 1
+					) + 1,
+					invoice_date = '" .  date('Y-m-d H:i:s')  . "',
+					modified = '". $is_modified ."'
 			WHERE
 				id = '" . $bill_id . "'
 				AND

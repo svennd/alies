@@ -132,6 +132,18 @@ class Owners extends Vet_Controller
 		$this->_render_page('owners/detail', $data);
 	}
 	
+	// set email at bill page
+	public function set_email(int $owner_id)
+	{
+		// ajax push
+		$this->owners->update(array("mail" => $this->input->post('email')), $owner_id);
+
+		// gdpr sensitive
+		$this->logs->logger(INFO, "add_mail", "owner_id:" . $owner_id);
+
+		return true;
+	}
+
 	public function invoices(int $id)
 	{
 		$data = array(

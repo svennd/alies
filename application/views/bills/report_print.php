@@ -91,7 +91,12 @@
 		</td>
 	</tr>
 </table>
-  
+<?php if($bill['msg_invoice']): ?>
+<br/>
+<div style="font-weight: normal;padding:5px;" class="gray letterhead">
+<?php echo nl2br($bill['msg_invoice']); ?>
+</div>
+<?php endif; ?>
 <br/>
 <!-- pets name + id list -->
 <?php
@@ -162,7 +167,6 @@ foreach ($print_bill as $pet_id => $event):
 			</td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format(round($product['net_price']/$product['volume'], 2), 2); ?></div>
-			<!--	<div style="display: inline-block;width:35px;">&euro; / <?php echo $product['unit_sell']; ?></div>-->
 			</td>
 			<td align="right"><?php echo number_format($product['net_price'],2); $total_net += $product['net_price']; ?></td>
 			<td align="right"><?php echo $product['btw']; ?> %</td>

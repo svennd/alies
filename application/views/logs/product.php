@@ -27,7 +27,7 @@
 					<td><?php echo $log['volume']; ?> <?php echo $log['product']['unit_sell']; ?></td>
 					<td><?php echo $log['vet']['first_name']; ?></td>
 					<td><?php echo $log['locations']['name']; ?></td>
-					<td><?php echo $log['created_at']; ?></td>
+					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo $log['created_at']; ?></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -47,6 +47,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#logs").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+	$("#dataTable").DataTable();
 });
 </script>

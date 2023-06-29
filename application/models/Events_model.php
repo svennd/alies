@@ -89,7 +89,7 @@ class Events_model extends MY_Model
 	/*
 		called in invoice
 	*/
-	public function get_products_and_procedures($event_id)
+	public function get_products_and_procedures(int $event_id)
 	{
 		$products 	= array();
 		$procedures = array();
@@ -98,7 +98,9 @@ class Events_model extends MY_Model
 
 		/* get products on this event */
 		$sql = "
-				SELECT product_id, volume, net_price, price, btw, events_products.btw, booking, barcode, products.name, products.unit_sell
+				SELECT 
+					product_id, volume, net_price, price, btw, events_products.btw, booking, barcode,
+					products.name, products.unit_sell
 				FROM `events_products`
 				JOIN
 					`products`
@@ -156,7 +158,7 @@ class Events_model extends MY_Model
 					"prod" 		=> $products,
 					"proc" 		=> $procedures,
 					"tally"		=> $tally,
-					"booking"	=> $booking
+					"booking"	=> $booking,
 					);
 	}
 
@@ -222,6 +224,41 @@ class Events_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 	
+
+	// check if prices in this event have been modified by the
+	// vet
+	public function is_modified(int $event_id)
+	{
+		// check for products
+		$sql = "
+				SELECT 
+					calc_net_price
+				FROM `events_products`
+				WHERE `events_products`.`event_id` = " . $event_id . "
+		";
+		$product_array = $this->db->query($sql)->result_array();
+		if ($product_array) {
+			foreach ($product_array as $product) {
+				if ($product['calc_net_price'] != 0) { return true; }
+			}
+		}
+
+		// check procedures
+		$sql = "
+				SELECT calc_net_price
+				FROM `events_procedures`
+				WHERE `events_procedures`.`event_id` = " . $event_id . "
+		";
+		$procedure_array = $this->db->query($sql)->result_array();
+		if ($procedure_array) {
+			foreach ($procedure_array as $proc) {
+				if ($proc['calc_net_price'] != 0) { return true; }
+			}
+		}
+		// check for procedures
+		return false;
+	}
+
 	/*
 		used in report (for vet/admin)
 	*/

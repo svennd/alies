@@ -182,6 +182,9 @@ $lang['payment']      = 'Betaling';
 $lang['payed']      = 'Betaald';
 $lang['payment_complete']      = 'Betaling voldaan';
 $lang['drop_from_stock']      = 'Uit stock halen';
+$lang['client_id']      = 'Klant nummer';
+$lang['comment_on_bill']      = 'op de factuur';
+$lang['comment_internal']      = 'intern';
 
 # owners
 $lang['overview']      = 'overzicht';

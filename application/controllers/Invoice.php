@@ -193,6 +193,9 @@ class Invoice extends Vet_Controller
 		# only allow payment processing
 		# if not yet payed or payment is open
 		if ($this->input->post('submit') == 1 && ($bill['status'] == PAYMENT_UNPAID || $bill['status'] == PAYMENT_OPEN || $bill['status'] == PAYMENT_PARTIALLY)) {
+			
+			# default
+			$is_modified = false;
 
 			# do this first if something below fails.
 			# set all the events linked to this bill to closed so we can't add anything anymore
@@ -206,11 +209,15 @@ class Invoice extends Vet_Controller
 			$total_payed = ((float)$cash_value+(float)$card_value) - (float)$bill['amount'];
 			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? PAYMENT_PAID : PAYMENT_PARTIALLY;
 
-			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value, "msg" => $this->input->post('msg')), $bill_id);
+			# check if bill was modified
+			# only run once since its "expensive"
+			if ($status == PAYMENT_PAID) { $is_modified = $this->bills->is_bill_modified($bill_id); }
+
+			$this->bills->update(array("status" => $status, "card" => $card_value, "cash" => $cash_value, "msg" => $this->input->post('msg'), "msg_invoice" => $this->input->post('msg_invoice')), $bill_id);
 
 			# generate an invoice id, these HAVE to be +1 everytime. 
 			# every new year we start at 1 again
-			$this->bills->set_invoice_id($bill_id);
+			$this->bills->set_invoice_id($bill_id, $is_modified);
 			
 			# remove products from stock
 			# only do this when the payment is not yet processed once before
@@ -228,14 +235,15 @@ class Invoice extends Vet_Controller
 
 	public function make_invoice_id(int $bill_id)
 	{
-		$this->bills->set_invoice_id($bill_id);
+		$is_modified = $this->bills->is_bill_modified($bill_id);
+		$this->bills->set_invoice_id($bill_id, $is_modified);
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
 	# on bill_unpay we need to send this in the background
 	public function store_bill_msg(int $bill_id)
 	{
-		$this->bills->update(array("msg" => $this->input->post('msg')), $bill_id);
+		$this->bills->update(array("msg" => $this->input->post('msg'), "msg_invoice" => $this->input->post('msg_invoice')), $bill_id);
 	}
 
 	# check if the calculated price is equal to the price in the database

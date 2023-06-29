@@ -175,6 +175,9 @@ $lang['Payment']              = 'Payment';
 $lang['payment_complete']     = 'payment complete';
 $lang['payed']                = 'Payed';
 $lang['drop_from_stock']      = 'Drop from stock';
+$lang['client_id']      = 'Client ID';
+$lang['comment_on_bill']      = 'on bill';
+$lang['comment_internal']      = 'internal';
 
 # owners
 $lang['overview']      = 'overview';
