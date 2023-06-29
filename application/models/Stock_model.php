@@ -173,7 +173,7 @@ class Stock_model extends MY_Model
 	{
 		# check if there is already stock there, if so increase
 		# else add new
-		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to))->get();
+		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to, "state" => STOCK_IN_USE))->get();
 
 		if ($product_on_to) {
 			$this->reduce_product($barcode, $to, -$value);
