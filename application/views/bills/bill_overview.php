@@ -60,10 +60,17 @@
 						<?php echo user_format_date($bill['created_at'], $user->user_date); ?><br/>
 						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
 					</td>
-					<td><a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['amount']; ?> &euro;</a></td>
+					<td>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['amount']; ?> &euro;</a>
+						<?php if($this->ion_auth->in_group("admin") && $bill['modified']): ?>
+							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
+						<?php endif;?>
+					</td>
 		
 					<td><?php echo $bill['owner']['last_name']; ?></td>
-					<td><?php echo get_bill_status($bill['status']); ?></td>
+					<td>
+						<?php echo get_bill_status($bill['status']); ?>
+					</td>
 					<td><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 					<?php if($this->ion_auth->in_group("admin")): ?>
@@ -86,8 +93,7 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50,
-		"order": [[0, 'desc']],
-  "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+	$("#dataTable").DataTable({"order": [[0, 'desc']]});
+	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>
