@@ -60,8 +60,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#vaccines").addClass('active');
 
 	$("#dataTable").DataTable({
-			"pageLength": 50,
-			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 			"order": [[ 2, "asc" ]],
 			"responsive": true
 	});

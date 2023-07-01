@@ -68,4 +68,28 @@ class Vaccine extends Vet_Controller
 		;
 		$this->_render_page('vaccine/pet_fiche', $data);
 	}
+
+
+	# show vaccine details
+	public function detail(int $vaccine_id)
+	{
+		$data = array(
+			'vac' => $this->vacs->with_product('fields:id,name')->with_pet('fields:id, name, type')->get($vaccine_id),
+		);
+
+		$this->_render_page('vaccine/detail', $data);
+	}
+
+	# change vaccine details
+	public function update(int $vaccine_id)
+	{
+		$this->vacs->update(array(
+								"no_rappel" => is_null($this->input->post('no_rappel')) ? 0 : 1,
+								"redo" => $this->input->post('date_redo')
+								), $vaccine_id);
+
+		$this->logs->logger(DEBUG, "change_vaccine", "vaccine_id ".  $vaccine_id);
+	
+		redirect('vaccine/detail/'. $vaccine_id);
+	}
 }

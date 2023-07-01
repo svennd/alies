@@ -16,6 +16,7 @@
 				  <th><?php echo $this->lang->line('consult'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('option'); ?></th>
 				</tr>
 			  </thead>
 			  <tbody>
@@ -33,6 +34,7 @@
 					</td>
 				  <td><?php echo $vac['location']['name']; ?></td>
 				  <td><?php echo $vac['vet']['first_name']; ?></td>
+				  <td><a href="<?php echo base_url('vaccine/detail/' . $vac['id']); ?>"><i class="fa-regular fa-pen-to-square"></i></a></td>
 				</tr>
 				<?php endforeach; ?>
 			  </tbody>
@@ -51,9 +53,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	const current_date = new Date();
 
 	$("#dataTable").DataTable({
-			"pageLength": 50,
-			"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-			"order": [[ 2, "desc" ]],
+			"order": [[ 1, "desc" ]],
 			"createdRow": function( row, data, dataIndex){
 				var product_date = new Date(data[2]["@data-sort"]*1000);
 				date_diff = (current_date - product_date);
