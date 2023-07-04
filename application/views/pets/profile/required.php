@@ -101,7 +101,7 @@
 		<div class="row form-group mx-1">
 			<div class="col-md-6">
 				<label for="breeds"><b><?php echo $this->lang->line('breed'); ?></b>*</label>
-				<select name="breed" class="form-control" id="breeds" data-placeholder='<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>'></select>
+				<select name="breed" class="form-control" id="breeds" data-placeholder='<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>' <?php if(!$edit_mode): ?>required<?php endif; ?>></select>
 				<input type="hidden" id="current_breed" name="current_breed" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
 			</div>
 			<div class="col-md-6">
