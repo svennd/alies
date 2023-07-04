@@ -169,7 +169,10 @@ class Cron extends Frontend_Controller
             "18070" => "Bijkomende bepaling",
 
             // Vogels - but also dog/cat
-            "13519" => "DGGR Lipase"
+            "13519" => "DGGR Lipase",
+            
+            // hormonology
+            "13931" => "TSH"
         );
 
         // request
