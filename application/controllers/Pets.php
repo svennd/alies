@@ -77,6 +77,11 @@ class Pets extends Vet_Controller
 												"location"		=> $this->user->current_location,
 												"init_vet"		=> $this->user->id
 											));
+				# if it failed
+				if (!$pet_id) {
+					redirect('/owners/detail/' . (int) $owner); 
+				}
+
 				# add weight to history
 				if ($weight)
 				{
