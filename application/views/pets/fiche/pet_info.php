@@ -16,6 +16,7 @@
 <tr>
 	<td><?php echo $this->lang->line('breed'); ?></td>
 	<td>
+		<?php echo get_symbol($pet['type']); ?>
 		<?php echo isset($pet['breeds']['name']) ? $pet['breeds']['name'] : "?"; ?>
 		<?php echo isset($pet['breeds2']['name']) ? 'x ' . $pet['breeds2']['name'] : ""; ?>
 	</td>

@@ -252,6 +252,7 @@ $lang['barcode']                = 'Barcode';
 $lang['added']                  = 'added'; 
 $lang['saleable']                  = 'saleable'; 
 $lang['discontinued']           = 'discontinued';
+$lang['product_discontinued']   = 'product discontinued'; 
 $lang['no_local_stock']         = 'No local stock.'; 
 $lang['no_global_stock']        = 'No global stock.'; 
 

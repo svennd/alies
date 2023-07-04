@@ -105,6 +105,15 @@ foreach ($locations as $l)
 	</div>
 </div>
 
+<?php if($product['discontinued']): ?>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<i class="fa-solid fa-circle-exclamation"></i> <?php echo $this->lang->line('product_discontinued'); ?>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<?php endif; ?>
+
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card shadow mb-4">
@@ -119,7 +128,10 @@ foreach ($locations as $l)
 					<div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
 						<div class="row mt-3">
 							<div class="col-sm-6">
-								<h5><?php echo $this->lang->line('usage'); ?></h5>
+								<h5>
+								<?php if ($this->ion_auth->in_group("admin")): ?><a href="<?php echo base_url('reports/usage/' . $product['id']); ?>"><?php endif; ?>
+									<?php echo $this->lang->line('usage'); ?></h5>
+								<?php if ($this->ion_auth->in_group("admin")): ?></a><?php endif; ?>
 								<table class="table">
 								<tr>
 									<td><?php echo $this->lang->line('one_month'); ?></td>

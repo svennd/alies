@@ -1,11 +1,3 @@
-<?php
-# map this at global level
-# todo
-foreach ($locations as $l)
-{
-	$loc[$l['id']] = $l['name'];
-}
-?>
 <div class="row">
       <div class="col-lg-12 mb-4">
 
@@ -26,23 +18,54 @@ foreach ($locations as $l)
 					<thead>
 					<tr>
 						<th>Product</th>
-						<th>Limit</th>
-						<th>Stock (global)</th>
+						<th><?php echo $this->lang->line('global_stock'); ?> / <?php echo $this->lang->line('limit'); ?></th>
+						<th>Vebruik (30d, 90d)</th>
+						<th>Prio</th>
 					</tr>
 					</thead>
 					<tbody>
 					<?php foreach ($global_stock as $product): ?>
-					<tr>
+					<?php
+						$all_volume = intval($product['all_volume']);
+						# use
+						$global_30d = (is_null($product['global_use_30d'])) ? 0 : $product['global_use_30d'];
+						$global_90d = (is_null($product['global_use_90d'])) ? 0 : $product['global_use_90d'];
+						# default
+						$prio = 1;
+
+						if ($global_30d == 0 && $global_90d == 0)
+						{
+							# no use
+							$prio -= 2;
+						}
+						# we have enough stock
+						# to survive 90d
+						elseif ($global_90d < $all_volume)
+						{
+							$prio -= 2;
+						}
+						# enough for 30d
+						elseif ($global_30d < $all_volume)
+						{
+							$prio -= 1;
+						}
+						
+						# small volume products
+						# and have transactions
+						if($all_volume < 3 && $global_90d != 0)
+						{
+							$prio += 1;
+						}
+					?>
+					<tr <?php echo ($prio > 1) ? 'class="table-warning"' : ''; ?>>
+						<td><a href="<?php echo base_url(); ?>products/profile/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a></td>
+						<td><?php echo $all_volume; ?> / <?php echo $product['limit_stock']; ?> <?php echo $product['unit_sell']; ?></td>
 						<td>
-							<?php if ($this->ion_auth->in_group("admin")): ?>
-							<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a>
-							<?php else: ?>
-							<a href="<?php echo base_url(); ?>products/profile/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a>
-							<?php endif; ?>
+							<?php if ($this->ion_auth->in_group("admin")): ?><a href="<?php echo base_url('reports/usage/' . $product['id']); ?>"><?php endif; ?>
+							<?php echo intval($global_30d); ?> / <?php echo intval($global_90d); ?> <?php echo $product['unit_sell']; ?>
+							<?php if ($this->ion_auth->in_group("admin")): ?></a><?php endif; ?>
 						</td>
-							
-						<td><?php echo $product['limit_stock']; ?> <?php echo $product['unit_sell']; ?></td>
-						<td><?php echo $product['in_stock']; ?> <?php echo $product['unit_sell']; ?></td>
+						<td><?php echo $prio; ?></td>
 					</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -64,8 +87,7 @@ foreach ($locations as $l)
 document.addEventListener("DOMContentLoaded", function(){
 
 	$("#product_list").addClass('active');
-	$("#dataTable").DataTable();
-	$("#dataTable2").DataTable();
+	$("#dataTable").DataTable({"order": [[ 3, "desc" ]]});
 });
 </script>
   

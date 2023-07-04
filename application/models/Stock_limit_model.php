@@ -26,6 +26,32 @@ class Stock_limit_model extends MY_Model
 		parent::__construct();
 	}
 
+	public function global_shortage()
+	{
+		$sql = "
+		SELECT
+				products.id, products.name, products.unit_sell, products.limit_stock,
+				SUM(stock.volume) AS all_volume,
+				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 30 DAY)) as global_use_30d,
+				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 90 DAY)) as global_use_90d
+		FROM
+			products
+		INNER JOIN
+   			stock 
+		ON 
+			stock.product_id = products.id AND stock.state = '" . STOCK_IN_USE . "'
+		WHERE
+			limit_stock > 0
+		AND
+			backorder = 0
+		GROUP BY
+			products.id
+		HAVING
+			all_volume < products.limit_stock
+		";
+		return $this->db->query($sql)->result_array();	
+	}
+
 	public function local_shortage(int $location)
 	{
 		$sql = "

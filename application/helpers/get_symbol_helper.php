@@ -8,15 +8,15 @@ function get_symbol($type, $name = false)
 	switch($type)
 	{
 		case DOG:
-			return '<span style="color:#628395"><i class="fas fa-fw fa-dog"></i></span>' . ($name ? " Dog" : "");
+			return '<span style="color:#628395"><i class="fas fa-fw fa-dog" data-toggle="tooltip" data-placement="left" title="Dog"></i></span>' . ($name ? " Dog" : "");
 		case CAT:
-			return '<span style="color:#96897B"><i class="fas fa-fw fa-cat"></i></span>'. ($name ? " Cat" : "");
+			return '<span style="color:#96897B"><i class="fas fa-fw fa-cat" data-toggle="tooltip" data-placement="left" title="Cat"></i></span>'. ($name ? " Cat" : "");
 		case HORSE:
-			return '<span style="color:#CF995F"><i class="fas fa-fw fa-horse"></i></span>'. ($name ? " Horse" : "");
+			return '<span style="color:#CF995F"><i class="fas fa-fw fa-horse" data-toggle="tooltip" data-placement="left" title="Horse"></i></span>'. ($name ? " Horse" : "");
 		case BIRD:
-			return '<span style="color:#DBAD6A"><i class="fas fa-fw fa-dove"></i></span>'. ($name ? " Bird" : "");
+			return '<span style="color:#DBAD6A"><i class="fas fa-fw fa-dove" data-toggle="tooltip" data-placement="left" title="Bird"></i></span>'. ($name ? " Bird" : "");
 		case RABBIT:
-			return '<span style="color:#dec5a1"><i class="fas fa-paw fa-fw"></i></span>'. ($name ? " Rabbit" : "");
+			return '<span style="color:#dec5a1"><i class="fas fa-paw fa-fw" data-toggle="tooltip" data-placement="left" title="Rabbit"></i></span>'. ($name ? " Rabbit" : "");
 		default:
 			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>'. ($name ? " Other" : "");
 	}

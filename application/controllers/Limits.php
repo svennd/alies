@@ -19,32 +19,8 @@ class Limits extends Vet_Controller
 
 	public function global()
 	{
-		# global shortages
-		$r = $this->product->where('limit_stock >', 0)->fields('id, unit_sell, name, limit_stock')->get_all();
-
-		$result = array();
-
-		if ($r) {
-
-			foreach ($r as $prod) {
-				$stock = $this->stock->select('SUM(volume) as sum_vol', false)->fields()->where(array('product_id' => $prod['id']))->group_by('product_id')->get();
-
-				# false if none found
-				if ($stock && $stock['sum_vol'] < $prod['limit_stock']) {
-					$result[] = array(
-							"id" 				=> $prod['id'],
-							"name" 				=> $prod['name'],
-							"unit_sell" 		=> $prod['unit_sell'],
-							"limit_stock" 		=> $prod['limit_stock'],
-							"in_stock" 			=> (($stock['sum_vol']) ? $stock['sum_vol'] : '0'),
-						);
-				}
-			}
-		}
-
 		$data = array(
-						"global_stock" 	=> $result,
-						"locations" 	=> $this->location
+						"global_stock" 	=> $this->stock_limit->global_shortage()
 					);
 		$this->_render_page('limits/global', $data);
 	}

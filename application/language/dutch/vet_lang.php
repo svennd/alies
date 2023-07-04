@@ -259,6 +259,7 @@ $lang['barcode']                = 'Barcode';
 $lang['added']                  = 'toegevoegd'; 
 $lang['saleable']               = 'verkoopbaar'; 
 $lang['discontinued']           = 'niet leverbaar'; 
+$lang['product_discontinued']   = 'product niet langer leverbaar.'; 
 $lang['no_local_stock']         = 'Geen lokale stock.'; 
 $lang['no_global_stock']        = 'Geen globale stock.'; 
 
