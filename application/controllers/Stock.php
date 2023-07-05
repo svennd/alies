@@ -211,6 +211,7 @@ class Stock extends Vet_Controller
 								->update(array("input_barcode" => $this->input->post('barcode_gs1')));
 					}
 				}
+				$this->product->set_backorder_filled($this->input->post('pid'));
 			} else {
 				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
 

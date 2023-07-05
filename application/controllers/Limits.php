@@ -17,9 +17,20 @@ class Limits extends Vet_Controller
 
 	}
 
+	public function order()
+	{
+		$data = array(
+						"order"			=> 1,
+						"locations" 	=> $this->location,
+						"in_backorder" 	=> $this->product->fields('id, name, unit_sell')->where(array("backorder" => 1))->with_wholesale()->get_all(),
+					);
+		$this->_render_page('limits/order', $data);
+	}
+
 	public function global()
 	{
 		$data = array(
+						"locations" 	=> $this->location,
 						"global_stock" 	=> $this->stock_limit->global_shortage()
 					);
 		$this->_render_page('limits/global', $data);

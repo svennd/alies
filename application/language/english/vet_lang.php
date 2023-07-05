@@ -221,6 +221,7 @@ $lang['history']             = 'show';
 
 # limits
 $lang['local_stock']             = 'Local Stock'; 
+$lang['backorder']         = 'Back Order';
 $lang['global_stock']             = 'Global Stock'; 
 $lang['limit']             = 'Limit'; 
 $lang['global_use']             = 'Global use'; 

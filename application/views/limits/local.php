@@ -10,15 +10,7 @@ foreach ($locations as $l)
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-	 		<div class="card-header border-bottom">
-			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-				<li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo base_url('limits/global'); ?>"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('global'); ?>)</a></li>
-			
-				<?php foreach ($locations as $loc): ?>
-					<li class="nav-item" role="presentation"><a class="nav-link <?php echo ($loc['id'] == $filter) ? 'active' : '';?>" href="<?php echo base_url('limits/local/' . $loc['id']); ?>"><?php echo $loc['name']; ?></a></li>
-				<?php endforeach; ?>
-			</ul>
-			</div>
+	 		<?php include 'header.php'; ?>
             <div class="card-body">
 			<div class="tab-content" id="myTabContent">
 				<div class="tab-pane show active fade" id="local" role="tabpanel" aria-labelledby="local-tab">

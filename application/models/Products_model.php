@@ -79,6 +79,15 @@ class Products_model extends MY_Model
 			;
 	}
 
+	/*
+		set backorder to 0 if it was set to 1
+	*/
+	public function set_backorder_filled( int $product_id )
+	{
+		return $this->limit(1)->where(array("id" => $product_id, "backorder" => 1))->update(array("backorder" => 0));
+	}
+
+
 	public function usage_detail( int $product_id, string $search_from, string $search_to)
 	{
 		$sql = "

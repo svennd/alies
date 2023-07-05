@@ -27,15 +27,6 @@ class Stock_model extends MY_Model
 		parent::__construct();
 	}
 
-
-	/*
-		normal way to add stock from stock/add & stock/quick
-	*/
-	public function add_stock(int $product_id, $eol, int $location, $in_price, $lotnr, $volume, $barcode = false)
-	{
-
-	}
-
 	/*
 		called in admin_invoice/rm_bill
 	*/

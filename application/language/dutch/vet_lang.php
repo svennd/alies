@@ -156,6 +156,7 @@ $lang['updated_owner']      = 'Klantinformatie aangepast!';
 
 # shortages
 $lang['shortage']         = 'Tekort';
+$lang['backorder']         = 'Order';
 $lang['local']         = 'Lokaal';
 $lang['global']         = 'Globaal';
 $lang['no_shortage']         = 'Geen tekorten';

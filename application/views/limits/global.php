@@ -2,12 +2,7 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-	 		<div class="card-header border-bottom">
-			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#global" role="tab" aria-controls="info" aria-selected="true"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('global'); ?>)</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo base_url('limits/local/' . $this->user->current_location); ?>"><?php echo $this->lang->line('shortage'); ?> (<?php echo $this->lang->line('local'); ?>)</a></li>
-			</ul>
-			</div>
+	 		<?php include 'header.php'; ?>
             <div class="card-body">
 			<div class="tab-content" id="myTabContent">
 				<div class="tab-pane fade active show" id="global" role="tabpanel" aria-labelledby="global-tab">
@@ -19,8 +14,11 @@
 					<tr>
 						<th>Product</th>
 						<th><?php echo $this->lang->line('global_stock'); ?> / <?php echo $this->lang->line('limit'); ?></th>
-						<th>Vebruik (30d, 90d)</th>
+						<th><?php echo $this->lang->line('global_use'); ?> (30d, 90d)</th>
 						<th>Prio</th>
+						<?php if ($this->ion_auth->in_group("admin")): ?>
+						<th>Order</th>
+						<?php endif; ?>
 					</tr>
 					</thead>
 					<tbody>
@@ -52,7 +50,7 @@
 						
 						# small volume products
 						# and have transactions
-						if($all_volume < 3 && $global_90d != 0)
+						if($global_90d != 0 && ($global_30d/$global_90d) >= 0.5)
 						{
 							$prio += 1;
 						}
@@ -66,6 +64,11 @@
 							<?php if ($this->ion_auth->in_group("admin")): ?></a><?php endif; ?>
 						</td>
 						<td><?php echo $prio; ?></td>
+						<?php if ($this->ion_auth->in_group("admin")): ?>
+						<td>
+							<a href="<?php echo base_url('products/set_backorder/' . $product['id']); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-cart-shopping"></i></a>
+						</td>
+						<?php endif; ?>
 					</tr>
 					<?php endforeach; ?>
 					</tbody>
