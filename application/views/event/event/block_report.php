@@ -94,7 +94,7 @@ $('#anamnese').trumbowyg({
         templates: [
             {
                 name: 'Anamnese_Behandeling',
-                html: 'ANAMNESE, ONDERZOEK EN DIAGNOSE:<br/><br/><br/><br/>BEHANDELING:<br/><br/><br/><br/>'
+                html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE:</b><br/><p>&nbsp;</p><br/><b>BEHANDELING:</b><br/><p>&nbsp;</p><br/>'
             }
         ]
     }

@@ -32,8 +32,8 @@
 
 				<?php if($usage): ?>
 				<br>
-				<?php ?>
-				<table class="table">
+				<table class="table" id="dataTable">
+					<thead>
 					<tr>
 						<th>Date</th>
 						<th>Volume</th>
@@ -46,6 +46,8 @@
 						<th>Location</th>
 						<th>Consult</th>
 					</tr>
+					</thead>
+					<tbody>
 					<?php foreach ($usage as $us): ?>
 					<tr>
 						<td><?php echo user_format_date($us['event_created_at'], $user->user_date); ?></td>
@@ -58,8 +60,10 @@
 						<td><?php echo $us['first_name']; ?></td>
 						<td><?php echo $us['stockname']; ?></td>
 						<td><a href="<?php echo base_url('events/event/' . $us['event_id']); ?>" class="btn btn-outline-info">Consult</a></td>
+					</tr>
 					<?php endforeach; ?>
-					</table>
+					</tbody>
+				</table>
 				<?php endif; ?>
                 </div>
 		</div>
@@ -71,5 +75,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#reportsmgm").addClass('active');
 	$("#rep").show();
 	$("#products_report").addClass('active');
+	$("#dataTable").DataTable();
 });
 </script>

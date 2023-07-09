@@ -187,7 +187,10 @@ foreach ($locations as $l)
 								</tr>
 								<tr>
 									<td><?php echo $this->lang->line('catalog_price'); ?></td>
-									<td><span class="sensitive"><?php echo (isset($product['buy_price'])) ? $product['buy_price']: '' ?> &euro; / <?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?> <?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?></span></td>
+									<td><span class="sensitive">
+										<?php 
+											echo (isset($product['wholesale']) && isset($product['wholesale']['bruto'])) ? $product['wholesale']['bruto'] : ((isset($product['buy_price'])) ? $product['buy_price']: '');
+										?> &euro; / <?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?> <?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?></span></td>
 								</tr>
 								<?php if (!empty($product['input_barcode'])) : ?>
 								<tr>

@@ -8,9 +8,8 @@
 
 		    <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>products">Products</a> /
-				<a href="<?php echo base_url(); ?>products/product_price">Price List</a> /
-				<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>"><?php echo $product['name']; ?></a> / 
+				<a href="<?php echo base_url('pricing/prod'); ?>">Products</a> /
+				<?php echo $product['name']; ?> / 
                 <?php echo $this->lang->line('price_setting'); ?>
 			</div>
             <div class="card-body">
@@ -34,7 +33,7 @@
 				?>
 				<tr>
 					<td class="input5">
-						<form method="post" id="form<?php echo $price['id'] ?>" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>">
+						<form method="post" id="form<?php echo $price['id'] ?>" action="<?php echo base_url('pricing/prod/' . $product['id']); ?>">
 						<div class="input-group ">
 							<input type="text" class="form-control" id="volume" name="volume" placeholder="" value="<?php echo $price['volume']; ?>">
 							<div class="input-group-append">
@@ -57,13 +56,13 @@
 					</td>
 					<td>
 						<button type="submit" name="submit" value="edit" class="btn btn-primary btn-sm" form="form<?php echo $price['id'] ?>"><i class="fas fa-save"></i> <?php echo $this->lang->line('store'); ?></button>
-						<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>" class="btn btn-danger my-1 btn-sm"><i class="fas fa-trash-alt"></i> <?php echo $this->lang->line('remove'); ?></a>
+						<a href="<?php echo base_url('pricing/rm_prod_price/' . $price['id']); ?>" class="btn btn-danger my-1 btn-sm delete-confirm"><i class="fas fa-trash-alt"></i> <?php echo $this->lang->line('remove'); ?></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>
 					<tr>
 					<td class="input5">
-						<form method="post" id="form_new" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>">
+						<form method="post" id="form_new" action="<?php echo base_url('pricing/prod/' . $product['id']); ?>">
 						<div class="input-group">
 							<input type="text" class="form-control" id="volume" name="volume" placeholder="">
 							<div class="input-group-append">
@@ -89,7 +88,7 @@
 				<?php else: ?>
 					No price assigned yet ! <br/>
 
-					<form method="post" action="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="form-inline">
+					<form method="post" action="<?php echo base_url('pricing/prod/' . $product['id']); ?>" class="form-inline">
 
 					<label class="sr-only" for="price">price</label>
 					<div class="input-group mb-2 mr-sm-2">
@@ -126,12 +125,10 @@
 						<td><?php echo (isset($product['wholesale'])) ? round($product['wholesale']['bruto']/$product['buy_volume'] , 2) : '---'; ?> &euro;</td>
 					</tr>
 					<tr>
-						<td><?php echo $this->lang->line('price_practice'); ?></td>
-						<td><?php echo (isset($product['wholesale'])) ? round(($product['wholesale']['bruto'])*0.91, 2) : '---'; ?> &euro;</td>
-						<td><?php echo (isset($product['wholesale'])) ? round(($product['wholesale']['bruto']*0.91)/$product['buy_volume'] , 2) : '---'; ?> &euro;</td>
-					</tr>
-					<tr>
-						<td><?php echo $this->lang->line('price_alies'); ?></td>
+						<td>
+							<?php echo $this->lang->line('price_alies'); ?><br/>
+							<small><?php echo user_format_date($product['buy_price_date'], $user->user_date); ?></small>
+						</td>
 						<td><?php echo $product['buy_price']; ?> &euro;</td>
 						<td><?php echo round($product['buy_price']/$product['buy_volume'] , 2); ?> &euro;</td>
 					</tr>
@@ -146,11 +143,9 @@
 						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] : '---'; ?> &euro;</td>
 					</tr>
 					<tr>
-						<td><?php echo $this->lang->line('price_practice'); ?></td>
-						<td><?php echo (isset($product['wholesale'])) ? round(($product['wholesale']['bruto'])*0.91, 2) : '---'; ?> &euro;</td>
-					</tr>
-					<tr>
-						<td><?php echo $this->lang->line('price_alies'); ?></td>
+						<td><?php echo $this->lang->line('price_alies'); ?><br/>
+							<small><?php echo user_format_date($product['buy_price_date'], $user->user_date); ?></small>
+						</td>
 						<td><?php echo $product['buy_price']; ?> &euro;</td>
 					</tr>
 					<tr>
@@ -182,6 +177,24 @@
 				<?php endif; ?>
 			</div>
 		</div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header"><?php echo $this->lang->line('ref_price'); ?></div>
+            <div class="card-body">
+			<form method="post" action="<?php echo base_url('pricing/man/' . $product['id']); ?>">
+				<div class="form-group">
+					<label for="exampleInputEmail1"><?php echo $this->lang->line('price_alies'); ?></label>
+					<input type="number" min="0" max="1000" step="0.01" name="buy_price" class="form-control" value="<?php echo $product['buy_price']; ?>" id="buy_price" aria-describedby="emailHelp">
+					<small id="emailHelp" class="form-text text-muted">Manually tracking pricing.</small>
+				</div>
+				<div class="form-group">
+					<label for="buy_price_date">Date Update</label>
+					<input type="date" name="buy_price_date" class="form-control" id="buy_price_date" value="<?php echo date('Y-m-d') ?>">
+				</div>
+				<button type="submit" name="submit" value="store" class="btn btn-primary mb-2">Store</button>
+			</form>
+			</div>
+		</div>
 	  </div>
 
 </div>
@@ -194,5 +207,27 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#pricing").addClass('active');
 	$("#prod_list").addClass('active');
 	
+
+	// Get all elements with the class 'myLink'
+	var links = $('.delete-confirm');
+    links.on('click', function(event) {
+        event.preventDefault(); 
+        
+        var link = $(this); 
+        Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this price?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = link.attr('href');
+            }
+        });
+    });
 });
 </script>

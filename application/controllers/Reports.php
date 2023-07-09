@@ -30,7 +30,7 @@ class Reports extends Admin_Controller
 	{
 		if ($csv)
 		{
-			$usage = $this->booking->get_usage($booking_id, $search_from, $search_to);
+			$usage = $this->booking->get_usage_detail($booking_id, $search_from, $search_to);
 			$csv = $this->load->view('reports/accounting_csv', array("usage" => $usage), true);
 			array_to_csv_download($csv, 'accounting_code_' .  $booking_id .'.csv');
 			return 0;
@@ -42,7 +42,7 @@ class Reports extends Admin_Controller
 		$booking_id 	= $this->input->post('booking');
 
 		$data = array(
-			"usage"				=> is_null($booking_id) ? false : $this->booking->get_usage($booking_id, $search_from, $search_to),
+			"usage"				=> is_null($booking_id) ? false : $this->booking->get_usage_detail($booking_id, $search_from, $search_to),
 			"booking"			=> $this->booking->get_all(),
 			"search_from"		=> is_null($search_from) ? false : $search_from,
 			"search_to"			=> is_null($search_to) ? false : $search_to,
@@ -166,32 +166,33 @@ class Reports extends Admin_Controller
 		array_to_csv($csv_lines);
 	}
 
-	public function clients(int $days = 0)
-	{
-		/* cache this for 6 hours */
-		$this->output->cache(360);
+	// nowhere linked for now
+	// public function clients(int $days = 0)
+	// {
+	// 	/* cache this for 6 hours */
+	// 	$this->output->cache(360);
 
-		$data = array(
-						"last_bill_clients" => $this->chart_last_bill(10),
-						"total_clients"		=> $this->owners->count_rows(),
-					);
+	// 	$data = array(
+	// 					"last_bill_clients" => $this->chart_last_bill(10),
+	// 					"total_clients"		=> $this->owners->count_rows(),
+	// 				);
 		
-		if($days) {
-				$data['days'] = $days;
-				$data['clients'] = $this->owners
-					->group_start()
-						->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-						->where('created_at < NOW()', null, null, false, false, true)
-					->group_end()
-					->or_group_start()
-						->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-						->where('updated_at < NOW()', null, null, false, false, true)
-					->group_end()
-					->get_all();
-		}
+	// 	if($days) {
+	// 			$data['days'] = $days;
+	// 			$data['clients'] = $this->owners
+	// 				->group_start()
+	// 					->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+	// 					->where('created_at < NOW()', null, null, false, false, true)
+	// 				->group_end()
+	// 				->or_group_start()
+	// 					->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
+	// 					->where('updated_at < NOW()', null, null, false, false, true)
+	// 				->group_end()
+	// 				->get_all();
+	// 	}
 		
-		$this->_render_page('reports/clients', $data);
-	}
+	// 	$this->_render_page('reports/clients', $data);
+	// }
 
 	public function register_in()
 	{
@@ -221,41 +222,6 @@ class Reports extends Admin_Controller
 			"search_from"	=> $search_from,
 			"search_to"		=> $search_to,
 		));	
-	}
-
-	private function chart_last_bill(int $years = 5)
-	{
-		/* 
-			going from data : 
-			array(3) {
-				["y"]=>
-				string(4) "2018"
-				["total"]=>
-				string(1) "6"
-				["vet"]=>
-				string(5) "Svenn"
-			}
-
-			to data :
-			label : 2018, 2019, ...
-			dataset : 
-				label : svenn
-				data: 1 2 3 4 5
-				label : annelies
-				data: 2 3 1 4 7
-		*/
-		$r = $this->owners->last_bill_by_year_month_init_vet($years);
-		
-
-		$years = array_unique(array_column($r, 'y'));
-		$vets = array_unique(array_column($r, 'vet'));
-		$data = array();
-		foreach ($vets as $vet)
-		{
-			$filter_per_vet = array_filter($r, fn ($n) => $n['vet'] == $vet);
-			$data[$vet] = array_column($filter_per_vet, 'total');
-		}
-		return array("years" => $years, "vets" => $vets, "data" => $data);
 	}
 
 	/*

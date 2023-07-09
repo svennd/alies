@@ -27,15 +27,19 @@
 	<?php echo (isset($extra_header)) ? $extra_header : ""; ?>
 
 
+  <?php if ($this->ion_auth->in_group("accounting")): ?>
+  <link href="<?php echo base_url(); ?>assets/css/fck_accounting.css" rel="stylesheet">
+  <?php endif; ?>
+
 	<link rel="icon" href="<?php echo base_url(); ?>assets/alies.ico" type="image/x-icon" />
 </head>
 <body id="page-top">
 
   <!-- mondal if required -->
-  <?php echo $mondal; ?>
+  <?php echo ($this->ion_auth->in_group("accounting")) ? '' : $mondal; ?>
 
   <!-- Page Wrapper -->
-  <div id="wrapper">
+  <div id="wrapper" >
 
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="background-image:linear-gradient(180deg, <?php echo $user->sidebar; ?> 10%, <?php echo $user->sidebar; ?> 100%);">
@@ -50,7 +54,6 @@
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
       <!-- Divider -->
       <hr class="sidebar-divider">
-
 
       <!-- Heading -->
       <div class="sidebar-heading">
@@ -89,6 +92,24 @@
         </div>
       </li>
 	  <?php endif; ?>
+    
+    <?php if($this->ion_auth->in_group("accounting")): ?>
+      <div class="sidebar-heading">
+        <?php echo $this->lang->line('pricing'); ?>
+      </div>
+      <li class="nav-item" id="admin">
+        <a class="nav-link" href="<?php echo base_url('pricing/proc'); ?>" id="adminproc">
+        <i class="fa-solid fa-user-doctor"></i>
+          <span><?php echo $this->lang->line('procedures'); ?></span></a>
+      </li>  
+      <li class="nav-item" id="admin">
+        <a class="nav-link" href="<?php echo base_url('pricing/prod'); ?>" id="prod_list">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span><?php echo $this->lang->line('products'); ?></span></a>
+      </li>
+    <?php endif; ?>
+
+    <?php if (!$this->ion_auth->in_group("accounting")): ?>
       <!-- Divider -->
       <hr class="sidebar-divider">
 
@@ -136,7 +157,7 @@
           <i class="fas fa-fw fa-dolly"></i>
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
-
+    <?php endif; ?>
     </ul>
     <!-- End of Sidebar -->
 
@@ -155,7 +176,7 @@
           </button>
 
         <!-- Topbar Search -->
-					<?php echo (isset($location)) ? $location : '<span style="color:red">location error</span>'; ?>
+					<?php echo (isset($location)) ? $location : ''; ?>
 
           <!-- Topbar Navbar -->
 
@@ -171,6 +192,8 @@
 	              </a>
             </li>
           <?php endif; ?>
+
+          <?php if(!$this->ion_auth->in_group("accounting")): ?>
             <li class="nav-item" id="sticky_messages">
                 <a class="nav-link " href="#">
                     <i style="color:#f6c23e;" class="far fa-sticky-note"></i>
@@ -186,6 +209,7 @@
 										<?php endif; ?>
 	              </a>
 	          </li>
+            <?php endif; ?>
             <div class="topbar-divider d-none d-sm-block"></div>
 
             <!-- Nav Item - User Information -->
@@ -220,3 +244,4 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+

@@ -39,24 +39,62 @@
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2">Search range</button>
 				</form>
 
-				<?php if($usage): ?>
+				<?php if($usage[0]): ?>
 <div class="alert alert-secondary" role="alert">
-beta : only products are included (procedures are missing).
+beta : only products are included (procedures are missing from csv).
 </div>
 				<br>
-				<table class="table">
+				<table class="table" id="dataTable">
+				<thead>
 					<tr>
 						<th>Product</th>
 						<th>In price</th>
 						<th>Netto sell</th>
 						<th>Reduction</th>
+						<th>client</th>
 						<th>location</th>
-						<th>event</th>
+						<th>factuur</th>
 					</tr>
-				<?php foreach ($usage as $us): ?>
+    </thead>
+	<tbody>
+				<?php foreach ($usage[0] as $us): ?>
 					<tr>
 						<td><?php echo $us['pname']; ?></td>
 						<td><?php echo $us['in_price']; ?></td>
+						<td><?php echo $us['net_price']; ?></td>
+						<td><?php echo ($us['calc_net_price'] > 0) ? 'yes' : 'no'; ?></td>
+						<td><?php echo $us['lname']; ?></td>
+						<td><?php echo $us['name']; ?></td>
+						<td>
+							<?php if(isset($us['invoice_id'])): ?>
+							<a href="<?php echo base_url('invoice/get_bill/' . $us['bill_id']) . '/1'; ?>"><?php echo get_invoice_id($us['invoice_id'], $us['invoice_date']); ?></a></td>
+							<?php else: ?>
+							<a href="<?php echo base_url('invoice/get_bill/' . $us['bill_id']); ?>"><?php echo $us['bill_id']; ?> (NB)</a></td>
+							<?php endif; ?>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+				</table>
+				<?php endif; ?>
+
+				<?php if($usage[1]): ?>
+<div class="alert alert-secondary" role="alert">
+beta : only products are included (procedures are missing from csv).
+</div>
+				<br>
+				<table class="table" id="">
+					<tr>
+						<th>Product</th>
+						<th>In price</th>
+						<th>Netto sell</th>
+						<th>Reduction</th>
+						<th>client</th>
+						<th>event</th>
+					</tr>
+				<?php foreach ($usage[1] as $us): ?>
+					<tr>
+						<td><?php echo $us['name']; ?></td>
+						<td><?php echo $us['price']; ?></td>
 						<td><?php echo $us['net_price']; ?></td>
 						<td><?php echo ($us['calc_net_price'] > 0) ? 'yes' : 'no'; ?></td>
 						<td><?php echo $us['name']; ?></td>
@@ -76,5 +114,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#reportsmgm").addClass('active');
 	$("#rep").show();
 	$("#products_report").addClass('active');
+	$("#dataTable").DataTable();
 });
 </script>

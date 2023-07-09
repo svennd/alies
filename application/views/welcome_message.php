@@ -7,6 +7,7 @@
 		<div class="card shadow mb-4">
 			<div class="card-header"><?php echo $this->lang->line('title_welcome'); ?></div>
 			<div class="card-body">
+				<?php if(!$this->ion_auth->in_group("accounting")): ?>
 				<div class="row">
 					<div class="col">
 						<div class="list-group">
@@ -58,10 +59,12 @@
 						</div>
 					</div>
 				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>
 	<div class="col-xl-3 col-lg-3">
+		<?php if(!$this->ion_auth->in_group("accounting")): ?>
 		<div class="card shadow mb-4">
 			<div class="card-header">
 				<?php echo $this->lang->line('vets'); ?>
@@ -82,6 +85,7 @@
 				<?php endforeach; ?>
 			</div>
 		</div>
+		<?php endif; ?>
 	</div>
 <!-- row -->
 </div>

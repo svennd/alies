@@ -40,3 +40,14 @@ NULL	3273	5088	61
 2021	397	686	2243	
 2022	675	1330	5530	
 2023	671	1626	9916	
+
+
+# value of stock: 
+SELECT s.product_id, p.name, s.in_price, SUM(s.volume * s.in_price) AS stock_value FROM stock s JOIN products p ON p.id = s.product_id GROUP BY s.product_id, p.name;
+
+
+# fix factuurnummers in july :
+
+UPDATE `bills` set invoice_id = invoice_id + 1761 WHERE invoice_id IS NOT NULL AND MONTH(invoice_date) = 7
+
+

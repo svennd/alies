@@ -26,15 +26,15 @@
 								<label for="street"><?php echo $this->lang->line('street'); ?></label>
 								<input type="text" name="street" class="form-control" id="street" autocomplete="dezzd">
 							</div>
-							<div class="form-group col-md-2">
+							<div class="form-group col-md-4">
 								<label for="nr">nr</label>
-								<input type="text" name="nr" class="form-control" id="nr" autocomplete="dezzd">
+								<input type="text" name="nr" class="form-control" id="nr" autocomplete="dezzd" maxlength="30">
 							</div> 
 						</div>
 					   <div class="form-row">
 						<div class="form-group col-md-2">
 						  <label for="inputZip"><?php echo $this->lang->line('zip'); ?></label>
-						  <input type="text" name="zip" class="form-control" id="inputZip" autocomplete="dezzd">
+						  <input type="text" name="zip" class="form-control" id="inputZip" autocomplete="dezzd" maxlength="6">
 						</div>
 						<div class="form-group col">
 						  <label for="city"><?php echo $this->lang->line('city'); ?></label>
