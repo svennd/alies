@@ -8,6 +8,7 @@ class Cron extends Frontend_Controller
     public $lab_line;
     public $settings;
     public $logs;
+    public $events;
 
 	# constructor
 	public function __construct()
@@ -19,7 +20,9 @@ class Cron extends Frontend_Controller
 
 		$this->load->model('Stock_model', 'stock');
 
+		$this->load->model('Events_model', 'events');
 		$this->load->model('Config_model', 'settings');
+        
         $conf = $this->settings->get_all();
 		if ($conf) {
 			foreach ($conf as $c) {
@@ -229,7 +232,7 @@ class Cron extends Frontend_Controller
     }
 
 	# if some remaining data is still visible this can be used to hide it
-	public function stock_clean(string $cron_key)
+	public function stock_clean(string $cron_key = "")
 	{
         if ($cron_key != config_item('cron_key'))
         {
@@ -249,6 +252,46 @@ class Cron extends Frontend_Controller
 		$this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
 
 		echo "0 volume lines : " . $r . "\n" . $duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products \n";
+    }
+
+    // if vets forgot to close a report
+    // autoclose it
+    public function autoclose_reports(string $cron_key = "")
+    {
+        if ($cron_key != config_item('cron_key'))
+        {
+            show_404();
+		    $this->logs->logger(ERROR, "wrong_cron_key", "key is wrong");
+        }
+        
+        $sql = "
+            UPDATE `events`
+                SET 
+                    `report` = " . REPORT_DONE . ",
+                    `anamnese` = CONCAT(`anamnese`, ' [Auto-Closed]')
+                WHERE 
+                    `created_at` < (NOW() - INTERVAL " . base64_decode($this->config['autoclose']['value']) . " DAY) 
+                AND 
+                    `report` != " . REPORT_DONE . "
+                AND
+                    `no_history` != 1
+                    ;
+             ";
+
+        # run query
+        $this->db->query($sql);
+
+        # check if we got hits
+        $affected = $this->db->affected_rows();
+
+        if ($affected > 0)
+        {
+            $this->logs->logger(INFO, "autoclose", "closed " . $affected . " events");
+        }
+        else
+        {
+            $this->logs->logger(DEBUG, "ran_autoclose", "no affected");
+        }
     }
 
 	// wrapper around some curl setup

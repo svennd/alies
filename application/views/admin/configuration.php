@@ -12,10 +12,20 @@
 				<h4>Bills</h4>
 				
 				<div class="form-row">
-					<div class="form-group col-md-5">
+					<div class="form-group col-md-6">
 						<label for="due_date">Due date</label>
 						<input type="text" class="form-control" id="due_date" name="conf_due_date" value="<?php echo (isset($config['due_date'])) ? base64_decode($config['due_date']) : ''; ?>" autocomplete="due_date">
 						<small id="due_datehelp" class="form-text text-muted">Bills are due, this many days. (default : 30)</small>
+					</div>
+				</div>
+
+				<h4>Events</h4>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="autoclose">Autoclose reports</label>
+						<input type="text" class="form-control" id="autoclose" name="conf_autoclose" value="<?php echo (isset($config['autoclose'])) ? base64_decode($config['autoclose']) : ''; ?>" autocomplete="autoclose">
+						<small id="autoclosehelp" class="form-text text-muted">Reports that are never finished get auto closed after x days. (default : 14)</small>
 					</div>
 				</div>
 
