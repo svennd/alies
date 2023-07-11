@@ -29,54 +29,6 @@ class Admin extends Admin_Controller
 		redirect('accounting/dashboard');
 	}
 
-	# proc
-	public function proc()
-	{
-		if ($this->input->post('submit') == "add_proc") {
-			# log this
-			$this->logs->logger(INFO, "new_procedure", "proc_name: " . $this->input->post('name'));
-			$this->proc->insert(array(
-							"name" 			=> $this->input->post('name'),
-							"booking_code" 	=> $this->input->post('booking_code'),
-							"price"			=> $this->input->post('price')
-							));
-		}
-		
-		if ($this->input->post('submit') == "edit_proc") {
-			# log this
-			$this->logs->logger(INFO, "update_procedure", "proc_name: " . $this->input->post('name') . " price :" . $this->input->post('price'));
-			$this->proc->update(
-				array(
-									"name" 			=> $this->input->post('name'),
-									"booking_code" 	=> $this->input->post('booking_code'),
-									"price"			=> $this->input->post('price'),
-								),
-				array(
-									"id" => (int) $this->input->post('id')
-								)
-			);
-		}
-		
-		$data = array(
-						"proc" 		=> $this->proc->with_booking_code('fields:code, category, btw')->get_all(),
-						"booking" 	=> $this->book->get_all()
-					);
-	
-
-		$this->_render_page('admin/procedures', $data);
-	}
-
-	# change producedures
-	public function proc_edit($id)
-	{
-		$data = array(
-				"proc" 		=> $this->proc->with_booking_code('fields:code, category, btw')->get($id),
-				"booking" 	=> $this->book->get_all()
-			);
-			
-		$this->_render_page('admin/procedures_edit', $data);
-	}
-
 	public function locations()
 	{
 		if ($this->input->post('submit') == "add_location") {

@@ -5,6 +5,9 @@
 			<div>Procedures</div>
 				<div class="dropdown no-arrow">
 					<a href="#" class="btn btn-outline-success btn-sm" id="add"><i class="fas fa-plus"></i> Add Procedure</a>
+					<?php if($this->ion_auth->in_group('admin')): ?>
+						<a href="<?php echo base_url(); ?>restore/procedures" class="btn btn-outline-danger btn-sm"><i class="fas fa-fw fa-history"></i> Restore</a>
+					<?php endif; ?>
 				</div>
 			</div>
             <div class="card-body">
@@ -55,7 +58,6 @@
 						<a href="<?php echo base_url('pricing/delete_proc/' . $pro['id']); ?>" class="btn btn-outline-danger btn-sm delete-confirm"><i class="fas fa-trash-alt"></i></a>
 					</td>
 				</tr>
-
 				<?php endforeach; ?>
 				</tbody>
 				</table>
@@ -69,7 +71,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+	$("#dataTable").DataTable({paging: false});
 	$("#pricingmg").show();
 	$("#pricing").addClass('active');
 	$("#adminproc").addClass('active');
@@ -91,8 +93,8 @@ document.addEventListener("DOMContentLoaded", function(){
             text: 'Are you sure you want to delete this procedure?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel'
         }).then((result) => {

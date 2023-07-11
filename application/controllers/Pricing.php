@@ -16,6 +16,7 @@ class Pricing extends Accounting_Controller
 		$this->load->model('Booking_code_model', 'book');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Product_price_model', 'pprice');
+		$this->load->model('Events_procedures_model', 'eproc');
 	}
 
 	public function prod($id = false)
@@ -75,7 +76,7 @@ class Pricing extends Accounting_Controller
 							));
 		}
 		
-		if ($this->input->post('submit') == "edit_proc") {
+		if ($this->input->post('action') == "edit_proc") {
 			$this->logs->logger(INFO, "update_procedure", "proc_name: " . $name . " price :" . $price);
 			$this->proc->update(
 				array(
@@ -99,9 +100,10 @@ class Pricing extends Accounting_Controller
 	}
 
 	# change producedures
-	public function proc_edit($id)
+	public function proc_edit(int $id)
 	{
 		$data = array(
+				"stat"		=> $this->eproc->get_net_income($id),
 				"proc" 		=> $this->proc->with_booking_code('fields:code, category, btw')->get($id),
 				"booking" 	=> $this->book->get_all()
 			);
@@ -143,6 +145,7 @@ class Pricing extends Accounting_Controller
 		$data = array(
 						"products" 		=> $this->products
 												->with_prices('fields:volume, price|order_inside:volume asc')
+												->with_wholesale('fields:bruto')
 												->fields('name, buy_volume, buy_price, sellable, updated_at, unit_sell')
 												->where(array("sellable" => 1))
 												->get_all()

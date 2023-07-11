@@ -10,16 +10,21 @@
 				<thead>
 				<tr>
 					<th>Name</th>
+					<th>Unit</th>
+					<th><?php echo $this->lang->line('catalog_price'); ?></th>
+					<th><?php echo $this->lang->line('price_alies'); ?></th>
 					<th>Sell Price</th>
+					<th>Margin</th>
 					<th>Modify</th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($products as $product): ?>
 				<tr>
-					<td>
-						<?php echo $product['name']; ?>
-					</td>
+					<td><?php echo $product['name']; ?></td>
+					<td><?php echo $product['prices']['0']['volume'] . " ". $product['unit_sell']; ?></td>
+					<td><?php echo (isset($product['wholesale']) && isset($product['wholesale']['bruto'])) ? $product['wholesale']['bruto']. " &euro;" : '---' ; ?></td>
+					<td><?php echo $product['buy_price']. " &euro;"; ?></td>
 					<td>
 					<?php
 						if (!isset($product['prices']))
@@ -45,7 +50,9 @@
 									echo "<tr>
 												<td>". $price['volume'] ." ". $product['unit_sell']."</td>
 												<td>". $price['price'] ."&euro;</td>
-											<tr>";
+												<td>". (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) ."% ". (($error) ? "error in data":"") . "</td>
+
+										<tr>";
 								}
 								echo "</table></div>";
 							}
@@ -55,6 +62,43 @@
 							}
 						}
 					?>
+					</td>
+
+
+					<td>
+						<?php
+							if (!isset($product['prices']))
+							{
+								echo "<span style='color:red;'><b>no price</b></span>";
+							}
+							elseif(!$product['sellable'])
+							{
+								echo "---";
+							}
+							else
+							{
+								if (count($product['prices']) > 1)
+								{
+									$unit_price = ($product['buy_price']/$product['buy_volume']);
+									$first_change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
+									$last_change = round((($unit_price-$product['prices'][sizeof($product['prices']) - 1]['price'])/$unit_price)*100*-1);
+									echo (($first_change > 0) ? '<span style="color:green;">+' . $first_change : '<span style="color:red;">' . $first_change) . ' ~ ' . (($last_change > 0) ? '<span style="color:green;">+' . $last_change : '<span style="color:red;">' . $last_change) . '%';
+								}
+								else
+								{
+									if ($product['prices']['0']['price'] == 0 || $product['buy_price'] == 0)
+									{
+										echo "---";
+									}
+									else
+									{
+										$unit_price = ($product['buy_price']/$product['buy_volume']);
+										$change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
+										echo  (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) . "%";
+									}
+								}
+							}
+						?>
 					</td>
 					<td>
 						<a href="<?php echo base_url(); ?>pricing/prod/<?php echo $product['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i></a>

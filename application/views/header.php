@@ -46,117 +46,22 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url(); ?>">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
+        <a class="nav-link bounceit" href="<?php echo base_url(); ?>">
+        <i class="fa-solid fa-fw fa-paw"></i>
           <span><?php echo $this->lang->line('dashboard'); ?></span></a>
       </li>
 
 	  <?php if ($this->ion_auth->in_group("admin")): ?>
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Administration
-      </div>
-      <li class="nav-item" id="admin">
-        <a class="nav-link" href="<?php echo base_url('accounting/dashboard'); ?>">
-          <i class="fas fa-fw fa-user-shield"></i>
-          <span>Admin</span></a>
-      </li>      
-      <li class="nav-item" id="pricing">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pricingmg" aria-expanded="true" aria-controls="pricingmg">
-          <i class="fas fa-fw fa-dollar-sign"></i>
-          <span><?php echo $this->lang->line('pricing'); ?></span>
-        </a>
-        <div id="pricingmg" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc"><?php echo $this->lang->line('procedures'); ?></a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list"><?php echo $this->lang->line('products'); ?></a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item" id="reportsmgm">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rep" aria-expanded="true" aria-controls="rep">
-          <i class="fas fa-fw fa-receipt"></i>
-          <span><?php echo $this->lang->line('Reporting'); ?></span>
-        </a>
-        <div id="rep" class="collapse" aria-labelledby="rep" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <!-- <a class="collapse-item" href="<?php echo base_url(); ?>reports/clients" id="client_report">Clients</a> -->
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/products" id="products_report">Products</a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_in" id="reg_in"><?php echo $this->lang->line('Reg_in'); ?></a>
-            <a class="collapse-item" href="<?php echo base_url(); ?>reports/register_out" id="reg_out"><?php echo $this->lang->line('Reg_out'); ?></a>
-          </div>
-        </div>
-      </li>
+      <?php include 'blocks/header_admin.php'; ?>
 	  <?php endif; ?>
+
     
     <?php if($this->ion_auth->in_group("accounting")): ?>
-      <div class="sidebar-heading">
-        <?php echo $this->lang->line('pricing'); ?>
-      </div>
-      <li class="nav-item" id="admin">
-        <a class="nav-link" href="<?php echo base_url('pricing/proc'); ?>" id="adminproc">
-        <i class="fa-solid fa-user-doctor"></i>
-          <span><?php echo $this->lang->line('procedures'); ?></span></a>
-      </li>  
-      <li class="nav-item" id="admin">
-        <a class="nav-link" href="<?php echo base_url('pricing/prod'); ?>" id="prod_list">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <span><?php echo $this->lang->line('products'); ?></span></a>
-      </li>
+      <?php include 'blocks/header_accounting.php'; ?>
     <?php endif; ?>
 
     <?php if (!$this->ion_auth->in_group("accounting")): ?>
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-      <?php echo $this->lang->line('Veterinary'); ?>
-      </div>
-      <li class="nav-item" id="clients">
-        <a class="nav-link" href="<?php echo base_url(); ?>owners">
-          <i class="fas fa-fw fa-user"></i>
-          <span><?php echo $this->lang->line('Clients'); ?></span></a>
-      </li>
-      <li class="nav-item" id="reports">
-        <a class="nav-link" href="<?php echo base_url(); ?>report">
-        <i class="far fa-fw fa-file"></i>
-        <span><?php echo $this->lang->line('Reports'); ?></span></a>
-      </li>
-      </li>
-      <li class="nav-item" id="sticky">
-        <a class="nav-link" href="<?php echo base_url('sticky'); ?>">
-        <i class="far fa-fw fa-sticky-note"></i>
-        <span><?php echo $this->lang->line('sticky'); ?></span></a>
-      </li>
-      <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-      <?php echo $this->lang->line('Administration'); ?>
-      </div>
-      <li class="nav-item" id="invoice">
-        <a class="nav-link" href="<?php echo base_url(); ?>invoice">
-          <i class="fas fa-fw fa-euro-sign"></i>
-          <span><?php echo $this->lang->line('Invoice'); ?></span></a>
-      </li>
-      <li class="nav-item" id="vaccines">
-        <a class="nav-link" href="<?php echo base_url(); ?>vaccine">
-        <i class="fas fa-syringe fa-fw"></i>
-          <span><?php echo $this->lang->line('Vaccins'); ?></span></a>
-      </li>
-      <li class="nav-item" id="labo">
-        <a class="nav-link" href="<?php echo base_url('lab'); ?>">
-        <i class="fas fa-flask fa-fw"></i>
-          <span><?php echo $this->lang->line('Lab'); ?></span></a>
-      </li>
-      <li class="nav-item" id="product_list">
-        <a class="nav-link" href="<?php echo base_url('products'); ?>">
-          <i class="fas fa-fw fa-dolly"></i>
-          <span><?php echo $this->lang->line('Products'); ?></span></a>
-      </li>
+      <?php include 'blocks/header_vet.php'  ?>
     <?php endif; ?>
     </ul>
     <!-- End of Sidebar -->
@@ -197,18 +102,8 @@
             <li class="nav-item" id="sticky_messages">
                 <a class="nav-link " href="#">
                     <i style="color:#f6c23e;" class="far fa-sticky-note"></i>
-                    <!-- Counter - Messages -->
-                    <span style="background-color:#f6c23e;" class="badge badge-info badge-counter"><?php echo $cnt_sticky; ?></span>
                 </a>
             </li>
-	          <li class="nav-item">
-	              <a class="nav-link" href="<?php echo base_url('report'); ?>">
-	                  <i class="fas fa-file fa-fw"></i>
-										<?php if ($report_count > 0): ?>
-	                  <span class="badge badge-info badge-counter"><?php echo $report_count; ?></span>
-										<?php endif; ?>
-	              </a>
-	          </li>
             <?php endif; ?>
             <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -240,7 +135,6 @@
           </ul>
 
         </nav>
-        <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
         <div class="container-fluid">

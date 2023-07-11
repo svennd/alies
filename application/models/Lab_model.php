@@ -49,4 +49,18 @@ class Lab_model extends MY_Model
 		
 		return $this->db->insert_id();
 	}
+
+	public function get_unassigned()
+	{
+		$sql = "
+			SELECT 
+				count(id) as count
+			FROM
+				lab
+			WHERE
+				pet is NULL
+			LIMIT 9
+		";
+		return ($this->db->query($sql)->result_array()[0]['count']);
+	}
 }

@@ -37,4 +37,21 @@ class Events_procedures_model extends MY_Model
 
 		return (is_null($result[0]['total'])) ? 0 : round($result[0]['total'], 2);
 	}
+
+	public function get_net_income(int $proc_id)
+	{
+		$sql = "
+
+			SELECT
+				COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN 1 END) AS total_count_3m,
+				COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN 1 END) AS total_count_1y,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN amount ELSE 0 END) AS total_amount_3m,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN amount ELSE 0 END) AS total_amount_1y,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN price ELSE 0 END) AS total_net_price_3_months,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN price ELSE 0 END) AS total_net_price_1_year
+			FROM events_procedures;	  
+		;";
+
+		return $this->db->query($sql)->result_array()[0];
+	}
 }
