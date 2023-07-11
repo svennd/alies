@@ -174,6 +174,7 @@ $lang['cash']                 = 'Cash';
 $lang['Payment']              = 'Payment';
 $lang['payment_complete']     = 'payment complete';
 $lang['payed']                = 'Payed';
+$lang['payment_incomplete']   = 'Incomplete';
 $lang['drop_from_stock']      = 'Drop from stock';
 $lang['client_id']      = 'Client ID';
 $lang['comment_on_bill']      = 'on bill';
@@ -315,6 +316,10 @@ $lang['limit']                 = 'Limit';
 
 # reports
 $lang['Reporting']             = 'Reports'; 
+$lang['AllVets']                = 'Everyone'; 
+$lang['OnlyMe']                 = 'Only me'; 
+$lang['created_at']                 = 'Created'; 
+
 
 # add stock
 $lang['sellable_volume']       = "New Volume (sellable)";

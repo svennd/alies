@@ -181,6 +181,7 @@ $lang['card']      = 'Kaart';
 $lang['cash']      = 'Contant';
 $lang['payment']      = 'Betaling';
 $lang['payed']      = 'Betaald';
+$lang['payment_incomplete']   = 'Niet compleet';
 $lang['payment_complete']      = 'Betaling voldaan';
 $lang['drop_from_stock']      = 'Uit stock halen';
 $lang['client_id']      = 'Klant nummer';
@@ -323,6 +324,9 @@ $lang['limit']                 = 'Limiet';
 
 # reports
 $lang['Reporting']             = 'Rapport'; 
+$lang['AllVets']                = 'Iedereen'; 
+$lang['OnlyMe']                 = 'Eigen'; 
+$lang['created_at']             = 'Gemaakt';
 
 # add stock
 $lang['sellable_volume']       = "Volume (verkoopbaar)";
