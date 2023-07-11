@@ -2,8 +2,16 @@
       <div class="col-lg-12 mb-4">
 
       <div class="card shadow mb-4">
-			<div class="card-header">
+			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<?php echo $this->lang->line('title_invoice'); ?>
+				<div class="dropdown no-arrow">
+					<a href="#" id="toggleAll" role="button" class="btn btn-outline-success btn-sm">
+						<i class="fa-solid fa-users"></i><span>&nbsp;<?php echo $this->lang->line('AllVets'); ?></span>
+					</a>
+					<?php if($this->ion_auth->in_group("admin")): ?>
+						<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm" download><i class="fas fa-file-export"></i> xml export</a>
+					<?php endif; ?>
+				</div>	
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url(); ?>invoice/index" method="post" autocomplete="off" class="form-inline">
@@ -25,24 +33,13 @@
 				  <button type="submit" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
 
-                </div>
-		</div>
-      <div class="card shadow mb-4">
-	 		 <div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><?php echo $this->lang->line('invoices'); ?></div>
-				<div class="dropdown no-arrow">
-					<?php if($this->ion_auth->in_group("admin")): ?>
-						<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm" download><i class="fas fa-file-export"></i> xml export</a>
-					<?php endif; ?>
-				</div>
-			</div>
-            <div class="card-body">
+				<br/>
 			<?php if ($bills): ?>
 
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th><i class="far fa-clock"></i> <?php echo $this->lang->line('date'); ?></th>
+					<th><?php echo $this->lang->line('date'); ?></th>
 					<th><?php echo $this->lang->line('amount'); ?></th>
 					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('state'); ?></th>
@@ -67,11 +64,13 @@
 						<?php endif;?>
 					</td>
 		
-					<td><?php echo $bill['owner']['last_name']; ?></td>
+					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
 					<td>
-						<?php echo get_bill_status($bill['status']); ?>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo ($bill['status'] == PAYMENT_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
+							<?php echo ($bill['status'] == PAYMENT_PAID) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
+						</a>
 					</td>
-					<td><?php echo $bill['vet']['first_name']; ?></td>
+					<td data-sort="<?php echo $bill['vet']['id']; ?>"><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 					<?php if($this->ion_auth->in_group("admin")): ?>
 					<td><a href='<?php echo base_url('admin_invoice/edit_bill/' . $bill['id']); ?>' class="btn btn-outline-danger btn-sm">edit</a></td>
@@ -93,7 +92,39 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
-	$("#dataTable").DataTable({"order": [[0, 'desc']]});
+	var table = $("#dataTable").DataTable({"order": [[0, 'desc']]});
+
+	toggleHiddenRows(4, <?php echo $this->user->id; ?>);
+
+	$('#toggleAll').on('click', function() {
+		toggleHiddenRows(4, <?php echo $this->user->id; ?>);
+
+		$(this).toggleClass('btn-outline-danger btn-outline-success');
+		if ($(this).hasClass('btn-outline-success')) {
+        	$(this).html('<i class="fa-solid fa-fw fa-users"></i> <?php echo $this->lang->line('AllVets'); ?>');
+        } else {
+			$(this).html('<i class="fa-solid fa-fw fa-users-slash"></i> <?php echo $this->lang->line('OnlyMe'); ?>');
+        }
+	});
+
+	function toggleHiddenRows(field, input_value) {
+
+        table.rows().every(function() {
+          var value = this.data()[field]; 
+		  var sortValue = value['@data-sort']; 
+		  
+          if (parseInt(sortValue) !== parseInt(input_value)) {
+            var row = this.nodes().to$();
+
+            if (row.is(":hidden")) {
+              row.show();
+            } else {
+              row.hide();
+            }
+          }
+        });
+      }
+
 	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>

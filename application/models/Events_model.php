@@ -270,13 +270,15 @@ class Events_model extends MY_Model
 			pets.id as pet_id, pets.type as pet_type, pets.name as pet_name,
 			stock_location.id as loc_id, stock_location.name as loc_name,
 			owners.id as owner_id, owners.last_name as owner_name,
-			users.first_name
+			users.first_name, users.id as vet_id,
+			bills.status as bill_status
 		FROM
 			events
 		JOIN pets ON pets.id = events.pet
 		JOIN stock_location ON stock_location.id = events.location
 		JOIN users ON users.id = events.vet
 		JOIN owners ON owners.id = pets.owner
+		JOIN bills ON bills.id = events.payment
 		WHERE
 			events.created_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
 		AND
@@ -287,7 +289,6 @@ class Events_model extends MY_Model
 		";
 
 		return $this->db->query($sql)->result_array();
-		
 
 	}
 
@@ -309,5 +310,30 @@ class Events_model extends MY_Model
 				$this->events
 						->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 						->count_rows();
+	}
+
+
+	/*
+		used in header (vet_controller)
+	*/
+	public function get_open_reports(int $user_id)
+	{
+		$sql = "
+			SELECT 
+				count(id) as count
+			FROM
+				events
+			WHERE 
+				vet = '" . $user_id . "'
+			AND
+				no_history = 0
+			AND
+				report != 2
+			AND
+				updated_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
+			LIMIT 
+			9;
+		";
+		return ($this->db->query($sql)->result_array()[0]['count']);
 	}
 }

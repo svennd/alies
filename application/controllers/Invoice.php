@@ -50,7 +50,7 @@ class Invoice extends Vet_Controller
 			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
-			->with_owner('fields:last_name,id,low_budget,debts,btw_nr')
+			->with_owner('fields:last_name,id as user_id,low_budget,debts,btw_nr')
 			->limit($search_limit)
 			->order_by('created_at', 'desc')
 			->get_all();

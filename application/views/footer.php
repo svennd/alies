@@ -66,6 +66,24 @@
 document.addEventListener("DOMContentLoaded", function() {
 
 
+  // spielerei
+  $('.shakeit').hover(
+    function() {
+      $(this).find('i').addClass('fa-shake');
+    },
+    function() {
+      $(this).find('i').removeClass('fa-shake');
+    }
+  );
+  $('.bounceit').hover(
+    function() {
+      $(this).find('i').addClass('fa-bounce');
+    },
+    function() {
+      $(this).find('i').removeClass('fa-bounce');
+    }
+  );
+
 $('#sticky_messages').on('click', function () {
   Swal.fire({
   input: 'textarea',

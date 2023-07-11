@@ -24,6 +24,7 @@ class Vet_Controller extends MY_Controller
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Sticky_model', 'sticky');
+		$this->load->model('Lab_model', 'lab');
 
 		// $conf = $this->settings->set_cache('all_config')->get_all();
 		$conf = $this->settings->get_all();
@@ -49,14 +50,8 @@ class Vet_Controller extends MY_Controller
 								"current_location" 			=> $this->_get_current_location(),
 								"mondal" 					=> ($this->_get_current_location() == "none") ? $this->_get_mondal() : "",
 								"cnt_sticky"				=> $this->sticky->count_rows(),
-								"report_count"				=> $this->events
-																->where(array(
-																					'vet' 			=> $this->user->id,
-																					'no_history' 	=> 0,
-																					'report' 		=> 1
-																				))
-																->where('updated_at > DATE_ADD(NOW(), INTERVAL -3 DAY)', null, null, false, false, true)
-																->count_rows()
+								"report_count"				=> $this->events->get_open_reports($this->user->id),
+								"lab_count"					=> $this->lab->get_unassigned(),
 						);
 
 		// $sections = array(
