@@ -67,7 +67,7 @@ beta : only products are included (procedures are missing from csv).
 						<td><?php echo $us['name']; ?></td>
 						<td>
 							<?php if(isset($us['invoice_id'])): ?>
-							<a href="<?php echo base_url('invoice/get_bill/' . $us['bill_id']) . '/1'; ?>"><?php echo get_invoice_id($us['invoice_id'], $us['invoice_date']); ?></a></td>
+							<a href="<?php echo base_url('invoice/get_bill/' . $us['bill_id']) . '/1'; ?>"><?php echo get_invoice_id($us['invoice_id'], $us['invoice_date'], $this->conf['invoice_prefix']['value']); ?></a></td>
 							<?php else: ?>
 							<a href="<?php echo base_url('invoice/get_bill/' . $us['bill_id']); ?>"><?php echo $us['bill_id']; ?> (NB)</a></td>
 							<?php endif; ?>

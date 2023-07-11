@@ -18,7 +18,24 @@
 						<small id="due_datehelp" class="form-text text-muted">Bills are due, this many days. (default : 30)</small>
 					</div>
 				</div>
-
+				
+				<fieldset class="form-group row">
+					<legend class="col-form-label col-sm-2 float-sm-left pt-0">Invoice ID Prefix</legend>
+					<div class="col-sm-10">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="conf_invoice_prefix" id="gridRadios1" value="YYYY" <?php echo (isset($config['invoice_prefix']) && base64_decode($config['invoice_prefix']) == "YYYY") ? 'checked' : ''; ?>>
+						<label class="form-check-label" for="gridRadios1">
+						Full Year (YYYY)
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="conf_invoice_prefix" id="gridRadios2" value="none" <?php echo (isset($config['invoice_prefix']) && base64_decode($config['invoice_prefix']) == "none") ? 'checked' : ''; ?>>
+						<label class="form-check-label" for="gridRadios2">
+						None
+						</label>
+					</div>
+					</div>
+				</fieldset>
 				<h4>Events</h4>
 				
 				<div class="form-row">

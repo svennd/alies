@@ -184,7 +184,7 @@ $lang['payed']      = 'Betaald';
 $lang['payment_incomplete']   = 'Niet compleet';
 $lang['payment_complete']      = 'Betaling voldaan';
 $lang['drop_from_stock']      = 'Uit stock halen';
-$lang['client_id']      = 'Klant nummer';
+$lang['client_id']      = 'Klantnummer';
 $lang['comment_on_bill']      = 'op de factuur';
 $lang['comment_internal']      = 'intern';
 

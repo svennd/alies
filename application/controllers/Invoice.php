@@ -300,7 +300,7 @@ class Invoice extends Vet_Controller
 		# generate the pdf based		
 		$this->pdf->create(
 			$this->load->view('bills/report_print', $data, true),
-			(!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']), 
+			(!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at'], $this->conf['invoice_prefix']['value']), 
 			false // download
 		);
 	}
@@ -321,7 +321,7 @@ class Invoice extends Vet_Controller
 			}
 			$this->pdf->create_file(
 				$this->load->view('bills/report_print', $data, true), 
-				$full_path . '/bill_' . get_invoice_id($bill['invoice_id'], $bill['created_at'])
+				$full_path . '/bill_' . get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value'])
 			);
 			return true;
 		}
@@ -335,7 +335,7 @@ class Invoice extends Vet_Controller
 		$this->load->library('mail'); 
 
 		# generate the pdf based
-		$full_path = 'data/stored/rekening_' . (!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at']);
+		$full_path = 'data/stored/rekening_' . (!$data['bill']['invoice_id']) ? "check_" . get_bill_id($bill_id) : "bill_" . get_invoice_id($data['bill']['invoice_id'], $data['bill']['created_at'],$this->conf['invoice_prefix']['value']);
 
 		$file = $this->pdf->create_file(
 			$this->load->view('bills/report_print', $data, true), 

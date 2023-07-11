@@ -22,7 +22,7 @@
 				<?php endif; ?>
 
 				<?php if($bill['status'] == PAYMENT_PAID || !is_null($bill['invoice_id'])): ?>
-					<strong class="ml-3">#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></strong>
+					<strong class="ml-3">#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?></strong>
 				<?php else: ?>
 					<a href="<?php echo base_url('invoice/make_invoice_id/' . (int) $bill['id']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-location-crosshairs"></i> <?php echo $this->lang->line('create_invoice'); ?></a>
 				<?php endif; ?>

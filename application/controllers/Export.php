@@ -276,7 +276,7 @@ class Export extends Admin_Controller
 				array(
 							'Customer_Prime'	=> $factuur['owner_id'],
 							'DocType' 			=> '10',
-							'DocNumber'			=> get_invoice_id($factuur['invoice_id'], $factuur['created_at']),
+							'DocNumber'			=> get_invoice_id($factuur['invoice_id'], $factuur['created_at'], $this->conf['invoice_prefix']['value']),
 							'DocDate' 			=> $dt->format('d/m/Y'),
 							'Amount' 			=> $this->amount($factuur['amount']),
 							'VATAmount' 		=> $this->amount($total_btw),

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></title>
+<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?></title>
 
 <style type="text/css">
     * {
@@ -60,8 +60,9 @@
 				<strong><?php echo $this->lang->line('invoice_addr'); ?></strong>
 				<?php if ($owner['invoice_contact']) : ?><b><?php echo $owner['invoice_contact']; ?></b><br/><?php endif; ?>
 				<?php if ($owner['invoice_addr']) : ?><?php echo $owner['invoice_addr']; ?><br/><?php endif; ?>
-				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><br/><?php endif; ?>
+				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><?php endif; ?>
 			<?php endif; ?>
+			<?php echo $this->lang->line('client_id'); ?> : #<?php echo $owner['id']; ?>
 		</td>
     </tr>
   </table>
@@ -74,7 +75,7 @@
 		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != PAYMENT_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
 	</tr>
 	<tr>
-		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at']); ?></td>
+		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?></td>
 		<td align="center"><?php echo date_format(date_create($bill['created_at']), "d-m-Y"); ?></td>
 		<td align="center">
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>
