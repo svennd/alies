@@ -175,7 +175,9 @@ class Cron extends Frontend_Controller
             "13519" => "DGGR Lipase",
             
             // hormonology
-            "13931" => "TSH"
+            "13931" => "TSH",
+            "14130" => "Oestradiol",
+            "14141" => "Progesteron",
         );
 
         // request
