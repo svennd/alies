@@ -278,7 +278,7 @@ class Events_model extends MY_Model
 		JOIN stock_location ON stock_location.id = events.location
 		JOIN users ON users.id = events.vet
 		JOIN owners ON owners.id = pets.owner
-		JOIN bills ON bills.id = events.payment
+		LEFT JOIN bills ON bills.id = events.payment
 		WHERE
 			events.created_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
 		AND

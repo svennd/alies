@@ -118,12 +118,12 @@ $lang['change_owner']   = 'Wijzig eigenaar';
 $lang['export']         = 'Export';
 
 # report
-$lang['report']         = 'Rapport';
-$lang['enable_report']  = 'Activeer Rapport';
-$lang['disable_report'] = 'Verberg Rapport';
+$lang['report']         = 'Verslag';
+$lang['enable_report']  = 'Activeer verslag';
+$lang['disable_report'] = 'Verberg verslag';
 $lang['media']          = 'Media';
 $lang['files']          = 'Bestanden';
-$lang['save_report']    = 'Bewaar Rapport';
+$lang['save_report']    = 'Bewaar verslag';
 $lang['finish']         = 'Finish';
 $lang['attachments']    = 'Bijlages';
 $lang['bill']           = 'Factuur';
@@ -323,7 +323,7 @@ $lang['value']                 = 'Waarde';
 $lang['limit']                 = 'Limiet'; 
 
 # reports
-$lang['Reporting']             = 'Rapport'; 
+$lang['Reporting']             = 'Verslag'; 
 $lang['AllVets']                = 'Iedereen'; 
 $lang['OnlyMe']                 = 'Eigen'; 
 $lang['created_at']             = 'Gemaakt';
