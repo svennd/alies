@@ -5,11 +5,12 @@
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<?php echo $this->lang->line('title_invoice'); ?>
 				<div class="dropdown no-arrow">
-					<a href="#" id="toggleAll" role="button" class="btn btn-outline-success btn-sm">
-						<i class="fa-solid fa-users"></i><span>&nbsp;<?php echo $this->lang->line('AllVets'); ?></span>
-					</a>
 					<?php if($this->ion_auth->in_group("admin")): ?>
 						<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm" download><i class="fas fa-file-export"></i> xml export</a>
+					<?php else: ?>
+						<a href="#" id="toggleAll" role="button" class="btn btn-outline-success btn-sm">
+							<i class="fa-solid fa-users"></i><span>&nbsp;<?php echo $this->lang->line('AllVets'); ?></span>
+						</a>
 					<?php endif; ?>
 				</div>	
 			</div>
@@ -94,7 +95,9 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
 	var table = $("#dataTable").DataTable({"order": [[0, 'desc']]});
 
+	<?php if(!$this->ion_auth->in_group("admin")): ?>
 	toggleHiddenRows(4, <?php echo $this->user->id; ?>);
+	<?php endif; ?>
 
 	$('#toggleAll').on('click', function() {
 		toggleHiddenRows(4, <?php echo $this->user->id; ?>);
