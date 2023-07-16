@@ -39,7 +39,7 @@ class Stock_limit_model extends MY_Model
 		INNER JOIN
    			stock 
 		ON 
-			stock.product_id = products.id AND stock.state = '" . STOCK_IN_USE . "'
+			stock.product_id = products.id
 		WHERE
 			limit_stock > 0
 		AND
