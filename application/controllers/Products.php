@@ -67,6 +67,18 @@ class Products extends Vet_Controller
 	}
 
 	/*
+		set a product in order status
+	*/
+	public function unset_backorder(int $pid)
+	{
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+		$this->products->update(array("backorder" => 0), $pid);
+		$this->logs->logger(DEBUG, "unset_product_in_backorder", "product: " . $pid);
+		
+		redirect('limits/order');
+	}
+
+	/*
 		semi "public" profile of a product
 	*/
 	public function profile(int $id)

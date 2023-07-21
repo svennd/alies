@@ -47,6 +47,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#logs").addClass('active');
-	$("#dataTable").DataTable();
+	$("#dataTable").DataTable({"order": [[ 5, "desc" ]]});
 });
 </script>

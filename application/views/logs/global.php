@@ -27,7 +27,7 @@
 					<td><?php echo $log['msg']; ?></td>
 					<td><?php echo get_error_level($log['level']); ?></td>
 					<td><?php echo (isset($log['vet']['first_name'])) ? $log['vet']['first_name'] : ''; ?></td>
-					<td><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
+					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#logs").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
-	    "order": [[ 0, "desc" ]]});
+	$("#dataTable").DataTable({"order": [[ 5, "desc" ]]});
 });
 </script>

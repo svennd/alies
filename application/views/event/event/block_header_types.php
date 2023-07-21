@@ -24,9 +24,6 @@
     <a href="<?php echo base_url(); ?>events_report/set_type/<?php echo $event_id . "/" . OPERATION; ?>" role="button" class="btn btn-outline-primary btn-sm <?php echo ($event_info["type"] == OPERATION) ? "btn-outline-success" : "details-button" ?>">
         <i class="fas fa-hand-holding-medical"></i><span>&nbsp;<?php echo $this->lang->line('operation'); ?></span>
     </a>
-    <a href="<?php echo base_url(); ?>events_report/set_type/<?php echo $event_id . "/" . MEDICINE; ?>" role="button" class="btn btn-outline-primary btn-sm <?php echo ($event_info["type"] == MEDICINE) ? "btn-outline-success" : "details-button" ?>">
-        <i class="fas fa-prescription-bottle-alt"></i><span>&nbsp;<?php echo $this->lang->line('medicine'); ?></span>
-    </a>
     <a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-danger btn-sm details-button">
         <i class="fas fa-eye-slash"></i><span>&nbsp;<?php echo $this->lang->line('no_history'); ?></span>
     </a>

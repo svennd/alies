@@ -9,7 +9,7 @@
             <legend class="text-center topfields"><?php echo $this->lang->line('client'); ?></legend>
             <p class="text-center">
                 <b class="text-uppercase"><a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?> <?php echo $owner['first_name'] ?></a></b><br />
-                <?php echo $owner['street'] . ' ' . $owner['nr'] . '<br/>' .  $owner['city']; ?><br>
+                <?php echo $owner['street'] . ' ' . $owner['nr'] . '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
             </p>
         </fieldset>
     </div>

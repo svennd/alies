@@ -265,7 +265,7 @@ foreach ($locations as $l)
 										; ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
 									<td><?php echo $stock['volume']; ?></td>
-									<td><?php echo $loc[$stock['location']]; ?></td>
+									<td><?php echo (isset($loc[$stock['location']])) ? $loc[$stock['location']] : 'error'; ?></td>
 									<td><?php echo $stock['barcode']; ?></td>
 									<td><?php echo user_format_date($stock['created_at'], $user->user_date); ?></td>
 									<td><a href="<?php echo base_url('stock/write_off/' . $stock['barcode']. '/' . $stock['location']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-person-falling-burst"></i></a></td>

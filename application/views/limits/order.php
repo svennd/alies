@@ -27,7 +27,7 @@
 						<td><?php echo (isset($product['wholesale']) && is_array($product['wholesale']) ? $product['wholesale']['description'] : '---') ?></td>
 						<?php if ($this->ion_auth->in_group("admin")): ?>
 						<td>
-							<a href="<?php echo base_url('products/set_backorder/' . $product['id']); ?>" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-ban"></i></a>
+							<a href="<?php echo base_url('products/unset_backorder/' . $product['id']); ?>" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-ban"></i></a>
 						</td>
 						<?php endif; ?>
 					</tr>

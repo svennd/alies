@@ -50,7 +50,7 @@
 					<tbody>
 					<?php foreach ($usage as $us): ?>
 					<tr>
-						<td><?php echo user_format_date($us['event_created_at'], $user->user_date); ?></td>
+						<td  data-sort="<?php echo strtotime($us['event_created_at']); ?>"><?php echo user_format_date($us['event_created_at'], $user->user_date); ?></td>
 						<td><?php echo $us['volume'] . ' ' . $prod_info['unit_sell']; ?></td>
 						<td><?php echo $us['lotnr']; ?></td>
 						<td><?php echo $us['eol']; ?></td>

@@ -8,7 +8,7 @@
 					<a href="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" class="<?php echo ($owner['debts']) ? 'text-danger' : 'text-primary'; ?>"><?php echo $owner['last_name']. " &nbsp;" . $owner['first_name']; ?></a>
 				</div>
 				<div class="mb-0 text-gray-800">
-					<?php echo $owner['street'] . ' ' . $owner['nr']. ' ' .  $owner['city']; ?><br>
+					<?php echo $owner['street'] . ' ' . $owner['nr']. ' ' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
 					<?php if ($owner['telephone']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['telephone']; ?><br/><?php endif; ?>
 					<?php if ($owner['mobile']) : ?><abbr title="Mobile">M:</abbr> <?php echo $owner['mobile']; ?><br/><?php endif; ?>
 					<?php if ($owner['mail']) : ?><a href="mailto:<?php echo $owner['mail']; ?>"><?php echo $owner['mail']; ?></a><br/><?php endif; ?>
