@@ -13,7 +13,7 @@
             <div class="card-body">
 			
 			<div id="add_form" style="display:none;">
-				<form method="post" action="<?php echo base_url('pricing/proc'); ?>" class="form-inline confirm-new-procedure">
+				<form method="post" action="<?php echo base_url('pricing/proc'); ?>" id="swaform" class="form-inline">
 					<input type="text" class="form-control mb-2 mr-sm-2" name="name" value="" placeholder="procedure name" />
 					<div class="input-group mb-2 mr-sm-2">
 						<input type="number" step="0.01" min="0" max="1000" class="form-control" name="price" placeholder="price">
@@ -28,7 +28,7 @@
 							<?php endforeach; ?>
 						</select>
 					</div>
-					<button type="submit" name="submit" value="add_proc" class="btn btn-primary mb-2">Add Procedure</button>
+					<button type="submit" name="submit" value="add_proc">Add Procedure</button>
 				</form>
 			<br/>
 			<br/>
@@ -104,38 +104,5 @@ document.addEventListener("DOMContentLoaded", function(){
         });
     });
 
-    var forms = $('.confirm-new-procedure');
-    // Attach an event listener to the submit event of each form
-    forms.on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        
-        var form = $(this); // Get the submitted form element
-                
-        var name = form.find('input[name="name"]').val(); 
-        var price = form.find('input[name="price"]').val(); 
-		var select = form.find('select[name="booking_code"]');
-        var booking_code = select.find('option:selected').text();
-
-        // Display the SweetAlert2 popup
-        Swal.fire({
-            title: 'Confirmation',
-            html: 'Are you sure you want to edit this procedure?<br><br>' +
-                '<strong>Name:</strong> ' + name + '<br>' +
-                '<strong>Price:</strong> ' + price + ' &euro;<br>' +
-                '<strong>Booking Code:</strong> ' + booking_code,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
-        }).then((result) => {
-            // If the user confirms, submit the form
-            if (result.isConfirmed) {
-                form.unbind('submit').submit(); // Unbind the event listener and submit the form
-            }
-        });
-    });
 });
 </script>
-  

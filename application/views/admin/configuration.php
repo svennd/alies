@@ -45,6 +45,14 @@
 						<small id="autoclosehelp" class="form-text text-muted">Reports that are never finished get auto closed after x days. (default : 14)</small>
 					</div>
 				</div>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="autotemplate">Force template</label>
+						<input type="text" class="form-control" id="autotemplate" name="conf_autotemplate" value="<?php echo (isset($config['autotemplate'])) ? base64_decode($config['autotemplate']) : ''; ?>" autocomplete="autotemplate">
+						<small id="autotemplatehelp" class="form-text text-muted">Must be in html format.</small>
+					</div>
+				</div>
 
 				<h4>Integrations</h4>
 				<!--

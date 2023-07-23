@@ -35,6 +35,7 @@
 			</div>
 		</div>
 	</div>
+	<?php if($this->ion_auth->in_group("admin")): ?>
 	<div class="col-lg-8 mb-4">
 	  <div class="card shadow mb-4">
 	  	<div class="card-header">Statistics</div>
@@ -67,6 +68,7 @@
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
 </div>
 
 
