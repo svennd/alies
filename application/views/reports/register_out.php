@@ -31,6 +31,8 @@
 					<tr>
 						<th><?php echo $this->lang->line('name'); ?></th>
 						<th><?php echo $this->lang->line('volume'); ?></th>
+						<th><?php echo $this->lang->line('lotnr'); ?></th>
+						<th><?php echo $this->lang->line('date'); ?></th>
 						<th><?php echo $this->lang->line('price_total_sale'); ?></th>
 						<th><?php echo $this->lang->line('price_alies'); ?></th>
 						<th><?php echo $this->lang->line('price_dayprice'); ?></th>
@@ -51,6 +53,8 @@
 					<tr>
 						<td><?php echo $us['product_name']; ?></td>
 						<td><?php echo $us['volume']; ?> <?php echo $us['unit_sell']; ?></td>
+						<td><?php echo $us['lotnr']; ?></td>
+						<td data-sort="<?php echo strtotime($us['event_date']); ?>"><?php echo user_format_date($us['event_date'], $user->user_date); ?></td>
 						<td><?php echo $us['total_sell_price']; ?> &euro;</td>
 						<td><?php echo round(($us['buy_price']/$buy_volume)*$us['volume'], 2); ?> &euro;</td>
 						<td><?php echo round(($us['in_price_test']/$buy_volume)*$us['volume'], 2); ?> &euro;</td>

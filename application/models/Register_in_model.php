@@ -32,14 +32,19 @@ class Register_in_model extends MY_Model
 		$sql = "
 				select 
 					ri.volume, ri.eol, ri.in_price, ri.lotnr,
-					products.name, products.buy_price, products.btw_buy, products.btw_sell,
-					wholesale.bruto, wholesale.sell_price
+					products.name, products.buy_price, products.btw_buy, products.btw_sell, products.vhbcode,
+					wholesale.bruto,
+					deliv.regdate
 				from 
 					register_in as ri
 				JOIN
 					products 
 				ON
 					products.id = ri.product
+				JOIN
+					delivery_slip as deliv
+				ON
+					deliv.id = ri.delivery_slip
 				LEFT JOIN
 					wholesale
 				ON

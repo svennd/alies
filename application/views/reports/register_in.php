@@ -33,12 +33,10 @@
 						<th><?php echo $this->lang->line('volume'); ?></th>
 						<th><?php echo $this->lang->line('eol'); ?></th>
 						<th><?php echo $this->lang->line('lotnr'); ?></th>
-						<th><?php echo $this->lang->line('btw_buy'); ?></th>
-						<th><?php echo $this->lang->line('btw_sell'); ?></th>
+						<th><?php echo $this->lang->line('vhbcode'); ?></th>
 						<th><?php echo $this->lang->line('price_dayprice'); ?></th>
 						<th><?php echo $this->lang->line('price_alies'); ?></th>
-						<th><?php echo $this->lang->line('price_wholesale'); ?></th>
-						<th><?php echo $this->lang->line('price_wholesale_sell'); ?></th>
+						<th><?php echo $this->lang->line('catalog_price'); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -48,12 +46,10 @@
 						<td><?php echo $us['volume']; ?></td>
 						<td><?php echo $us['eol']; ?></td>
 						<td><?php echo $us['lotnr']; ?></td>
-						<td><?php echo $us['btw_buy']; ?>%</td>
-						<td><?php echo $us['btw_sell']; ?>%</td>
+						<td><?php echo (!empty($us['vhbcode'])) ? $us['vhbcode']: '-'; ?></td>
 						<td><?php echo $us['in_price']; ?></td>
 						<td><?php echo $us['buy_price']; ?></td>
 						<td><?php echo (!empty($us['bruto'])) ? $us['bruto']: '-'; ?></td>
-						<td><?php echo (!empty($us['sell_price'])) ? $us['sell_price']: '-'; ?></td>
 					</tr>
 					<?php endforeach; ?>
     			</tbody>
@@ -71,12 +67,9 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#reg_in").addClass('active');
 	$("#dataTable").DataTable({
 		responsive: true,
-		// dom: 'Bfrtip',
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         buttons: [
-            // { extend:'csv', text:'<i class="fas fa-file-csv"></i> CSV', className:'btn btn-outline-success btn-sm'},
-            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
-            // { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'}
         ]
 	});
 });

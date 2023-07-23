@@ -172,7 +172,7 @@ class Events_model extends MY_Model
 	{
 		$sql = "
 				SELECT
-					ep.volume as volume, ep.net_price as total_sell_price,
+					ep.volume as volume, ep.net_price as total_sell_price, ep.created_at as event_date,
 					prod.name as product_name, prod.unit_sell, prod.buy_price, prod.buy_volume as buy_volume, prod.vhbcode,
 					users.first_name as vet_name,
 					stck.name as stock_name,
@@ -180,7 +180,8 @@ class Events_model extends MY_Model
 					pets.name as pet_name, pets.id as pet_id,
 					owners.id as owner_id, owners.last_name,
 					book.code, book.category, book.btw,
-					(select stock.in_price from stock where stock.barcode = ep.barcode limit 1) as in_price_test
+					(select stock.in_price from stock where stock.barcode = ep.barcode limit 1) as in_price_test,
+					(select stock.lotnr from stock where stock.barcode = ep.barcode limit 1) as lotnr
 
 				FROM `events` as e
 				
