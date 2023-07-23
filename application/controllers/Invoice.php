@@ -343,7 +343,8 @@ class Invoice extends Vet_Controller
 			);
 
 		$this->mail->attach_file($file);
-		$this->mail->send("svennson@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
+		$this->mail->send("svennson@gmail.com", base64_decode($this->conf['emailtitle']['value']), base64_decode($this->conf['emailcontent']['value']), false);
+		// $this->mail->send("svennson@gmail.com", "", "", false);
 
 		$this->bills->update(array("mail" => 1), $bill_id);
 		

@@ -36,6 +36,21 @@
 					</div>
 					</div>
 				</fieldset>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="emailtitle">Email title</label>
+						<input type="text" class="form-control" id="emailtitle" name="conf_emailtitle" value="<?php echo (isset($config['emailtitle'])) ? base64_decode($config['emailtitle']) : ''; ?>" autocomplete="emailtitle">
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="emailcontent">Email content</label>
+						<textarea type="text" class="form-control" id="emailcontent" name="conf_emailcontent" autocomplete="emailcontent"><?php echo (isset($config['emailcontent'])) ? base64_decode($config['emailcontent']) : ''; ?></textarea>
+					</div>
+				</div>
+
 				<h4>Events</h4>
 				
 				<div class="form-row">
@@ -49,7 +64,7 @@
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="autotemplate">Force template</label>
-						<input type="text" class="form-control" id="autotemplate" name="conf_autotemplate" value="<?php echo (isset($config['autotemplate'])) ? base64_decode($config['autotemplate']) : ''; ?>" autocomplete="autotemplate">
+						<textarea type="text" class="form-control" id="autotemplate" name="conf_autotemplate" autocomplete="autotemplate"><?php echo (isset($config['autotemplate'])) ? base64_decode($config['autotemplate']) : ''; ?></textarea>
 						<small id="autotemplatehelp" class="form-text text-muted">Must be in html format.</small>
 					</div>
 				</div>
