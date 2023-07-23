@@ -114,7 +114,7 @@
                     <table class="table">
                         <tr>
                             <td><?php echo $this->lang->line('bill_id'); ?></td>
-                            <td><?php echo (!is_null($bill['invoice_id'])) ? get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']) : 'not assigned'; ?></td>
+                            <td><?php echo (!is_null($bill['invoice_id'])) ? get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']) : 'not assigned'; ?></td>
                         </tr>
                         <tr>
                             <td>Client</td>

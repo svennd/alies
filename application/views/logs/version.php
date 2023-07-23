@@ -25,6 +25,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#logs").addClass('active');
-	$("#dataTable").DataTable({"pageLength": 50, "lengthMenu": [[50, 100, -1], [50, 100, "All"]]});
+	$("#dataTable").DataTable();
 });
 </script>

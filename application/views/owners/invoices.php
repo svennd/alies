@@ -24,7 +24,7 @@
 		  <td>
 			<?php if($bill['invoice_id']): // imported have no invoice_id ?>
 			<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>">
-		  		#<?php echo get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?>
+		  		#<?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?>
 			</a>
 			<?php else: ?>
 				#<?php echo get_bill_id($bill['id']); ?>

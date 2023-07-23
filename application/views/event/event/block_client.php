@@ -6,7 +6,7 @@
 			<div class="col mr-2">
 				<div class="font-weight-bold <?php echo ($owner['debts']) ? 'text-danger' : 'text-primary'; ?> text-uppercase mb-1"><?php echo $owner['last_name'] ?></div>
 				<div class="mb-0 text-gray-800">
-					<?php echo $owner['street'] . ' ' . $owner['nr']. ' ' .  $owner['city']; ?><br>
+					<?php echo $owner['street'] . ' ' . $owner['nr']. '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
 					<?php if ($owner['telephone']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['telephone']; ?><br/><?php endif; ?>
 					<?php if ($owner['mobile']) : ?><abbr title="Mobile">M:</abbr> <?php echo $owner['mobile']; ?><br/><?php endif; ?>
 				</div>

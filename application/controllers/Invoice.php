@@ -321,7 +321,7 @@ class Invoice extends Vet_Controller
 			}
 			$this->pdf->create_file(
 				$this->load->view('bills/report_print', $data, true), 
-				$full_path . '/bill_' . get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value'])
+				$full_path . '/bill_' . get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value'])
 			);
 			return true;
 		}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?></title>
+<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></title>
 
 <style type="text/css">
     * {
@@ -75,11 +75,11 @@
 		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != PAYMENT_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
 	</tr>
 	<tr>
-		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['created_at'], $this->conf['invoice_prefix']['value']); ?></td>
-		<td align="center"><?php echo date_format(date_create($bill['created_at']), "d-m-Y"); ?></td>
+		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></td>
+		<td align="center"><?php echo date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
 		<td align="center">
 			<?php if ($bill['status'] != PAYMENT_PAID): ?>
-				<?php echo date('d-m-Y', strtotime($bill['created_at']. ' +'. $due_date_days .' days')); ?>
+				<?php echo date('d-m-Y', strtotime($bill['invoice_date']. ' +'. $due_date_days .' days')); ?>
 			<?php else: ?>
 				<i><?php echo ($bill['status'] == PAYMENT_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
 			<?php endif; ?>

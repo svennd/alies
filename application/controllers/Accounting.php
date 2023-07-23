@@ -72,9 +72,6 @@ class Accounting extends Admin_Controller
 		$dt->modify('-7 day');
 		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
 
-
-		$search_from = "2023-06-19";
-		$search_to= "2023-06-30";
 		$books = $this->book->get_all();
 
 		foreach($books as $book)
