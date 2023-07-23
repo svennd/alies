@@ -314,7 +314,7 @@ class Invoice extends Vet_Controller
 		if ($bill['invoice_id'])
 		{
 			$date = strtotime($bill['created_at']);
-			$full_path = 'data/stored/.bills/' . date('Y', $date) . '/' . date('m', $date);
+			$full_path = 'data/stored/.bills/' . date('Y', $date) . '/' . date('W', $date) . '/' . date('m', $date);
 
 			if (!file_exists($full_path)) {
 				mkdir($full_path, 0700, true);
@@ -343,7 +343,7 @@ class Invoice extends Vet_Controller
 			);
 
 		$this->mail->attach_file($file);
-		$this->mail->send("svenn.dhert@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
+		$this->mail->send("svennson@gmail.com", "Bedankt voor uw bezoek aan De Dommel DAP", "Geachte Svenn,\nBedankt voor uw bezoek aan DAP de dommel.\nUw kunt uw rekening in bijlage bij deze e-mail vinden.", false);
 
 		$this->bills->update(array("mail" => 1), $bill_id);
 		
