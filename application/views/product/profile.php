@@ -17,7 +17,7 @@ foreach ($locations as $l)
 			<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
 			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<a href="<?php echo base_url('products/product/' . $product['id']); ?>"class="btn btn-outline-success btn-sm ml-3"><i class="far fa-edit"></i> Edit</a>
-				<a href="<?php echo base_url('products/product_price/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-euro-sign"></i> Pricing</a>
+				<a href="<?php echo base_url('pricing/prod/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-euro-sign"></i> Pricing</a>
 			<?php endif; ?>
 		</div>
 	</div>

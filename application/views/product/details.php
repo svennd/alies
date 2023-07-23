@@ -336,7 +336,7 @@
 			}
 		}
 		?><br/><br/>
-		<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" target="_blank" class="btn btn-outline-success"><i class="fas fa-external-link-alt"></i> Edit Price </a>
+		<a href="<?php echo base_url('pricing/prod/' . $product['id']); ?>" target="_blank" class="btn btn-outline-success"><i class="fas fa-external-link-alt"></i> Edit Price </a>
 		<small id="offsetHelp" class="form-text text-muted">This will open in a new window, changes currently made are <b>not</b> saved untill edit is complete.</small>
 
 		<?php else: ?>
