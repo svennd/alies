@@ -208,7 +208,7 @@ $lang['lotnr']      = 'lotnr';
 $lang['net_price']  = 'ex. VAT';
 $lang['options']     = 'Options'; 
 $lang['sum']        = 'Sum'; 
-$lang['create_invoice']     = 'Create invoice'; 
+$lang['create_bill']     = 'Create bill'; 
 $lang['show_bill']     = 'Show bill';
 $lang['reminder']     = 'Reminder';
 
@@ -319,6 +319,7 @@ $lang['Reporting']             = 'Reports';
 $lang['AllVets']                = 'Everyone'; 
 $lang['OnlyMe']                 = 'Only me'; 
 $lang['created_at']                 = 'Created'; 
+$lang['ago']                 = 'ago'; 
 
 
 # add stock

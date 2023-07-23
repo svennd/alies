@@ -215,8 +215,8 @@ $lang['lotnr']      = 'Lotnr';
 $lang['net_price']  = 'excl. BTW';
 $lang['options']     = 'Opties'; 
 $lang['sum']             = 'Som'; 
-$lang['create_invoice']     = 'Factuur maken'; 
-$lang['show_bill']     = 'Toon factuur';
+$lang['create_bill']     = 'Rekening maken'; 
+$lang['show_bill']     = 'Toon rekening';
 $lang['reminder']     = 'Bewaar';
 
 # event types
@@ -327,6 +327,7 @@ $lang['Reporting']             = 'Verslag';
 $lang['AllVets']                = 'Iedereen'; 
 $lang['OnlyMe']                 = 'Eigen'; 
 $lang['created_at']             = 'Gemaakt';
+$lang['ago']                 = 'geleden'; 
 
 # add stock
 $lang['sellable_volume']       = "Volume (verkoopbaar)";
