@@ -18,6 +18,8 @@
 						<th>Prio</th>
 						<?php if ($this->ion_auth->in_group("admin")): ?>
 						<th>Order</th>
+						<th>wsid</th>
+						<th>wsname</th>
 						<?php endif; ?>
 					</tr>
 					</thead>
@@ -68,6 +70,8 @@
 						<td>
 							<a href="<?php echo base_url('products/set_backorder/' . $product['id']); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-cart-shopping"></i></a>
 						</td>
+						<td><?php echo $product['wsid']; ?></td>
+						<td><?php echo $product['wsname']; ?></td>
 						<?php endif; ?>
 					</tr>
 					<?php endforeach; ?>
@@ -90,7 +94,20 @@
 document.addEventListener("DOMContentLoaded", function(){
 
 	$("#product_list").addClass('active');
-	$("#dataTable").DataTable({"order": [[ 3, "desc" ]]});
+	$("#dataTable").DataTable({
+		"order": [[ 3, "desc" ]],
+		<?php if ($this->ion_auth->in_group("admin")): ?>
+		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+		buttons: [
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+        ],
+		"columnDefs": [
+			{ "visible": false, "targets": 5 },
+			{ "visible": false, "targets": 6 }
+		]
+		<?php endif; ?>
+	});
 });
 </script>
   
