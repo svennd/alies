@@ -54,16 +54,28 @@ class Events_report extends Vet_Controller
 		if ($this->input->post('submit') != 'report' && $this->input->post('submit') != 'finished_report') { echo "no post data"; return false; }
 
 		# log this
-		$this->logs->logger(INFO, "update_report", "report_id: " . $event_id);
-			
+		$this->logs->logger(DEBUG, "update_report", "report_id: " . $event_id);
+		
+		// var_dump($this->input->post());
+
+		# loop all posted extra vets
+		$extra_vets = $this->input->post('sup_vet');
+		$vet_1 = false;
+		$vet_2 = false;
+		if ($extra_vets)
+		{
+			$vet_1 = $extra_vets['0'];
+			$vet_2 = (isset($extra_vets['1'])) ? $extra_vets['1'] : false;
+		}
+		// var_dump($vet_1,$vet_2);
 		# event update
 		$this->events->update(
 			array(
 					"title" 					=> $this->input->post('title'),
 					"anamnese" 					=> $this->input->post('anamnese'),
 					// "type" 						=> (int) $this->input->post('type'),
-					"vet_support_1"				=> (!empty($this->input->post('supp_vet_1'))) ? (int) $this->input->post('supp_vet_1') : 0,
-					"vet_support_2" 			=> (!empty($this->input->post('supp_vet_2'))) ? (int) $this->input->post('supp_vet_2') : 0,
+					"vet_support_1"				=> $vet_1,
+					"vet_support_2" 			=> $vet_2,
 					"report"					=> ($this->input->post('submit') == 'finished_report') ? REPORT_DONE : REPORT_OPEN,
 					),
 			$event_id
@@ -82,9 +94,9 @@ class Events_report extends Vet_Controller
 	{
 		$title = $this->input->post('title');
 		$anamnese = $this->input->post('anamnese');
-
+		
 		return (!empty($anamnese)) ? 
-			$this->events->where(array("id" => $event_id, "status" => STATUS_OPEN))->update(array("anamnese" => $anamnese, "title" => $title)) 
+			$this->events->where(array("id" => $event_id))->where("report", "!=", REPORT_DONE)->update(array("anamnese" => $anamnese, "title" => $title)) 
 			:
 			0;
 	}

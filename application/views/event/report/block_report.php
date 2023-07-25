@@ -59,7 +59,6 @@
 	</div>
 </div>
 
-
 <script>
 /*
 	work on users
@@ -67,15 +66,18 @@
 
 document.addEventListener("DOMContentLoaded", function(){
 
+// autosave timer
+var t;
+
 $('#anamnese').trumbowyg({
 
     btns: [
         ['strong', 'em', 'fontsize'],
         ['undo', 'redo'],
         // ['superscript', 'subscript'],
-        ['link'],
-        ['insertImage'],
-        ['unorderedList', 'orderedList'],
+        // ['link'],
+        // ['insertImage'],
+        // ['unorderedList', 'orderedList'],
         ['removeformat'],
         ['fullscreen'],
 		['template'],
@@ -103,12 +105,18 @@ $('#anamnese').trumbowyg({
 	clearTimeout(t);
 	t = setTimeout(function() {
 		content = $('#anamnese').trumbowyg('html');
+		title = $('#title_field').val();
+		console.log("fire: " + content);
 		$.ajax({
 			method: 'POST',
-			url: '<?php echo base_url(); ?>events/anamnese/' + <?php echo $event_info['id']; ?>,
+			url: '<?php echo base_url(); ?>events_report/anamnese/' + <?php echo $event_info['id']; ?>,
 			data: {
+				title: title,
 				anamnese: content
-			}
+			},
+				success: function(data) {
+				console.log(data); 
+				}
 			});
 		$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
 	}, 750);	

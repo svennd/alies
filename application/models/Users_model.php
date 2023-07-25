@@ -27,7 +27,7 @@ class Users_model extends MY_Model
 	{
 		// hard coded 3 =(
 		$sql = "SELECT 
-					users.id, first_name, last_name, last_login, image
+					users.id, username, first_name, last_name, last_login, image
 				FROM
 					users
 				LEFT JOIN 

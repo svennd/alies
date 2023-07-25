@@ -1,8 +1,12 @@
 <?php
-if (! defined('BASEPATH')) {
-	exit('No direct script access allowed');
-}
+if (! defined('BASEPATH')) { exit('No direct script access allowed'); }
 
+
+/*
+	don't think this is currently implemented
+	but should be used for covetrus deliveries
+	see controller/stock
+*/
 class Delivery_model extends MY_Model
 {
 	public $table = 'delivery';

@@ -34,11 +34,11 @@ class Events extends Vet_Controller
 			$event_id = $result[0]['id'];
 			$this->events->update(array(), $event_id);
 
-			$this->logs->logger(INFO, "update_restart_event", "event_id: " . $event_id);
+			$this->logs->logger(DEBUG, "update_restart_event", "event_id: " . $event_id);
 		} else {
 			$event_id = $this->events->insert(array('pet' => $pet, "location" => $this->user->current_location, "vet" => $this->user->id));
 
-			$this->logs->logger(INFO, "new_event", "event_id: " . $event_id);
+			$this->logs->logger(DEBUG, "new_event", "event_id: " . $event_id);
 		}
 		redirect('/events/event/' . $event_id);
 	}
@@ -69,6 +69,7 @@ class Events extends Vet_Controller
 			"event_id"			=> $event_id,
 			"update" 			=> $update,
 			"other_pets"		=> $other_pets,
+			"autotemplate"		=> base64_decode($this->conf['autotemplate']['value']),
 			"billing_info"		=> ($event_info['status'] != STATUS_CLOSED ) ? false: $this->bills->with_location()->get($event_info['payment']),
 			"u_location"		=> $this->user->current_location,
 			"procedures_d"		=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
@@ -124,11 +125,11 @@ class Events extends Vet_Controller
 		$pet_info 			= $this->pets->get($event_info['pet']);
 
 		$data = array(
-						"event_info"		=> $event_info,
+						"event_info"			=> $event_info,
 						"owner" 				=> $this->owners->get($pet_info['owner']),
-						"pet"						=> $pet_info,
-						"consumables"		=> $eprod,
-						"procedures_d"	=> $eproc,
+						"pet"					=> $pet_info,
+						"consumables"			=> $eprod,
+						"procedures_d"			=> $eproc,
 					);
 
 		$this->_render_page('event/price_edit', $data);

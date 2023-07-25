@@ -240,8 +240,7 @@ class Vet extends Vet_Controller
 		# generate a list
 		else
 		{
-			$users = $this->users->where(array("active" => 1))->fields(array("id", "username"))->get_all();
-
+			$users = $this->users->get_active_vets();
 		}
 
 		# no users found
@@ -251,7 +250,9 @@ class Vet extends Vet_Controller
 		$vets = array();
 		foreach ($users as $u)
 		{
-				$vets[] = array("id" => $u['id'], "text" => $u['username']);
+			# skip self
+			if ($u['id'] == $this->user->id) { continue; }
+			$vets[] = array("id" => $u['id'], "text" => $u['username']);
 		}
 
 		echo json_encode(array("results" => $vets));

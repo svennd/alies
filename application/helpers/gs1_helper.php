@@ -51,3 +51,60 @@ function parse_gs1($barcode)
 
   return false;
 }
+
+/*
+	if (barcode.length > 26)
+	{
+		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
+		if(result)
+		{
+			var gsbarcode = result[1];
+			var date = (typeof(result[3]) === 'undefined') ? result[6] : result[4];
+			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
+			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+			
+			// enter lotnr + date and disable them
+			$("#lotnr").val(lotnr).prop("readonly", true);
+			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day).prop("readonly", true);
+			
+			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
+				if (data.state)
+				{
+					$("#pid").val(data[0].id);
+					$("#autocomplete").val(data[0].name).prop("readonly", true);
+					$("#sell").val(1);
+					$("#buy").focus();
+
+					$("#unit_buy").html(data[0].unit_buy);
+					$("#unit_sell").html(data[0].unit_sell);
+					$("#tip").html("Min buy volume, " + data[0].buy_volume + " " + data[0].unit_buy + " => sell volume, " + data[0].sell_volume + " " + data[0].unit_sell);
+			
+					$("#catalog_price").val(data[0].buy_price + " € / " + data[0].buy_volume + " " + data[0].unit_sell);
+					$("#current_buy_price").val(data[0].buy_price);
+					$("#sell").focus();
+
+					$('#autocomplete').autocomplete().disable();
+				}
+				else 
+				{
+					// need to re-enable everything.
+					$("#new_barcode_input").val(1);
+					$("#barcode_gs1").val(gsbarcode);
+					$("#product_tip").html("unknown GS1, please select product!"); 
+				
+					$("#autocomplete").val("").focus();
+					$("#gs1_datamatrix").val(barcode);
+					$("#matrix").show();
+				}
+			});
+			
+			// getJSON is out of sync
+			return true;
+		}
+		else 
+		{
+			$("#product_tip").html("invalid code; not recognized"); 
+		}
+	}
+	return false;
+*/
