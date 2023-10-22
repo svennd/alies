@@ -53,6 +53,7 @@ class Owners extends Vet_Controller
 										"invoice_tel" 		=> $this->input->post('invoice_tel'),
 										"low_budget" 		=> (is_null($this->input->post('low_budget'))) ? 0 : 1,
 										"debts" 			=> (is_null($this->input->post('debts'))) ? 0 : 1,
+										"disabled" 			=> (is_null($this->input->post('disabled'))) ? 0 : 1,
 										"contact" 			=> (is_null($this->input->post('contact'))) ? 0 : 1,
 										"msg" 				=> $this->input->post('msg'),
 										"initial_vet"		=> $this->user->id,
@@ -108,24 +109,12 @@ class Owners extends Vet_Controller
 		$this->_render_page('owners/edit', $data);
 	}
 
-	public function detail($id = false, $update = false)
-	{
-		if (!$id) {
-			redirect('/search', 'refresh');
-		}
-		
-		$open_bill = $this->bills
-					->where("owner_id", "=", (int) $id)
-					->group_start()
-						->where("status", "=", PAYMENT_UNPAID)
-						->where("status", "=", PAYMENT_PARTIALLY, true)
-						->where("status", "=", PAYMENT_OPEN, true)
-					->group_end()
-					->get_all();
-		$data = array(
-						"owner" 	=> $this->owners->get($id),
-						"open_bill"	=> $open_bill,
-						"pets" 		=> $this->pets->with_breeds('field:name')->with_breeds2('field:name')->where(array("owner" => (int) $id))->order_by(array("birth, death"), "desc")->get_all(),
+	public function detail(int $id, $update = false)
+	{		
+		$data = array(			
+						"owner" 	=> $this->owners->get($owner),
+						"open_bill"	=> $this->bills->get_open_bills($owner),
+						"pets" 		=> $this->pets->get_all_pets($owner),
 						"update" 	=> $update
 					);
 					

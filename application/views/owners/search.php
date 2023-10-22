@@ -126,8 +126,7 @@
 <div class="row">
 
 	<div class="col-lg-12">
-	
-<?php if (isset($query)): ?>
+	<?php if (isset($query)): ?>
 		<div class="card shadow mb-4">
 			<div class="card-header"><?php echo $this->lang->line('search_client'); ?></div>
 			<div class="card-body">
@@ -149,7 +148,7 @@
 		</thead>
 		<tbody>
 		<?php foreach ($last_name as $res): ?>
-		<tr>
+		<tr class="<?php if(!$res['last_bill'] || $res['disabled']): ?>table-secondary<?php endif; ?>">
 			<td>last_name</td>
 			<td>
 				<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">

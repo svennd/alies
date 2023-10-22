@@ -313,9 +313,9 @@ class Invoice extends Vet_Controller
 		// check if its a check or a bill
 		if ($bill['invoice_id'])
 		{
-			$date = strtotime($bill['created_at']);
-			$full_path = 'data/stored/.bills/' . date('Y', $date) . '/' . date('W', $date) . '/' . date('m', $date);
-
+			$date = strtotime($bill['invoice_date']);
+			$full_path = 'data/stored/.bills/' . date('Y', $date) . '/' . date('W', $date);
+			
 			if (!file_exists($full_path)) {
 				mkdir($full_path, 0700, true);
 			}

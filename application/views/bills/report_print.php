@@ -128,6 +128,7 @@
     </thead>
     <tbody>
 
+<?php $total_net = 0; ?>
 <?php 
 foreach ($print_bill as $pet_id => $event): 
 	# resolve name, chip
@@ -144,7 +145,7 @@ foreach ($print_bill as $pet_id => $event):
 		if (count($prod) + count($proc) == 0) continue;
 ?>
 
-<?php $total_net = 0; ?>
+
 	<?php foreach ($proc as $procedure): ?>
 		<tr><?php $date_proc = date_format(date_create($procedure['created_at']), "d-m-y"); ?>
 			<td align="left"><?php echo $procedure['name']; ?><?php echo (strtotime($date_proc) === strtotime($bill['created_at'])) ? " <small>(" . $date_proc. ")</small>" : ""; ?></td>

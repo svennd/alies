@@ -1,7 +1,7 @@
 <?php $total = 0; ?>
 <?php $total_excl = 0; ?>
 <div class="table-responsive">
-    <table class="table">
+    <table class="table table-sm" id="invoice_table">
     <thead>
         <tr class="thead-light depad_header">
             <th><?php echo $this->lang->line('name'); ?></th>

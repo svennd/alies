@@ -152,4 +152,10 @@ class Pets_model extends MY_Model
 		";
 		return $this->db->query($pets_sql)->result_array();
 	}
+
+	// owners
+	public function get_all_pets(int $owner)
+	{
+		return $this->with_breeds('field:name')->with_breeds2('field:name')->where(array("owner" => $owner))->order_by(array("birth, death"), "desc")->get_all();
+	}
 }

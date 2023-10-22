@@ -66,6 +66,7 @@ $lang['province']           = 'Province';
 $lang['last_visit']     = 'Last visit';
 $lang['option']         = 'Option';
 $lang['search_client']  = 'Search Client';
+$lang['disable_client']  = 'Disable Client';
 $lang['edit_client']  = 'Edit Client';
 
 # invoices

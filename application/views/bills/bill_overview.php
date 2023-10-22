@@ -19,7 +19,7 @@
 
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
-					<input type="date" name="search_from" class="form-control" value="<?php echo (!empty($search_from)) ? $search_from : date_format($cd, 'Y-m-d'); ?>" min="<?php echo $max_search_from; ?>" id="search_from">
+					<input type="date" name="search_from" class="form-control" value="<?php echo $search_from; ?>" min="<?php echo $max_search_from; ?>" id="search_from">
 				</div>
 				  <div class="form-group mb-2">
 					<span class="fa-stack" style="vertical-align: top;">
@@ -29,7 +29,7 @@
 				  </div>
 				  <div class="form-group mb-2 mx-3">
 					<label for="staticEmail2" class="sr-only">search_to</label>
-					<input type="date" name="search_to" class="form-control" value="<?php echo (!empty($search_to)) ? $search_to : date_format($now, 'Y-m-d'); ?>" max="<?php echo date_format(new DateTime(), 'Y-m-d'); ?>" id="search_to">
+					<input type="date" name="search_to" class="form-control" value="<?php echo $search_to; ?>" max="<?php echo date_format(new DateTime(), 'Y-m-d'); ?>" id="search_to">
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
@@ -37,13 +37,15 @@
 				<br/>
 			<?php if ($bills): ?>
 
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th><?php echo $this->lang->line('date'); ?></th>
+					<th><?php echo $this->lang->line('invoice_id'); ?></th>
 					<th><?php echo $this->lang->line('amount'); ?></th>
 					<th><?php echo $this->lang->line('client'); ?></th>
-					<th><?php echo $this->lang->line('state'); ?></th>
+					<th><?php echo $this->lang->line('client_id'); ?></th>
+					<!-- <th><?php echo $this->lang->line('state'); ?></th> -->
 					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
 					<?php if($this->ion_auth->in_group("admin")): ?>
@@ -56,7 +58,10 @@
 				<tr>
 					<td data-sort="<?php echo strtotime($bill['created_at']) ?>">
 						<?php echo user_format_date($bill['created_at'], $user->user_date); ?><br/>
-						<small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago
+						<!-- <small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago -->
+					</td>
+					<td>
+						<?php echo $bill['invoice_id']; ?>
 					</td>
 					<td>
 						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['amount']; ?> &euro;</a>
@@ -64,7 +69,7 @@
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>
 					</td>
-		
+					<td><?php echo $bill['owner']['user_id']; ?></td>		
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
 					<td>
 						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo ($bill['status'] == PAYMENT_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
@@ -93,7 +98,13 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
-	var table = $("#dataTable").DataTable({"order": [[0, 'desc']]});
+	var table = $("#dataTable").DataTable({		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+		buttons: [
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+        ],"order": [[0, 'desc']]}
+	
+	);
 
 	<?php if(!$this->ion_auth->in_group("admin")): ?>
 	toggleHiddenRows(4, <?php echo $this->user->id; ?>);

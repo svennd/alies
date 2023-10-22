@@ -44,7 +44,7 @@ function parse_gs1($barcode)
 
     return array(
           'date' 	=> "20" . substr($date, 0, 2) . "-" . substr($date, 2,2) . "-" . $day,
-          'lotnr' => $lotnr,
+          'lotnr' 	=> $lotnr,
           'pid' 	=> $pid
         );
   }

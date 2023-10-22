@@ -68,6 +68,7 @@ $lang['province']           = 'Provincie';
 $lang['last_visit']     = 'Laatste bezoek';
 $lang['option']         = 'Opties';
 $lang['search_client']  = 'Klant opzoeken';
+$lang['disable_client']  = 'Ongeldig';
 $lang['edit_client']  = 'Klant bewerken';
 $lang['phone_backup']         = 'Telefoon Backup';
 $lang['phone_backup_name']    = 'Telefoon Backup (info)';

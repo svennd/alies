@@ -33,7 +33,11 @@
 						foreach ($pets as $pet):
 						if ($pet['death'])
 						{
-							continue;
+							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
+							if($isLongerThanTwoWeeksAgo)
+							{
+								continue;
+							}
 						}
 						if ($pet['lost'])
 						{
@@ -41,12 +45,13 @@
 						}
 					?>
 					<?php $age = timespan(strtotime($pet['birth']), time(), 1); ?>
-						<li class="list-group-item">
+						<li class="list-group-item <?php if($pet['death']): ?>list-group-item-warning<?php endif; ?>">
 							<div class="row">
 								<div class="col-lg-12 col-sm-12 col-xl-2">
 									<?php echo get_symbol($pet['type']); ?>
 									<?php echo $pet['name']; ?>
 									<?php echo ($age < 30) ? '(' . $age . ')' : ''; ?>
+									<?php if($pet['death']): ?><i class="fa-solid fa-cross"></i><?php endif; ?>
 									<hr class="mt-2 mb-3 d-xl-none" style="border-top: 1px solid rgba(0, 0, 0, 0.1);"/>
 								</div>
 
@@ -101,6 +106,12 @@
 						foreach ($pets as $pet):
 							if ($pet['death'])
 							{
+
+								$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
+								if(!$isLongerThanTwoWeeksAgo)
+								{
+									continue;
+								}
 								$total_dead++;
 								$dead_pet[] = $pet;
 							}

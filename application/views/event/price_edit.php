@@ -21,7 +21,6 @@
 					<th>New Price</th>
 					<th>Change</th>
 					<th>Inc. BTW</th>
-					<th>Ex. BTW</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -35,9 +34,8 @@
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td><i>Sum</i></td>
-					<td><i><?php echo round($total, 2); ?></i></td>
-					<td><i><?php echo round($total_ex, 2);; ?></i></td>
+					<td><i>ex. VAT<br/>in. VAT</i></td>
+					<td><i><?php echo round($total_ex, 2); ?><br/><?php echo round($total, 2); ?></i></td>
 				</tr>
 			</tfoot>
 			</table>
@@ -52,9 +50,12 @@
 				<div class="row no-gutters align-items-center">
 					<div class="col mr-2">
 						<div class="text-xs font-weight-bold text-uppercase mb-1">Auto Reduction</div>
-						<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/5" class="btn btn-info btn-sm mx-3"><i class="fas fa-dollar-sign"></i> 5%</a>
-						<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/10" class="btn btn-info btn-sm mx-3"><i class="fas fa-dollar-sign"></i> 10%</a>
-						<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/15" class="btn btn-info btn-sm mx-3"><i class="fas fa-dollar-sign"></i> 15%</a>
+						<div class="btn-group" role="group" aria-label="Button group with links">
+							<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/0" class="btn btn-primary btn-sm"><i class="fa-solid fa-rotate-left"></i></a>
+							<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/5" class="btn btn-info btn-sm">5%</a>
+							<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/10" class="btn btn-info btn-sm">10%</a>
+							<a href="<?php echo base_url(); ?>events/edit_event_price/<?php echo $event_info['id']; ?>/15" class="btn btn-info btn-sm">15%</a>
+						</div>
 					</div>
 					<div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
 				</div>
@@ -65,6 +66,20 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+	$(document).ready(function() {
+    $('.changeprice').click(function() {
+      const change = $(this).data('change');
+      const form = $(this).data('form');
+      const price = $(this).data('price');
+      calculate_change_and_push(change, form, price);
+    });
+  });
 
+  function calculate_change_and_push(change, form, price) {
+		let new_price = price - (price * (change/100));
+		console.log(new_price);
+		$(`#${form} [name="price"]`).val(new_price.toFixed(2));
+ 		$(`#${form} [name="submit"]`).click();
+	}
 });
 </script>

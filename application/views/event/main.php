@@ -115,10 +115,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#show_booking_select").hide();
 		$("#booking_select").show();
 	});
-	$("#barcode_show_booking_select").click(function() {
-		$("#barcode_show_booking_select").hide();
-		$("#barcode_booking_select").show();
-	});
 
 	// automatically put the input here
 	$("#autocomplete").focus();

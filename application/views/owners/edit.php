@@ -131,6 +131,14 @@
 										</label>
 									</div>
 								</div> 
+								<div class="form-group">
+									<div class="form-check">
+									<input class="form-check-input" name="disabled" type="checkbox" value="1" id="disabled" <?php echo (isset($owner['disabled']) && $owner['disabled'] == 1) ? 'checked': ''; ?>>
+										<label class="form-check-label" for="disabled">
+										<?php echo $this->lang->line('disable_client'); ?>
+										</label>
+									</div>
+								</div> 
 							</div> 
 					</div>
 					<div class="col-md-12">

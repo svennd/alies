@@ -88,6 +88,112 @@ class Events extends Vet_Controller
 		}
 	}
 
+		// jquery push from events/block_add*
+		public function add_line(int $event_id, int $type)
+		{
+			if ($this->events->get_status($event_id) != EVENT_STATUS_OPEN) {
+				return false;
+			}
+	
+			// clean post values
+			$line 	= (int) $this->input->post('line');
+			$name 	= $this->input->post('title');
+			$volume = $this->input->post('volume');
+	
+			// verify the booking code/btw wasn't changed
+			list ($btw, $booking) = $this->check_booking(
+				(int) $this->input->post('btw'), 
+				(int) $this->input->post('booking_code'), 
+				(int) $this->input->post('booking_default')
+			);
+	
+			// add line to events_procedures
+			if ($type == PROCEDURE)
+			{
+				list($return_id, $unit_price, $net_price, $brut_price) = $this->add_procedure($line, $volume, $btw, $event_id);
+			}
+			// add line to events_products
+			elseif ($type == PRODUCT)
+			{
+				list($return_id, $unit_price, $net_price, $brut_price) = $this->add_product($line, $volume, $btw, $event_id, (int) $this->input->post('stock'));
+				
+				// check if vaccine (todo)
+				// $this->is_it_a_vaccine();
+			}
+	
+			// in both cases add to events_lines (for billing)
+			$eline = $this->elines->insert(array(
+				"event"			=> $event_id,
+				"name"			=> $name, // billing text
+				"pid"			=> $line, // contains prod or proc id
+				"type"			=> $type, // CONSTANT value
+				"volume"		=> $volume,
+				"unit_price"	=> $unit_price,
+				"net_price" 	=> $net_price, // unit*volume
+				"brut_price" 	=> $brut_price, // unit*volume*(1+(btw/100))
+				"btw" 			=> $btw,
+				"booking" 		=> $booking
+			));
+	
+			echo json_encode(
+					array(
+						"eline_id" 	=> $eline, 
+						"item_id" 	=> $return_id, 
+						"name" 		=> $name, 
+						"volume"	=> $volume, 
+						"net_price" => $net_price, 
+						"unit_price"=> $unit_price, 
+						"brut_price"=> $brut_price, 
+						"btw" 		=> $btw
+					));
+		}
+	
+		// add line to procedures
+		private function add_procedure(int $proc, $volume, $btw, int $event)
+		{
+			// price calculation procedures
+			$proc_info 	= $this->proc->fields('price')->get($proc);
+			$unit_price = (float) $proc_info['price'];
+			$net_price 	= $unit_price * $volume;
+			$brut_price = $net_price * round(1 + ($btw/100), 2);
+	
+			// enter in events_proc
+			$return = $this->eproc->insert(array(
+				'proc' 		=> $proc,
+				'event' 	=> $event,
+				'volume' 	=> $volume,
+			));
+			return array($return, $unit_price, $net_price, $brut_price);
+		}
+	
+		// add line to product
+		private function add_product(int $prod, $volume, $btw, int $event, int $stock)
+		{
+			// price calculation
+			list($net_price, $unit_price) = $this->calculate_price_product($prod, $volume);
+			$brut_price = $net_price * round(1 + ($btw/100), 2);
+	
+			$return = $this->eprod->insert(array(
+				'product' 	=> $prod,
+				'event' 	=> $event,
+				'volume' 	=> $volume,
+				'stock' 	=> $stock,
+			));
+			return array($return, $unit_price, $net_price, $brut_price);
+		}
+	
+		// check if the vet changed the booking code,
+		// possible lower or higher btw
+		private function check_booking(int $btw, int $booking, int $booking_default)
+		{
+			if ($booking_default != $booking) {
+				$result 	= $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
+				$booking 	= $result['id'];
+				$btw 		= $result['btw'];
+			}
+			return array($btw, $booking);
+		}
+		
 	# annoying but its allowed
 	# edit the price based on what the vet tells us
 	public function edit_price($event_id)

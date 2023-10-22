@@ -49,9 +49,18 @@ class Logs extends Admin_Controller
 	public function nlog()
 	{
 		$this->load->model('Logs_model', 'nlog');
-		
+		$dt = new DateTime();
+		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
+		$dt->modify('-7 day');
+		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
+
 		$data = array(
-						"logs" 		=> $this->nlog->with_vet('fields:first_name')->order_by(array('id', 'desc'))->get_all(),
+						"search_to" => $search_to,
+						"search_from" => $search_from,
+						"logs" 		=> $this->nlog
+											->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+											->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+											->with_vet('fields:first_name')->order_by(array('id', 'desc'))->get_all(),
 		);
 		$this->_render_page('logs/global', $data);
 	}

@@ -138,6 +138,7 @@ class Pets extends Vet_Controller
 											"note" 			=> $this->input->post('msg'),
 											"lost" 			=> (is_null($this->input->post('lost'))) ? 0 : $this->input->post('lost'),
 											"death" 		=> (is_null($this->input->post('dead'))) ? 0 : $this->input->post('dead'),
+											"death_date" 	=> (is_null($this->input->post('dead'))) ? NULL : date('Y-m-d'), // this is problematic if they modify the pet after death
 										),
 				$pet_id
 			);

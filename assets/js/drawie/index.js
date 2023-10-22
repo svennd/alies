@@ -96,6 +96,17 @@ const drawing = (e) => {
     }
 }
 
+const loadImage = () => {
+    let file = fileInput.files[0];
+    if(!file) return;
+    previewImg.src = URL.createObjectURL(file);
+    previewImg.addEventListener("load", () => {
+        resetFilterBtn.click();
+        document.querySelector(".container").classList.remove("disable");
+    });
+}
+
+
 toolBtns.forEach(a => {
     a.addEventListener("click", () => { // adding click event to all tool option
         // removing active class from the previous option and adding on current clicked option

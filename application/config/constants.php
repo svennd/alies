@@ -99,6 +99,18 @@ define('STATUS_OPEN', 0); /* working bill */
 define('STATUS_CLOSED', 1); /* products out of stock, price final */
 define('STATUS_HISTORY', 2); /* added report now only for historical purpose */
 
+
+## bill constants
+# status
+define('BILL_DRAFT', 0); # initial stage
+define('BILL_PENDING', 1); # created but no invoice yet
+define('BILL_UNPAID', 2); # its an invoice but not paid yet
+define('BILL_PARTIALLY', 3); # payement partially
+define('BILL_PAID', 4); # complete
+define('BILL_OVERDUE', 5); # not paid and beyond due date
+define('BILL_ONHOLD', 6); # might be complete, but verficiation needed
+define('BILL_HISTORICAL', 7); # imported bills
+
 # event / bill payed
 define('PAYMENT_OPEN', 0); // init
 define('NO_BILL', 0);
@@ -146,3 +158,9 @@ define('DISEASE', 0);
 define('OPERATION', 1);
 define('MEDICINE', 2);
 define('LAB', 3);
+
+## payment constants
+# method
+define('PAYMENT_CASH', 0);  # cash money
+define('PAYMENT_CARD', 1);  # credit card or debit card
+define('PAYMENT_TRANSFER', 2); # by bank transfer

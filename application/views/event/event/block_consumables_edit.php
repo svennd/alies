@@ -25,7 +25,7 @@
 			<td><?php echo ($product['calc_net_price'] != 0) ? $product['calc_net_price'] : $product['net_price']; ?></td>
 			
 			<td>
-				<form action="<?php echo base_url(); ?>events/edit_price/<?php echo $event_info['id']; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url(); ?>events/edit_price/<?php echo $event_info['id']; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off">
 				
 					<div class="input-group input-group-sm">
 						<input type="text" name="price" value="<?php echo $product['net_price']; ?>" class="form-control" id="volume<?php echo $product['id']; ?>" <?php echo ($event_info['status'] == STATUS_CLOSED) ? 'disabled' : ''; ?>>
