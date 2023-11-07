@@ -31,6 +31,10 @@
 					<?php if ($pets): ?>
 					<?php
 						foreach ($pets as $pet):
+						if (is_null($pet['death_date']) && $pet['death'] || $pet['lost'])
+						{
+							continue;
+						}
 						if ($pet['death'])
 						{
 							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
@@ -38,10 +42,6 @@
 							{
 								continue;
 							}
-						}
-						if ($pet['lost'])
-						{
-							continue;
 						}
 					?>
 					<?php $age = timespan(strtotime($pet['birth']), time(), 1); ?>
@@ -92,7 +92,7 @@
 					<?php endif; ?>
 					<li class="list-group-item list-group-item-light">
 						<p class="text-center">
-								<a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_pet'); ?></a>
+							<a class="btn btn-outline-info" href="<?php echo base_url() . 'pets/add/' . $owner['id']; ?>"><i class="fas fa-plus"></i> <?php echo $this->lang->line('add_pet'); ?></a>
 						</p>
 					</li>
 					</ul>
@@ -106,11 +106,13 @@
 						foreach ($pets as $pet):
 							if ($pet['death'])
 							{
-
-								$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
-								if(!$isLongerThanTwoWeeksAgo)
+								if (!is_null($pet['death_date']))
 								{
-									continue;
+									$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
+									if(!$isLongerThanTwoWeeksAgo)
+									{
+										continue;
+									}
 								}
 								$total_dead++;
 								$dead_pet[] = $pet;
@@ -176,7 +178,7 @@
 		<?php echo $this->lang->line('open_invoices'); ?> :
 			<ul>
 		<?php foreach($open_bill as $bill): ?>
-			<li><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo $bill['amount']; ?> &euro;</a></li>
+			<li><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo $bill['total_brut']; ?> &euro;</a></li>
 		<?php endforeach; ?>
 			</ul>
 		</div>

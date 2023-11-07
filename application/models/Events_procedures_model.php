@@ -24,7 +24,7 @@ class Events_procedures_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				sum(price) as total
+				sum(price_net) as total
 			FROM
 				events_procedures
 			WHERE
@@ -45,10 +45,10 @@ class Events_procedures_model extends MY_Model
 			SELECT
 				COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN 1 END) AS total_count_3m,
 				COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN 1 END) AS total_count_1y,
-				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN amount ELSE 0 END) AS total_amount_3m,
-				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN amount ELSE 0 END) AS total_amount_1y,
-				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN price ELSE 0 END) AS total_net_price_3_months,
-				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN price ELSE 0 END) AS total_net_price_1_year
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN volume ELSE 0 END) AS total_amount_3m,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN volume ELSE 0 END) AS total_amount_1y,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND procedures_id = '" . $proc_id . "' THEN price_net ELSE 0 END) AS total_net_price_3_months,
+				SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND procedures_id = '" . $proc_id . "' THEN price_net ELSE 0 END) AS total_net_price_1_year
 			FROM events_procedures;	  
 		;";
 

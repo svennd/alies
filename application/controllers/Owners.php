@@ -109,7 +109,7 @@ class Owners extends Vet_Controller
 		$this->_render_page('owners/edit', $data);
 	}
 
-	public function detail(int $id, $update = false)
+	public function detail(int $owner, $update = false)
 	{		
 		$data = array(			
 						"owner" 	=> $this->owners->get($owner),

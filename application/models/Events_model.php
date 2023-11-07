@@ -87,79 +87,120 @@ class Events_model extends MY_Model
 
 
 	/*
-		called in invoice
-	*/
-	public function get_products_and_procedures(int $event_id)
-	{
-		$products 	= array();
-		$procedures = array();
-		$tally 		= array();
-		$booking	= array();
+		called in invoice/bill
 
-		/* get products on this event */
+		Set all open events to this bill
+		We need to find all pets linked to this owner
+		and then find all events linked to this pet
+		alternativly we could add owner_id to events but that would make
+		moving pets impossible.
+		It's better to keep events linked to pets and the owner not linked to an event
+	*/
+	public function set_open_events_to_bills(int $owner, int $bill)
+	{
+		// set all open events from this owner to this bill
+		$sql = "
+			UPDATE events
+			JOIN pets ON pets.id = events.pet
+			SET 
+				events.payment = " . $bill . "
+			WHERE 
+				pets.owner = " . $owner . "
+			AND 
+				events.payment = " . PAYMENT_OPEN . ";
+		";
+
+		return $this->db->query($sql);
+	}
+
+	/*
+		called in bills_model for invoice controller
+	*/
+	public function get_all_items(array $event, int $type)
+	{
+		$table = ($type == PROCEDURE) ?  'events_procedures' : 'events_products';
 		$sql = "
 				SELECT 
-					product_id, volume, net_price, price, btw, events_products.btw, booking, barcode,
-					products.name, products.unit_sell
-				FROM `events_products`
-				JOIN
-					`products`
-				ON
-					product_id = products.id
-				WHERE `events_products`.`event_id` = " . $event_id . "
+					SUM(price_net) as total_net, btw
+				FROM `" . $table . "`
+				WHERE 
+					`event_id` IN (" . implode(',', $event) . ")
+				GROUP BY
+					btw
 		";
-		$product_array = $this->db->query($sql)->result_array();
-		if ($product_array) {
-			foreach ($product_array as $product) {
-				$products[] = $product;
+		$products = $this->db->query($sql)->result_array();
+		
+		$outputArray = array();
 
-				# index
-				$product_btw = (int) $product['btw'];
-				$product_booking = (int) $product['booking'];
-
-				# value
-				$net_price = (float) $product['net_price'];
-				
-				# tally products
-				if (isset($tally[$product_btw])) {
-					$tally[$product_btw] += $net_price;
-				} else { 
-					$tally[$product_btw] = $net_price;
-				}
-
-				# booking products
-				if (isset($booking[$product_booking])) {
-					$booking[$product_booking] += $net_price;
-				} else { 
-					$booking[$product_booking] = $net_price;
-				}
-			}
+		// format into btw => total sum
+		foreach ($products as $item) {
+			$outputArray[$item['btw']] = ($outputArray[$item['btw']] ?? 0) + (float)$item['total_net'];
 		}
-		/* get procedures on every event */
+
+		return $outputArray;
+	}
+
+	/*
+		called in bill_model for invoice_controller
+	*/
+	public function get_printable_items(array $event, int $type)
+	{
+		if ($type == PRODUCT) {
+			$sql = "SELECT 
+						product_id, volume, price_net, price_brut, events_products.btw,
+						products.name, products.unit_sell, events_products.created_at
+					FROM `events_products`
+					JOIN
+						`products`
+					ON
+						product_id = products.id
+					WHERE	
+						events_products.event_id in (" . implode(',', $event) . ")
+					;
+					";
+		}
+		else if ($type == PROCEDURE) {
+			$sql = "SELECT 
+						procedures_id, volume, price_net, price_brut, events_procedures.btw,
+						procedures.name, events_procedures.created_at
+					FROM `events_procedures`
+					JOIN
+						`procedures`
+					ON
+						procedures_id = procedures.id
+					WHERE	
+						events_procedures.event_id in (" . implode(',', $event) . ")
+					;
+					";
+
+		}
+
+		return $this->db->query($sql)->result_array();
+	}
+
+	// give all products for a certain bill 
+	public function all_bill_products(int $bill_id)
+	{
+		// not return all unassigned products
+		if ($bill_id == BILL_DRAFT) { return false; }
+
 		$sql = "
-				SELECT procedures_id, amount, net_price, booking, events_procedures.price, btw, procedures.name, events_procedures.created_at
-				FROM `events_procedures`
-				JOIN
-					`procedures`
-				ON
-					procedures_id = procedures.id
-				WHERE `events_procedures`.`event_id` = " . $event_id . "
-		";
-		$procedure_array = $this->db->query($sql)->result_array();
-		if ($procedure_array) {
-			foreach ($procedure_array as $proc) {
-				$procedures[] = $proc;
-				$tally[$proc['btw']] = (isset($tally[$proc['btw']])) ? (float) ($tally[$proc['btw']] + $proc['net_price']) : (float) $proc['net_price'];
-				$booking[$proc['booking']] = (isset($booking[$proc['booking']])) ? ((float) $booking[$proc['booking']] + $proc['net_price']) : (float) $proc['net_price'];
-			}
-		}
-
-		return array(
-					"prod" 		=> $products,
-					"proc" 		=> $procedures,
-					"tally"		=> $tally,
-					"booking"	=> $booking,
-					);
+			SELECT 
+				product_id, volume, stock_id
+			FROM
+				events_products
+			WHERE
+				events_products.event_id IN (
+					SELECT 
+						id
+					FROM
+						events
+					WHERE
+						payment = " . $bill_id . "
+				)
+				";
+				
+		return $this->db->query($sql)->result_array();
 	}
 
 	public function get_status($event_id)
@@ -172,7 +213,7 @@ class Events_model extends MY_Model
 	{
 		$sql = "
 				SELECT
-					ep.volume as volume, ep.net_price as total_sell_price, ep.created_at as event_date,
+					ep.volume as volume, ep.price_net as total_sell_price, ep.created_at as event_date,
 					prod.name as product_name, prod.unit_sell, prod.buy_price, prod.buy_volume as buy_volume, prod.vhbcode,
 					users.first_name as vet_name,
 					stck.name as stock_name,
@@ -180,8 +221,8 @@ class Events_model extends MY_Model
 					pets.name as pet_name, pets.id as pet_id,
 					owners.id as owner_id, owners.last_name,
 					book.code, book.category, book.btw,
-					(select stock.in_price from stock where stock.barcode = ep.barcode limit 1) as in_price_test,
-					(select stock.lotnr from stock where stock.barcode = ep.barcode limit 1) as lotnr
+					(select stock.in_price from stock where stock.id = ep.stock_id limit 1) as in_price_test,
+					(select stock.lotnr from stock where stock.id = ep.stock_id limit 1) as lotnr
 
 				FROM `events` as e
 				
@@ -233,27 +274,27 @@ class Events_model extends MY_Model
 		// check for products
 		$sql = "
 				SELECT 
-					calc_net_price
+					price_ori_net
 				FROM `events_products`
 				WHERE `events_products`.`event_id` = " . $event_id . "
 		";
 		$product_array = $this->db->query($sql)->result_array();
 		if ($product_array) {
 			foreach ($product_array as $product) {
-				if ($product['calc_net_price'] != 0) { return true; }
+				if ($product['price_ori_net'] != 0) { return true; }
 			}
 		}
 
 		// check procedures
 		$sql = "
-				SELECT calc_net_price
+				SELECT price_ori_net
 				FROM `events_procedures`
 				WHERE `events_procedures`.`event_id` = " . $event_id . "
 		";
 		$procedure_array = $this->db->query($sql)->result_array();
 		if ($procedure_array) {
 			foreach ($procedure_array as $proc) {
-				if ($proc['calc_net_price'] != 0) { return true; }
+				if ($proc['price_ori_net'] != 0) { return true; }
 			}
 		}
 		// check for procedures

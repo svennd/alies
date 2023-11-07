@@ -17,7 +17,9 @@
 	}
     tfoot tr td{
         font-size: x-small;
+        border-radius: 1.2em;
     }
+
     .enlarge {
         font-weight: bold;
         font-size: 18px;
@@ -39,6 +41,7 @@
 		right: 0px;
 		height: 150px; 
 	}
+
 </style>
 
 </head>
@@ -66,22 +69,22 @@
 		</td>
     </tr>
   </table>
- <hr />
+  <hr style="min-height: 1px; border:0px; background: #DCDDE1;"/>
 <table width="100%">
 	<tr>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_id'); ?></th>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
 		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
-		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != PAYMENT_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
+		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != BILL_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
 	</tr>
 	<tr>
 		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></td>
-		<td align="center"><?php echo date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
+		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? date_format(date_create($bill['created_at']), "d-m-Y") : date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
 		<td align="center">
-			<?php if ($bill['status'] != PAYMENT_PAID): ?>
+			<?php if ($bill['status'] != BILL_PAID): ?>
 				<?php echo date('d-m-Y', strtotime($bill['invoice_date']. ' +'. $due_date_days .' days')); ?>
 			<?php else: ?>
-				<i><?php echo ($bill['status'] == PAYMENT_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
+				<i><?php echo ($bill['status'] == BILL_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
 			<?php endif; ?>
 		</td>
 		<td align="center">
@@ -102,9 +105,9 @@
 <!-- pets name + id list -->
 <?php
 	$pets_list = "";
-	foreach ($pets as $p)
-	{
-		$pets_list .= '<b>'. ucfirst(strtolower($p['name'])) . '</b> (#' . $p['id'] . ') ';
+	foreach ($print as $pet_id => $event_details) {
+		$pet 		= $event_details['pet'];
+		$pets_list .= '<b>'. ucfirst(strtolower($pet['name'])) . '</b> (#' . $pet['id'] . ') ';
 	}
 ?>
 <table width="100%">
@@ -130,33 +133,28 @@
 
 <?php $total_net = 0; ?>
 <?php 
-foreach ($print_bill as $pet_id => $event): 
-	# resolve name, chip
-	$pet_info = $pets[$pet_id];
+foreach ($print as $pet_id => $event): 
+
+	$pet 		= $event['pet'];
+	$prod 		= $event['products'];
+	$proc 		= $event['procedures'];
+
+	# skip if no products or procedures
+	# in the event
+	if (count($prod) + count($proc) == 0) continue;
 
 	?>
-  
-	<?php
-	foreach ($event as $event_id => $vbill):
-		list($event_id, $event_location, $payment_bill, $created_at, $updated_at) = array_values($event_info[$pet_id][$event_id]);
-		list($prod, $proc, $total, $booking) = array_values($vbill);
-
-		# skip if no products or services
-		if (count($prod) + count($proc) == 0) continue;
-?>
-
-
 	<?php foreach ($proc as $procedure): ?>
 		<tr><?php $date_proc = date_format(date_create($procedure['created_at']), "d-m-y"); ?>
 			<td align="left"><?php echo $procedure['name']; ?><?php echo (strtotime($date_proc) === strtotime($bill['created_at'])) ? " <small>(" . $date_proc. ")</small>" : ""; ?></td>
 			<td align="right">
-				<div style="display: inline-block;"><?php echo number_format($procedure['amount'], 2); ?></div>
+				<div style="display: inline-block;"><?php echo number_format($procedure['volume'], 2); ?></div>
 				<div style="display: inline-block; width:15px;">&nbsp;</div>
 			</td>
 			<td align="right">
-				<div style="display: inline-block;"><?php echo number_format(round($procedure['net_price']/$procedure['amount'], 2), 2); ?></div>
+				<div style="display: inline-block;"><?php echo number_format(round($procedure['price_net']/$procedure['volume'], 2), 2); ?></div>
 			</td>
-			<td align="right"><?php echo number_format($procedure['net_price'],2); $total_net += $procedure['net_price']; ?></td>
+			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?></td>
 			<td align="right"><?php echo $procedure['btw']; ?> %</td>
 		</tr>
 	<?php endforeach; ?>
@@ -168,13 +166,12 @@ foreach ($print_bill as $pet_id => $event):
 				<div style="display: inline-block; width:15px;"><?php echo $product['unit_sell']; ?></div>
 			</td>
 			<td align="right">
-				<div style="display: inline-block;"><?php echo number_format(round($product['net_price']/$product['volume'], 2), 2); ?></div>
+				<div style="display: inline-block;"><?php echo number_format(round($product['price_net']/$product['volume'], 2), 2); ?></div>
 			</td>
-			<td align="right"><?php echo number_format($product['net_price'],2); $total_net += $product['net_price']; ?></td>
+			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?></td>
 			<td align="right"><?php echo $product['btw']; ?> %</td>
 		</tr>
 	<?php endforeach; ?>
-<?php endforeach; ?>
 <?php endforeach; ?>
 
 <tr>
@@ -184,28 +181,41 @@ foreach ($print_bill as $pet_id => $event):
 	</table>
 	<table width="100%">
     <tfoot>
-		<?php $design = 0; foreach ($bill_total_tally as $btw => $total): ?>
-			<tr>
-				<?php if($design == 0): ?>
+        <tr>
+			<td rowspan="2" valign="top">
+				<table width="65%" style="text-align:center;">
+  					<thead style="border-bottom:solid black 1px;">
+						<tr>
+							<th class="nobold"><?php echo $this->lang->line('VAT'); ?>%</th>
+							<th class="nobold"><?php echo $this->lang->line('VAT_OVER'); ?></th>
+							<th class="nobold"><?php echo $this->lang->line('VAT_AMOUNT'); ?></th>
+						</tr>
+					<thead>
+  					<tbody style="border-bottom:solid black 1px;">
 					<?php 
-						if (file_exists(dirname(__FILE__) . "/../custom/block_iban.php") && $bill['status'] != PAYMENT_PAID) { 
-							include dirname(__FILE__) . "/../custom/block_iban.php"; 
-						} else { ?>
-							<td colspan="2" rowspan="4">&nbsp;</td>
-						<?php } ?>  
-				<?php endif; ?>
-
-				<td colspan="2" align="right"><div style="display: inline-block;"><?php echo $btw; ?>% btw over</div><div style="display: inline-block;width:55px;"><?php echo number_format($total, 2); ?> &euro;</div></td>
-				<td align="right"><?php echo round($total*($btw/100), 2); ?> &euro;</td>
-			</tr>
-		<?php $design++; endforeach; ?>
-        <tr>
-            <td colspan="2" align="right"><?php echo $this->lang->line('Total_net_excl'); ?></td>
-            <td align="right"><?php echo number_format($total_net, 2); ?> &euro;</td>
+						foreach ($btw_details as $btw => $info): 
+							if($info['calculated'] == 0) continue;
+					?>
+						<tr>
+							<td><?php echo $btw; ?>%</td>
+							<td><?php echo $info['over']; ?></td>
+							<td><?php echo $info['calculated']; ?></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+					</table>
+			</td>
+            <td colspan="3" align="right" valign="top"><?php echo $this->lang->line('Total_net_excl'); ?></td>
+            <td align="right" valign="top"><?php echo number_format($total_net, 2); ?> &euro;</td>
         </tr>
-        <tr>
-            <td colspan="2" align="right" class="enlarge"><?php echo $this->lang->line('Total_inc'); ?></td>
-            <td align="right" class="gray enlarge"><?php echo number_format($bill['amount'], 2); ?> &euro;</td>
+		<tr>
+			<td colspan="3" align="right" valign="top"><?php echo $this->lang->line('Total'). ' ' .$this->lang->line('VAT'); ?></td>
+			<td align="right" valign="top">
+			<?php $sum_btw = 0.0; foreach($btw_details as $x => $y): $sum_btw += $y['calculated']; endforeach; echo number_format($sum_btw, 2); ?> &euro;</td>
+		</tr>
+		<tr>
+            <td colspan="4" align="right" class="enlarge"><?php echo $this->lang->line('to_pay'); ?></td>
+            <td align="right" class="enlarge"><span class="gray" style="padding:5px;"><?php echo number_format($bill['total_brut'], 2); ?> &euro;</span></td>
         </tr>
     </tfoot>
   </table>

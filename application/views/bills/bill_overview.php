@@ -64,7 +64,7 @@
 						<?php echo $bill['invoice_id']; ?>
 					</td>
 					<td>
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['amount']; ?> &euro;</a>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['total_brut']; ?> &euro;</a>
 						<?php if($this->ion_auth->in_group("admin") && $bill['modified']): ?>
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>

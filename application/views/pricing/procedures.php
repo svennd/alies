@@ -49,8 +49,10 @@
 					<td><?php echo $pro['name']; ?></td>
 					<td><?php echo $pro['price']; ?> &euro;</td>
 					<td>
+						<?php if(isset($pro['booking_code']['code'])): ?>
 						<?php echo $pro['booking_code']['code']; ?><br>
 						<small><?php echo $pro['booking_code']['category']; ?> <?php echo $pro['booking_code']['btw']; ?>%</small>
+						<?php endif; ?>
 					</td>
 					<td>
 						<a href="<?php echo base_url('pricing/proc_edit/' . $pro['id']); ?>" class="edit btn btn-outline-success btn-sm btn-edit"><i class="fas fa-edit"></i></a>

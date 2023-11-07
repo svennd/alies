@@ -41,7 +41,7 @@ class Bills_model extends MY_Model
 			SET 
 				`vet` = '" . (int) $data['vet'] . "', 
 				`location` = '" . (int) $data['location'] . "', 
-				`amount` = '" . $data['amount'] . "',
+				`total_brut` = '" . $data['amount'] . "',
 				`cash` = '" . $data['cash'] . "', 
 				`card` = '" . $data['card'] . "', 
 				`status` = '" . (int) $data['status'] . "', 
@@ -58,107 +58,110 @@ class Bills_model extends MY_Model
 		return ($status['status']);
 	}
 
-
-	// 
-	public function get_bill_details(int $bill_id)
+	// invoice/bill
+	// calculate the full bill, events
+	public function calculate_bill(int $bill_id, int $bill_status)
 	{
-		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 
-		$bill = $this->fields('id, status, owner_id')->get($bill_id);
-			$owner_id = $bill['owner_id'];
-			$bill_status = $bill['status'];
-
-		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name', 'chip'))->get_all();
-
-		if (!$pets) { 
-			return false; 
-		}
+		$events = $this->events->fields('id')->where(array("payment" => $bill_id))->get_all();
 		
-		list($print_bill, $bill_total_tally, $event_info, $pet_id_array) = $this->bill_per_pet($pets, $bill_id, $bill_status);
-		
-		# calculate the full bill
-		$bill_total = 0.0;
-		foreach ($bill_total_tally as $btw => $total) {
-			$bill_total += $total * (1 + ($btw/100));
+		# transform to array with only id's
+		$events_list = array_map(function($item) { return (int)$item['id']; }, $events);
+				
+		$products = ($this->events->get_all_items($events_list, PRODUCT));
+		$procedures = ($this->events->get_all_items($events_list, PROCEDURE));
+
+		// combine products & procedures in simple array
+		// btw => sum(products+procedures)
+		$total_items = $products;
+		foreach ($procedures as $key => $value) {
+			if (array_key_exists($key, $total_items)) {
+				$total_items[$key] += $value;
+			} else {
+				$total_items[$key] = $value;
+			}
 		}
 
-		return array($print_bill, $bill_total_tally, $event_info, $pet_id_array, $bill_total);
+		$total_net = 0.0;
+		$total_brut = 0.0;
+		$total_btw_0 = 0.0;
+		$total_btw_6 = 0.0;
+		$total_btw_21 = 0.0;
+
+		foreach ($total_items as $btw => $item)
+		{
+			$total_net += $item;
+			$total_brut += $item * (1 + ($btw/100));
+			switch ($btw) {
+				case 0:
+					$total_btw_0 += $item;
+					break;
+				case 6:
+					$total_btw_6 += $item;
+					break;
+				case 21:
+					$total_btw_21 += $item;
+					break;
+			}
+		}
+		$this->update(
+					array(
+							"total_brut" 	=> $total_brut,
+							"total_net" 	=> $total_net,
+							"BTW_0" 		=> $total_btw_0,
+							"BTW_6" 		=> $total_btw_6,
+							"BTW_21"		=> $total_btw_21,
+							"status" 		=> ($bill_status == BILL_DRAFT) ? BILL_PENDING : $bill_status, // upgrade from BILL_DRAFT
+				), $bill_id);
+				
+		return array($total_net, $total_brut, array(
+												"0" => array("over" => $total_btw_0, "calculated" => 0),
+												"6" => array("over" => $total_btw_6, "calculated" => number_format($total_btw_6*0.06, 2)),
+												"21" => array("over" => $total_btw_21, "calculated" => number_format($total_btw_21*0.21, 2))
+										));	
 	}
 
-	private function bill_per_pet(array $pets, int $bill_id, int $bill_status)
+	// invoice/bill
+	// does not change anything
+	public function get_details(int $bill_id, int $owner_id)
 	{
+		// init
 		$print_bill = array();
-		$bill_total_tally = array();
-		$event_info = array();
-		$pet_id_array = array();
+
+		// get all pets for this owner
+		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name'))->get_all();
 
 		foreach ($pets as $pet) {
 			# for easy access
 			$pet_id = $pet['id'];
 
-			# get all events for this pet that have an open payment
+			# get all events for this pet and bill_id
 			# this could be multiple (consult + op) for example
 			$pet_events = $this->events
-									->where("pet", "=", $pet['id'])
-										->group_start()
-											->where("payment", "=", NO_BILL)
-											->where("payment", "=", $bill_id, true)
-										->group_end()
-									->fields("id, location, payment, created_at, updated_at")
+									->where(array(
+											"pet" 		=> $pet_id,
+											"payment" 	=> $bill_id
+									))
+									->fields("id")
 									->get_all();
 
 			# no event for this pet, skip all togheter
-			if (!$pet_events) {
-				continue;
-			}
+			if (!$pet_events) { continue; }
+
+			# transform to array with only id's
+			$event_list = array_map(function($item) { return (int)$item['id']; }, $pet_events);
 
 			# create array if there is going to be
 			# events linked to this animal
-			$print_bill[$pet_id] = array();
-
-			# should generally only be 1 event
-			# but in case of open events
-			# could be more
-			foreach ($pet_events as $event) {
-				#
-				$event_id = $event['id'];
-
-				# get the calculated bill
-				# for all procedures and products for this pet
-				$event_bill = $this->events->get_products_and_procedures($event_id);
-			
-				# update event if its not part of this bill yet
-				# only if creating a new bill, else we would add events to a closed invoice
-				$this->link_events_to_bill($event_id, $event['payment'], $bill_id, $bill_status);
-
-				# add to the total
-				foreach ($event_bill['tally'] as $btw => $total) {
-					$bill_total_tally[$btw] = (isset($bill_total_tally[$btw])) ? $bill_total_tally[$btw] + $total : $total;
-				}
-
-				# printable
-				$print_bill[$pet_id][$event_id] = $event_bill;
-
-				# a list with event description
-				$event_info[$pet_id][$event_id] = $event;
-			}
-
-			# for making a printable bill
-			$pet_id_array[$pet_id] = $pet;
+			$print_bill[$pet_id] = array(
+				"pet"			=> $pet,
+				"events" 		=> $event_list,
+				"products" 		=> $this->events->get_printable_items($event_list, PRODUCT),
+				"procedures" 	=> $this->events->get_printable_items($event_list, PROCEDURE),
+			);
 		}
-
-		return array($print_bill, $bill_total_tally, $event_info, $pet_id_array);
-	}
-
-	# update events so they are linked
-	# to this bill
-	private function link_events_to_bill(int $event_id, int $event_link, int $bill_id, int $bill_status)
-	{
-		if ($event_link != $bill_id && $bill_status != PAYMENT_PAID) {
-			# update event so that we know on what bill it was placed (and its no longer NO_BILL)
-			$this->events->update(array("payment" => $bill_id), $event_id);
-		}
+		return $print_bill;
 	}
 
 	// called from accounting
@@ -166,7 +169,7 @@ class Bills_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				sum(amount) as total
+				sum(total_net) as total
 			FROM
 				bills
 			WHERE
@@ -192,7 +195,7 @@ class Bills_model extends MY_Model
 
 		$sql = "
 			SELECT 
-				sum(amount) as total
+				sum(total_net) as total
 			FROM
 				bills
 			WHERE
@@ -217,7 +220,7 @@ class Bills_model extends MY_Model
 		$sql = "SELECT 
 					year(bills.created_at) as y, 
 					month(bills.created_at) as m, 
-					sum(amount) as total
+					sum(total_net) as total
 				FROM 
 					bills
 				WHERE 
@@ -254,7 +257,7 @@ class Bills_model extends MY_Model
 		return false;
 	}
 
-	public function set_invoice_id(int $bill_id, bool $is_modified)
+	public function set_invoice_id(int $bill_id)
 	{
 		// if the last id has year == last_year we should reset to 1
 		// basically count + 1 and every year reset to 1
@@ -272,8 +275,7 @@ class Bills_model extends MY_Model
 					WHERE
 						year(created_at) = '" . date('Y') . "'
 					) + 1,
-					invoice_date = '" .  date('Y-m-d H:i:s')  . "',
-					modified = '". $is_modified ."'
+					invoice_date = '" .  date('Y-m-d H:i:s')  . "'
 			WHERE
 				id = '" . $bill_id . "'
 				AND
@@ -291,4 +293,20 @@ class Bills_model extends MY_Model
 		}
 	}
 
+	// get open bills, used in owners & invoice
+	public function get_open_bills(int $owner, int $current_bill = BILL_INVALID)
+	{
+		return $this
+			->group_start()
+				->where("status", "=", BILL_DRAFT)
+				->where("status", "=", BILL_PENDING, true)
+				->where("status", "=", BILL_UNPAID, true)
+				->where("status", "=", BILL_INCOMPLETE, true)
+				->where("status", "=", BILL_OVERDUE, true)
+				->where("status", "=", BILL_ONHOLD, true)
+			->group_end()
+				->where("owner_id", "=", $owner)
+				->where("id", "!=", $current_bill)
+			->get_all();
+	}
 }

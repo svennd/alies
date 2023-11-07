@@ -76,14 +76,45 @@ class Stock_model extends MY_Model
 				$this->logs->logger(WARN, "increase_stock", "no RECORD found (adding one now) for pid:" . $product_id . " volume:" . $volume . " barcode:" . $barcode . " from:" . $location);
 				// to little info
 				$this->stock->insert(array(
-					"product_id" => $product_id,
-					"location" => $location,
-					"volume" => $volume,
-					"barcode" => $barcode,
+					"product_id" 	=> $product_id,
+					"location" 		=> $location,
+					"volume" 		=> $volume,
+					"barcode" 		=> $barcode,
 				));
 			}
 
 		}
+	}
+
+	/*
+		reduce the stock with a given volume and a specified stock_id
+	*/
+	public function reduce(int $stock_id, int $product_id, float $volume, int $location = INVALID)
+	{		
+		// if there is dead volume, add this to be removed from stock
+		$volume += $this->get_dead_volume($product_id);
+
+		# if logging is required also log this remove
+		if ($this->logs->min_log_level == DEBUG)
+		{
+			$this->logs->stock(DEBUG, "stock/reduce", $product_id, -$volume, $location);
+		}
+		
+		# update the stock
+		$sql = "
+				UPDATE
+					stock
+				SET
+					volume = volume - " . $volume . ",
+					state = CASE
+								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+								ELSE '" . STOCK_IN_USE . "'
+							END
+				WHERE
+					id = '" . $stock_id . "'
+				LIMIT 1;
+			";
+		return $this->db->query($sql);
 	}
 
 	/*

@@ -21,7 +21,7 @@ class Admin_invoice extends Admin_Controller
             $this->bills->bill_update($bill_id, array(
 										"vet" 		    => $this->input->post('vet'),
 										"location"		=> $this->input->post('location'),
-										"amount"		=> $this->input->post('amount'),
+										"total_brut"		=> $this->input->post('amount'),
 										"cash"		    => $this->input->post('cash'),
 										"card"		    => $this->input->post('card'),
 										"status"	    => $this->input->post('status'),

@@ -24,7 +24,12 @@
 						<label for="booking_code">Booking code</label>
 						<select name="booking_code" class="form-control" id="booking_code">
 							<?php foreach($booking as $t): ?>
-								<option value="<?php echo $t['id']; ?>" <?php echo ($t['id'] == $proc['booking_code']['id']) ? "selected='selected'":"";?>><?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?></option>
+								<option 
+									value="<?php echo $t['id']; ?>" 
+									<?php echo (isset($proc['booking_code']['id']) && $t['id'] == $proc['booking_code']['id']) ? "selected='selected'":"";?>
+								>
+									<?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?>
+								</option>
 							<?php endforeach; ?>
 						</select>
 					</div>

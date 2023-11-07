@@ -30,8 +30,8 @@ class Events_products_model extends MY_Model
 		$this->has_one['stock'] = array(
 					'foreign_model' => 'Stock_model',
 					'foreign_table' => 'stock',
-					'foreign_key' => 'barcode',
-					'local_key' => 'barcode'
+					'foreign_key' => 'id',
+					'local_key' => 'stock_id'
 				);
 				
 		$this->has_one['vaccine'] = array(
@@ -54,12 +54,11 @@ class Events_products_model extends MY_Model
 		parent::__construct();
 	}
 
-
 	public function get_monthly_earning(datetime $date)
 	{
 		$sql = "
 			SELECT 
-				sum(price) as total,
+				sum(price_net) as total,
 				btw
 			FROM
 				events_products

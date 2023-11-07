@@ -373,9 +373,11 @@ class Products extends Vet_Controller
 			$return = $this->get_procedures($query, $return);
 		}
 
-		echo json_encode(array("query" => $query, "suggestions" => $return));
+		// limit to max 50 results
+		echo json_encode(array("query" => $query, "suggestions" => array_slice($return, 0, 50)));
 	}
 
+	# probably broken due to type switch
 	private function get_gs1_barcode(array $gsl) {
 
 		// init
@@ -394,7 +396,6 @@ class Products extends Vet_Controller
 
 		# should only return a single result
 		$result = $stck['0'];
-		// var_dump($result);
 
 		$query_prices = $this->pprice->where(array('product_id' => (int)$result['pid']))->order_by('volume', 'ASC')->get_all();
 		$prices = array();
@@ -408,18 +409,17 @@ class Products extends Vet_Controller
 		$return[] = array(
 						"value" => $result['pname'],
 						"data" => array(
-								"type" 		=> "barcode",
 								"id" 			=> $result['pid'],
-								"lotnr"		=> $gsl['lotnr'],
-								"prices" 	=> $prices,
+								"lotnr"			=> $gsl['lotnr'],
+								"prices" 		=> $prices,
 								"barcode"		=> $result['barcode'], // internal barcode
-								"unit"		=> $result['unit_sell'],
+								"unit"			=> $result['unit_sell'],
 								"volume"		=> $result['volume'],
-								"btw" 		=> $result['btw_sell'],
-								"booking" => $result['booking_code'],
-								"vaccin"			=> $result['vaccin'],
+								"btw" 			=> $result['btw_sell'],
+								"booking"		=> $result['booking_code'],
+								"vaccin"		=> $result['vaccin'],
 								"vaccin_freq"	=> $result['vaccin_freq'],
-								"prod" 		=> 1,
+								"type" 			=> PRODUCT_BARCODE,
 							));
 
 		return $return;
@@ -427,16 +427,7 @@ class Products extends Vet_Controller
 
 	private function get_products($query, $return) {
 		# products
-		$result = $this->products
-							->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
-							->with_type()
-							->with_prices('fields: volume, price|order_inside:volume asc')
-							->with_stock('fields: location, eol, lotnr, volume, barcode, state|order_inside:eol asc', 'where:`state`=\'1\'')
-							->where('name', 'like', $query, true)
-							->where('sellable', '1')
-							->limit(250) # this will count both products + prices + stock (somehow)
-							->order_by("type", "ASC")
-							->get_all();
+		$result = $this->products->get_products($query);
 
 		# in case no results
 		if (!$result) { return $return; }
@@ -452,7 +443,7 @@ class Products extends Vet_Controller
 										"location" 	=> $s['location'],
 										"lotnr" 	=> $s['lotnr'],
 										"volume" 	=> $s['volume'],
-										"barcode" 	=> $s['barcode'],
+										"id" 		=> $s['id'],
 										"eol" 		=> $s['eol']
 										);
 				}
@@ -471,16 +462,15 @@ class Products extends Vet_Controller
 		$return[] = array(
 					"value" => $r['name'],
 					"data" 	=> array(
-										"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
-										"id" 					=> $r['id'],
+										"id" 				=> $r['id'],
 										"stock"				=> $stock,
 										"prices"			=> $prices,
 										"unit"				=> $r['unit_sell'],
-										"btw"					=> $r['btw_sell'],
-										"booking"			=> $r['booking_code'],
+										"btw"				=> $r['btw_sell'],
+										"booking"			=> $r['id'],
 										"vaccin"			=> $r['vaccin'],
-										"vaccin_freq"	=> $r['vaccin_freq'],
-										"prod"				=> 1
+										"vaccin_freq"		=> $r['vaccin_freq'],
+										"type"				=> PRODUCT
 									)
 					);
 		}
@@ -491,9 +481,9 @@ class Products extends Vet_Controller
 		query procedures
 	*/
 	private function get_procedures(string $query, array $list) {
-
 		$result = $this->procedures
 							->fields('id, name, price, booking_code')
+							->with_booking_code('fields:category, code, btw')
 							->where('name', 'like', $query, true)
 							->get_all();
 
@@ -503,15 +493,15 @@ class Products extends Vet_Controller
 			$list[] = array(
 								"value" => $r['name'],
 								"data" 	=> array(
-												"type" 		=> "Proc",
 												"id" 			=> $r['id'],
-												"price"		=> $r['price'],
-												"btw"			=> "21",
-												"booking"	=> $r['booking_code'],
-												"prod"		=> 0
+												"price"			=> $r['price'],
+												"btw"			=> (isset($r['booking_code']['btw'])) ?$r['booking_code']['btw'] : "21",
+												"booking"		=> (isset($r['booking_code']['id'])) ?$r['booking_code']['id'] : "99",
+												"type"			=> PROCEDURE
 											)
 							);
 		}
+
 		return $list;
 	}
 

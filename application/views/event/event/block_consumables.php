@@ -1,6 +1,6 @@
 <?php if ($consumables) : ?>
 	<?php foreach ($consumables as $product): ?>
-		<tr style="background-color: <?php echo ($product['price'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
+		<tr style="background-color: <?php echo ($product['price_brut'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
 			<td>
 				<?php echo $product['product']['name']; ?>
 			</td>
@@ -25,7 +25,7 @@
 			
 			</td>
 			<td>
-			<?php if (!empty($product['barcode'])) : ?>
+			<?php if (!empty($product['stock'])) : ?>
 				<small>eol: <?php echo user_format_date($product['stock']['eol'], $user->user_date); ?> lot: <?php echo $product['stock']['lotnr']; ?></small>
 			<?php else: ?>
 				<small>-</small>
@@ -35,12 +35,12 @@
 				<?php echo (!empty($product['btw'])) ? $product['btw'] : $product['product']['btw_sell']; ?>%
 			</td>
 			
-			<td><?php echo round($product['price'],2); ?> &euro; 
-				<?php $total += $product['price']; ?>
-				<?php $total_excl += $product['net_price']; ?>
+			<td><?php echo round($product['price_brut'],2); ?> &euro; 
+				<?php $total += $product['price_brut']; ?>
+				<?php $total_excl += $product['price_net']; ?>
 			</td>
 			<td>
-				<small><?php echo round($product['net_price'],2); ?> &euro;</small>
+				<small><?php echo round($product['price_net'],2); ?> &euro;</small>
 			</td>		
 			<td>
 				<?php if ($event_state != STATUS_CLOSED): ?>

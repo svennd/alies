@@ -68,16 +68,24 @@ function get_bill_status(int $status)
 {
 	switch ($status)
 	{
-		case PAYMENT_PAID:
+		case BILL_INVALID:
+			return "invalid";
+		case BILL_DRAFT:
+			return "draft";
+		case BILL_PENDING:
+			return "pending";
+		case BILL_UNPAID:
+			return "unpaid";
+		case BILL_INCOMPLETE:
+			return "incomplete";
+		case BILL_PAID:
 			return "Paid";
-		case PAYMENT_PARTIALLY:
-			return "Incomplete";
-		case PAYMENT_UNPAID:
-			return "Unpaid";
-		case PAYMENT_OPEN:
-			return "Open";
-		case PAYMENT_NON_COLLECTABLE:
-			return "Not collectable";
+		case BILL_OVERDUE:
+			return "overdue";
+		case BILL_ONHOLD:
+			return "onhold";
+		case BILL_HISTORICAL:
+			return "historical";
 		default:
 			return "unknown";
 	}

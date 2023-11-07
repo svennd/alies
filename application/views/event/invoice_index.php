@@ -1,6 +1,10 @@
 <?php $total = 0; ?>
 <?php $total_excl = 0; ?>
 <div class="table-responsive">
+    <!-- required for JS coloring -->
+    <input type="hidden" id="current_location_vet" name="current_location_vet" value="<?php echo $u_location; ?>" />
+    <input type="hidden" id="current_event" name="current_event" value="<?php echo $event_id; ?>" />
+
     <table class="table table-sm" id="invoice_table">
     <thead>
         <tr class="thead-light depad_header">
@@ -14,10 +18,10 @@
         </tr>
     </thead>
     <tbody>
-    <?php include "event/block_add_prod_proc.php"; ?>
+    <?php include "event/block_add.php"; ?>
+    <?php // include "event/block_add_prod_proc.php"; ?>
     <?php include "event/block_procedures.php"; ?>
     <?php include "event/block_consumables.php"; ?>
-    <?php // include "event/block_add_barcode.php"; ?>
     </tbody>
     <tfoot>
         <tr>

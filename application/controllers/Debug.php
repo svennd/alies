@@ -53,7 +53,7 @@ class Debug extends Vet_Controller
         # all bills will be closed
         $this->bills
                     ->where(array('owner_id' => $owner))
-                    ->update(array('status' => PAYMENT_PAID));
+                    ->update(array('status' => BILL_PAID));
 
         $this->logz->logger(WARN, "reset_events_owner", "reset owner: " . $owner);
 

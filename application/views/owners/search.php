@@ -143,7 +143,6 @@
 			<th><?php echo $this->lang->line('phone'); ?></th>
 			<?php endif; ?>
 			<th><?php echo $this->lang->line('last_visit'); ?></th>
-			<th><?php echo $this->lang->line('option'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -168,9 +167,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 		<?php foreach ($first_name as $res): ?>
@@ -194,9 +190,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 		<?php foreach ($street as $res): ?>
@@ -220,9 +213,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 		<?php foreach ($pets as $res): ?>
@@ -247,9 +237,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 		<?php foreach ($phone as $res): ?>
@@ -273,9 +260,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $res['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $res['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 		<?php foreach ($breeds as $breed): ?>
@@ -300,9 +284,6 @@
 			</td>
 			<?php endif; ?>
 			<td><?php echo $breed['last_bill']; ?></td>
-			<td>
-				<a class="btn btn-outline-success btn-sm" href="<?php echo base_url() . 'owners/edit/' . $breed['id']; ?>"><i class="fas fa-edit"></i> <?php echo $this->lang->line('edit'); ?></a>
-			</td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>
@@ -326,7 +307,6 @@ document.addEventListener("DOMContentLoaded", function(){
   	  },
 	  "columnDefs": [
 		{ "responsivePriority": 1, "targets": 1 },
-		{ "responsivePriority": 2, "targets": 7 },
 		{ "type": "date", "targets": 5 },
 		{ "targets": [ 0 ], "visible": false }
 	  ]

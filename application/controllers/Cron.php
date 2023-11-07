@@ -249,11 +249,11 @@ class Cron extends Frontend_Controller
 
 		# make a call for duplicate products that are exactly identical
 		# eg. multiple same lotnr & dates entered on a different date
-		$duplicates = $this->stock->fix_duplicates();
+		// $duplicates = $this->stock->fix_duplicates();
 
-		$this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
+		// $this->logs->logger(WARN, "total_merge_stats", "lines:" . $duplicates['lines_merged'] . " new_products:" . $duplicates['new_merged']);
 
-		echo "0 volume lines : " . $r . "\n" . $duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products \n";
+		// echo "0 volume lines : " . $r . "\n" . $duplicates['lines_merged'] . " duplicate lines merged for " . $duplicates['new_merged'] . " products \n";
     }
 
     // if vets forgot to close a report

@@ -116,7 +116,7 @@ class Products_model extends MY_Model
 		LEFT JOIN
 			stock
 		ON
-			ep.barcode = stock.barcode
+			ep.stock_id = stock.id
 		AND
 			events.location = stock.location
 		LEFT JOIN
@@ -235,5 +235,19 @@ class Products_model extends MY_Model
 	public function get_product_id(int $wholesale_id) {
 		$product_info = $this->fields('id')->where(array("wholesale" => $wholesale_id))->get();
 		return ($product_info) ? (int) $product_info['id']: false;
+	}
+
+	// used in products controller
+	public function get_products(string $query)
+	{
+		return $this
+			->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
+			->with_prices('fields: volume, price|order_inside:volume asc')
+			->with_stock('fields: id, location, eol, lotnr, volume, state|order_inside:eol asc', 'where:`state`=\'1\'')
+			->where('name', 'like', $query, true)
+			->where('sellable', '1')
+			->limit(250) # this will count both products + prices + stock (somehow)
+			->order_by("type", "ASC")
+			->get_all();
 	}
 }

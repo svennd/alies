@@ -14,6 +14,7 @@
 		  <th data-priority="2"><?php echo $this->lang->line('amount'); ?></th>
 		  <th><?php echo $this->lang->line('card'); ?></th>
 		  <th><?php echo $this->lang->line('cash'); ?></th>
+		  <th><?php echo $this->lang->line('transfer'); ?></th>
 		  <th data-priority="3"><?php echo $this->lang->line('vet'); ?></th>
 		  <th data-priority="4"><?php echo $this->lang->line('location'); ?></th>
 		</tr>
@@ -32,9 +33,10 @@
 		</td>
 		  <td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
 		  <td><?php echo get_bill_status($bill['status']); ?></td>
-		  <td><?php echo $bill['amount']; ?></td>
+		  <td><?php echo $bill['total_brut']; ?></td>
 		  <td><?php echo $bill['card']; ?></td>
 		  <td><?php echo $bill['cash']; ?></td>
+		  <td><?php echo $bill['transfer']; ?></td>
 		  <td><?php echo $bill['vet']['first_name']; ?></td>
 		  <td><?php echo $bill['location']['name']; ?></td>
 		</tr>

@@ -102,14 +102,15 @@ define('STATUS_HISTORY', 2); /* added report now only for historical purpose */
 
 ## bill constants
 # status
-define('BILL_DRAFT', 0); # initial stage
-define('BILL_PENDING', 1); # created but no invoice yet
-define('BILL_UNPAID', 2); # its an invoice but not paid yet
-define('BILL_PARTIALLY', 3); # payement partially
-define('BILL_PAID', 4); # complete
-define('BILL_OVERDUE', 5); # not paid and beyond due date
-define('BILL_ONHOLD', 6); # might be complete, but verficiation needed
-define('BILL_HISTORICAL', 7); # imported bills
+define('BILL_INVALID', -1);     # generic invalid
+define('BILL_DRAFT', 0);        # when bill_id is created and assigned to owner
+define('BILL_PENDING', 1);      # the bill is calculated
+define('BILL_UNPAID', 2);       # ???
+define('BILL_INCOMPLETE', 3);   # incomplete or no payment, but stock has been dropped
+define('BILL_PAID', 4);         # fully payed bill, invoice_id generated
+define('BILL_OVERDUE', 5);      # not paid and beyond due date -- not implemented
+define('BILL_ONHOLD', 6);       # might be complete, but verficiation needed -- not implemented
+define('BILL_HISTORICAL', 7);   # imported bills
 
 # event / bill payed
 define('PAYMENT_OPEN', 0); // init
@@ -142,6 +143,7 @@ define('MALE_NEUTERED', 2);
 define('FEMALE_NEUTERED', 3);
 
 # stock states
+define('INVALID', -1);
 define('STOCK_CHECK', 0);
 define('STOCK_IN_USE', 1);
 define('STOCK_HISTORY', 2);
@@ -164,3 +166,17 @@ define('LAB', 3);
 define('PAYMENT_CASH', 0);  # cash money
 define('PAYMENT_CARD', 1);  # credit card or debit card
 define('PAYMENT_TRANSFER', 2); # by bank transfer
+
+# product or procedure
+define('PROCEDURE', 0);
+define('PRODUCT', 1);
+define('PRODUCT_BARCODE', 2);
+
+# procedure flags
+define('FLAG_PET_DEAD', 1); # mark the pet as passed away
+define('FLAG_NEUTERED', 2); # mark the pet as neutered
+
+# pdf modes
+define('PDF_DOWNLOAD', 1); # download file
+define('PDF_STREAM', 2); # view file
+define('PDF_FILE', 3); # store on filesystem

@@ -45,18 +45,25 @@ class Events extends Vet_Controller
 
 	public function event($event_id, $update = false)
 	{
-		$event_info 		= $this->events->with_vet('fields: first_name')->with_vet_1_sup('fields: first_name')->with_vet_2_sup('fields: first_name')->get($event_id);
+		$event_info 		= $this->events
+										->with_vet('fields: first_name')
+										->with_vet_1_sup('fields: first_name')
+										->with_vet_2_sup('fields: first_name')
+									->get($event_id);
+
 		$pet_id 			= $event_info['pet'];
-		$pet_info 			= $this->pets->with_breeds()->with_pets_weight()->get($pet_id);
+		$pet_info 			= $this->pets->with_pets_weight()->get($pet_id);
 		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
+
+		# todo : write a custom function for this, too complex
 		$eprod 				= $this->eprod
 										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
-										->with_stock('fields: eol, lotnr, barcode')
+										->with_stock('fields: eol, lotnr, id')
 										->with_prices('fields: volume, price|order_inside:volume asc')
-										->with_vaccine('fields: id, redo, no_rappel')
+										// ->with_vaccine('fields: id, redo, no_rappel')
 										->where(array("event_id" => $event_id))
 										->get_all();
-										
+		
 		$data = array(
 			"event_state"		=> $event_info['status'],
 			"owner"				=> $this->owners->get($pet_info['owner']),
@@ -88,111 +95,200 @@ class Events extends Vet_Controller
 		}
 	}
 
-		// jquery push from events/block_add*
-		public function add_line(int $event_id, int $type)
+	/**
+	 * jquery push from events/block_add*
+	 *
+	 * @param int $event_id The ID of the event to add the line to.
+	 * @param int $type The type of the line to add.
+	 * @return void
+	 */
+	public function add_line(int $event_id, int $type)
+	{
+		if ($this->events->get_status($event_id) != STATUS_OPEN) {
+			return false;
+		}	
+
+		// init
+		$content_specific_array = array();
+
+		// clean post values
+		$line 	= (int) $this->input->post('line');
+		$name 	= $this->input->post('title');
+		$volume = $this->input->post('volume');
+		$vaccin = (bool) $this->input->post('vaccin');
+		$vaccin_freq = (int) $this->input->post('vaccin_freq');
+		$stock = (int) $this->input->post('stock');
+
+		// verify the booking code/btw wasn't changed
+		list ($btw, $booking) = $this->check_booking(
+			(int) $this->input->post('btw'), 
+			(int) $this->input->post('booking'), 
+			(int) $this->input->post('booking_default')
+		);
+
+		// add line to events_procedures
+		if ($type == PROCEDURE)
 		{
-			if ($this->events->get_status($event_id) != EVENT_STATUS_OPEN) {
-				return false;
-			}
-	
-			// clean post values
-			$line 	= (int) $this->input->post('line');
-			$name 	= $this->input->post('title');
-			$volume = $this->input->post('volume');
-	
-			// verify the booking code/btw wasn't changed
-			list ($btw, $booking) = $this->check_booking(
-				(int) $this->input->post('btw'), 
-				(int) $this->input->post('booking_code'), 
-				(int) $this->input->post('booking_default')
-			);
-	
-			// add line to events_procedures
-			if ($type == PROCEDURE)
-			{
-				list($return_id, $unit_price, $net_price, $brut_price) = $this->add_procedure($line, $volume, $btw, $event_id);
-			}
-			// add line to events_products
-			elseif ($type == PRODUCT)
-			{
-				list($return_id, $unit_price, $net_price, $brut_price) = $this->add_product($line, $volume, $btw, $event_id, (int) $this->input->post('stock'));
-				
-				// check if vaccine (todo)
-				// $this->is_it_a_vaccine();
-			}
-	
-			// in both cases add to events_lines (for billing)
-			$eline = $this->elines->insert(array(
-				"event"			=> $event_id,
-				"name"			=> $name, // billing text
-				"pid"			=> $line, // contains prod or proc id
-				"type"			=> $type, // CONSTANT value
-				"volume"		=> $volume,
-				"unit_price"	=> $unit_price,
-				"net_price" 	=> $net_price, // unit*volume
-				"brut_price" 	=> $brut_price, // unit*volume*(1+(btw/100))
-				"btw" 			=> $btw,
-				"booking" 		=> $booking
-			));
-	
-			echo json_encode(
-					array(
-						"eline_id" 	=> $eline, 
-						"item_id" 	=> $return_id, 
-						"name" 		=> $name, 
-						"volume"	=> $volume, 
-						"net_price" => $net_price, 
-						"unit_price"=> $unit_price, 
-						"brut_price"=> $brut_price, 
-						"btw" 		=> $btw
-					));
+			list($return_id, $net_price, $brut_price, $btw) = $this->add_procedure($line, $volume, $btw, $booking, $event_id);
+
 		}
-	
-		// add line to procedures
-		private function add_procedure(int $proc, $volume, $btw, int $event)
+		// add line to events_products
+		elseif ($type == PRODUCT)
 		{
-			// price calculation procedures
-			$proc_info 	= $this->proc->fields('price')->get($proc);
-			$unit_price = (float) $proc_info['price'];
-			$net_price 	= $unit_price * $volume;
-			$brut_price = $net_price * round(1 + ($btw/100), 2);
-	
-			// enter in events_proc
-			$return = $this->eproc->insert(array(
-				'proc' 		=> $proc,
-				'event' 	=> $event,
-				'volume' 	=> $volume,
-			));
-			return array($return, $unit_price, $net_price, $brut_price);
+			list($return_id, $net_price, $brut_price, $btw) = $this->add_product(
+												$line, 
+												$volume, 
+												$btw, 
+												$booking,
+												$event_id, 
+												$stock
+											);
+			
+			// if its a vaccine add it to this pet
+			$this->add_vaccine($vaccin, $vaccin_freq, $line, $name, $event_id);
+
+			// add stock info
+			$stock_info = $this->stock->fields('id, lotnr, eol, volume')->get($stock);
+			$content_specific_array = array(
+					"stock_lotnr"	=> $stock_info['lotnr'],
+					"stock_eol"		=> $stock_info['eol'],
+					"stock_volume"	=> $stock_info['volume'],
+				);
 		}
-	
-		// add line to product
-		private function add_product(int $prod, $volume, $btw, int $event, int $stock)
+
+		echo json_encode(
+			array_merge(
+				array(
+					"name" 			=> $name, 
+					"volume"		=> $volume, 
+					"return"		=> $return_id, 
+					"btw" 			=> $btw,
+					"net_price" 	=> $net_price,
+					"brut_price"	=> $brut_price,
+					"type"			=> $type,
+					"event_id"		=> $event_id
+				),
+				$content_specific_array
+			)
+		);
+	}
+
+
+	// check if there are flags to proc
+	private function process_flags(int $line, int $event_id)
+	{
+		// check if this procedure has a flag 
+		$flag = $this->proc->fields('flag')->get($line);
+
+		if (is_null($flag))
 		{
-			// price calculation
-			list($net_price, $unit_price) = $this->calculate_price_product($prod, $volume);
-			$brut_price = $net_price * round(1 + ($btw/100), 2);
-	
-			$return = $this->eprod->insert(array(
-				'product' 	=> $prod,
-				'event' 	=> $event,
-				'volume' 	=> $volume,
-				'stock' 	=> $stock,
-			));
-			return array($return, $unit_price, $net_price, $brut_price);
+			return true;
 		}
-	
-		// check if the vet changed the booking code,
-		// possible lower or higher btw
-		private function check_booking(int $btw, int $booking, int $booking_default)
+		elseif ($flag == FLAG_PET_DEAD)
 		{
-			if ($booking_default != $booking) {
-				$result 	= $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
-				$booking 	= $result['id'];
-				$btw 		= $result['btw'];
-			}
-			return array($btw, $booking);
+			// set the pet as passed away
+			$event = $this->events->fields('pet')->get($event_id);
+			$this->pets->update(
+									array(
+											"death" => 1, 
+											"death_date" => date("Y-m-d")
+									), $event['pet']);
+
+			$this->logs->logger(DEBUG, "flag_pet_dead", "set pet " . $event['pet'] . " as dead after flag procedure");
 		}
+		elseif ($flag == FLAG_NEUTERED)
+		{
+			// set the pet as passed away
+			$event = $this->events->fields('pet')->get($event_id);
+			$this->pets->update(
+									array(
+											"death" => 1, 
+											"death_date" => date("Y-m-d")
+									), $event['pet']);
+		}
+	}
+
+	// add line to procedures
+	private function add_procedure(int $proc, $volume, int $btw, int $booking, int $event)
+	{
+		// price calculation procedures
+		$proc_info 	= $this->procedures->fields('price')->get($proc);
+		$unit_price = (float) $proc_info['price'];
+
+		$net_price 	= $unit_price * $volume;
+		$brut_price = $net_price * round(1 + ($btw/100), 2);
+
+		// enter in events_proc
+		$id = $this->eproc->insert(array(
+			'procedures_id' 	=> $proc,
+			'event_id' 			=> $event,
+			'volume' 			=> $volume,
+			'price_net'			=> $net_price,
+			'price_brut'		=> $brut_price,
+			'btw'				=> $btw,
+			'booking'			=> $booking,
+		));
+
+		return array($id, $net_price, $brut_price, $btw);
+	}
+
+	// add line to product
+	private function add_product(int $prod, $volume, int $btw, int $booking, int $event, int $stock)
+	{
+		// price calculation
+		list($net_price, $unit_price) = $this->calculate_price_product($prod, $volume);
+		$brut_price = $net_price * round(1 + ($btw/100), 2);
+
+		$id = $this->eprod->insert(array(
+			'product_id' 	=> $prod,
+			'event_id' 		=> $event,
+			'volume' 		=> $volume,
+			'price_net' 	=> $net_price,
+			'price_brut' 	=> $brut_price,
+			'unit_price'	=> $unit_price,
+			'btw' 			=> $btw,
+			'booking' 		=> $booking,
+			'stock_id' 		=> $stock
+		));
+
+		return array($id, $net_price, $brut_price, $btw);
+	}
+
+	// check if its a vaccine and add it to the vaccine table
+	private function add_vaccine(bool $is_vaccin, int $vaccin_freq, int $product_id, string $product_name, int $event)
+	{
+		if (!$is_vaccin) { return true; }
+
+		// get pet id
+		$event = $this->events->fields('pet')->get($event);
+
+		// calculate redo date
+		$date = new DateTime();
+		$date->modify('+' . $vaccin_freq . ' day');
+
+		return $this->vaccine->insert(array(
+									"product_id" 	=> $product_id,
+									"event_id" 		=> $event,
+									"product"		=> $product_name, # backup in case product_id ever gets removed/renamed to something else
+									"pet"			=> $event['pet'],
+									"redo"			=> $date->format('Y-m-d'),
+									"no_rappel"		=> 0,
+									"location"		=> $this->user->current_location,
+									"vet"			=> $this->user->id
+								));
+	}
+
+	// check if the vet changed the booking code,
+	// possible lower or higher btw
+	private function check_booking(int $btw, int $booking, int $booking_default)
+	{
+		if ($booking_default != $booking && $booking != 0) {
+			$result 	= $this->booking->fields('btw, id')->get($booking);
+			$booking 	= $result['id'];
+			$btw 		= $result['btw'];
+		}
+		return array($btw, $booking);
+	}
 		
 	# annoying but its allowed
 	# edit the price based on what the vet tells us
@@ -219,7 +315,7 @@ class Events extends Vet_Controller
 
 		$eprod 	= $this->eprod
 						->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
-						->with_stock('fields: eol, lotnr, barcode')
+						->with_stock('fields: eol, lotnr, id')
 						->with_prices('fields: volume, price|order_inside:volume asc')
 						->with_vaccine('fields: id, redo')
 						->where(array("event_id" => $event_id))
@@ -281,103 +377,14 @@ class Events extends Vet_Controller
 		redirect('events/edit_price/' . $event_id, 'refresh');
 	}
 
-	public function add_proc_prod($event_id)
-	{
-		if ($this->events->get_status($event_id) != STATUS_OPEN) {
-			echo "cannot change due to status";
-			return false;
-		}
-
-		$pid = (int) $this->input->post('pid');
-		$btw = (float) $this->input->post('btw');
-		$booking = $this->input->post('booking_default');
-
-		# nothing given
-		if (!$pid) {
-			redirect('events/event/' . $event_id);
-		}
-
-		if ($this->input->post('prod')) {
-			// check if we have to deal with a differnt booking_code + btw
-			if ($this->input->post('booking_default') != $this->input->post('booking_code')) {
-				$result = $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
-				$booking = $result['id'];
-				$btw = (float) $result['btw'];
-			}
-
-			// add product to event
-			if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
-			list($price, $net_price) = $this->calculate_price_product($pid, $this->input->post('volume'), $btw);
-
-			$prod_line = $this->eprod->insert(array(
-								"product_id" 	=> $pid,
-								"event_id"		=> $event_id,
-								"volume"		=> $this->input->post('volume'),
-								"barcode"		=> (!empty($this->input->post('barcode'))) ? $this->input->post('barcode') : '',
-								"btw"			=> $btw,
-								"booking"		=> $booking,
-								"price"			=> $price,
-								"net_price"		=> $net_price,
-							));
-
-			# in case its a vaccin
-			# add it to the table
-			if ($this->input->post('vaccin')) {
-				$event = $this->events->fields('pet')->get($event_id);
-
-				$date = new DateTime();
-				$date->modify('+' . $this->input->post('vaccin_freq') . ' day');
-
-				$this->vaccine->insert(array(
-											"product_id" 	=> $pid,
-											"event_id" 		=> $event_id,
-											"event_line"	=> $prod_line,
-											"pet" 				=> $event['pet'],
-											"redo"				=> $date->format('Y-m-d'),
-											"no_rappel"		=> 0,
-											"location"		=> $this->user->current_location,
-											"vet"					=> $this->user->id
-										));
-			}
-
-			redirect('events/event/' . $event_id);
-		} else {
-			// check if we have to deal with a differnt booking_code + btw
-			if ($this->input->post('booking_default') != $this->input->post('booking_code')) {
-				$result 	= $this->booking->fields('btw, id')->get($this->input->post('booking_code'));
-				$booking 	= $result['id'];
-				$btw 			= $result['btw'];
-			}
-
-			// add procedure to event
-			$volume = (empty($this->input->post('volume'))) ? 1 : $this->input->post('volume');
-
-			// don't trust the vet recalculate based on input
-			$proc_info = $this->procedures->where(array("id" => $pid))->get();
-
-			$net_price = (float)$proc_info['price'] * $volume;
-
-			$this->eproc->insert(array(
-						"procedures_id" 	=> $pid,
-						"event_id" 			=> $event_id,
-						"amount"			=> $volume,
-						"net_price" 		=> $net_price,
-						"booking" 			=> $booking,
-						"price" 			=> round(($net_price * (1 + ($btw/100))), 4, PHP_ROUND_HALF_UP),
-						"btw" 				=> $btw
-					));
-			redirect('events/event/' . $event_id);
-		}
-	}
-
-	private function calculate_price_product($pid, $volume, $btw)
+	private function calculate_price_product(int $pid, $volume)
 	{
 		$this->load->model('Product_price_model', 'prices');
 
 		# get all prices in a sortable array
 		$all_prices = $this->prices->fields('volume, price')->order_by("volume", "ASC")->where(array("product_id" => $pid))->get_all();
 		$prices = array();
-		// var_dump($all_prices);
+		
 		foreach ($all_prices as $price) {
 			$prices[] = $price['price'];
 			$volumes[] = $price['volume'];
@@ -386,8 +393,6 @@ class Events extends Vet_Controller
 
 		# determ the price to use per volume
 		$to_use_price = ($size_prices == 1) ? $prices[0]: 0;
-
-		// var_dump($volumes, $prices);
 
 		if ($size_prices > 1) {
 			array_multisort($volumes, $prices);
@@ -403,14 +408,11 @@ class Events extends Vet_Controller
 			}
 		}
 		$net_price = $to_use_price * $volume;
-		$price = round(($net_price * (1 + ($btw/100))), 4, PHP_ROUND_HALF_UP);
 
-		// var_dump($to_use_price);
-		// var_dump(array($price, $net_price));
-		return array($price, $net_price);
+		return array($net_price, $to_use_price);
 	}
 
-	public function edit_vaccin($event_id, $id)
+	public function edit_vaccin(int $event_id, int $id)
 	{
 		if ($this->input->post('disable'))
 		{
@@ -438,7 +440,7 @@ class Events extends Vet_Controller
 	}
 
 	# remove a procedure
-	public function proc_remove($event_id, $ep_id)
+	public function proc_remove(int $event_id, int $ep_id)
 	{
 		if ($this->events->get_status($event_id) != STATUS_OPEN) {
 			echo "cannot change due to status";
@@ -459,25 +461,22 @@ class Events extends Vet_Controller
 	#
 
 	# adapt product
-	public function prod_edit($event_id)
+	public function prod_edit(int $event_id)
 	{
 		if ($this->events->get_status($event_id) != STATUS_OPEN) {
 			echo "cannot change due to status";
 			return false;
 		}
-		if ($this->input->post('submit') == 'edit_prod') {
-			if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
-			list($price, $net_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'), $this->input->post('btw'));
-			$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
-														"volume" 		=> $this->input->post('volume'),
-														"price"			=> $price,
-														"net_price"		=> $net_price,
-										));
-			redirect('/events/event/' . $event_id);
-		} else {
-			echo "no post data";
-			return false;
-		}
+		
+		if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
+		
+		list($price, $net_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'), $this->input->post('btw'));
+		$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
+													"volume" 		=> $this->input->post('volume'),
+													"price_brut"	=> $price,
+													"price_net"		=> $net_price,
+									));
+		redirect('/events/event/' . $event_id);
 	}
 
 	# remove a product
@@ -491,7 +490,7 @@ class Events extends Vet_Controller
 		$this->eprod->delete($product_id);
 
 		# in case its an vaccine
-		$this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
+		// $this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
 
 		# push an event update
 		$this->events->update(array(), $event_id);
