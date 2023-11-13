@@ -55,7 +55,6 @@
       <?php include 'blocks/header_admin.php'; ?>
 	  <?php endif; ?>
 
-    
     <?php if($this->ion_auth->in_group("accounting")): ?>
       <?php include 'blocks/header_accounting.php'; ?>
     <?php endif; ?>

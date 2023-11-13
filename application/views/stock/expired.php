@@ -17,7 +17,6 @@
 					<th><?php echo $this->lang->line('lotnr'); ?></th>
 					<th><?php echo $this->lang->line('volume'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
-					<th><?php echo $this->lang->line('barcode'); ?></th>
 					<th><?php echo $this->lang->line('option'); ?></th>
 				</tr>
 				</thead>
@@ -27,10 +26,9 @@
 				<tr>
 					<td><?php echo $expire['products']['name']; ?></td>
 					<td data-sort="<?php echo strtotime($expire['eol']); ?>"><?php echo date_format(date_create($expire['eol']), $user->user_date); ?></td>
-					<td><?php echo $expire['lotnr']; ?></td>
+					<td><?php echo strlen($expire['lotnr']) > 20 ? substr($expire['lotnr'], 0, 17) . "..." : $expire['lotnr']; ?></td>
 					<td><?php echo $expire['volume']; ?> <?php echo $expire['products']['unit_buy']; ?></td>
 					<td><?php echo $expire['stock_locations']['name']; ?></td>
-					<td><?php echo $expire['barcode']; ?></td>
           <td>
             <?php
               $date = new DateTime($expire['eol']);
@@ -38,13 +36,7 @@
 
               if($date < $now):
             ?>
-            <form action="<?php echo base_url(); ?>stock/write_off" method="post" autocomplete="off">
-    					<input type="hidden" name="volume" value="<?php echo $expire['volume']; ?>">
-    					<input type="hidden" name="product_id" value="<?php echo $expire['products']['id']; ?>">
-    					<input type="hidden" name="location" value="<?php echo $expire['stock_locations']['id']; ?>">
-    					<input type="hidden" name="barcode" value="<?php echo $expire['barcode']; ?>">
-    				  <button type="submit" name="submit" value="write_off_q" class="btn btn-primary">Write off</button>
-    				</form>
+           	<a href="<?php echo base_url('stock/write_off_full/' . $expire['id']); ?>" class="btn btn-danger btn-sm"><?php echo $this->lang->line('writeoff'); ?></a>
             <?php endif; ?>
           </td>
 				</tr>

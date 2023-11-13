@@ -37,7 +37,7 @@
 						}
 						if ($pet['death'])
 						{
-							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
+							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P4W')));
 							if($isLongerThanTwoWeeksAgo)
 							{
 								continue;
@@ -45,13 +45,15 @@
 						}
 					?>
 					<?php $age = timespan(strtotime($pet['birth']), time(), 1); ?>
-						<li class="list-group-item <?php if($pet['death']): ?>list-group-item-warning<?php endif; ?>">
+						<li class="list-group-item">
 							<div class="row">
 								<div class="col-lg-12 col-sm-12 col-xl-2">
-									<?php echo get_symbol($pet['type']); ?>
-									<?php echo $pet['name']; ?>
+									<?php if($pet['death']): ?><i class="fa-solid fa-cross text-danger"></i><?php endif; ?>
+									<a href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>">
+										<?php echo get_symbol($pet['type']); ?>
+										<?php echo $pet['name']; ?>
+									</a>
 									<?php echo ($age < 30) ? '(' . $age . ')' : ''; ?>
-									<?php if($pet['death']): ?><i class="fa-solid fa-cross"></i><?php endif; ?>
 									<hr class="mt-2 mb-3 d-xl-none" style="border-top: 1px solid rgba(0, 0, 0, 0.1);"/>
 								</div>
 
@@ -183,7 +185,10 @@
 			</ul>
 		</div>
 		<?php endif; ?>
+		<!-- only for admin -->
+		<?php if ($this->ion_auth->in_group("admin")): ?>
 		<a class="btn btn-outline-danger d-none d-sm-block" href="<?php echo base_url() . 'debug/index/' . $owner['id']; ?>"><i class="fas fa-bug"></i> Debug</a>
+		<?php endif; ?>
 	</div>
 
 </div>

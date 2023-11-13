@@ -17,6 +17,7 @@
 		<?php include "fiche/block_weight.php"; ?>
 		<?php include "fiche/block_birth.php"; ?>
 		<?php include "fiche/block_nutrition.php"; ?>
+		<?php include "fiche/block_medication.php"; ?>
 		<?php include "fiche/block_other_pets.php"; ?>
 	</div>
 </div>

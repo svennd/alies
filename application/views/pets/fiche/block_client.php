@@ -9,7 +9,7 @@
 				</div>
 				<div class="mb-0 text-gray-800">
 					<small>#<?php echo $owner['id']; ?></small><br/>
-					<?php echo $owner['street'] . ' ' . $owner['nr']. ' ' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
+					<?php echo $owner['street'] . ' ' . $owner['nr']. '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
 					<?php if ($owner['telephone']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['telephone']; ?><br/><?php endif; ?>
 					<?php if ($owner['mobile']) : ?><abbr title="Mobile">M:</abbr> <?php echo $owner['mobile']; ?><br/><?php endif; ?>
 				</div>

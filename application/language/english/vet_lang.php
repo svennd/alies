@@ -69,6 +69,12 @@ $lang['search_client']  = 'Search Client';
 $lang['disable_client']  = 'Disable Client';
 $lang['edit_client']  = 'Edit Client';
 
+# change owner
+$lang['current_owner']   = 'Current owner';
+$lang['new_owner']   = 'New owner';
+$lang['change_owner']   = 'Change owner';
+$lang['change']   = 'Change';
+
 # invoices
 $lang['title_invoice']   = 'Search invoices';
 $lang['no_invoices']     = 'No invoices';
@@ -84,6 +90,7 @@ $lang['vacc_nr']    = 'Vaccine book number';
 $lang['age']        = 'Age';
 $lang['nutrition']  = 'Nutrition';
 $lang['other_pets']  = 'Other pets';
+$lang['not_finished']  = 'Not finished';
 
 ## history
 $lang['history']  = 'History';
@@ -103,6 +110,7 @@ $lang['title_vaccines']  = 'Vaccinations';
 $lang['exp_date']  = 'Expiry date';
 $lang['rappel_date']  = 'Rappel Date';
 $lang['disable']  = 'Disable';
+$lang['enable']  = 'Enable';
 $lang['injection']  = 'Injection';
 
 ## menu
@@ -222,6 +230,7 @@ $lang['disease']             = 'disease';
 $lang['operation']             = 'operation'; 
 $lang['medicine']             = 'medication'; 
 $lang['no_history']             = 'hide'; 
+$lang['no_history_explain']             = 'hidden events'; 
 $lang['no_history_txt']             = 'No history'; 
 $lang['history']             = 'show'; 
 
@@ -325,6 +334,7 @@ $lang['AllVets']                = 'Everyone';
 $lang['OnlyMe']                 = 'Only me'; 
 $lang['created_at']                 = 'Created'; 
 $lang['ago']                 = 'ago'; 
+$lang['no_recent_reports']      = 'No recent reports.';
 
 
 # add stock
@@ -335,6 +345,7 @@ $lang['wholesale_link']     = "Wholesale link";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "or";
+$lang['reason']                    = "reason";
 
 # stock / product index
 $lang['list_products']         = "Product List";

@@ -14,10 +14,31 @@ foreach ($locations as $l)
 			<?php echo (isset($product['name'])) ? $product['name']: '' ?>
 		</div>
 		<div class="dropdown no-arrow">
-			<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
 			<?php if ($this->ion_auth->in_group("admin")): ?>
+				<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
 				<a href="<?php echo base_url('products/product/' . $product['id']); ?>"class="btn btn-outline-success btn-sm ml-3"><i class="far fa-edit"></i> Edit</a>
 				<a href="<?php echo base_url('pricing/prod/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-euro-sign"></i> Pricing</a>
+			<?php else: ?>
+
+				<?php if($local_limit > 0): ?>
+					<?php if($local_limit <= $local_stock): ?>
+						<a href="#"class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('local_stock'); ?>"><i class="fa-solid fa-house-circle-check"></i> +<?php echo $local_limit . ' '. $product['unit_sell']; ?></a>
+					<?php else: ?>
+						<a href="#"class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('local_stock'); ?>"><i class="fa-solid fa-house-circle-check"></i> <?php echo floatval($local_stock) . ' '. $product['unit_sell']; ?></a>
+					<?php endif; ?>
+				<?php endif; ?>
+
+				
+				<?php if($product['limit_stock'] > 0): ?>
+					<?php if($product['limit_stock'] <= $global_stock): ?>
+						<a href="#"class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('global_stock'); ?>"><i class="fa-solid fa-globe"></i> +<?php echo $product['limit_stock'] . ' '. $product['unit_sell']; ?></a>
+					<?php else: ?>
+						<a href="#"class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('global_stock'); ?>"><i class="fa-solid fa-globe"></i> <?php echo floatval($global_stock) . ' '. $product['unit_sell']; ?></a>
+					<?php endif; ?>
+				<?php else: ?>
+					<a href="#"class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('global_stock'); ?>"><i class="fa-solid fa-globe"></i> <?php echo floatval($global_stock) . ' '. $product['unit_sell']; ?></a>
+				<?php endif; ?>
+
 			<?php endif; ?>
 		</div>
 	</div>
@@ -31,44 +52,8 @@ foreach ($locations as $l)
 			<div class="col-sm-4">
 				<div class="row">
 					<div class="col-sm-5">
-						<?php if($local_limit > 0): ?>
-							<?php if($local_limit <= $local_stock): ?>
-								<div class="rounded" style="border:1px solid #9ad99e; padding:5px; background-color:#f3fef3;">
-									<span style="color:#639d6d;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('local_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo floatval($local_stock) . '/' . $local_limit . ' '. $product['unit_sell']; ?></small></span>
-								</div>
-							<?php else: ?>
-								<div class="rounded" style="border:1px solid #d76207; padding:5px; background-color:#d7070708;">
-									<span style="color:#d76207;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('local_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo floatval($local_stock) . '/' . $local_limit . ' '. $product['unit_sell']; ?></small></span>
-								</div>
-							<?php endif; ?>
-						<?php else: ?>
-								<div class="rounded" style="border:1px solid #efefef; padding:5px;">
-									<span style="color:#639d6d;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('local_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo $local_stock . ' ' . $product['unit_sell']; ?></small></span>
-								</div>
-						<?php endif; ?>
 					</div>
 					<div class="col-sm-5">
-						<?php if($product['limit_stock'] > 0): ?>
-							<?php if($product['limit_stock'] <= $global_stock): ?>
-								<div class="rounded" style="border:1px solid #9ad99e; padding:5px; background-color:#f3fef3;"><!-- green -->
-									<span style="color:#639d6d;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('global_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo floatval($global_stock) . '/' . floatval($product['limit_stock']) . ' '. $product['unit_sell']; ?></small></span>
-								</div>
-							<?php else: ?>
-								<div class="rounded" style="border:1px solid #d76207; padding:5px; background-color:#d7070708;"><!-- red -->
-									<span style="color:#d76207;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('global_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo floatval($global_stock) . '/' . floatval($product['limit_stock']) . ' '. $product['unit_sell']; ?></small></span>
-								</div>
-							<?php endif; ?>
-						<?php else: ?>
-								<div class="rounded" style="border:1px solid #efefef; padding:5px;"><!-- grey -->
-									<span style="color:#639d6d;"><i class="fas fa-circle"></i></span> <?php echo $this->lang->line('global_stock'); ?><br/>
-									<span class="pl-4"><small><?php echo floatval($global_stock) . ' ' . $product['unit_sell']; ?></small></span>
-								</div>
-						<?php endif; ?>
 					</div>
 				</div>
 			</div>
@@ -82,7 +67,7 @@ foreach ($locations as $l)
 				if (count($product['prices']) > 1)
 				{
 					echo '<a data-toggle="collapse" href="#collapse' . $product['id'] . '" role="button" style="color:#fa591d;" aria-expanded="false" aria-controls="collapse' . $product['id'] . '">' . $product['prices'][0]['price'] . '~' . $product['prices'][sizeof($product['prices']) - 1]['price']. '&euro;</a> / ' . $product['prices']['0']['volume'] . ' '. $product['unit_sell'];
-					echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='table small'>";
+					echo "<div class='collapse' id='collapse" . $product['id'] . "'><table class='table table-sm small'>";
 					foreach ($product['prices'] as $price)
 					{
 						echo "<tr><td>". $price['volume'] ." ". $product['unit_sell']."</td><td>". $price['price'] ." &euro;</td><tr>";
@@ -119,13 +104,13 @@ foreach ($locations as $l)
 		<div class="card shadow mb-4">
 			<div class="card-header border-bottom">
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Info</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="false">Stock</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Info</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link active" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="true">Stock</a></li>
 			</ul>
 			</div>
 			<div class="card-body">
 				<div class="tab-content" id="myTabContent">
-					<div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
+					<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
 						<div class="row mt-3">
 							<div class="col-sm-6">
 								<h5>
@@ -230,7 +215,7 @@ foreach ($locations as $l)
 						<hr />
 						<small><?php echo $this->lang->line('product_entered'); ?> : <?php echo user_format_date($product['created_at'], $user->user_date); ?>,  <?php echo $this->lang->line('last_update'); ?> : <?php echo user_format_date($product['updated_at'], $user->user_date); ?></small>
 					</div>
-					<div class="tab-pane fade" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
+					<div class="tab-pane fade active show" id="stocktabs" role="tabpanel" aria-labelledby="stocktabs-tab">
 						<?php if (isset($product['stock'])):
 
 						 // check if local stock is empty
@@ -239,19 +224,20 @@ foreach ($locations as $l)
 						?>
 						<div class="row mt-3">
 							<div class="col-sm-12">
-								<h5><?php echo $this->lang->line('global_stock'); ?></h5>
-								<table class="table">
-								<tr>
-									<td><?php echo $this->lang->line('eol'); ?></td>
-									<td><?php echo $this->lang->line('lotnr'); ?></td>
-									<td><?php echo $this->lang->line('volume'); ?></td>
-									<td><?php echo $this->lang->line('location'); ?></td>
-									<td><?php echo $this->lang->line('barcode'); ?></td>
-									<td><?php echo $this->lang->line('added'); ?></td>
-									<td><?php echo $this->lang->line('writeoff'); ?></td>
-								</tr>
+								<table class="table" id="dataTable">
+								<thead>
+									<tr>
+										<td><?php echo $this->lang->line('volume'); ?></td>
+										<td><?php echo $this->lang->line('eol'); ?></td>
+										<td><?php echo $this->lang->line('lotnr'); ?></td>
+										<td><?php echo $this->lang->line('location'); ?></td>
+										<td><?php echo $this->lang->line('writeoff'); ?></td>
+									</tr>
+								</thead>
+								<tbody>
 								<?php foreach($product['stock'] as $stock):  ?>
 								<tr <?php echo (($user->current_location == $stock['location'])) ? 'class="table-success"' :''; ?>>
+									<td><?php echo $stock['volume']. ' '. $product['unit_sell']; ; ?></td>
 									<td><?php 
 										echo 
 										(is_null($stock['eol'])) ? 
@@ -264,13 +250,17 @@ foreach ($locations as $l)
 										)
 										; ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
-									<td><?php echo $stock['volume']; ?></td>
 									<td><?php echo (isset($loc[$stock['location']])) ? $loc[$stock['location']] : 'error'; ?></td>
-									<td><?php echo $stock['barcode']; ?></td>
-									<td><?php echo user_format_date($stock['created_at'], $user->user_date); ?></td>
-									<td><a href="<?php echo base_url('stock/write_off/' . $stock['barcode']. '/' . $stock['location']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-person-falling-burst"></i></a></td>
+									<td><a href="<?php echo base_url('stock/write_off/' . $stock['stock_id']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-person-falling-burst"></i></a></td>
 								</tr>
 								<?php endforeach; ?>
+								</tbody>
+								<tfoot>
+									<tr>
+										<th class="bg-secondary text-white" colspan="2"></th>
+										<th colspan="3">&nbsp;</th>
+									</tr>
+								</tfoot>
 								</table>
 							</div>
 						</div>
@@ -296,5 +286,40 @@ document.addEventListener("DOMContentLoaded", function(){
 			$(this).addClass('sensitive');
 		}
 	);
+
+	$("#dataTable").DataTable(
+		{
+			footerCallback: function (row, data, start, end, display) {
+            var api = this.api();
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function (i) {
+                return typeof i === 'string' ? i.replace(/[ml,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column(0)
+                .data()
+                .reduce(function (a, b) {
+					console.log(a);
+                    return intVal(a) + intVal(b);
+                }, 0);
+ 
+            // Total over this page
+            pageTotal = api
+                .column(0, { page: 'current' })
+                .data()
+                .reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+ 
+            // Update footer
+            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' ml' + ' (total : ' + Math.round(total*100)/100 + ' ml)' );
+       		},
+		});
+
+	// enable tooltips
+	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>

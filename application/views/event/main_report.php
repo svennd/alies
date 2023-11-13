@@ -83,7 +83,7 @@
 			</ul>
 	</div>
 
-	<form action="<?php echo base_url(); ?>events_report/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
+	<form action="<?php echo base_url('events_report/update_report/' . $event_id); ?>" method="post" autocomplete="off">
 	<div class="card-body">
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane active show" id="info" role="tabpanel" aria-labelledby="info-tab">
@@ -98,13 +98,20 @@
 		</div>
 
 		<hr />
-		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
+		<div class="row">
+			<div class="col-md-8">
+			<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
 
-		<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> <?php echo $this->lang->line('save_report'); ?></button>
+			<button type="submit" name="submit" value="report" class="btn btn-outline-success" id="save_report_submit"><i class="fas fa-save" ></i> <?php echo $this->lang->line('save_report'); ?></button>
 
-		<?php if($event_info['report'] != REPORT_DONE): ?>
-			<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
-		<?php endif; ?>
+			<?php if($event_info['report'] == REPORT_DONE): ?>
+				<input type="hidden" name="finished" value="1" />
+			<?php endif; ?>
+			
+			<?php if($event_info['report'] != REPORT_DONE): ?>
+				<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary float-right"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
+			<?php endif; ?>
+			</div>
 	</div>
 	</form>
 </div>

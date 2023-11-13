@@ -52,7 +52,7 @@
 								</tbody>
 						</table>
 						<?php else: ?>
-							No recent reports.
+							<?php echo $this->lang->line('no_recent_reports'); ?> <i class="fa-regular fa-face-smile-beam fa-flip"></i>
 						<?php endif; ?>
 					</div>
 			</div>

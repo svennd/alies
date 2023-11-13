@@ -1,6 +1,5 @@
 <div class="row">
       <div class="col-lg-12 mb-4">
-
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<?php echo $this->lang->line('title_invoice'); ?>
@@ -45,7 +44,7 @@
 					<th><?php echo $this->lang->line('amount'); ?></th>
 					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('client_id'); ?></th>
-					<!-- <th><?php echo $this->lang->line('state'); ?></th> -->
+					<th><?php echo $this->lang->line('state'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
 					<?php if($this->ion_auth->in_group("admin")): ?>
@@ -72,8 +71,8 @@
 					<td><?php echo $bill['owner']['user_id']; ?></td>		
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
 					<td>
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo ($bill['status'] == PAYMENT_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
-							<?php echo ($bill['status'] == PAYMENT_PAID) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo ($bill['status'] == BILL_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
+							<?php echo ($bill['status'] == BILL_PAID) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
 						</a>
 					</td>
 					<td data-sort="<?php echo $bill['vet']['id']; ?>"><?php echo $bill['vet']['first_name']; ?></td>

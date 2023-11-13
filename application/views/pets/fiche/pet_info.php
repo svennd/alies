@@ -22,6 +22,10 @@
 	</td>
 </tr>
 <tr>
+	<td>Type</td>
+	<td><?php echo get_name($pet['type']); ?></td>
+</tr>
+<tr>
 	<td><?php echo $this->lang->line('gender'); ?></td>
 	<td><?php echo get_gender($pet['gender']); ?></td>
 </tr>

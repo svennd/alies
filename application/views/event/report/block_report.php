@@ -1,63 +1,50 @@
 <!-- report form -->
 <div class="row">
 	<div class="col-md-8">
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="exampleFormControlInput3">Title :</label>
-					<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="exampleFormControlInput3">
+		<div class="form row">
+			<div class="form-group col-md-5">
+				<label for="title_field"><?php echo $this->lang->line('title'); ?></label>
+				<input type="text" name="title" class="form-control" value="<?php echo $event_info['title']; ?>" id="title_field">
+			</div>
+			<div class="form-group px-3">
+				<label for="mainVet"><?php echo $this->lang->line('vet'); ?></label>
+				<div class="input-group">
+					<input type="text" type="text" id="mainVet" class="form-control" value="<?php echo $event_info['vet']['first_name']; ?>" disabled>
+					<div class="input-group-append">
+						<button name="show_extra_vets" id="show_extra_vets" class="btn btn-outline-success bounceit"><i class="fa-solid fa-user-plus"></i></button>
+					</div>
 				</div>
 			</div>
+			<div class="form-group col-md-4 <?php echo ($event_info['vet_1_sup'] || $event_info['vet_2_sup']) ? '' : 'collapse' ; ?>" id="extra_vet" >
+				<label for="mainVet"><?php echo $this->lang->line('vet'); ?></label>
+				<select name="sup_vet[]" style="width:100%" id="supp_vet_1" data-allow-clear="1" multiple="multiple">
+					<?php if($event_info['vet_1_sup']): ?>
+					<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['first_name']; ?></option>
+					<?php endif; ?>
+					<?php if($event_info['vet_2_sup']): ?>
+					<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['first_name']; ?></option>
+					<?php endif; ?>
+				</select>
+			</div>
 		</div>
+
 		<div class="form-group">
-			<label for="anamnese">Report</label>
-			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo nl2br($event_info['anamnese']); ?></textarea>
-			<small>last update : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1); ?> Ago</small>
+			<label for="anamnese"><?php echo $this->lang->line('report'); ?></label>
+			<textarea class="form-control" name="anamnese" id="anamnese" rows="12"><?php echo (empty($event_info['anamnese'])) ? $autotemplate : nl2br($event_info['anamnese']); ?></textarea>
+			<small id="autosave_anamnese"><?php echo $this->lang->line('last_update') ?> : <?php echo timespan(strtotime($event_info['updated_at']), time(), 1) . ' '. $this->lang->line('ago'); ?></small>
 		</div>
+
+		<div class="dropbox d-flex align-items-center" id="upload_field">
+			<p class="text-center w-100"><i class="fas fa-cloud-upload-alt fa-3x m-2"></i><br/>Click here or drag the files here.</p>
+		</div>
+		<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
+		
 	</div>
 	<div class="col-md-4">
 		<?php include "block_closed_bill.php"; ?>
 	</div>
 </div>
 
-<hr />
-<div class="row">
-	<div class="col-md-8">
-
-		<div class="form-group row">
-			<label for="staticEmail" class="col-sm-2 col-form-label">Vet</label>
-			<div class="col-sm-10">
-			<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="<?php echo $event_info['vet']['first_name']; ?>">
-			</div>
-		</div>
-			<div class="form-group row">
-			<label for="supp_vet_1" class="col-sm-2 col-form-label">Support Vet 1</label>
-			<div class="col-sm-10">
-					<select name="supp_vet_1" style="width:100%" id="supp_vet_1" data-allow-clear="1">
-						<?php if($event_info['vet_1_sup']): ?>
-						<option value="<?php echo $event_info['vet_1_sup']['id']; ?>" selected><?php echo $event_info['vet_1_sup']['first_name']; ?></option>
-						<?php endif; ?>
-					</select>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label for="supp_vet_2" class="col-sm-2 col-form-label">Support Vet 2</label>
-			<div class="col-sm-10">
-					<select name="supp_vet_2" style="width:100%" id="supp_vet_2" data-allow-clear="1">
-							<?php if($event_info['vet_2_sup']): ?>
-							<option value="<?php echo $event_info['vet_2_sup']['id']; ?>" selected><?php echo $event_info['vet_2_sup']['first_name']; ?></option>
-							<?php endif; ?>
-					</select>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="dropbox d-flex align-items-center" id="upload_field">
-			<p class="text-center w-100"><i class="fas fa-cloud-upload-alt fa-3x m-2"></i><br/>Click here or drag the files here.</p>
-		</div>
-		<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
-	</div>
-</div>
 
 <script>
 /*
@@ -68,58 +55,56 @@ document.addEventListener("DOMContentLoaded", function(){
 
 // autosave timer
 var t;
+var HasChanged = false;
 
 $('#anamnese').trumbowyg({
-
-    btns: [
-        ['strong', 'em', 'fontsize'],
+ 
+	btns: [
+        ['strong', 'em'],
         ['undo', 'redo'],
-        // ['superscript', 'subscript'],
-        // ['link'],
-        // ['insertImage'],
-        // ['unorderedList', 'orderedList'],
-        ['removeformat'],
-        ['fullscreen'],
-		['template'],
+        ['unorderedList'],
     ],
 	autogrow: true,
 
-    plugins: {
-        fontsize: {
-            sizeList: [
-                '14px',
-                '18px',
-                '22px'
-            ],
-            allowCustomSize: false
-        },
-        templates: [
-            {
-                name: 'Anamnese_Onderzoek_Behandeling',
-                html: '<b>ANAMNESE, ONDERZOEK EN DIAGNOSE:</b><br/><p>&nbsp;</p><br/><b>BEHANDELING:</b><br/><p>&nbsp;</p><br/>'
-            },
-        ]
-    }
-}).on('tbwchange', function(){ 
-	// autosave
-	clearTimeout(t);
-	t = setTimeout(function() {
-		content = $('#anamnese').trumbowyg('html');
-		title = $('#title_field').val();
-		console.log("fire: " + content);
-		$.ajax({
-			method: 'POST',
-			url: '<?php echo base_url(); ?>events_report/anamnese/' + <?php echo $event_info['id']; ?>,
-			data: {
-				title: title,
-				anamnese: content
-			},
-				success: function(data) {
-				console.log(data); 
-				}
-			});
-		$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
-	}, 750);	
+}).on('tbwchange', function(){ HasChanged = true; });
+
+// auto update
+<?php if($event_info['report'] != REPORT_FINAL):  // don't auto-update if its final, allow saving only when explecitly done ?>
+setInterval(function() {
+  if (HasChanged) {	
+    $.post('<?php echo base_url('events_report/anamnese/' . $event_info['id']); ?>', 
+	{ 
+		title: $('#title_field').val(), 
+		anamnese: $('#anamnese').trumbowyg('html')
+    });
+	$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
+    HasChanged = false;
+  }
+}, 5*1000);
+<?php endif; ?>
+
+// Check for unsaved data
+window.onbeforeunload = function() {
+  if (HasChanged) {
+    return 'There are unsaved changes. Are you sure you want to leave?';
+  }
+}
+
+$("#show_extra_vets").on("click", function() {
+	event.preventDefault();
+	$('#extra_vet').collapse('toggle');
+	$(this).toggleClass('btn-outline-success btn-outline-danger');
+});
+
+/* populate supporting vets */
+$('#supp_vet_1').select2({
+	maximumSelectionLength: 2,
+	theme: 'bootstrap4',
+	placeholder: 'Select vet',
+  ajax: {
+    url: '<?php echo base_url(); ?>vet/ajax_get_vets',
+    dataType: 'json'
+  },
 });
 
 $(".file_line")

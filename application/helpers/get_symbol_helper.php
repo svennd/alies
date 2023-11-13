@@ -21,6 +21,26 @@ function get_symbol($type, $name = false)
 			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>'. ($name ? " Other" : "");
 	}
 }
+
+function get_name($type)
+{
+	switch($type)
+	{
+		case DOG:
+			return "Dog";
+		case CAT:
+			return "Cat";
+		case HORSE:
+			return "Horse";
+		case BIRD:
+			return "Bird";
+		case RABBIT:
+			return "Rabbit";
+		default:
+			return "Other";
+	}
+}
+
 /*
   draw the correct symbol for the pet_type
 */

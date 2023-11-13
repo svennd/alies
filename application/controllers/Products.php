@@ -99,7 +99,7 @@ class Products extends Vet_Controller
 										with_prices('fields:id, volume, price|order_inside:volume asc')->
 										with_type('fields:name')->
 										with_booking_code('fields:category, code, btw')->
-										with_stock('fields: location, eol, lotnr, volume, barcode, state, created_at', 'where:`state`=\'1\'')->
+										with_stock('fields: id as stock_id, location, eol, lotnr, volume, state, created_at', 'where:`state`='. STOCK_IN_USE .' ')->
 										get($id),
 				'global_stock' 	=> $global_stock,
 				'local_stock' 	=> $local_stock,

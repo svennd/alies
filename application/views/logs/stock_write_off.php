@@ -13,6 +13,7 @@
 				<tr>
 					<th>Product</th>
 					<th>Volume</th>
+					<th>Reason</th>
 					<th>Vet</th>
 					<th>Location</th>
 					<th>Date</th>
@@ -21,11 +22,12 @@
 				<tbody>
 				<?php foreach ($logs as $log): ?>
 				<tr>
-					<td><?php echo $log['product']['name']; ?></td>
-					<td><?php echo $log['volume']; ?> <?php echo $log['product']['unit_sell']; ?></td>
+					<td><?php echo $log['products']['name']; ?></td>
+					<td><?php echo $log['volume']; ?> <?php echo $log['products']['unit_sell']; ?></td>
+					<td><?php echo $log['reason']; ?></td>
 					<td><?php echo $log['vet']['first_name']; ?></td>
-					<td><?php echo $log['locations']['name']; ?></td>
-					<td><?php echo $log['created_at']; ?></td>
+					<td><?php echo $log['location']['name']; ?></td>
+					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo $log['created_at']; ?></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -45,6 +47,13 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#logs").addClass('active');
-	$("#dataTable").DataTable();
+	$("#dataTable").DataTable({
+		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+		buttons: [
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+        ],
+		"order": [[ 5, "desc" ]]
+	});
 });
 </script>

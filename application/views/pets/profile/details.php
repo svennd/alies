@@ -30,6 +30,11 @@
     <textarea class="form-control" name="nutritional_advice" id="nutrion" rows="3"><?php echo ($edit_mode && isset($pet['nutritional_advice'])) ? $pet['nutritional_advice']: '' ?></textarea>
   </div>
 
+  <div class="form-group">
+    <label for="medication"><?php echo $this->lang->line('medicine'); ?></label>
+    <textarea class="form-control" name="medication" id="medication" rows="3"><?php echo ($edit_mode && isset($pet['medication'])) ? $pet['medication']: '' ?></textarea>
+  </div>
+
   <h5>Status</h5>
   <hr>
 	<div class="form-group">

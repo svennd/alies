@@ -14,11 +14,11 @@
 		<div class="dropdown no-arrow d-none d-sm-block">
 
 			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
-				<a class="btn btn-outline-primary filter" data-search="disease" href="#" role="button" data-toggle="tooltip" data-placement="top" title="disease"><i class="fas fa-fw fa-virus"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button" data-toggle="tooltip" data-placement="top" title="operations"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button" data-toggle="tooltip" data-placement="top" title="medicine"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="disease" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('disease'); ?>"><i class="fas fa-fw fa-virus"></i></a>
+				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('operation'); ?>"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
+				<!-- <a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button" data-toggle="tooltip" data-placement="top" title="medicine"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a> -->
 				<a class="btn btn-outline-primary filter" data-search="clear" href="#" role="button" data-toggle="tooltip" data-placement="top" title="reset"><i class="fas fa-fw fa-undo-alt"></i></a>
-				<a class="btn btn-outline-danger" data-search="" href="#" role="button" data-toggle="tooltip" data-placement="top" title="no history" id="toggleHidden"><i class="far fa-fw fa-eye-slash"></i></a>
+				<a class="btn btn-outline-danger" data-search="" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('no_history_explain'); ?>" id="toggleHidden"><i class="far fa-fw fa-eye-slash"></i></a>
 			</div>
 			<a href="<?php echo base_url(); ?>pets/export/<?php echo $pet['id']; ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
 			<a href="<?php echo base_url(); ?>pets/change_owner/<?php echo $pet['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
@@ -35,7 +35,7 @@
 				<th data-priority="2"><?php echo $this->lang->line('title'); ?></th>
 				<th><?php echo $this->lang->line('vet'); ?></th>
 				<th><?php echo $this->lang->line('location'); ?></th>
-				<th data-priority="1"><?php echo $this->lang->line('edit'); ?></th>
+				<th data-priority="1"><?php echo $this->lang->line('options'); ?></th>
 				<th class="none"><?php echo $this->lang->line('anamnese'); ?></th>
 				<th class="none">products</th>
 			</tr>
@@ -55,7 +55,7 @@
 		<?php else: ?>
 			<?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?>
 			<?php if($history['report'] != REPORT_DONE): ?>
-				<i class="fas fa-unlock" data-toggle="tooltip" data-placement="top" title="not finished"></i>
+				<i class="fas fa-unlock" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('not_finished'); ?>"></i>
 			<?php endif; ?>
 		<?php endif; ?>
 		</td>
@@ -75,7 +75,7 @@
 				<li><?php echo $prod['volume'] . ' ' . $prod['unit_sell']  . ' ' . $prod['name']; ?></li>
 			<?php endforeach; ?>
 			<?php foreach($procs as $proc) : ?>
-				<li><?php echo $proc['amount'] . ' ' . $proc['name']; ?></li>
+				<li><?php echo $proc['volume'] . ' ' . $proc['name']; ?></li>
 			<?php endforeach; ?>
 			</ul>
 		</td>

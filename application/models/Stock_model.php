@@ -28,6 +28,29 @@ class Stock_model extends MY_Model
 	}
 
 	/*
+		called in stock/expired
+	*/
+	public function write_off(int $stock_id, float $volume)
+	{
+		# update the stock
+		$sql = "
+				UPDATE
+					stock
+				SET
+					volume = volume - " . $volume . ",
+					state = CASE
+								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+								WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
+								ELSE '" . STOCK_IN_USE . "'
+							END
+				WHERE
+					id = '" . $stock_id . "'
+				LIMIT 1;
+			";
+		return $this->db->query($sql);
+	}
+
+	/*
 		called in admin_invoice/rm_bill
 	*/
 	public function increase_stock(int $product_id, float $volume, int $location, string $barcode, bool $add_dead_volume = true)

@@ -77,6 +77,7 @@
 					</div> -->
 				</div>
 				<hr class="mt-0 mb-3">
+				<a id="generate_bill" href="<?php echo base_url('invoice/bill/' . $owner['id']); ?>" class="btn btn-outline-success d-none"><i class="fas fa-arrow-right"></i> <?php echo $this->lang->line('create_bill'); ?></a>
 				<?php if($consumables || $procedures_d): ?>
 					<?php if($event_info['payment'] == 0) : ?>
 						<a href="<?php echo base_url(); ?>invoice/bill/<?php echo $owner['id']; ?>/<?php echo $event_id; ?>" class="btn btn-outline-success"><i class="fas fa-arrow-right"></i> <?php echo $this->lang->line('create_bill'); ?></a>

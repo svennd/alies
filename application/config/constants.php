@@ -154,6 +154,7 @@ define('STOCK_MERGE', 4);
 define('REPORT_INIT', 0);
 define('REPORT_OPEN', 1);
 define('REPORT_DONE', 2);
+define('REPORT_FINAL', 2);
 
 # event types
 define('DISEASE', 0);

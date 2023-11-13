@@ -146,12 +146,14 @@
 		</tr>
 		</thead>
 		<tbody>
-		<?php foreach ($last_name as $res): ?>
-		<tr class="<?php if(!$res['last_bill'] || $res['disabled']): ?>table-secondary<?php endif; ?>">
+		<?php foreach ($last_name as $res):?>
+		<tr>
 			<td>last_name</td>
 			<td>
 				<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">
-					<?php echo $res['last_name']; ?>
+					<?php if($res['disabled']): ?><s><?php endif; ?>
+						<?php echo $res['last_name']; ?>
+					<?php if($res['disabled']): ?></s><?php endif; ?>
 				</a>
 			</td>
 			<td><?php echo $res['first_name']; ?></td>

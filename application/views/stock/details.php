@@ -17,18 +17,19 @@
 	<?php if ($stock_detail): ?>
 		<table class="table" id="dataTable">
 		<thead>
-		<tr>
-			<th>Volume</th>
-			<th>Lotnr</th>
-			<th>EOL</th>
-			<th>In Price</th>
-			<th>Barcode</th>
-			<th>Location</th>
-			<th>State</th>
-			<?php if ($this->ion_auth->in_group("admin")): ?>
-			<th>Option</th>
-			<?php endif; ?>
-		</tr>
+			<tr>
+				<th><?php echo $this->lang->line('volume'); ?></th>
+				<th><?php echo $this->lang->line('lotnr'); ?></th>
+				<th><?php echo $this->lang->line('eol'); ?></th>
+				<?php if ($this->ion_auth->in_group("admin")): ?>
+					<th><?php echo $this->lang->line('price_dayprice'); ?></th>
+				<?php endif; ?>
+				<th><?php echo $this->lang->line('location'); ?></th>
+				<th><?php echo $this->lang->line('state'); ?></th>
+				<?php if ($this->ion_auth->in_group("admin")): ?>
+				<th>Option</th>
+				<?php endif; ?>
+			</tr>
 		</thead>
 		<tbody>
 		<?php foreach ($stock_detail as $detail): ?>
@@ -36,13 +37,14 @@
 		<tr>
 			<td><?php echo $detail['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
 			<td><?php echo $detail['lotnr']; ?></td>
-			<td><?php echo user_format_date($detail['eol'], $user->user_date); ?></td>
-			<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
-			<td><?php echo $detail['barcode']; ?></td>
+			<td data-sort="<?php echo strtotime($detail['eol']); ?>"><?php echo user_format_date($detail['eol'], $user->user_date); ?></td>
+			<?php if ($this->ion_auth->in_group("admin")): ?>
+				<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
+			<?php endif; ?>
 			<td><?php echo $detail['stock_locations']['name']; ?></td>
 			<td><?php echo stock_state($detail['state']); ?></td>
 			<?php if ($this->ion_auth->in_group("admin")): ?>
-			<td><a href="<?php echo base_url('stock/edit/' . $detail['id']); ?>" class="btn btn-outline-success">edit</a></td>
+				<td><a href="<?php echo base_url('stock/edit/' . $detail['id']); ?>" class="btn btn-outline-success">edit</a></td>
 			<?php endif; ?>
 		</tr>
 		<?php endforeach; ?>
@@ -50,7 +52,7 @@
         <tfoot>
             <tr>
                 <th class="bg-secondary text-white">Total:</th>
-                <th colspan="<?php echo ($this->ion_auth->in_group("admin")) ? '7' : '6';?>">&nbsp;</th>
+                <th colspan="<?php echo ($this->ion_auth->in_group("admin")) ? '6' : '4';?>">&nbsp;</th>
             </tr>
         </tfoot>
 		</table>
@@ -101,34 +103,34 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 
 	$("#dataTable").DataTable(
-		{
-			footerCallback: function (row, data, start, end, display) {
-            var api = this.api();
- 
-            // Remove the formatting to get integer data for summation
-            var intVal = function (i) {
-                return typeof i === 'string' ? i.replace(/[<?php echo $detail['products']['unit_sell']; ?>,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-            };
- 
-            // Total over all pages
-            total = api
-                .column(0)
-                .data()
-                .reduce(function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0);
- 
-            // Total over this page
-            pageTotal = api
-                .column(0, { page: 'current' })
-                .data()
-                .reduce(function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0);
- 
-            // Update footer
-            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>' + ' (' + Math.round(total*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>)' );
-       		},
-		});
+	{
+		footerCallback: function (row, data, start, end, display) {
+		var api = this.api();
+
+		// Remove the formatting to get integer data for summation
+		var intVal = function (i) {
+			return typeof i === 'string' ? i.replace(/[<?php echo $detail['products']['unit_sell']; ?>,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+		};
+
+		// Total over all pages
+		total = api
+			.column(0)
+			.data()
+			.reduce(function (a, b) {
+				return intVal(a) + intVal(b);
+			}, 0);
+
+		// Total over this page
+		pageTotal = api
+			.column(0, { page: 'current' })
+			.data()
+			.reduce(function (a, b) {
+				return intVal(a) + intVal(b);
+			}, 0);
+
+		// Update footer
+		$(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>' + ' (' + Math.round(total*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>)' );
+		},
+	});
 });
 </script>

@@ -16,6 +16,7 @@ class Stock extends Vet_Controller
 		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Delivery_slip_model', 'slip');
 		$this->load->model('Register_in_model', 'registry_in');
+		$this->load->model('Liquidate_model', 'liquidate');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -44,27 +45,6 @@ class Stock extends Vet_Controller
 						"stock_usage" 	=> $this->stock->get_usage($pid)
 						);
 		$this->_render_page('stock/details', $data);
-	}
-
-	/*
-		stock that is close to or has expired.
-	*/
-	public function expired_stock()
-	{
-		$expired = $this->stock
-			->fields('eol, lotnr, volume, barcode')
-			->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
-			->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true)
-			->where(array('state' => STOCK_IN_USE))
-			->with_products('fields: name, unit_buy')
-			->with_stock_locations('fields: name')
-			->order_by('eol', 'ASC')
-			->get_all();
-
-		$data = array(
-						"stock_gone_bad" => $expired
-						);
-		$this->_render_page('stock/expired', $data);
 	}
 
 	public function move_stock()
@@ -275,37 +255,95 @@ class Stock extends Vet_Controller
 		redirect('stock/add_stock', 'refresh');
 	}
 
-	public function write_off(string $barcode = '', int $location = -1)
+
+	/*
+		stock that is close to or has expired.
+	*/
+	public function expired_stock()
+	{
+		$expired = $this->stock
+			->fields('eol, lotnr, volume, id')
+			->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
+			->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true)
+			->where(array('state' => STOCK_IN_USE))
+			->with_products('fields: name, unit_buy')
+			->with_stock_locations('fields: name')
+			->order_by('eol', 'ASC')
+			->get_all();
+
+		$data = array(
+						"stock_gone_bad" => $expired
+						);
+		$this->_render_page('stock/expired', $data);
+	}
+
+
+	public function write_off_full(int $stock)
+	{
+		// store in liquidate list
+		$info = $this->stock->get($stock);
+		$this->liquidate->insert(array(
+			"product_id"	=> $info['product_id'],
+			"volume" 		=> $info['volume'],
+			"eol" 			=> $info['eol'],
+			"lotnr" 		=> $info['lotnr'],
+			"reason" 		=> "EXPIRED",
+			"user"			=> $this->user->id,
+			"location" 		=> $info['location'],
+			"stock_id" 		=> $info['id'] // this could go away at some point
+		));
+
+		// log write off action
+		$this->logs->logger(DEBUG, "write_off", "stock_id:" . $stock . " volume: " . $info['volume'] . " user:" . $this->user->id);
+
+		// log in stock log
+		$this->logs->stock(INFO, "write_off", $info['product_id'], $info['volume'], $info['location']);
+		
+		// remove it from stock
+		$this->stock->write_off($stock, $info['volume']);
+
+		// back home
+		redirect('stock/expired_stock', 'refresh');
+	}
+
+	/*
+		write_off stock
+	*/
+	public function write_off(int $stock_id)
 	{
 		# return the details of the selected product
-		if ($this->input->post('submit') == "writeoff") {
-			$product = $this->stock->with_products('fields:name, unit_sell')
-							->where(array("barcode" => $this->input->post('barcode'), "location" => $this->input->post("location")))
-							->get();
-			$data = array(
-							"locations" => $this->location,
-							"product"	=> $product
-						);
-			$this->_render_page('stock_write_off_quantities', $data);
-		
-		} elseif (!empty($barcode) && $location != -1) {
+		if ($this->input->post('submit')) {
 
-			$product = $this->stock->with_products('fields:name, unit_sell')
-							->where(array("barcode" => $barcode, "location" => $location))
-							->get();
-			$data = array(
-							"locations" => $this->location,
-							"product"	=> $product
-						);
-			$this->_render_page('stock_write_off_quantities', $data);
+			// store in liquidate list
+			$info = $this->stock->get($stock_id);
+
+			$this->liquidate->insert(array(
+				"product_id"	=> $info['product_id'],
+				"volume" 		=> $this->input->post('volume'),
+				"eol" 			=> $info['eol'],
+				"lotnr" 		=> $info['lotnr'],
+				"reason" 		=> $this->input->post('reason'),
+				"user"			=> $this->user->id,
+				"location" 		=> $info['location'],
+				"stock_id" 		=> $stock_id
+			));
+
+			// log write off action
+			$this->logs->logger(DEBUG, "write_off", "stock_id:" . $stock_id . " volume: " . $this->input->post('volume') . " user:" . $this->user->id);
+
+			// log in stock log
+			$this->logs->stock(INFO, "write_off", $info['product_id'], $this->input->post('volume'), $info['location']);
+			
+			// remove it from stock
+			$this->stock->write_off($stock_id, $this->input->post('volume'));
+
+			// back home
+			redirect('products/profile/' . $info['product_id'], 'refresh');
 
 		} else {
-			# reduce stock as requested
-			if ($this->input->post('submit') == "write_off_q") {
-				$this->stock->reduce_product($this->input->post("barcode"), $this->input->post("location"), $this->input->post("volume"));
-				$this->logs->stock(WARN, "writeoff", $this->input->post("product_id"), -$this->input->post("volume"), $this->input->post("location"));
-			}
-			redirect('stock/expired_stock', 'refresh');
+			$this->_render_page('stock/write_off_volume', array(
+																"product" => $this->stock->with_stock_locations('fields:name')->with_products('fields:name, unit_sell')->get($stock_id)
+																));	
 		}
 	}
 

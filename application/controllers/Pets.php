@@ -135,6 +135,7 @@ class Pets extends Vet_Controller
 											"last_weight" 	=> $this->input->post('weight'),
 											"nr_vac_book" 	=> $this->input->post('vacbook'),
 											"nutritional_advice" => $this->input->post('nutritional_advice'),
+											"medication" => $this->input->post('medication'),
 											"note" 			=> $this->input->post('msg'),
 											"lost" 			=> (is_null($this->input->post('lost'))) ? 0 : $this->input->post('lost'),
 											"death" 		=> (is_null($this->input->post('dead'))) ? 0 : $this->input->post('dead'),
@@ -148,7 +149,7 @@ class Pets extends Vet_Controller
 									"weight" 	=> $this->input->post("weight")
 								));
 
-			// redirect('/pets/fiche/' . (int)  $pet_id);
+			redirect('/pets/fiche/' . (int)  $pet_id);
 		}
 
 		$pet_info = $this->pets->with_owners()->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
@@ -199,7 +200,7 @@ class Pets extends Vet_Controller
 		$pet_history = $this->
 							events->
 							with_products('fields:events_products.volume, unit_sell, name')->
-							with_procedures('fields:events_procedures.amount, name')->
+							with_procedures('fields:events_procedures.volume, name')->
 							with_vet('fields:first_name, last_name')->
 							with_location('fields:name')->
 							where(
@@ -221,7 +222,7 @@ class Pets extends Vet_Controller
 		# submit generate pdf
 		if ($this->input->post('submit')) {
 			$data['history_to_take'] = $this->input->post('history_to_take');
-			$this->load->library('pdf'); // change to pdf_ssl for ssl
+			$this->load->library('pdf');
 
 			$filename = "export_" . $pet_id . "_".  date("m.d.y");
 
@@ -245,12 +246,7 @@ class Pets extends Vet_Controller
 			$name = $this->input->post('name');
 			$result = (!empty($name)) ? $this->owners->search_by_name($name) : false;
 		}
-
-		if ($this->input->post('submit') == "street") {
-			$street = $this->input->post('street');
-			$result = (!empty($street)) ? $this->owners->search_by_street($street) : false;
-		}
-
+		
 		if ($this->input->post('submit') == "client") {
 			$client = $this->input->post('client');
 			$result = (!empty($client)) ? $this->owners->where(array("id" => $client))->get_all() : false;
@@ -261,7 +257,6 @@ class Pets extends Vet_Controller
 		$pet_info = $this->pets->get($pet_id);
 		$data = array(
 			"pet"			=> $pet_info,
-			"street"		=> $street,
 			"name"			=> $name,
 			"client"		=> $client,
 			"result"		=> $result,

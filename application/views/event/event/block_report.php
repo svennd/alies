@@ -8,7 +8,7 @@
 }
 </style>
 <?php if($event_info['no_history'] == 0): ?>
-	<form action="<?php echo base_url(); ?>events_report/update_report/<?php echo $event_id; ?>" method="post" autocomplete="off">
+	<form action="<?php echo base_url('events_report/update_report/'. $event_id); ?>" method="post" autocomplete="off">
 
 		<div class="form row">
 			<div class="form-group col-md-6">
@@ -47,7 +47,6 @@
 		<input type="hidden" name="pet_id" value="<?php echo $pet['id']; ?>" />
 
 		<p class="text-right">
-		<!-- <button value="report" class="btn btn-outline-success"><i class="fas fa-save" ></i> Save Report</button> -->
 		<button class="btn btn-outline-primary" type="submit" name="submit" value="report"><i class="fas fa-save fa-fw"></i> <?php echo $this->lang->line('store'); ?></button>
 		</p>
 	</form>
@@ -87,7 +86,7 @@ setInterval(function() {
 	$("#autosave_anamnese").html("<i class='far fa-save'></i> " + new Date().toTimeString().split(" ")[0]);
     HasChanged = false;
   }
-}, 3*1000);
+}, 5*1000);
 
 // Check for unsaved data
 window.onbeforeunload = function() {

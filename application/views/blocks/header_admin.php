@@ -38,6 +38,10 @@ Administration
 </div>
 </li>
 
-
+<li class="nav-item" id="help">
+<a class="nav-link" href="<?php echo base_url('help/admin'); ?>">
+    <i class="fa-regular fa-fw fa-circle-question"></i>
+    <span>Help</span></a>
+</li>  
 <!-- <a class="collapse-item" href="<?php echo base_url(); ?>admin/proc" id="adminproc"><?php echo $this->lang->line('procedures'); ?></a>
 <a class="collapse-item" href="<?php echo base_url(); ?>products/product_price" id="prod_list"><?php echo $this->lang->line('products'); ?></a> -->

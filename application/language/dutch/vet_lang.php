@@ -74,6 +74,12 @@ $lang['phone_backup']         = 'Telefoon Backup';
 $lang['phone_backup_name']    = 'Telefoon Backup (info)';
 $lang['phone_backup_help']    = 'Moeder, broer, zus,...';
 
+# change owner
+$lang['current_owner']   = 'Huidige eigenaar';
+$lang['new_owner']   = 'Nieuwe eigenaar';
+$lang['change_owner']   = 'Wijzig eigenaar';
+$lang['change']   = 'Wijzig';
+
 # invoices
 $lang['title_invoice']   = 'Facturen opzoeken';
 $lang['no_invoices']     = 'Geen facturen';
@@ -90,6 +96,7 @@ $lang['vacc_nr']    = 'Nummer Vaccinatie Boekje';
 $lang['age']        = 'Leeftijd';
 $lang['nutrition']  = 'Voeding';
 $lang['other_pets']  = 'Andere dieren';
+$lang['not_finished']  = 'Niet afgewerkt';
 
 ## history
 $lang['history']  = 'Historie';
@@ -105,10 +112,11 @@ $lang['no_pets_history']  = 'Geen historiek bekend.';
 ## vaccines
 $lang['no_vaccines']  = 'Geen vaccinaties bekend';
 $lang['vaccines']  = 'Vaccin';
-$lang['title_vaccines']  = 'Vaccinatie';
+$lang['title_vaccines']  = 'Vaccins';
 $lang['exp_date']  = 'Vervaldatum';
 $lang['rappel_date']  = 'Rappel';
 $lang['disable']  = 'Uit';
+$lang['enable']  = 'Aan';
 $lang['injection']  = 'Inspuiting';
 
 ## menu
@@ -124,8 +132,8 @@ $lang['enable_report']  = 'Activeer verslag';
 $lang['disable_report'] = 'Verberg verslag';
 $lang['media']          = 'Media';
 $lang['files']          = 'Bestanden';
-$lang['save_report']    = 'Bewaar verslag';
-$lang['finish']         = 'Finish';
+$lang['save_report']    = 'Opslaan';
+$lang['finish']         = 'Afgewerkt';
 $lang['attachments']    = 'Bijlages';
 $lang['bill']           = 'Factuur';
 $lang['check']          = 'Rekening';
@@ -208,7 +216,7 @@ $lang['bird']      = 'Vogel';
 $lang['rabbit']      = 'Konijn';
 $lang['other']      = 'Andere';
 $lang['gender']      = 'Geslacht';
-$lang['birth']      = 'Geboorte';
+$lang['birth']      = 'Geboortedatum';
 $lang['pet_name']      = 'Naam';
 $lang['weight']      = 'Gewicht';
 $lang['notes']      = 'Opmerkingen';
@@ -229,6 +237,7 @@ $lang['disease']             = 'ziekte';
 $lang['operation']             = 'operatie'; 
 $lang['medicine']             = 'medicatie'; 
 $lang['no_history']             = 'verberg'; 
+$lang['no_history_explain']             = 'Verborgen events'; 
 $lang['no_history_txt']             = 'Geen events.'; 
 $lang['show_history']             = 'toon'; 
 
@@ -332,7 +341,8 @@ $lang['Reporting']             = 'Verslag';
 $lang['AllVets']                = 'Iedereen'; 
 $lang['OnlyMe']                 = 'Eigen'; 
 $lang['created_at']             = 'Gemaakt';
-$lang['ago']                 = 'geleden'; 
+$lang['ago']                    = 'geleden'; 
+$lang['no_recent_reports']      = 'Geen recente verslagen.'; 
 
 # add stock
 $lang['sellable_volume']       = "Volume (verkoopbaar)";
@@ -342,6 +352,7 @@ $lang['wholesale_link']     = "Groothandel link";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "of";
+$lang['reason']                = "Reden";
 
 
 # stock / product index

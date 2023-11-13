@@ -39,7 +39,7 @@
                     <br/>
                     <?php echo (isset($billing_info['location']['name'])) ? $billing_info['location']['name']: 'unknown'; ?>
                     <br/>
-                    <?php echo $billing_info['amount'] . " &euro;"; ?>
+                    <?php echo $billing_info['total_brut'] . " &euro;"; ?>
                     (
                     <?php echo ($card != 0) ? "<i class='fab fa-cc-visa'></i> " . $card . "&euro; " : ""; ?>
                     <?php echo ($cash != 0) ? "<i class='fas fa-coins'></i> " . $cash . "&euro; " : ""; ?>

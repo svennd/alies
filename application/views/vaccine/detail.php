@@ -1,9 +1,12 @@
 <div class="row">
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
-		<div class="card-header"><a href="<?php echo base_url('pets/fiche/' . $vac['pet']['id']); ?>"><?php echo $vac['pet']['name']; ?></a> / Edit Vaccine</div>
+		<div class="card-header">
+			<a href="<?php echo base_url('pets/fiche/' . $vac['pet']['id']); ?>"><?php echo $vac['pet']['name']; ?></a> / 
+			<a href="<?php echo base_url('vaccine/fiche/' . $vac['pet']['id']); ?>"><?php echo $this->lang->line('title_vaccines'); ?></a> /
+			Edit Vaccine</div>
             <div class="card-body">
-                <form action="<?php echo base_url('vaccine/update/' . $vac['id']); ?>" method="post" autocomplete="off">
+                <form action="<?php echo base_url('vaccine/update/' . $vac['id']. '/' . $vac['pet']['id']); ?>" method="post" autocomplete="off">
 				<table class="table table-sm">
 					<tr>
 						<td><?php echo $this->lang->line('vaccines'); ?></td>
@@ -23,8 +26,8 @@
 						<td><?php echo $this->lang->line('rappel_date'); ?></td>
 						<td>
 							<div class="custom-control custom-switch">
-								<input type="checkbox" class="custom-control-input" id="no_rappel" name="no_rappel" <?php echo ($vac['no_rappel']) ? 'checked': '';?>>
-								<label class="custom-control-label" for="no_rappel"><?php echo $this->lang->line('disable'); ?></label>
+								<input type="checkbox" class="custom-control-input" id="no_rappel" name="no_rappel" <?php echo (!$vac['no_rappel']) ? 'checked': '';?>>
+								<label class="custom-control-label" for="no_rappel"><?php echo $this->lang->line('enable'); ?></label>
 							</div>
 						</td>
 					</tr>

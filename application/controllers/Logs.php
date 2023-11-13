@@ -9,6 +9,7 @@ class Logs extends Admin_Controller
 
 		# models
 		$this->load->model('Log_stock_model', 'log_stock');
+		$this->load->model('Liquidate_model', 'liquidate');
 		$this->load->model('Delivery_slip_model', 'delivery');
 		$this->load->model('Register_in_model', 'regin');
 	}
@@ -23,11 +24,10 @@ class Logs extends Admin_Controller
 	{
 		
 		$data = array(
-						"logs" 		=> $this->log_stock
-												->with_product('fields:name, unit_sell')
+						"logs" 		=> $this->liquidate
+												->with_products('fields:name, unit_sell')
 												->with_vet('fields:first_name')
-												->with_locations('fields:name')
-											->where(array('event' => 'writeoff'))
+												->with_location('fields:name')
 											->get_all(),
 		);
 		$this->_render_page('logs/stock_write_off', $data);

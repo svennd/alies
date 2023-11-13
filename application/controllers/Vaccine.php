@@ -81,15 +81,15 @@ class Vaccine extends Vet_Controller
 	}
 
 	# change vaccine details
-	public function update(int $vaccine_id)
+	public function update(int $vaccine_id, int $pet_id)
 	{
 		$this->vacs->update(array(
-								"no_rappel" => is_null($this->input->post('no_rappel')) ? 0 : 1,
-								"redo" => $this->input->post('date_redo')
+								"no_rappel" => is_null($this->input->post('no_rappel')) ? 1 : 0,
+								"redo" 		=> $this->input->post('date_redo')
 								), $vaccine_id);
 
 		$this->logs->logger(DEBUG, "change_vaccine", "vaccine_id ".  $vaccine_id);
 	
-		redirect('vaccine/detail/'. $vaccine_id);
+		redirect('vaccine/fiche/'. $pet_id);
 	}
 }
