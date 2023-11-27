@@ -25,9 +25,12 @@ $lang['expire_stock']  = 'Expiring Local Stock';
 $lang['products_are_below_limit']  = 'product(s) are below required amount.';
 $lang['products_expiring']  = 'product(s) are about to expire.';
 $lang['last_login']  = 'Last login';
+$lang['select_location']  = 'Select Location';
+$lang['select_location_long']  = 'Please select a location';
 
 # profile
 $lang['profile']              = 'Profile';
+$lang['sidebar']              = 'Sidebar';
 $lang['profile_picture']  = 'Profile Picture';
 $lang['profile_settings']  = 'Profile Settings';
 $lang['profile_picture_warning']  = 'Large images, might not upload; Consider offline reducing file size';
@@ -35,6 +38,8 @@ $lang['default_search']  = 'Default search result';
 $lang['search_pet_name']  = 'Pet name';
 $lang['search_all']  = 'All';
 $lang['default_date_format']  = 'Default date format';
+$lang['event_count']  = 'Event count';
+$lang['event_count_explain']  = 'Number of events in the last 365 days.';
 
 # header & menu
 $lang['dashboard']      = 'Dashboard';
@@ -54,6 +59,13 @@ $lang['sticky']            = 'Sticky Notes';
 $lang['type_your_sticky']            = 'Type your message here...';
 $lang['sticky_saved']            = 'Sticky saved!';
 $lang['logout']         = 'logout';
+
+# password
+$lang['change_password']        = 'Change Password'; 
+$lang['old_password']           = 'Old Password'; 
+$lang['new_password']           = 'New Password'; 
+$lang['confirm_password']       = 'Confirm new Password'; 
+$lang['after_change_password']  = 'After changing the password, you will be logged out automatically; This is normal.'; 
 
 # owners
 $lang['title_search']     = 'Search';
@@ -184,6 +196,7 @@ $lang['Total']                = 'Total';
 $lang['to_pay']      = 'To pay';
 $lang['card']                 = 'Card';
 $lang['cash']                 = 'Cash';
+$lang['transfer']               = 'Transfer';
 $lang['Payment']              = 'Payment';
 $lang['payment_complete']     = 'payment complete';
 $lang['payed']                = 'Payed';
@@ -213,6 +226,8 @@ $lang['birth']      = 'birth';
 $lang['pet_name']      = 'Name';
 $lang['weight']      = 'Weight';
 $lang['notes']      = 'notes';
+$lang['identification']      = 'Identification';
+$lang['properties']      = 'Properties';
 
 # events
 $lang['name']       = 'Name';
@@ -352,3 +367,8 @@ $lang['list_products']         = "Product List";
 $lang['writeoff']                = "Writeoff";
 $lang['expired_stock']         = "Expired Stock";
 $lang['expired_stock_expl']         = "This table shows products that are expired (up to 360d) or are going to expire soon (90d).";
+
+
+# teeth
+$lang['teeth']         = "Teeth";
+$lang['paint_color']         = "Paint color";

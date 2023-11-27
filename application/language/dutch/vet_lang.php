@@ -27,9 +27,12 @@ $lang['expire_stock']  = 'Vervallen stock (lokaal)';
 $lang['products_are_below_limit']  = 'product(en) onder limiet.';
 $lang['products_expiring']  = 'product(en) komen binnenkort te vervallen.';
 $lang['last_login']  = 'Laatste login';
+$lang['select_location']  = 'Selecteer locatie';
+$lang['select_location_long']  = 'Selecteer een locatie.';
 
 # profile
 $lang['profile']              = 'Profiel';
+$lang['sidebar']              = 'Zijbalk';
 $lang['profile_picture']      = 'Profiel Foto';
 $lang['profile_settings']     = 'Profiel Settings';
 $lang['profile_picture_warning']  = 'Large images, might not upload; Consider offline reducing file size';
@@ -37,6 +40,8 @@ $lang['default_search']       = 'Standaard zoek resultaat';
 $lang['search_pet_name']      = 'Diernaam';
 $lang['search_all']           = 'Alles';
 $lang['default_date_format']  = 'Standaard datumnotatie';
+$lang['event_count']          = 'Aantal events';
+$lang['event_count_explain']  = 'De laatste 365 dagen';
 
 # header & menu
 $lang['dashboard']      = 'Home';
@@ -56,6 +61,13 @@ $lang['sticky']            = 'Plakbriefjes';
 $lang['type_your_sticky']            = 'Schrijf uw bericht hier ...';
 $lang['sticky_saved']            = 'Plakbriefje bewaard!';
 $lang['logout']         = 'Uitloggen';
+
+# password
+$lang['change_password']        = 'Wachtwoord wijzigen';
+$lang['old_password']           = 'Oud wachtwoord';
+$lang['new_password']           = 'Nieuw wachtwoord';
+$lang['confirm_password']       = 'Bevestig nieuw wachtwoord';
+$lang['after_change_password']  = 'Na het wijzigen van het wachtwoord wordt u automatisch uitgelogd; Dit is normaal.';
 
 # owners - search
 $lang['title_search']   = 'Zoeken';
@@ -192,6 +204,7 @@ $lang['Total']      = 'Totaal';
 $lang['to_pay']      = 'Te betalen';
 $lang['card']      = 'Kaart';
 $lang['cash']      = 'Contant';
+$lang['transfer']               = 'Overschrijving';
 $lang['payment']      = 'Betaling';
 $lang['payed']      = 'Betaald';
 $lang['payment_incomplete']   = 'Niet compleet';
@@ -204,7 +217,7 @@ $lang['comment_internal']      = 'intern';
 # owners
 $lang['overview']      = 'overzicht';
 $lang['pets']      = 'Dieren';
-$lang['add_pet']      = 'Dier Toevoegen';
+$lang['add_pet']      = 'Dier toevoegen';
 $lang['passed_away']      = 'Overleden';
 $lang['gone_or_lost']      = 'Verloren of verdwenen';
 
@@ -220,6 +233,8 @@ $lang['birth']      = 'Geboortedatum';
 $lang['pet_name']      = 'Naam';
 $lang['weight']      = 'Gewicht';
 $lang['notes']      = 'Opmerkingen';
+$lang['identification']      = 'Identificatie';
+$lang['properties']      = 'Eigenschappen';
 
 # events
 $lang['name']       = 'Naam';
@@ -360,3 +375,7 @@ $lang['list_products']         = "Product Lijst";
 $lang['writeoff']              = "Uitschrijven";
 $lang['expired_stock']         = "Vervallen stock";
 $lang['expired_stock_expl']         = "Deze tabel toont producten (1)die vervallen zijn (tot 360 dagen), (2)producten die binnenkort komen te vervallen (30 dagen).";
+
+# teeth
+$lang['teeth']         = "Tanden fiche";
+$lang['paint_color']         = "Kleur";

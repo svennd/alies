@@ -54,6 +54,8 @@ $lang['other_logs']         = 'Andere logs';
 $lang['global_logs']        = 'Volledige logs';
 $lang['stock_list']         = 'Stock lijst';
 $lang['settings']           = 'Configuratie';
+$lang['stock_error']        = "Stock fouten";
+
 
 # location
 $lang['add_location']        = 'Locatie toevoegen';

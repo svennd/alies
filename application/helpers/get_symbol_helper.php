@@ -84,8 +84,28 @@ function get_gender($gender)
 /*
  return the bill name instead of the integer
 */
-function get_bill_status(int $status)
+function get_bill_status(int $status, bool $icon = false)
 {
+	if ($icon)
+	{
+		switch ($status)
+		{
+			case BILL_INVALID:
+			case BILL_DRAFT:
+			case BILL_PENDING:
+			case BILL_UNPAID:
+			case BILL_INCOMPLETE:
+				case BILL_ONHOLD:
+				return '<i class="fa-solid fa-fw fa-arrows-spin fa-spin"></i>';
+			case BILL_PAID:
+				return '<i class="fa-solid fa-fw fa-check"></i>';
+			case BILL_HISTORICAL:
+				return '<i class="fa-solid fa-fw fa-file-import"></i>';
+			default:
+				return '<i class="fa-solid fa-fw fa-clipboard-question"></i>';
+		}
+	}
+
 	switch ($status)
 	{
 		case BILL_INVALID:

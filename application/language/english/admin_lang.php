@@ -53,6 +53,7 @@ $lang['other_logs']         = 'Other logs';
 $lang['global_logs']        = 'Full logs';
 $lang['stock_list']         = 'Stock list';
 $lang['settings']           = 'Settings';
+$lang['stock_error']        = "Stock errors";
 
 # location
 $lang['add_location']        = 'Add location';
