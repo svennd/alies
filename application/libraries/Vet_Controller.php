@@ -26,6 +26,10 @@ class Vet_Controller extends MY_Controller
 		$this->load->model('Sticky_model', 'sticky');
 		$this->load->model('Lab_model', 'lab');
 
+		$this->lang->load('vet', 'dutch');
+		$this->lang->load('admin', 'dutch');
+		// $this->lang->load('vet', 'english');
+		
 		// $conf = $this->settings->set_cache('all_config')->get_all();
 		$conf = $this->settings->get_all();
 		if ($conf) {
@@ -62,10 +66,6 @@ class Vet_Controller extends MY_Controller
 		
 		// $this->output->set_profiler_sections($sections);
 		// $this->output->enable_profiler(TRUE);
-
-		$this->lang->load('vet', 'dutch');
-		$this->lang->load('admin', 'dutch');
-		// $this->lang->load('vet', 'english');
 	}
 
 	public function _get_compass_locations()
