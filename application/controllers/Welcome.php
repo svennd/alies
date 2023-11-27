@@ -15,6 +15,8 @@ class Welcome extends Vet_Controller
 		$this->load->model('Stock_limit_model', 'stock_limit');
 
 		$this->load->library('migration');
+
+		$this->load->helper('online');
 	}
 	
 	public function index()
@@ -33,7 +35,7 @@ class Welcome extends Vet_Controller
 		$result = array();
 
 		# joke'r'bad
-		$this->lang->load('bad_jokes', 'english');
+		// $this->lang->load('bad_jokes', 'english');
 
 		if ($r) {
 
@@ -59,16 +61,16 @@ class Welcome extends Vet_Controller
 							"update_to_version" 		=> $version,
 
 							"vets" 						=> $this->users->get_active_vets(),
-							"local_stock"				=> ($this->user->current_location != 0) ? $this->stock_limit->local_shortage($this->user->current_location) : false,
-							"global_stock"				=> $result,
-							"bad_products"				=> ($this->user->current_location != 0) ?
-												$this->stock
-													->fields('eol, id, product_id, location')
-													->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
-													->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true) // remove 0000-00-00
-													->where(array('location' => $this->user->current_location, 'state' => STOCK_IN_USE))
-													->get_all()
-												: false,
+							// "local_stock"				=> ($this->user->current_location != 0) ? $this->stock_limit->local_shortage($this->user->current_location) : false,
+							// "global_stock"				=> $result,
+							// "bad_products"				=> ($this->user->current_location != 0) ?
+							// 					$this->stock
+							// 						->fields('eol, id, product_id, location')
+							// 						->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
+							// 						->where('eol > DATE_ADD(NOW(), INTERVAL -360 DAY)', null, null, false, false, true) // remove 0000-00-00
+							// 						->where(array('location' => $this->user->current_location, 'state' => STOCK_IN_USE))
+							// 						->get_all()
+							// 					: false,
 							);
 
 		$this->_render_page('welcome_message', $data);

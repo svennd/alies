@@ -50,59 +50,76 @@ class Pets extends Vet_Controller
 		$this->_render_page('pets/weight_history', $data);
 	}
 
-	public function add($owner)
+	public function add(int $owner)
 	{
-		$invalid_input = false;
 		if ($this->input->post('submit')) {
-			if (is_null($this->input->post('type')) || is_null($this->input->post('gender')) || empty($this->input->post('name')))
+			if (
+					is_null($this->input->post('type')) || 
+					is_null($this->input->post('gender')) || 
+					empty($this->input->post('name')))
 			{
-				$invalid_input = true;
+				redirect('/pets/add/' . $owner);
 			}
-			else
-			{
-				$weight = $this->input->post('weight');
-				$pet_id = $this->pets->insert(array(
-												"type" 			=> (int) $this->input->post('type'),
-												"name" 			=> $this->input->post('name'),
-												"gender" 		=> $this->input->post('gender'),
-												"birth" 		=> $this->input->post('birth'),
-												"breed" 		=> $this->input->post('breed'),
-												"breed2" 		=> $this->input->post('breed2'),
-												"color" 		=> $this->input->post('color'),
-												"chip" 			=> $this->input->post('chip'),
-												"last_weight" 	=> $weight,
-												"nr_vac_book" 	=> $this->input->post('vacbook'),
-												"note" 			=> $this->input->post('msg'),
-												"owner" 		=> $this->input->post('owner'),
-												"location"		=> $this->user->current_location,
-												"init_vet"		=> $this->user->id
-											));
-				# if it failed
-				if (!$pet_id) {
-					redirect('/owners/detail/' . (int) $owner); 
-				}
 
-				# add weight to history
-				if ($weight)
-				{
-					$this->pets_weight->insert(array(
-											"pets" => $pet_id,
-											"weight" => $this->input->post("weight")
+			$weight = $this->input->post('weight');
+			$pet_id = $this->pets->insert(array(
+											"type" 			=> (int) $this->input->post('type'),
+											"name" 			=> $this->input->post('name'),
+											"gender" 		=> $this->input->post('gender'),
+											"birth" 		=> $this->input->post('birth'),
+											"breed" 		=> $this->input->post('breed'),
+											"breed2" 		=> $this->input->post('breed2'),
+											"color" 		=> $this->input->post('color'),
+											"chip" 			=> $this->input->post('chip'),
+											"last_weight" 	=> $weight,
+											"nr_vac_book" 	=> $this->input->post('vacbook'),
+											"note" 			=> $this->input->post('msg'),
+											"owner" 		=> $this->input->post('owner'),
+											"location"		=> $this->user->current_location,
+											"init_vet"		=> $this->user->id
 										));
-				}
-				$this->logs->logger(INFO, "add_pet", "Added pet " . $this->input->post('name') . " (". $pet_id . ")");
-
-				redirect('/pets/fiche/' . (int) $pet_id);
+			# if it failed
+			if (!$pet_id) {
+				redirect('/owners/detail/' . (int) $owner); 
 			}
+
+			# add weight to history
+			if ($weight)
+			{
+				$this->pets_weight->insert(array(
+										"pets" => $pet_id,
+										"weight" => $this->input->post("weight")
+									));
+			}
+			$this->logs->logger(INFO, "add_pet", "Added pet " . $this->input->post('name') . " (". $pet_id . ")");
+
+			redirect('/pets/fiche/' . (int) $pet_id);
+		
 		}
 
 		$data = array(
-						"owner" => $this->owners->get($owner),
-						"breeds" => $this->breeds->order_by('name')->get_all(),
-						"invalid" => $invalid_input,
+						"owner" => $this->owners->get($owner)
 					);
 
-		$this->_render_page('pets/profile', $data);
+		$this->_render_page('pets/add', $data);
+	}
+
+	public function delete(int $pet_id)
+	{
+		# check if user is admin
+		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
+
+		$pet_info = $this->pets->get($pet_id);
+
+		# delete the pet
+		$this->pets->delete($pet_id);
+
+		# log it
+		$this->logs->logger(INFO, "delete_pet", "Deleted pet " . $pet_info['name'] . " (#" . $pet_id . ")");
+
+		# send admin to overview
+		redirect('/owners/detail/' . (int) $pet_info['owner']);
+	
 	}
 
 	public function edit($pet_id)
@@ -124,7 +141,6 @@ class Pets extends Vet_Controller
 
 			$this->pets->update(
 				array(
-											"type" 			=> (int) $this->input->post('type'),
 											"name" 			=> $this->input->post('name'),
 											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender')),
 											"birth" 		=> $this->input->post('birth'),
@@ -161,7 +177,7 @@ class Pets extends Vet_Controller
 		$this->_render_page('pets/profile', $data);
 	}
 
-	public function fiche($pet_id)
+	public function fiche(int $pet_id)
 	{
 		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->with_pets_weight()->get($pet_id);
 

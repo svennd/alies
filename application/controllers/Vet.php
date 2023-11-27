@@ -16,10 +16,11 @@ class Vet extends Vet_Controller
 	}
 
 	# show profile
-	public function pub($id)
+	public function pub(int $id)
 	{
 		$data = array(
-				'profile' => $this->users->fields('email, last_login, first_name, last_name, phone, updated_at, image, sidebar')->get( (int) $id)
+				'event_count' 		=> $this->events->get_event_count($id),
+				'profile' 			=> $this->users->fields('email, last_login, first_name, last_name, phone, updated_at, image, sidebar')->get($id)
 		);
 
 		$this->_render_page('member/public_profile', $data);

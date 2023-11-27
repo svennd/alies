@@ -16,19 +16,7 @@ class Owners extends Vet_Controller
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Zipcodes_model', 'zipcode');
 	}
-	
-	public function index()
-	{
-		$data = array();
-		$this->_render_page('owners/search', $data);
-	}
-	
-	# legacy - please remove links to here
-	public function search()
-	{
-		redirect('owners', 'refresh');
-	}
-		
+			
 	public function add()
 	{
 		if ($this->input->post('submit')) {

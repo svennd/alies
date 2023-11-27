@@ -13,6 +13,7 @@ class Accounting extends Admin_Controller
 		$this->load->model('Events_procedures_model', 'eproc');
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Bills_model', 'bills');
+		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Booking_code_model', 'book');
 	}
 
@@ -50,6 +51,7 @@ class Accounting extends Admin_Controller
 			"yearly_earnings_ly" 		=> $this->bills->get_yearly_earnings(clone $last_year),
 			"yearly_by_month"		 	=> $this->bills->get_yearly_earnings_by_month(clone $date),
 			"yearly_by_month_last_year"	=> $this->bills->get_yearly_earnings_by_month($last_year),
+			"stock_error_count"			=> $this->stock->where(array("state" => STOCK_ERROR))->count_rows(),
 			"logs" 						=> $this->logs
 												->with_vet('fields:first_name')
 												->with_location('fields:name')

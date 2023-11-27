@@ -35,7 +35,7 @@ class Tooth extends Vet_Controller
 							'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
 					);
 		
-		$this->_render_page('tooth', $data);
+		$this->_render_page('pets/tooth', $data);
 	}
 	
 	public function history($pet_id)

@@ -47,6 +47,16 @@ class Stock extends Vet_Controller
 		$this->_render_page('stock/details', $data);
 	}
 
+	public function move()
+	{
+
+		$data = array(
+						"stocks" => $this->location
+					// "" => $this->stock_location->get_all()
+		);
+		$this->_render_page('stock/move', $data);
+	}
+
 	public function move_stock()
 	{
 		if ($this->input->post('submit') == "barcode") {
@@ -378,6 +388,39 @@ class Stock extends Vet_Controller
 		$this->_render_page('stock/edit.admin.php', $data);
 	}
 	
+	/*
+		for problems with stock
+	*/
+	public function stock_check()
+	{
+		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
+
+		$data = array(
+			"stock"	=> $this->stock->get_problems()
+		);
+		$this->_render_page('stock/stock.admin.php', $data);	
+	}
+
+	/*
+		clear the error set the value to 0
+	*/
+	public function clear_error(int $stock_id)
+	{
+		# get the info for logging purpose
+		$stock_info = $this->stock->with_products('fields: id, name')->get($stock_id);
+		
+		# log in general logs
+		$this->logs->logger(INFO, "clear_error", "s:" . $stock_info['id'] . " p:" . $stock_info['products']['name'] . " v:" . $stock_info['volume'] . " l:" . $stock_info['lotnr']);
+
+		# log in stock
+		$this->logs->stock(ERROR, "clear_error", $stock_info['products']['id'], -$stock_info['volume']);
+
+		# clear the error
+		$this->stock->where(array("id" => $stock_id))->update(array("state" => STATUS_HISTORY, "volume" => 0));
+
+		redirect('/stock/stock_check', 'refresh');
+	}
+
 	/*
 	covetrus specific output
 	*/
