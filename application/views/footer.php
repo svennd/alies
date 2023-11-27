@@ -75,6 +75,14 @@ document.addEventListener("DOMContentLoaded", function() {
       $(this).find('i').removeClass('fa-shake');
     }
   );
+  $('.beatfade').hover(
+    function() {
+      $(this).find('i').addClass('fa-beat-fade');
+    },
+    function() {
+      $(this).find('i').removeClass('fa-beat-fade');
+    }
+  );
   $('.bounceit').hover(
     function() {
       $(this).find('i').addClass('fa-bounce');

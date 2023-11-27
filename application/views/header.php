@@ -45,7 +45,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="background-image:linear-gradient(180deg, <?php echo $user->sidebar; ?> 10%, <?php echo $user->sidebar; ?> 100%);">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
+      <li class="nav-item" id="home">
         <a class="nav-link bounceit" href="<?php echo base_url(); ?>">
         <i class="fa-solid fa-fw fa-paw"></i>
           <span><?php echo $this->lang->line('dashboard'); ?></span></a>
@@ -110,7 +110,7 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-										<?php echo (isset($user)) ? $user->first_name . ' ' . $user->last_name : 'error name'; ?>
+										<?php echo (isset($user)) ? substr($user->first_name, 0, 1) . '. ' . $user->last_name : 'error name'; ?>
 								</span>
                 <img class="img-profile rounded" src="<?php echo base_url() . 'assets/public/' . (!empty($user->image) && is_readable('assets/public/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
               </a>
