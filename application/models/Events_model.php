@@ -378,4 +378,26 @@ class Events_model extends MY_Model
 		";
 		return ($this->db->query($sql)->result_array()[0]['count']);
 	}
+
+	/*
+		vet/pub
+		some basic statistcs
+	*/
+	public function get_event_count(int $user_id)
+	{
+		$sql = "
+			SELECT 
+				COUNT(*) AS event_count
+			FROM 
+				events
+			WHERE 
+				(vet = '". $user_id ."' OR vet_support_1 = '". $user_id ."'  OR vet_support_2 = '". $user_id ."' )
+		  	AND 
+				DATEDIFF(NOW(), created_at) <= 365
+			;
+		";
+
+		return $this->db->query($sql)->result_array()[0]['event_count'];
+	}
+	
 }

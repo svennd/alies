@@ -5,11 +5,11 @@
       <div class="sidebar-heading">
       <?php echo $this->lang->line('Veterinary'); ?>
       </div>
-      <li class="nav-item" id="clients">
-        <a class="nav-link" href="<?php echo base_url(); ?>owners">
+      <!-- <li class="nav-item" id="clients">
+        <a class="nav-link" href="<?php echo base_url('search'); ?>">
           <i class="fas fa-fw fa-user"></i>
           <span><?php echo $this->lang->line('Clients'); ?></span></a>
-      </li>
+      </li> -->
       <li class="nav-item" id="reports">
         <a class="nav-link" href="<?php echo base_url(); ?>report">
         <i class="fa-solid fa-fw fa-book-medical"></i>
@@ -32,7 +32,8 @@
       </li>
       <hr class="sidebar-divider">
       <div class="sidebar-heading">
-      <?php echo $this->lang->line('Administration'); ?>
+      
+	    <?php if ($this->ion_auth->in_group("admin")): ?><?php echo $this->lang->line('vet'); ?> <?php endif; ?><?php echo $this->lang->line('Administration'); ?>
       </div>
       <li class="nav-item" id="invoice">
         <a class="nav-link" href="<?php echo base_url(); ?>invoice">
@@ -59,8 +60,10 @@
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
 
+      <?php if (!$this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="help">
       <a class="nav-link" href="<?php echo base_url('help/vet'); ?>">
           <i class="fa-regular fa-fw fa-circle-question"></i>
           <span>Help</span></a>
-      </li>  
+      </li> 
+      <?php endif; ?>

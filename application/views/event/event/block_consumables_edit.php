@@ -1,6 +1,6 @@
 <?php if ($consumables) : ?>
 	<?php foreach ($consumables as $product): ?>
-		<tr style="background-color: <?php echo ($product['price'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
+		<tr style="background-color: <?php echo ($product['price_brut'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
 			<td>
 				<?php echo $product['volume'] . ' ' . $product['product']['unit_sell']; ?> <?php echo $product['product']['name']; ?>
 			</td>
@@ -22,13 +22,13 @@
 					}
 				?>
 				</td>
-			<td><?php echo ($product['calc_net_price'] != 0) ? $product['calc_net_price'] : $product['net_price']; ?></td>
+			<td><?php echo ($product['price_ori_net'] != 0) ? $product['price_ori_net'] : $product['price_net']; ?></td>
 			
 			<td>
 				<form action="<?php echo base_url(); ?>events/edit_price/<?php echo $event_info['id']; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off">
 				
 					<div class="input-group input-group-sm">
-						<input type="text" name="price" value="<?php echo $product['net_price']; ?>" class="form-control" id="volume<?php echo $product['id']; ?>" <?php echo ($event_info['status'] == STATUS_CLOSED) ? 'disabled' : ''; ?>>
+						<input type="text" name="price" value="<?php echo $product['price_net']; ?>" class="form-control" id="volume<?php echo $product['id']; ?>" <?php echo ($event_info['status'] == STATUS_CLOSED) ? 'disabled' : ''; ?>>
 						  <div class="input-group-append">
 							<span class="input-group-text">&euro;</span>
 						  </div>
@@ -36,7 +36,7 @@
 							 <button type="submit" name="submit" value="store_prod_price" class="btn btn-outline-success"><i class="fas fa-save"></i></button>
 						  </div>
 					</div>
-					<input type="hidden" name="ori_net_price" value="<?php echo ($product['calc_net_price'] != 0) ? $product['calc_net_price'] : $product['net_price']; ?>"/>
+					<input type="hidden" name="price_net" value="<?php echo ($product['price_ori_net'] != 0) ? $product['price_ori_net'] : $product['price_net']; ?>"/>
 					<input type="hidden" name="btw" value="<?php echo $product['btw']; ?>"/>
 					<input type="hidden" name="event_product_id" value="<?php echo $product['id']; ?>"/>
 					<input type="hidden" name="pid" value="<?php echo $product['product_id']; ?>"/>
@@ -44,10 +44,10 @@
 			</td>			
 			<td>
 			<?php
-				if ($product['calc_net_price'] != 0)
+				if ($product['price_ori_net'] != 0)
 				{
 					
-					$change = round((($product['net_price']-$product['calc_net_price'])/$product['calc_net_price'])*100);
+					$change = round((($product['price_net']-$product['price_ori_net'])/$product['price_ori_net'])*100);
 					echo ($change < 0) ? 
 									'<span style="color:red;">' . $change . '%</span>' 
 								: 
@@ -55,9 +55,9 @@
 				}
 			?>
 			</td>
-				<td><?php echo round($product['price'],2); ?>
-					<?php $total += $product['price']; ?>
-					<?php $total_ex += $product['net_price']; ?>
+				<td><?php echo round($product['price_brut'],2); ?>
+					<?php $total += $product['price_brut']; ?>
+					<?php $total_ex += $product['price_net']; ?>
 				</td>
 		</tr>
 	<?php endforeach; ?>

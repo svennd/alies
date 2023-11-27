@@ -27,6 +27,30 @@ class Stock_model extends MY_Model
 		parent::__construct();
 	}
 
+	public function get_problems()
+	{
+		$sql = "SELECT
+					stock.*,
+					products.name as product_name,
+					products.id as product_id,
+					products.unit_sell,
+					stock_location.name as st_location
+				FROM
+					stock
+				join
+					products
+				on
+					products.id = stock.product_id
+				join
+					stock_location
+				on
+					stock_location.id = stock.location
+				WHERE
+					state = ". STOCK_ERROR ."
+				;";
+		return $this->db->query($sql)->result_array();
+	}
+
 	/*
 		called in stock/expired
 	*/

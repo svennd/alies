@@ -1,7 +1,6 @@
 <div class="card shadow mb-4">
 	<div class="card-header">
-		<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('invoices'); ?>
-		<small>(#<?php echo $owner['id']; ?>)</small>
+		<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> <small>(#<?php echo $owner['id']; ?>)</small> / <?php echo $this->lang->line('invoices'); ?>		
 	</div>
 	<div class="card-body">
 	<?php if($bills): ?>
@@ -23,20 +22,20 @@
 		<?php foreach($bills as $bill): ?>
 		<tr>
 		  <td>
-			<?php if($bill['invoice_id']): // imported have no invoice_id ?>
-			<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>">
-		  		#<?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?>
+			<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>">
+				<?php if($bill['invoice_id']): ?>
+					#<?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?>
+				<?php else: ?>
+					#<?php echo get_bill_id($bill['id']); ?>
+				<?php endif; ?>
 			</a>
-			<?php else: ?>
-				#<?php echo get_bill_id($bill['id']); ?>
-			<?php endif; ?>
 		</td>
 		  <td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
-		  <td><?php echo get_bill_status($bill['status']); ?></td>
-		  <td><?php echo $bill['total_brut']; ?></td>
-		  <td><?php echo $bill['card']; ?></td>
-		  <td><?php echo $bill['cash']; ?></td>
-		  <td><?php echo $bill['transfer']; ?></td>
+		  <td><?php echo get_bill_status($bill['status'], true); ?></td>
+		  <td data-sort="<?php echo $bill['total_brut'];?>"><?php echo $bill['total_brut']; ?> &euro;</td>
+		  <td><?php echo ($bill['card'] != 0) ? $bill['card'] . "&euro;" : ""; ?></td>
+		  <td><?php echo ($bill['cash'] != 0) ? $bill['cash'] . "&euro;" : ""; ?></td>
+		  <td><?php echo ($bill['transfer'] != 0) ? $bill['transfer'] . "&euro;" : ""; ?></td>
 		  <td><?php echo $bill['vet']['first_name']; ?></td>
 		  <td><?php echo $bill['location']['name']; ?></td>
 		</tr>
@@ -54,6 +53,7 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({
+			"order": [[ 1, "desc" ]],
 		responsive: {
         	"details": {
             "type": 'column',
@@ -61,6 +61,6 @@ document.addEventListener("DOMContentLoaded", function(){
         }
   	  },
 	});
-	$("#clients").addClass('active');
+	$("#home").addClass('active');
 });
 </script>

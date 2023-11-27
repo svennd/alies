@@ -50,6 +50,7 @@ class Products_model extends MY_Model
 
 	/*
 		search a product based on name
+		search/index
 	*/
 	public function search_product($name)
 	{
@@ -57,13 +58,12 @@ class Products_model extends MY_Model
 					$this->
 					group_start()->
 						like('name', $name, 'both')->
+						like('wholesale_name', $name, 'both')->
 						or_like('short_name', $name, 'both')->
 					group_end()->
-					limit(25)->
+					limit(100)->
 					get_all() 
-
 					: 
-
 					false;
 	}
 

@@ -114,8 +114,9 @@
       <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Hoe kan ik een klant opzoeken ?</span><span class="icon" aria-hidden="true"></span></button>
       <div class="accordion-content">
         <p>
-			U kunt klanten opzoeken via de <a href="<?php echo base_url('owners') ?>">zoekfunctie</a>. De zoekfunctie zoekt steeds op alle onderstaande waarden.<br/>
-			Het zoekveld is niet hoofdletter gevoelig. (bv : Tim en tim zullen beide <b>tim</b> matchen)<br/>
+			U kunt klanten opzoeken via de <a href="<?php echo base_url('search') ?>">zoekfunctie</a>. De zoekfunctie zoekt steeds op alle onderstaande waarden.<br/>
+            U kunt uw voorkeur zoekactie opgeven in uw <a href="<?php echo base_url('vet/profile'); ?>">profiel</a>. Deze wordt altijd geselecteerd als er resultaten zijn voor uw zoekopdracht.<br/> 
+			Het zoekveld is niet hoofdlettergevoelig, dus "Tim" en "tIM" zullen beide overeenkomen met <b>"tim"</b><br/>
 			<table class="table table-sm">
             <tr>
                 <th>Veld</th>
@@ -140,12 +141,13 @@
             <tr>
                 <td>Telefoon</td>
                 <td>input*</td>
-                <td>0123 => <b>0123</b>456789 (alle telefoon velden)</td>
+                <td>0123 => <b>0123</b>456789 (alle telefoon velden)<br/>
+                    Zoekt op exacte waarde, dus 0496/ zal niet 0496. niet vinden.</td>
             </tr>
             <tr>
                 <td>Dier chip nr.</td>
                 <td>input*</td>
-                <td>Partiële chip is mogelijk, doorzoekt enkel lokale databank.</td>
+                <td>Partiële chip is mogelijk (minimaal 10 cijfers), doorzoekt enkel lokale databank.</td>
             </tr>
             <tr>
                 <td>Dier naam</td>
@@ -164,7 +166,7 @@
             </tr>
             <tr>
                 <td>Klant ID</td>
-                <td>input*</td>
+                <td>input</td>
                 <td>Volledig klant ID nodig, u krijgt dus steeds maar 1 resultaat</td>
             </tr>
         	</table>

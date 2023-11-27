@@ -2,11 +2,13 @@
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / Edit Client
+				<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> /
+				<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> /
+				<?php echo $this->lang->line('edit_client'); ?>
 			</div>
 			<div class="card-body">
 
-				<form action="<?php echo base_url(); ?>owners/edit/<?php echo $owner['id']; ?>" method="post" autocomplete="off">
+				<form action="<?php echo base_url('owners/edit/' . $owner['id']); ?>" method="post" autocomplete="off">
 				<div class="row">
 					<div class="col-md-6">
 						<h5><?php echo $this->lang->line('personal_info'); ?></h5>
