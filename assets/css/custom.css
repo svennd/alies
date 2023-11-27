@@ -49,3 +49,19 @@
   right: 10px;
   transform: translateY(-50%);
 }
+
+
+
+/*
+  simple work in progress tag
+*/
+.work-in-progress {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background-color: #ffcc00;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color:black;
+}
