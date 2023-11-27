@@ -29,12 +29,17 @@ $edit_mode = (isset($pet)) ? true : false;
 <input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
 <button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo ($edit_mode) ? $this->lang->line('edit') : $this->lang->line('add'); ?></button>
 
+
+<?php if ($this->ion_auth->in_group("admin")): ?>
+	<a href="<?php echo base_url('pets/delete/' . $pet['id']); ?>" class="btn btn-outline-danger float-right"><i class="fa-solid fa-triangle-exclamation fa-beat"></i> Delete Pet</a>
+<?php endif; ?>
+
 </div>
 		</div>
 
 	</div>
 	<div class="col-lg-5 col-xl-2">
-		<?php include "fiche/block_full_client.php"; ?>
+		<?php include "application/views/blocks/block_full_client.php"; ?>
 	</div>
 </div>
 
@@ -209,3 +214,5 @@ document.addEventListener("DOMContentLoaded", function(){
 	get_chip_info($("#chip").val());
 });
 </script>
+
+<div class="work-in-progress"><i class="fa-solid fa-person-digging"></i></div>

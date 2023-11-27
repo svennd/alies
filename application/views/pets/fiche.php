@@ -12,8 +12,9 @@
 		</div>
 	</div>
 	<div class="col-lg-5 col-xl-2">
-		<a href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id']; ?>" class="btn btn-success btn-icon-split btn-lg mb-3"><span class="icon text-white-50"><i class="fas fa-user-md"></i></span><span class="text"><?php echo $this->lang->line('new_consult'); ?></span></a>
-		<?php include "fiche/block_client.php"; ?>
+		<a href="<?php echo base_url('events/new_event/'. $pet['id']); ?>" class="btn btn-success btn-icon-split btn-lg mb-3"><span class="icon text-white-50"><i class="fas fa-user-md"></i></span><span class="text"><?php echo $this->lang->line('new_consult'); ?></span></a>
+		
+		<?php include "application/views/blocks/block_full_client.php"; ?>
 		<?php include "fiche/block_weight.php"; ?>
 		<?php include "fiche/block_birth.php"; ?>
 		<?php include "fiche/block_nutrition.php"; ?>
