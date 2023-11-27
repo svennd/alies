@@ -34,6 +34,14 @@
 	<td><?php echo empty($pet['color']) ? "?" : $pet['color']; ?></td>
 </tr>
 <tr>
+	<td><?php echo $this->lang->line('weight'); ?></td>
+	<td><a href="<?php echo base_url('pets/history_weight/' . $pet['id']); ?>"><?php echo ($pet['last_weight'] == 0) ? "---" : $pet['last_weight'] . 'kg'; ?></td>
+</tr>
+<tr>
+	<td><?php echo $this->lang->line('birth'); ?></td>
+	<td><?php echo user_format_date( $pet['birth'], $user->user_date); ?><br/><small><?php if(!$pet['death']): ?><?php echo timespan(strtotime($pet['birth']), time(), 1); ?><?php endif; ?></small></td>
+</tr>
+<tr>
 	<td><?php echo $this->lang->line('chip'); ?></td>
 	<td><?php echo empty($pet['chip']) ? "?" : $pet['chip']; ?></td>
 </tr>

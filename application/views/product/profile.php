@@ -224,7 +224,7 @@ foreach ($locations as $l)
 						?>
 						<div class="row mt-3">
 							<div class="col-sm-12">
-								<table class="table" id="dataTable">
+								<table class="table table-sm" id="dataTable">
 								<thead>
 									<tr>
 										<td><?php echo $this->lang->line('volume'); ?></td>
@@ -251,7 +251,7 @@ foreach ($locations as $l)
 										; ?></td>
 									<td><?php echo $stock['lotnr']; ?></td>
 									<td><?php echo (isset($loc[$stock['location']])) ? $loc[$stock['location']] : 'error'; ?></td>
-									<td><a href="<?php echo base_url('stock/write_off/' . $stock['stock_id']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-person-falling-burst"></i></a></td>
+									<td><a href="<?php echo base_url('stock/write_off/' . $stock['stock_id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-person-falling-burst"></i></a></td>
 								</tr>
 								<?php endforeach; ?>
 								</tbody>
@@ -293,16 +293,15 @@ document.addEventListener("DOMContentLoaded", function(){
             var api = this.api();
  
             // Remove the formatting to get integer data for summation
-            var intVal = function (i) {
-                return typeof i === 'string' ? i.replace(/[ml,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-            };
- 
+			var intVal = function (i) {
+				return typeof i === 'number' ? i : parseFloat(i.replace(/[^\d.-]/g, '')) || 0;
+			};
+
             // Total over all pages
             total = api
                 .column(0)
                 .data()
                 .reduce(function (a, b) {
-					console.log(a);
                     return intVal(a) + intVal(b);
                 }, 0);
  

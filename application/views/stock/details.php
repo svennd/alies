@@ -37,7 +37,7 @@
 		<tr>
 			<td><?php echo $detail['volume']; ?> <?php echo $detail['products']['unit_sell']; ?></td>
 			<td><?php echo $detail['lotnr']; ?></td>
-			<td data-sort="<?php echo strtotime($detail['eol']); ?>"><?php echo user_format_date($detail['eol'], $user->user_date); ?></td>
+			<td data-sort="<?php echo ($detail['eol']) ? strtotime($detail['eol']) : "0"; ?>"><?php echo ($detail['eol']) ? user_format_date($detail['eol'], $user->user_date) : ''; ?></td>
 			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<td><?php echo $detail['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 			<?php endif; ?>

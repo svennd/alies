@@ -31,8 +31,8 @@
 											<?php if($report['payment'] == 0): ?>
 												---
 											<?php else : ?>
-											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm <?php echo ($report['bill_status'] == PAYMENT_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
-												<?php echo ($report['bill_status'] == PAYMENT_PAID) ? '<i class="fa-solid fa-fw fa-user-check"></i>' : '<i class="fa-solid fa-fw fa-user-xmark"></i>'; ?>
+											<a href="<?php echo base_url('invoice/get_bill/' . $report['payment']); ?>" class="btn btn-sm <?php echo ($report['bill_status'] == BILL_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
+												<?php echo ($report['bill_status'] == BILL_PAID) ? '<i class="fa-solid fa-fw fa-user-check"></i>' : '<i class="fa-solid fa-fw fa-user-xmark"></i>'; ?>
 											</a>
 											<?php endif; ?>
 										</td>
