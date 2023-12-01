@@ -60,10 +60,9 @@ class Events extends Vet_Controller
 										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, id')
 										->with_prices('fields: volume, price|order_inside:volume asc')
-										// ->with_vaccine('fields: id, redo, no_rappel')
+										->with_vaccine('fields: id, redo, no_rappel')
 										->where(array("event_id" => $event_id))
 										->get_all();
-		
 		$data = array(
 			"event_state"		=> $event_info['status'],
 			"owner"				=> $this->owners->get($pet_info['owner']),
@@ -145,7 +144,7 @@ class Events extends Vet_Controller
 											);
 			
 			// if its a vaccine add it to this pet
-			$this->add_vaccine($vaccin, $vaccin_freq, $line, $name, $event_id);
+			$this->add_vaccine($vaccin, $vaccin_freq, $line, $name, $event_id, $return_id);
 
 			// add stock info
 			$stock_info = $this->stock->fields('id, lotnr, eol, volume')->get($stock);
@@ -160,6 +159,7 @@ class Events extends Vet_Controller
 			array_merge(
 				array(
 					"name" 			=> $name, 
+					"vaccin" 		=> $vaccin, 
 					"volume"		=> $volume, 
 					"return"		=> $return_id, 
 					"btw" 			=> $btw,
@@ -171,41 +171,6 @@ class Events extends Vet_Controller
 				$content_specific_array
 			)
 		);
-	}
-
-
-	// check if there are flags to proc
-	private function process_flags(int $line, int $event_id)
-	{
-		// check if this procedure has a flag 
-		$flag = $this->proc->fields('flag')->get($line);
-
-		if (is_null($flag))
-		{
-			return true;
-		}
-		elseif ($flag == FLAG_PET_DEAD)
-		{
-			// set the pet as passed away
-			$event = $this->events->fields('pet')->get($event_id);
-			$this->pets->update(
-									array(
-											"death" => 1, 
-											"death_date" => date("Y-m-d")
-									), $event['pet']);
-
-			$this->logs->logger(DEBUG, "flag_pet_dead", "set pet " . $event['pet'] . " as dead after flag procedure");
-		}
-		elseif ($flag == FLAG_NEUTERED)
-		{
-			// set the pet as passed away
-			$event = $this->events->fields('pet')->get($event_id);
-			$this->pets->update(
-									array(
-											"death" => 1, 
-											"death_date" => date("Y-m-d")
-									), $event['pet']);
-		}
 	}
 
 	// add line to procedures
@@ -255,12 +220,12 @@ class Events extends Vet_Controller
 	}
 
 	// check if its a vaccine and add it to the vaccine table
-	private function add_vaccine(bool $is_vaccin, int $vaccin_freq, int $product_id, string $product_name, int $event)
+	private function add_vaccine(bool $is_vaccin, int $vaccin_freq, int $product_id, string $product_name, int $event, int $event_line)
 	{
 		if (!$is_vaccin) { return true; }
 
 		// get pet id
-		$event = $this->events->fields('pet')->get($event);
+		$event_info = $this->events->fields('pet')->get($event);
 
 		// calculate redo date
 		$date = new DateTime();
@@ -270,7 +235,8 @@ class Events extends Vet_Controller
 									"product_id" 	=> $product_id,
 									"event_id" 		=> $event,
 									"product"		=> $product_name, # backup in case product_id ever gets removed/renamed to something else
-									"pet"			=> $event['pet'],
+									"event_line"	=> $event_line,
+									"pet"			=> $event_info['pet'],
 									"redo"			=> $date->format('Y-m-d'),
 									"no_rappel"		=> 0,
 									"location"		=> $this->user->current_location,
@@ -494,7 +460,7 @@ class Events extends Vet_Controller
 		$this->eprod->delete($product_id);
 
 		# in case its an vaccine
-		// $this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
+		$this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
 
 		# push an event update
 		$this->events->update(array(), $event_id);
