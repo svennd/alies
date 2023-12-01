@@ -28,13 +28,14 @@ class Search extends Vet_Controller
 		$first_name = $this->owners->search_by_first_name($query);
 		$street		= $this->owners->search_by_street_ex($query);
 		$breeds		= $this->breeds->search_by_name($query);
-		$phone 		= $this->owners->search_by_phone_ex($query);
+		$phone 		= $this->owners->search_by_phone_ex(format_phone($query));
 		
 		# if its numeric it might be a chip, client_id or pet_id
-		if (is_numeric($query))
+		if (ctype_digit(strval($query)))
 		{
-			$pets		= (strlen($query) >= 10) ? $this->pets->search_by_chip_ex($query) : $this->pets->search_by_id($query);				
-			$last_name 	= $this->owners->get_all((int)$query);
+			$pets		= (strlen($query) >= 10) ? $this->pets->search_by_chip_ex($query) : $this->pets->search_by_id($query);
+			# if the first digit is a 0 its not a client id but a phone number		
+			$last_name 	= (substr($query, 0, 1) == 0) ? array() : $this->owners->get_all((int)$query);
 		}
 		else
 		{

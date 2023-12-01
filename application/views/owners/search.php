@@ -162,10 +162,10 @@
 					<td><?php echo $res['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($res['telephone'])) ? $res['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? $res['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? $res['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? $res['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $res['last_bill']; ?></td>
@@ -185,10 +185,10 @@
 					<td><?php echo $res['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($res['telephone'])) ? $res['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? $res['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? $res['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? $res['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $res['last_bill']; ?></td>
@@ -208,10 +208,10 @@
 					<td><?php echo $res['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($res['telephone'])) ? $res['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? $res['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? $res['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? $res['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $res['last_bill']; ?></td>
@@ -229,10 +229,10 @@
 					<td><?php echo $res['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($res['telephone'])) ? $res['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? $res['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? $res['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? $res['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $res['last_bill']; ?></td>
@@ -252,10 +252,10 @@
 					<td><?php echo $res['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($res['telephone'])) ? $res['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? $res['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? $res['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? $res['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $res['last_bill']; ?></td>
@@ -276,10 +276,10 @@
 					<td><?php echo $breed['city']; ?></td>
 					<?php if (count($phone)): ?>
 					<td>
-						<?php echo (!empty($breed['telephone'])) ? $breed['telephone'] . '<br/>' : ''; ?>
-						<?php echo (!empty($breed['mobile'])) ? $breed['mobile'] . '<br/>' : ''; ?>
-						<?php echo (!empty($breed['phone2'])) ? $breed['phone2'] . '<br/>' : ''; ?>
-						<?php echo (!empty($breed['phone3'])) ? $breed['phone3'] . '<br/>' : ''; ?>
+						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 					</td>
 					<?php endif; ?>
 					<td><?php echo $breed['last_bill']; ?></td>

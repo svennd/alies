@@ -1,6 +1,3 @@
-<?php 
-$edit_mode = false; 
-?>
 <style>
 
 .lbl-radio {
@@ -102,24 +99,22 @@ input[type='radio']:checked {
 					<div class="col">
 						<div class="form-group col-md-8">
 							<label for="name"><b><?php echo $this->lang->line('pet_name'); ?></b>*</label>
-							<input type="text" name="name" class="form-control" id="name" value="<?php echo ($edit_mode && isset($pet['name'])) ? $pet['name']: '' ?>" required>
+							<input type="text" name="name" class="form-control" id="name" value="" required>
 						</div>
 						<div class="form-group col-md-8">
 							<label for="birth"><b><?php echo $this->lang->line('birth'); ?></b>*</label>
-							<input type="date" name="birth" class="form-control" id="birth" value="<?php echo ($edit_mode && isset($pet['birth'])) ? $pet['birth']: '' ?>" required>
-							<?php if($edit_mode && !$pet['death']): ?><i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i><?php endif; ?>
+							<input type="date" name="birth" class="form-control" id="birth" value="" required>
+							<i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 						</div>
 						
 						<div class="row form-group mx-1">
 							<div class="col-md-6">
 								<label for="breeds"><b><?php echo $this->lang->line('breed'); ?></b>*</label>
-								<select name="breed" class="form-control" id="breeds" data-placeholder='<?php echo ($edit_mode && isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>' <?php if(!$edit_mode): ?>required<?php endif; ?>></select>
-								<input type="hidden" id="current_breed" name="current_breed" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
+								<select name="breed" class="form-control" id="breeds" required></select>
 							</div>
 							<div class="col-md-6">
 								<label for="second_breed">x <?php echo $this->lang->line('breed'); ?></label>
-								<select name="breed2" class="form-control" id="second_breed" data-placeholder='<?php echo ($edit_mode && isset($pet['breeds2'])) ? $pet['breeds2']['name']: ''; ?>'></select>
-								<input type="hidden" id="current_breed2" name="current_breed2" value="<?php echo ($edit_mode && isset($pet['breed2'])) ? $pet['breed2']: -1; ?>">
+								<select name="breed2" class="form-control" id="second_breed"></select>
 							</div>
 						</div>
 					</div>
@@ -197,14 +192,6 @@ const url = '<?php echo base_url('breeds/search_breed/'); ?>';
 	});
 	$("#chip").change(function() {
 		get_chip_info(this.value);
-	});
-
-	$("dead").change(function(event) {
-		var checkbox = event.target;
-		if (checkbox.checked) {
-		} else {
-
-		}
 	});
 
 	make_date($("#birth").val());

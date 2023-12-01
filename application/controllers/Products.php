@@ -154,7 +154,6 @@ class Products extends Vet_Controller
 		$id = ($id_or_product == "other") ? 0 : $id_or_product;
 		$data = array(
 						"products" 		=> ($id_or_product) ? $this->products
-																		->with_prices('fields:volume, price|order_inside:volume asc')
 																		->with_booking_code()
 																		->with_type('fields:name')
 																		->where('type', $id)
@@ -162,7 +161,7 @@ class Products extends Vet_Controller
 						"types" 			=> $this->prod_type->get_all()
 					);
 
-		$this->_render_page('products_list', $data);
+		$this->_render_page('product/list', $data);
 	}
 
 	public function product(int $id)

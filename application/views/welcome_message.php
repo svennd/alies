@@ -52,14 +52,14 @@
     width: 20%;
     height: 20%;
     border-radius: 50%;
-    background-color: #d4dae3;
+    background-color: #ff6a5b;
     border: 0.0625rem solid #fff;
 }
 .avatar-online::before {
     background-color: #00ac69;
 }
 .avatar-offline::before {
-    background-color: #ff6a5b;
+    background-color: #d4dae3;
 }
 </style>
 

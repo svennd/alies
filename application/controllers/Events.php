@@ -300,15 +300,17 @@ class Events extends Vet_Controller
 			# update procedure
 			if ($this->input->post('submit') == 'store_proc_price') {
 					$this->eproc->update(array(
-												"net_price" 		=> $this->input->post('price'),
-												"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-												"calc_net_price"	=> $this->input->post('ori_net_price')
+												"price_net" 		=> $this->input->post('price'),
+												"price_brut"		=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
+												"price_ori_net"		=> $this->input->post('price_ori_net'),
+												"reduction_reason"	=> $this->input->post('reason')
 											), array("id" => $this->input->post('event_proc_id'), "procedures_id" => $this->input->post('pid'), "event_id" => $event_id));
 			} elseif ($this->input->post('submit') == 'store_prod_price') {
 					$this->eprod->update(array(
-												"net_price" 		=> $this->input->post('price'),
-												"price" 			=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-												"calc_net_price"	=> $this->input->post('ori_net_price')
+												"price_net" 		=> $this->input->post('price'),
+												"price_brut" 		=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
+												"price_ori_net"		=> $this->input->post('price_ori_net'),
+												"reduction_reason"	=> $this->input->post('reason')
 											), array("id" => $this->input->post('event_product_id'), "product_id" => $this->input->post('pid'), "event_id" => $event_id));
 			}
 		}
@@ -317,7 +319,7 @@ class Events extends Vet_Controller
 						->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
 						->with_stock('fields: eol, lotnr, id')
 						->with_prices('fields: volume, price|order_inside:volume asc')
-						->with_vaccine('fields: id, redo')
+						// ->with_vaccine('fields: id, redo')
 						->where(array("event_id" => $event_id))
 						->get_all();
 
@@ -344,16 +346,17 @@ class Events extends Vet_Controller
 		if ($eprod)
 		{
 			foreach ($eprod as $prod) {
-				if ($prod['calc_net_price'] != 0) {
-					$new_net_price = $prod['calc_net_price'] * ((100 - $reduction) / 100);
+				if ($prod['price_ori_net'] != 0) {
+					$new_net_price = $prod['price_ori_net'] * ((100 - $reduction) / 100);
 				} else {
-					$new_net_price = $prod['net_price'] * ((100 - $reduction) / 100);
+					$new_net_price = $prod['price_net'] * ((100 - $reduction) / 100);
 				}
 
 				$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
-								"net_price" 			=> $new_net_price,
-								"price" 					=> $new_net_price * ((100 + $prod['btw'])/100),
-								"calc_net_price"	=> ($prod['calc_net_price'] != 0) ? $prod['calc_net_price'] : $prod['net_price']
+								"price_net" 			=> $new_net_price,
+								"price_brut" 			=> $new_net_price * ((100 + $prod['btw'])/100),
+								"price_ori_net"			=> ($prod['price_ori_net'] != 0) ? $prod['price_ori_net'] : $prod['price_net'],
+								"reduction_reason"		=> "AUTO_REDUCTION"
 							));
 			}
 		}
@@ -362,15 +365,16 @@ class Events extends Vet_Controller
 		if ($eproc)
 		{
 			foreach ($eproc as $proc) {
-				if ($proc['calc_net_price'] != 0) {
-					$new_net_price = $proc['calc_net_price'] * ((100 - $reduction) / 100);
+				if ($proc['price_ori_net'] != 0) {
+					$new_net_price = $proc['price_ori_net'] * ((100 - $reduction) / 100);
 				} else {
-					$new_net_price = $proc['net_price'] * ((100 - $reduction) / 100);
+					$new_net_price = $proc['price_net'] * ((100 - $reduction) / 100);
 				}
 				$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
-								"net_price" 			=> $new_net_price,
-								"price" 					=> $new_net_price * ((100 + $proc['btw'])/100),
-								"calc_net_price"	=> ($proc['calc_net_price'] != 0) ? $proc['calc_net_price'] : $proc['net_price']
+								"price_net" 			=> $new_net_price,
+								"price_brut" 			=> $new_net_price * ((100 + $proc['btw'])/100),
+								"price_ori_net"			=> ($proc['price_ori_net'] != 0) ? $proc['price_ori_net'] : $proc['price_net'],
+								"reduction_reason"		=> "AUTO_REDUCTION"
 							));
 			}
 		}

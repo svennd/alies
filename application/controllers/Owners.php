@@ -135,4 +135,25 @@ class Owners extends Vet_Controller
 		$result = $this->zipcode->where(array('zip' => $zip))->get();
 		echo ($result) ? json_encode($result) : json_encode(array());
 	}
+
+	/*
+		check for duplicate owners
+	*/
+	public function phone()
+	{
+		$phone = format_phone($this->input->post('phone'));
+		$return_info = array("exists" => false);
+		if($phone)
+		{
+			$owners = $this->owners->search_by_phone_ex($phone, 1);
+			if ($owners) {
+				$return_info = (array("exists" => true, "owner" => $owners[0]));
+			} 
+		}
+		
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode($return_info));
+	}
 }

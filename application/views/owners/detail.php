@@ -8,7 +8,7 @@
 		<div class="card mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div>
-					<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
+					<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
 					<small>(#<?php echo $owner['id']; ?>)</small>
 				</div>
 				<!-- hide on small screens -->

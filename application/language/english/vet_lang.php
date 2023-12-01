@@ -91,6 +91,16 @@ $lang['change']   = 'Change';
 $lang['title_invoice']   = 'Search invoices';
 $lang['no_invoices']     = 'No invoices';
 
+# edit_price
+$lang['edit_price']         = 'Edit prices';
+$lang['price_per_unit']     = 'Price per unit';
+$lang['original_price']     = 'Original price';
+$lang['new_price_ex_vat']   = 'New price (ex. BAT)';
+$lang['change_price']       = 'change';
+$lang['inc_vat']            = 'inc. BTW';
+$lang['ex_vat']            = 'ex. BTW';
+$lang['return_to_event']    = 'return to event';
+
 # fiche
 $lang['edit_pet']   = 'Edit pet';
 $lang['pet_info']      = 'Pet';

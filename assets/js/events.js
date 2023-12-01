@@ -128,7 +128,6 @@ function add_line(current_event)
 function enable_generate_invoice()
 {
 	$('#generate_bill').removeClass('d-none');
-	// $('#generate_bill').addClass('d-block');
 }
 
 function add_table_line(info)

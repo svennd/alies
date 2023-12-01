@@ -44,7 +44,7 @@
 			</td>		
 			<td>
 				<?php if ($event_state != STATUS_CLOSED): ?>
-					<a href="<?php echo base_url(); ?>events/prod_remove/<?php echo $event_id; ?>/<?php echo $product['id'] ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+					<a href="<?php echo base_url('events/prod_remove/' . $event_id . '/' . $product['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
 				<?php endif; ?>
 			</td>
 		</tr>

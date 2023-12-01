@@ -90,8 +90,10 @@ class Owners_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 	
-	public function search_by_phone_ex($phone)
+	public function search_by_phone_ex($phone, int $limit = 250)
 	{
+		# in case its a false phone number
+		if (!$phone) { return array(); }
 		$phone = $this->db->escape_like_str($phone);
 		$sql = "
 			SELECT 
@@ -109,7 +111,7 @@ class Owners_model extends MY_Model
 			ORDER BY
 				last_bill
 			DESC
-			LIMIT 250
+			LIMIT " . $limit . "
 		";
 		
 		return $this->db->query($sql)->result_array();
@@ -171,51 +173,6 @@ class Owners_model extends MY_Model
 			WHERE
 				street LIKE '%" . $this->db->escape_like_str($street) . "%' ESCAPE '!'
 				
-			ORDER BY
-				last_bill
-			DESC
-		";
-		
-		$prime = $this->db->query($sql)->result_array();
-		if ($prime) {
-			foreach ($prime as $owners) {
-				$pets_sql = "
-					SELECT
-					*
-					FROM 
-						pets
-					WHERE
-						pets.owner = " . $owners['id'] . "
-					AND
-						pets.death = 0
-					AND
-						pets.lost = 0
-					LIMIT
-						0,2
-				";
-				$owners['pets'] = $this->db->query($pets_sql)->result_array();
-				$result[] = $owners;
-			}
-		}
-		return $result;
-	}
-
-	public function search_by_phone($phone)
-	{
-		$result = array();
-		$sql = "
-			SELECT 
-				* 
-			FROM 
-				owners
-			WHERE
-				telephone = '" . $phone . "'
-				OR
-				mobile = '" . $phone . "'
-				OR
-				phone2 = '" . $phone . "'
-				OR
-				phone3 = '" . $phone . "'
 			ORDER BY
 				last_bill
 			DESC

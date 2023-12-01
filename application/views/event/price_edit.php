@@ -1,11 +1,30 @@
+<?php 
+// local helper
+function show_difference($price, $ori_price)
+{
+	if ($ori_price != 0)
+	{
+		$change = round((($price-$ori_price)/$ori_price)*100);
+		return ($change < 0) ? 
+						'<span style="color:red;">' . $change . '%</span>' 
+					: 
+						'<span style="color:green;">' . $change . '%</span>';
+	}
+	else
+	{
+		return "&nbsp;";
+	}
+}
+
+?>
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
 	<div class="card shadow mb-4">
 		<div class="card-header">
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
-			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> / 
-			<a href="<?php echo base_url(); ?>events/event/<?php echo $event_info['id']; ?>">Event</a> /
-			<i class="fas fa-skull-crossbones"></i> Edit prices
+			<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?><?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
+			<a href="<?php echo base_url('pets/fiche/'. $pet['id']); ?>"><?php echo $pet['name'] ?></a> / 
+			<a href="<?php echo base_url('events/event/' . $event_info['id']); ?>">Event</a> /
+			<i class="fas fa-skull-crossbones"></i> <?php echo $this->lang->line('edit_price'); ?>
 		</div>
 		<div class="card-body">
 			<?php
@@ -15,17 +34,17 @@
 			<table class="table">
 			<thead>
 				<tr class="thead-light">
-					<th>Name</th>
-					<th>Price Per Unit</th>
-					<th>Original Price</th>
-					<th>New Price</th>
-					<th>Change</th>
-					<th>Inc. BTW</th>
+					<th><?php echo $this->lang->line('name'); ?></th>
+					<th><?php echo $this->lang->line('price_per_unit'); ?></th>
+					<th><?php echo $this->lang->line('original_price'); ?></th>
+					<th><?php echo $this->lang->line('new_price_ex_vat'); ?></th>
+					<th><?php echo $this->lang->line('change_price'); ?></th>
+					<th><?php echo $this->lang->line('inc_vat'); ?></th>
 				</tr>
 			</thead>
 			<tbody>
-			<?php include "event/block_procedures_edit.php"; ?>
-			<?php include "event/block_consumables_edit.php"; ?>
+			<?php include "price/block_procedures_edit.php"; ?>
+			<?php include "price/block_consumables_edit.php"; ?>
 			
 			</tbody>
 			<tfoot>
@@ -34,11 +53,12 @@
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td><i>ex. VAT<br/>in. VAT</i></td>
+					<td><i><?php echo $this->lang->line('ex_vat'); ?><br/><?php echo $this->lang->line('inc_vat'); ?></i></td>
 					<td><i><?php echo round($total_ex, 2); ?><br/><?php echo round($total, 2); ?></i></td>
 				</tr>
 			</tfoot>
 			</table>
+			<a href="<?php echo base_url('events/event/' . $event_info['id']); ?>" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> <?php echo $this->lang->line('return_to_event'); ?></a>
 		</div>
 	</div>
 	</div>
@@ -81,5 +101,16 @@ document.addEventListener("DOMContentLoaded", function(){
 		$(`#${form} [name="price"]`).val(new_price.toFixed(2));
  		$(`#${form} [name="submit"]`).click();
 	}
+
+	$('.send').click(function(e) {
+		e.preventDefault();
+		var linkData = parseFloat($(this).data('float-value'));
+		var id = $(this).data('id');
+
+		$('#volume' + id).val(linkData);
+		$('#reason' + id).val("TIER_REDUCTION");
+		
+		$(`#form${id} [name="submit"]`).click();
+	});
 });
 </script>

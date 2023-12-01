@@ -7,9 +7,6 @@ $edit_mode = (isset($pet)) ? true : false;
 	<div class="col-lg-7 col-xl-10">
 		<div class="card shadow mb-4">
 			<div class="card-header">
-				<?php if(!$edit_mode): ?>
-					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / Add pet
-				<?php else: ?>
 					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
 					<?php if($pet['death'] == 1 || $pet['lost'] == 1): ?>
 					<?php echo (isset($pet['name'])) ? $pet['name']: '' ?>
@@ -17,7 +14,6 @@ $edit_mode = (isset($pet)) ? true : false;
 					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo (isset($pet['name'])) ? $pet['name']: '' ?></a>
 					<?php endif; ?>
 					/ Edit pet
-				<?php endif; ?>
 			</div>
 			<div class="card-body">
 <form action="<?php echo ($edit_mode) ?
@@ -212,6 +208,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	make_date($("#birth").val());
 	get_chip_info($("#chip").val());
+
+	$('input[name="gender"]').change(function() {
+        $('label.gender').addClass('gender-select');
+        $('input[name="gender"]:not(:checked)').each(function() {
+          $('label[for="' + this.id + '"]').removeClass('gender-select');
+        });
+      });
 });
 </script>
 

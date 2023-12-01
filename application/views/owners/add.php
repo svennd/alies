@@ -2,11 +2,11 @@
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
-				<a href="<?php echo base_url(); ?>owners/search"><?php echo $this->lang->line('client'); ?></a> / <?php echo $this->lang->line('add'); ?>
+				<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> / <?php echo $this->lang->line('add'); ?>
 			</div>
 			<div class="card-body">
-
-				<form action="<?php echo base_url(); ?>owners/add" method="post" autocomplete="off">
+				<div id="error_messages">&nbsp;</div>
+				<form action="<?php echo base_url('owners/add'); ?>" method="post" autocomplete="off">
 				<div class="row">
 				<div class="col-md-6">
 					<h5><?php echo $this->lang->line('personal_info'); ?></h5>
@@ -54,16 +54,16 @@
 					<h5><?php echo $this->lang->line('contact_info'); ?></h5>
 					<hr>
 					  <div class="form-group">
-						<label for="exampleFormControlInput1"><?php echo $this->lang->line('email'); ?></label>
-						<input type="email" name="mail" class="form-control" id="exampleFormControlInput1" autocomplete="dezzd">
+						<label for="email"><?php echo $this->lang->line('email'); ?></label>
+						<input type="email" name="mail" class="form-control" id="email" autocomplete="dezzd">
 					  </div>
 					  <div class="form-group">
-						<label for="exampleFormControlInput2"><?php echo $this->lang->line('phone'); ?></label>
-						<input type="text" name="phone" class="form-control" id="exampleFormControlInput2" autocomplete="dezzd">
+						<label for="phone"><?php echo $this->lang->line('phone'); ?></label>
+						<input type="text" name="phone" class="form-control" id="phone" autocomplete="dezzd">
 					  </div>
 					  <div class="form-group">
-						<label for="exampleFormControlInput3"><?php echo $this->lang->line('mobile'); ?></label>
-						<input type="text" name="mobile" class="form-control" id="exampleFormControlInput3" autocomplete="dezzd">
+						<label for="mobile"><?php echo $this->lang->line('mobile'); ?></label>
+						<input type="text" name="mobile" class="form-control" id="mobile" autocomplete="dezzd">
 					  </div>
 					  <div class="form-row">
 							<div class="form-group col-md-4">
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		var zip = $("#inputZip").val();
 		if (zip.length == 4)
 		{
-			$.getJSON("<?php echo base_url(); ?>owners/get_zip/" + zip , function(data, status)
+			$.getJSON("<?php echo base_url('owners/get_zip/'); ?>" + zip , function(data, status)
 			{
 				$("#city").val(data.city);
 				$("#maincity").val(data.main_city);
@@ -161,5 +161,30 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	});
 	
+
+
+	$('#phone, #mobile, #phone2').blur(function() {
+      var fieldValue = $(this).val();
+      var fieldName = $(this).attr('name');
+
+	  // not a phone number
+      if (fieldValue.length < 9) { return true; }
+
+	  // check if it already exists
+	  $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url('owners/phone/'); ?>',
+        data: { phone: fieldValue },
+        success: function(response) {
+          if (response.exists) {
+			$('#error_messages').html('<div class="alert alert-warning alert-dismissible fade show" role="alert"><i class="fa-solid fa-triangle-exclamation"></i>Telefoonnummer bestaat al bij <a href="<?php echo base_url("/owners/detail/"); ?>' + response.owner.id + '">' + response.owner.last_name + '</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>').hide().fadeIn(1000);
+          }
+        },
+        error: function(error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+
 });
 </script>

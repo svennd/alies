@@ -142,7 +142,7 @@
                 <td>Telefoon</td>
                 <td>input*</td>
                 <td>0123 => <b>0123</b>456789 (alle telefoon velden)<br/>
-                    Zoekt op exacte waarde, dus 0496/ zal niet 0496. niet vinden.</td>
+                    Enkel numerieke waarden worden gebruikt om te zoeken.<br/>012/34.56 zal dus 012 34 56 en 01234.56 vinden.</td>
             </tr>
             <tr>
                 <td>Dier chip nr.</td>

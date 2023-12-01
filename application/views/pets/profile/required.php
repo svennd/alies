@@ -1,42 +1,66 @@
+<style>
+
+.lbl-radio {
+	display: block;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	padding: 15px;
+	position: relative;
+	cursor: pointer;
+}
+
+.lbl-radio .content .title {
+	margin-bottom: 7px; 
+}
+
+input[type='radio']:checked + .lbl-radio {
+	border-color: #97cf9b;
+	background-color: #eeffef;
+}
+
+.noradio input[type='radio'] {
+	display: none;
+}
+
+input[type='radio']:checked {
+	border-color: red;
+}
+
+.opacy-disabled {
+	opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.gender-select {
+    border-color: #5194cf;
+	background-color: aliceblue;
+}
+</style>
+
 <h5><?php echo $this->lang->line('required'); ?></h5>
 <hr>
 <div class="form-row">
 	<div class="form-group col-md-4">
 		<label for="name"><b><?php echo $this->lang->line('gender'); ?></b>*</label>
 		<div class="col">
-			<div class="form-check">
-			  <input class="form-check-input" type="radio" name="gender" id="gender1" value="0" <?php echo ($edit_mode && $pet['gender'] == MALE) ? 'checked' : ''; ?> required>
-			  <label class="form-check-label" for="gender1">
-				<span style="color:#4c6ef5;"><i class="fas fa-mars fa-fw"></i></span> Male
-			  </label>
+		<?php 
+			$gender_type = array(
+						"0" => array("Male", "#4c6ef5", "mars", MALE),
+						"2" => array("Male neutered", "#000", "mars", MALE_NEUTERED),
+						"1" => array("Female", "#f783ac", "venus", FEMALE),
+						"3" => array("Female neutered", "#000", "venus", FEMALE_NEUTERED),
+						"4" => array("Other", "#6cce23", "genderless", OTHER),
+			);
+		?>
+		<?php foreach($gender_type as $gid => $g): ?>
+			<label for="g<?php echo $gid; ?>" class="lbl-radio gender <?php echo ($pet['gender'] == $g['3']) ? 'gender-select' : ''; ?>">
+			<div class="content">
+				<input type="radio" name="gender" value="<?php echo $gid; ?>" id="g<?php echo $gid; ?>" <?php echo ($pet['gender'] == $g['3']) ? 'checked' : ''; ?>  required/>
+				<span style="color:<?php echo $g['1']; ?>"><i class="fas fa-<?php echo $g['2']; ?> fa-fw"></i></span> <?php echo $g['0']; ?>
 			</div>
-			<div class="form-check">
-			  <input class="form-check-input" type="radio" name="gender" id="gender1n" value="2" <?php echo ($edit_mode && $pet['gender'] == MALE_NEUTERED) ? 'checked' : ''; ?> required>
-			  <label class="form-check-label" for="gender1n">
-				<span style="color:#000;"><i class="fas fa-mars fa-fw"></i></span> Male neutered
-			  </label>
-			</div>
-			
-			<div class="form-check">
-			  <input class="form-check-input" type="radio" name="gender" id="gender2" value="1" <?php echo ($edit_mode && $pet['gender'] == FEMALE) ? 'checked' : ''; ?> required>
-			  <label class="form-check-label" for="gender2">
-				<span style="color:#f783ac;"><i class="fas fa-venus fa-fw"></i></span> Female
-			  </label>
-			</div>
-			
-			<div class="form-check">
-			  <input class="form-check-input" type="radio" name="gender" id="gender2n" value="3" <?php echo ($edit_mode && $pet['gender'] == FEMALE_NEUTERED) ? 'checked' : ''; ?> required>
-			  <label class="form-check-label" for="gender2n">
-				<span style="color:#000;"><i class="fas fa-venus fa-fw"></i></span> Female neutered
-			  </label>
-			</div>
-			
-			<div class="form-check">
-			  <input class="form-check-input" type="radio" name="gender" id="gender7n" value="4" <?php echo ($edit_mode && $pet['gender'] == OTHER) ? 'checked' : ''; ?> required>
-			  <label class="form-check-label" for="gender7n">
-				<span style="color:#6cce23;"><i class="fas fa-genderless fa-fw"></i></span> Other
-			  </label>
-			</div>
+			</label>
+		<?php endforeach; ?>
+
 		</div>
 	</div>
 	<div class="form-group col-md-6">
