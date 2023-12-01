@@ -101,6 +101,10 @@ function add_line(current_event)
 				var parsedData = JSON.parse(response);
 				add_table_line(parsedData);
 				enable_generate_invoice();
+				if(parsedData.vaccin == 1) { 
+					// reload page
+					location.reload();
+				}
 			} catch (error) {
 				let errorhtml = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
 				The response of the server failed, please <a href="javascript:location.reload();">REFRESH the page</a>.

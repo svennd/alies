@@ -51,7 +51,7 @@
 		<?php if($product['product']['vaccin']): ?>
 		<tr>
 			<td colspan="7">
-				<form action="<?php echo base_url(); ?>events/edit_vaccin/<?php echo $event_id; ?>/<?php echo $product['vaccine']['id']; ?>" id="form_vaccin_<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url('events/edit_vaccin/' . $event_id . '/' . $product['vaccine']['id']); ?>" id="form_vaccin_<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
 				  <div class="form-group">
 					<span class="fa-stack <?php if($product['vaccine']['no_rappel']): ?>text-danger<?php else: ?>text-success<?php endif; ?>" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
