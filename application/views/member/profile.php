@@ -60,7 +60,7 @@
 						<input type="hidden" id="imagebase64" name="imagebase64">
 						</form>	
 				</div>
-				<button class="form_submit btn btn-primary">Store</button>
+				<button class="form_submit btn btn-primary"><?php echo $this->lang->line('store'); ?></button>
 				<div class="btn-group" role="group">
 					<button class="vanilla-rotate btn btn-info" data-deg="-90"><i class="fas fa-undo fa-flip-horizontal"></i></button>
 					<button class="vanilla-rotate btn btn-info" data-deg="90"><i class="fas fa-undo "></i></button>		
@@ -122,7 +122,7 @@
 						<input type="color" id="head" class="form-control" name="color" value="<?php echo $user->sidebar; ?>">
 					</div>
 					<br/>
-					<button type="submit" name="submit" value="Accept" class="btn btn-primary">Store</button>
+					<button type="submit" name="submit" value="Accept" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> <?php echo $this->lang->line('store'); ?></button>
 				</form>
 			</div>
 		</div>
