@@ -17,7 +17,7 @@
 				<form action="<?php echo base_url(); ?>invoice/index" method="post" autocomplete="off" class="form-inline">
 
 				  <div class="form-group mb-2 mx-3">
-					<label for="staticEmail2" class="sr-only">search_from</label>
+					<label for="search_from" class="sr-only">search_from</label>
 					<input type="date" name="search_from" class="form-control" value="<?php echo $search_from; ?>" min="<?php echo $max_search_from; ?>" id="search_from">
 				</div>
 				  <div class="form-group mb-2">
@@ -27,7 +27,7 @@
 					</span>
 				  </div>
 				  <div class="form-group mb-2 mx-3">
-					<label for="staticEmail2" class="sr-only">search_to</label>
+					<label for="search_to" class="sr-only">search_to</label>
 					<input type="date" name="search_to" class="form-control" value="<?php echo $search_to; ?>" max="<?php echo date_format(new DateTime(), 'Y-m-d'); ?>" id="search_to">
 				  </div>
 				  <button type="submit" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
@@ -42,8 +42,8 @@
 					<th><?php echo $this->lang->line('date'); ?></th>
 					<th><?php echo $this->lang->line('invoice_id'); ?></th>
 					<th><?php echo $this->lang->line('amount'); ?></th>
-					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('client_id'); ?></th>
+					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('state'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
@@ -55,18 +55,27 @@
 				<tbody>
 				<?php foreach ($bills as $bill): ?>
 				<tr>
-					<td data-sort="<?php echo strtotime($bill['created_at']) ?>">
-						<?php echo user_format_date($bill['created_at'], $user->user_date); ?><br/>
-						<!-- <small><?php echo timespan(strtotime($bill['created_at']), time(), 1); ?> Ago -->
-					</td>
+					<td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
 					<td>
-						<?php echo $bill['invoice_id']; ?>
-					</td>
-					<td>
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['total_brut']; ?> &euro;</a>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['invoice_id']; ?></a>
 						<?php if($this->ion_auth->in_group("admin") && $bill['modified']): ?>
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>
+					</td>
+					<td>
+						<?php echo $bill['total_brut']; ?> &euro;<br/>
+						<small>
+							<?php 
+								if ($bill['cash'] > 0)
+								{
+									echo '<span class="pr-2"><span style="color: green;"><i class="fa-solid fa-money-bill"></i></span> ' . floatval($bill['cash']) . ' &euro;</span>';
+								}
+								if ($bill['transfer'] > 0)
+								{
+									echo '<span style="color: Tomato;"><i class="fa-solid fa-money-bill-transfer"></i></span> ' . floatval($bill['transfer']) . ' &euro;';
+								}
+							?>
+						</small>
 					</td>
 					<td><?php echo $bill['owner']['user_id']; ?></td>		
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
@@ -106,11 +115,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	);
 
 	<?php if(!$this->ion_auth->in_group("admin")): ?>
-	toggleHiddenRows(4, <?php echo $this->user->id; ?>);
+	toggleHiddenRows(6, <?php echo $this->user->id; ?>);
 	<?php endif; ?>
 
 	$('#toggleAll').on('click', function() {
-		toggleHiddenRows(4, <?php echo $this->user->id; ?>);
+		toggleHiddenRows(6, <?php echo $this->user->id; ?>);
 
 		$(this).toggleClass('btn-outline-danger btn-outline-success');
 		if ($(this).hasClass('btn-outline-success')) {
