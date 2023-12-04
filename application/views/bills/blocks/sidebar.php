@@ -5,8 +5,9 @@
         <?php
             $cash = round((float) $bill['cash'], 2);
             $card = round((float) $bill['card'], 2);
-            if ($card + $cash != 0) :
-                $total_short = round( (float) $bill['total_brut'] - ($card + $cash) , 2);
+            $transfer = round((float) $bill['transfer'], 2);
+            if ($card + $cash + $transfer != 0) :
+                $total_short = round( (float) $bill['total_brut'] - ($card + $cash + $transfer) , 2);
         ?>
         <p>
             <?php echo $this->lang->line('shortage'); ?> : <?php echo $total_short; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
@@ -30,9 +31,9 @@
         </div>
 
         <!-- card -->
-        <div class="input-group mb-3">
+        <div class="input-group mb-1">
             <div class="input-group-prepend">
-                <span class="input-group-text" for="exampleCheck1"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-cc-visa"></i>&nbsp;<?php echo $this->lang->line('card'); ?></a></span>
+                <span class="input-group-text" for="card_value" style="width: 150px;"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-fw fa-cc-visa" style="color:blue"></i>&nbsp;<?php echo $this->lang->line('card'); ?></a></span>
             </div>
             <input type="text" class="form-control" id="card_value" name="card_value" value="<?php echo ($card != 0) ? $card:'';?>" />
             <div class="input-group-append">
@@ -41,18 +42,42 @@
         </div>
 
         <!-- cash -->
-        <div class="input-group mb-3">
+        <div class="input-group mb-1">
             <div class="input-group-prepend">
-                <span class="input-group-text" for="exampleCheck1"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fas fa-euro-sign"></i>&nbsp;<?php echo $this->lang->line('cash'); ?></a></span>
+                <span class="input-group-text" for="cash_value" style="width: 150px;"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill" style="color:green"></i>&nbsp;<?php echo $this->lang->line('cash'); ?></a></span>
             </div>
             <input type="text" class="form-control" id="cash_value" name="cash_value" value="<?php echo ($cash != 0) ? $cash:'';?>" />
             <div class="input-group-append">
                 <span class="input-group-text">&euro;</span>
             </div>
+        </div>
+
+        <!-- transfer -->
+        <div class="input-group mb-1">
+            <div class="input-group-prepend">
+                <span class="input-group-text" for="transfer_value" style="width: 150px;"><a href="#" id="select_transfer" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill-transfer" style="color:tomato"></i>&nbsp;<?php echo $this->lang->line('transfer'); ?></a></span>
+            </div>
+            <input type="text" class="form-control" id="transfer_value" name="transfer_value" value="<?php echo ($transfer != 0) ? $transfer:'';?>" />
             <div class="input-group-append">
-                <span class="input-group-text" id="calculate"><a href="#"><i class="fas fa-calculator"></i></a></span>
+                <span class="input-group-text">&euro;</span>
             </div>
         </div>
+
+
+        <!-- help & status -->
+        <input type="hidden" id="total_brut" name="total_brut" value="<?php echo $bill['total_brut']; ?>" />
+        <div class="input-group mt-3" style="padding-left: 150px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text" for="transfer_value"><a href="#" id="calculate"><i class="fas fa-calculator"></i></a></span>
+            </div>
+            <input type="text" disabled class="form-control disabled" id="payment_info" name="payment_info"/>
+            <div class="input-group-append">
+                <span class="input-group-text">&euro;</span>
+            </div>
+        </div>
+       
+        <!-- status -->
+        <i><small id="" class="form-text text-muted ml-2">&nbsp;</small></i>
 
         <!-- comment -->
         <h6 class="text-uppercase"><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><?php echo $this->lang->line('comment'); ?></a></h6>
@@ -68,8 +93,6 @@
                 <textarea class="form-control" id="msg_invoice" name="msg_invoice" rows="3"><?php echo (isset($bill['msg_invoice']) ? $bill['msg_invoice'] : ""); ?></textarea>
             </div>
             </div>
-        <!-- status -->
-        <i><small id="payment_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 
         <button type="submit" name="submit" value="1" class="btn btn-outline-success bounceit"><i class="fa-solid fa-house-medical-circle-check"></i> <?php echo $this->lang->line('payment_complete'); ?></button>
     <?php endif; ?>

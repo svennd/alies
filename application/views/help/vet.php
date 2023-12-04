@@ -175,6 +175,37 @@
       </div>
     </div>
 
+    <!-- item -->
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Welke symbolen worden er gebruikt voor betalingen ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>
+			Er worden drie icoontjes gebruikt voor betalingen. We verbergen waar mogelijk het icoontje voor betalingen per kaart. Gezien dit de standaart methode is. <br/>
+            <table class="table table-sm">
+            <tr>
+                <th>Icoon</th>
+                <th>Titel</th>
+                <th>Beschrijving</th>
+            </tr>
+            <tr>
+                <td><i class='fab fa-fw fa-cc-visa fa-lg' style='color:blue'></i></td>
+                <td>Kaart</td>
+                <td>Betaling per kaart, maestro, bankcontact, ...</td>
+            </tr>
+            <tr>
+                <td><i class='fa-solid fa-fw fa-money-bill fa-lg' style='color:green'></i></td>
+                <td>Contant</td>
+                <td>Contant betalingen (munten en briefjes)</td>
+            </tr>
+            <tr>
+                <td><i class='fa-solid fa-fw fa-money-bill-transfer fa-lg' style='color:tomato'></i></td>
+                <td>Transfer</td>
+                <td>Bank overschrijving of niet gevalideerde betaal methoden.</td>
+            </tr>
+            </table>
+		</p>
+      </div>
+    </div>
 
   </div>
 </div>

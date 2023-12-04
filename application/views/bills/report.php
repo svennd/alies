@@ -149,107 +149,12 @@
 </form>
 </div>
 
-<script type="text/javascript">
+<script>
+	const URL_STORE_MESSAGE_API = '<?php echo base_url('invoice/store_bill_msg/' . $bill['id']); ?>';
+	const URL_SENDMAIL_API = '<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/2'); ?>';
+	const URL_STORE_MAIL = '<?php echo base_url('owners/set_email/'. $bill['owner_id']); ?>';
 
-function store_msg()
-{
-	$.ajax({
-			method: 'POST',
-			url: '<?php echo base_url(); ?>invoice/store_bill_msg/' + <?php echo $bill['id']; ?>,
-			data: {
-				msg: $("#msg").val(),
-				msg_invoice: $("#msg_invoice").val(),
-			}
-		});
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-	$("#invoice").addClass('active');
-	$("#select_card").click(function(){
-		$("#card_selector").prop("checked", true);
-		$("#card_value").val("<?php echo $bill['total_brut']; ?>");
-		$("#cash_value").val("");
-	});
-	$("#select_cash").click(function(){
-		$("#cash_selector").prop("checked", true);
-		$("#cash_value").val("<?php echo $bill['total_brut']; ?>");
-		$("#card_value").val("");
-	});
-
-	$("#calculate").click(function() {
-		var cash = parseFloat($("#cash_value").val());
-		var card = parseFloat($("#card_value").val());
-		var total = parseFloat(<?php echo $bill['total_brut']; ?>);
-
-		if (isNaN(cash)) {cash = 0.0}
-		if (isNaN(card)) {card = 0.0}
-		if (isNaN(total)) {return false;}
-		var total_in = cash+card;
-
-		$("#payment_info").html("current: " + Math.round((total-total_in)*100)/100 + " &euro;");
-	});
-
-	$("#store_messages").click(function() {
-		$("#store_messages").html('<i class="fas fa-sync fa-spin"></i> Loading');
-		store_msg();
-		setTimeout(function() { $("#store_messages").html('<i class="fa-solid fa-floppy-disk"></i> Stored !'); }, 1000);
-	});
-
-
-	// store message before we send on
-	$("#bill_unpay").click(function() {
-		$("#bill_unpay").html('<i class="fas fa-sync fa-spin"></i> Loading');
-		store_msg();
-		window.location.href = this.href;
-	});
-
-
-	$("#sendmail").click(function() {
-		// confirm sending mail
-		Swal.fire({
-			title: 'Send mail ?',
-			showCancelButton: true,
-			confirmButtonText: 'Send',
-		}).then((result) => {
-			if (result.isConfirmed) {
-				$.ajax({
-					method: 'POST',
-					url: '<?php echo base_url(); ?>invoice/get_bill/' + <?php echo $bill['id']; ?> + '/2'
-				}).done(function() {
-					$("#sendmail").html('<i class="fas fa-paper-plane"></i> Send!').addClass("btn-secondary disabled");
-				});
-				Swal.fire(`email sent!`);
-			} 
-		});
-	});
-
-	$("#get_mail").click(async function() {
-		const { value: email } = await Swal.fire({
-			title: 'Input email address',
-			input: 'email',
-			inputLabel: 'Your email address',
-			inputPlaceholder: 'Enter your email address'
-		});
-
-		if (email) {
-			// store email
-			$.ajax({
-				method: 'POST',
-				url: '<?php echo base_url(); ?>owners/set_email/' + <?php echo $bill['owner_id']; ?>,
-				data: { email: email }
-			});
-			
-			// send mail
-			$.ajax({
-				method: 'POST',
-				url: '<?php echo base_url(); ?>invoice/get_bill/' + <?php echo $bill['id']; ?> + '/2'
-			}).done(function() {
-				$("#sendmail").html('<i class="fas fa-paper-plane"></i> Send!').addClass("btn-secondary disabled");
-			});
-
-			Swal.fire(`email sent!`);
-		}
-		});
-});
-
+	
 </script>
+
+<script src="<?php echo base_url('assets/js/invoice.js'); ?>"></script>

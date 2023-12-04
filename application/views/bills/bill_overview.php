@@ -14,7 +14,7 @@
 				</div>	
 			</div>
             <div class="card-body">
-				<form action="<?php echo base_url(); ?>invoice/index" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url('invoice/index'); ?>" method="post" autocomplete="off" class="form-inline">
 
 				  <div class="form-group mb-2 mx-3">
 					<label for="search_from" class="sr-only">search_from</label>
@@ -63,19 +63,27 @@
 						<?php endif;?>
 					</td>
 					<td>
-						<?php echo $bill['total_brut']; ?> &euro;<br/>
-						<small>
-							<?php 
-								if ($bill['cash'] > 0)
-								{
-									echo '<span class="pr-2"><span style="color: green;"><i class="fa-solid fa-money-bill"></i></span> ' . floatval($bill['cash']) . ' &euro;</span>';
-								}
-								if ($bill['transfer'] > 0)
-								{
-									echo '<span style="color: Tomato;"><i class="fa-solid fa-money-bill-transfer"></i></span> ' . floatval($bill['transfer']) . ' &euro;';
-								}
+							<?php
+								$total 	= floatval($bill['total_brut']);
+								$cash 	= floatval($bill['cash']);
+								$card 	= floatval($bill['card']);
+								$transfer = floatval($bill['transfer']);
 							?>
-						</small>
+
+							<?php if($total == $card): ?>
+                                <?php echo $total . " &euro; " ?>
+                            <?php elseif($total == $cash): ?>
+                                <?php echo "<i class='fa-solid fa-money-bill' style='color:green'></i> " . $total . "&euro; " ?>
+                            <?php elseif($total == $transfer): ?>
+                                <?php echo "<i class='fa-solid fa-fw fa-money-bill-transfer' style='color:tomato'></i> " . $total . "&euro; " ?>
+                            <?php else: ?>
+                                <?php echo $total . " &euro;"; ?><br/>
+                                <small>
+									<?php echo ($card != 0) ? "<i class='fab fa-cc-visa' style='color:blue'></i> " . $card . "&euro; " : ""; ?>
+									<?php echo ($cash != 0) ? "<i class='fa-solid fa-money-bill' style='color:green'></i> " . $cash . "&euro; " : ""; ?>
+									<?php echo ($transfer != 0) ? "<i class='fa-solid fa-fw fa-money-bill-transfer' style='color:tomato'></i> " . $transfer . "&euro; " : ""; ?>
+								</small>
+                            <?php endif; ?>
 					</td>
 					<td><?php echo $bill['owner']['user_id']; ?></td>		
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>

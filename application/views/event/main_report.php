@@ -51,27 +51,9 @@
 
 </style>
 <div class="col-lg-12">
-	<div class="card shadow mb-4">
-		<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-			<?php echo $this->lang->line('report'); ?>
-			<div class="dropdown no-arrow">
-				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $event_info['payment']; ?>/1" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> <?php echo $this->lang->line('print_invoice'); ?></a>
-				<?php if($event_info['no_history'] == 1): ?>
-				<a href="<?php echo base_url(); ?>events_report/enable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-danger btn-sm">
-				<i class="fas fa-eye-slash"></i> <?php echo $this->lang->line('enable_report'); ?>
-				</a>
-				<?php else: ?>
-				<a href="<?php echo base_url(); ?>events_report/disable_history/<?php echo $event_id; ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-primary btn-sm">
-				<i class="fas fa-eye"></i> <?php echo $this->lang->line('disable_report'); ?>
-				</a>
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<div class="card-body">
-			<?php include 'report/block_report_header.php' ?>
-		</div>
-	</div>
+	
+	<?php include 'report/block_report_header.php' ?>
+	
 	<div class="card shadow mb-4">
 
 	<?php $uploaded_files = ($event_uploads) ? '&nbsp;<span class="badge badge-info">' . count($event_uploads) . '</span>' : ''; ?>
@@ -81,6 +63,7 @@
 			<li class="nav-item" role="presentation"><a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
 			<li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false"><?php echo $this->lang->line('files'); ?> <?php echo $uploaded_files; ?></a></li>
 			</ul>
+			<?php include 'event/block_header_types.php' ?>
 	</div>
 
 	<form action="<?php echo base_url('events_report/update_report/' . $event_id); ?>" method="post" autocomplete="off">
