@@ -102,8 +102,8 @@ $lang['price_per_unit']     = 'Prijs per eenheid';
 $lang['original_price']     = 'Originele prijs';
 $lang['new_price_ex_vat']   = 'Nieuwe prijs (ex. BTW)';
 $lang['change_price']       = 'Wijziging';
-$lang['inc_vat']            = 'inc. BTW';
-$lang['ex_vat']             = 'ex. BTW';
+$lang['inc_vat']            = 'incl. BTW';
+$lang['ex_vat']             = 'excl. BTW';
 $lang['return_to_event']    = 'Terug naar event';
 
 # fiche
