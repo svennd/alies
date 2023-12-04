@@ -17,6 +17,7 @@ class Invoice extends Vet_Controller
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Bills_model', 'bills');
+		$this->load->model('Payment_model', 'payment');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Events_products_model', 'events_products');
 
@@ -210,9 +211,13 @@ class Invoice extends Vet_Controller
 			# card and cash
 			$card_value = round((float) $this->input->post('card_value'), 2);
 			$cash_value = round((float) $this->input->post('cash_value'), 2);
+			$transfer_value = round((float) $this->input->post('transfer_value'), 2);
+
+			# store the payment
+			$this->process_payment($card_value, $cash_value, $transfer_value, $bill_id);
 
 			# update the bill
-			$total_payed = ((float)$cash_value+(float)$card_value) - (float)$bill['total_brut'];
+			$total_payed = ($cash_value + $card_value + $transfer_value) - (float)$bill['total_brut'];
 			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? BILL_PAID : BILL_INCOMPLETE;
 
 			# check if bill was modified
@@ -220,12 +225,13 @@ class Invoice extends Vet_Controller
 			if ($status == BILL_PAID) { $is_modified = $this->bills->is_bill_modified($bill_id); }
 
 			$this->bills->update(array(
-								"status" => $status, 
-								"card" => $card_value, 
-								"cash" => $cash_value, 
-								"msg" => $this->input->post('msg'), 
+								"status" 	=> $status, 
+								"card" 		=> $card_value, 
+								"cash" 		=> $cash_value, 
+								"transfer" 	=> $transfer_value, 
+								"msg" 		=> $this->input->post('msg'), 
 								"msg_invoice" => $this->input->post('msg_invoice'),
-								"modified" => $is_modified
+								"modified" 	=> $is_modified
 							), $bill_id);
 
 			# generate an invoice id, these HAVE to be +1 everytime. 
@@ -328,4 +334,19 @@ class Invoice extends Vet_Controller
 		
 		echo json_encode(array("result" => true));
 	}
+
+	# extra security, keep log of payment processing
+	private function process_payment(float $card_value, float $cash_value, float $transfer_value, int $bill_id)
+	{
+		# store the payment
+		$this->payment->insert(array(
+			"card" 		=> $card_value,
+			"cash" 		=> $cash_value,
+			"transfer" 	=> $transfer_value,
+			"bill_id" 	=> $bill_id,
+			"vet" 		=> $this->user->id,
+			"location" 	=> $this->user->current_location
+		));
+	}
+
 }
