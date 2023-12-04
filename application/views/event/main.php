@@ -1,7 +1,7 @@
 <style>
 .depad_header th { padding: 0.15rem 0.75rem; }
 .nav-borders .nav-link {
-  color: #69707a;
+  color: #4e73df;
   border-bottom-width: 0.125rem;
   border-bottom-style: solid;
   border-bottom-color: transparent;
@@ -13,12 +13,10 @@
   margin-right: 1rem;
 }
 .nav-borders .nav-link.active {
-  color: #0061f2;
-  border-bottom-color: #0061f2;
+  color: #1cc88a;
+  border-bottom-color: #1cc88a;
 }
-.nav-borders .nav-link.disabled {
-  color: #c5ccd6;
-}
+
 .nav-borders.flex-column .nav-link {
   padding-top: 0;
   padding-bottom: 0;
@@ -33,11 +31,10 @@
   border-right-style: solid;
   border-right-color: transparent;
 }
-.nav-link.active {
-  border-right-color: #0061f2;
+
+.nav-borders.flex-column .nav-link:hover {
+  color: #1cc88a;
 }
-
-
 </style>
 <div class="row">
 	<div class="col-lg-12 col-xl-10">
@@ -53,8 +50,12 @@
 			<div class="card-body">
 					
 				<nav class="nav nav-borders" id="headtabs">
-					<a href="#index" class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false"><?php echo $this->lang->line('check'); ?></a>
-					<a href="#report" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-report-tab" data-toggle="tab" data-target="#nav-report" type="button" role="tab" aria-controls="nav-report" aria-selected="true"><?php echo $this->lang->line('report'); ?></a>
+					<a href="#index" class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">
+						<i class="fa-solid fa-receipt"></i> <?php echo $this->lang->line('check'); ?>
+					</a>
+					<a href="#report" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-report-tab" data-toggle="tab" data-target="#nav-report" type="button" role="tab" aria-controls="nav-report" aria-selected="true">
+						<i class="fa-solid fa-notes-medical"></i> <?php echo $this->lang->line('report'); ?>
+					</a>
 				</nav>
 				<hr class="mt-0 mb-3">
 				
