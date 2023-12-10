@@ -233,7 +233,7 @@ class Reports extends Admin_Controller
 		$usage = $this->eprod
 					->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 					->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-					->fields('volume, net_price')
+					->fields('volume, price_net')
 					->with_stock('fields:in_price')
 					->with_product('fields:name, unit_sell')
 					->get_all();
@@ -259,16 +259,16 @@ class Reports extends Admin_Controller
 
 				# check if we already got this value
 				if ($pos !== false) {
-					$product[$pid]['net_price'][$pos] += $us['net_price'];
+					$product[$pid]['price_net'][$pos] += $us['price_net'];
 					$product[$pid]['volume'][$pos] += $us['volume'];
 				} else {
-					$product[$pid]['net_price'][] 	= $us['net_price'];
+					$product[$pid]['price_net'][] 	= $us['price_net'];
 					$product[$pid]['volume'][] 			= $us['volume'];
 					$product[$pid]['in_price'][]		= $in_stock_price;
 				}
 			} else {
 				$product[$pid] = array(
-										"net_price" 	=> array($us['net_price']),
+										"price_net" 	=> array($us['price_net']),
 										"volume" 			=> array($us['volume']),
 										"in_price" 		=> array($in_stock_price),
 										"product"			=> array('name' => $us['product']['name'], 'unit_sell' => $us['product']['unit_sell'])

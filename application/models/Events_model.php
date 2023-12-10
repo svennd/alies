@@ -348,9 +348,14 @@ class Events_model extends MY_Model
 	public function get_contacts_year(datetime $date)
 	{
 		$date->modify('first day of january');
+
+		$last_day_of_the_year = clone $date;
+		$last_day_of_the_year->modify('last day of december');
+
 		return 
 				$this->events
 						->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+						->where('created_at <= LAST_DAY(STR_TO_DATE("' . $last_day_of_the_year->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i"))', null, null, false, false, true)
 						->count_rows();
 	}
 

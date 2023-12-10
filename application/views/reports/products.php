@@ -47,7 +47,7 @@
 						<?php echo ($i != 0) ? '<tr>' : ''; ?>
 							<td><?php echo $us['volume'][$i]; ?> <?php echo $us['product']['unit_sell']; ?></td>
 							<td><?php echo $us['in_price'][$i]; ?> &euro;</td>
-							<td><?php echo $us['net_price'][$i]; ?> &euro;</td>
+							<td><?php echo $us['price_net'][$i]; ?> &euro;</td>
 						</tr>
 						<?php endfor; ?>
 					<?php endforeach; ?>

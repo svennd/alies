@@ -88,8 +88,8 @@
 					<td><?php echo $bill['owner']['user_id']; ?></td>		
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
 					<td>
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo ($bill['status'] == BILL_PAID) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
-							<?php echo ($bill['status'] == BILL_PAID) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
+							<?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
 						</a>
 					</td>
 					<td data-sort="<?php echo $bill['vet']['id']; ?>"><?php echo $bill['vet']['first_name']; ?></td>

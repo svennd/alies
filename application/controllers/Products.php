@@ -272,8 +272,7 @@ class Products extends Vet_Controller
 	}
 
 	/*
-		get_product is used in stock_add
-		cause we can only add stock products
+		get_product is used in stock_add and stock/move
 	*/
 	public function get_product()
 	{

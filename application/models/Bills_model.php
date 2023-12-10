@@ -177,7 +177,11 @@ class Bills_model extends MY_Model
 			AND
 				DATE(created_at) <= LAST_DAY('" . $date->format('Y-m-d') . "')
 			AND
-				status = '" . PAYMENT_PAID . "' 
+			(
+				status = '" . BILL_PAID . "' 
+				OR
+				status = '" . BILL_HISTORICAL . "'
+			)
 			";
 
 		$result = $this->db->query($sql)->result_array();
@@ -203,7 +207,11 @@ class Bills_model extends MY_Model
 			AND
 				DATE(created_at) <= STR_TO_DATE('" . $last_day . "', '%Y-%m-%d')
 			AND
-				status = '" . PAYMENT_PAID . "' 
+			(
+				status = '" . BILL_PAID . "' 
+				OR
+				status = '" . BILL_HISTORICAL . "'
+			)
 			";
 
 		$result = $this->db->query($sql)->result_array();
@@ -224,7 +232,11 @@ class Bills_model extends MY_Model
 				FROM 
 					bills
 				WHERE 
-					status = '" . PAYMENT_PAID . "' 
+					(
+						status = '" . BILL_PAID . "' 
+						OR
+						status = '" . BILL_HISTORICAL . "'
+					)
 				AND
 					DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
 				AND	

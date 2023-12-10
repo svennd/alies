@@ -10,8 +10,8 @@
     # approximate a year
     $yearly = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
     $yearlyc = ($client_contacts_year_ly == 0 ) ? 1 : $client_contacts_year_ly;
-    $p = ((($yearly_earnings*(1/(date("z")+1 / 365))) - $yearly) / $yearly) * 100;
-    $y = ((($client_contacts_year*(1/(date("z")+1 / 365))) - $yearlyc) / $yearlyc) * 100;
+    $p = ((($yearly_earnings*(1+(1/(date("z")+1 / 365)))) - $yearly) / $yearly) * 100;
+    $y = ((($client_contacts_year*(1+(1/(date("z")+1 / 365)))) - $yearlyc) / $yearlyc) * 100;
 ?>
 
 
@@ -37,7 +37,7 @@
                         <div class="text-black-75 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
                         <div class="text-lg fw-bold">&euro; <?php echo number_format($yearly_earnings, 0, ',', '.'); ?></div>
                         <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($p > 0): ?>
+                            <?php if($p >= 0.5): ?>
                                 <span class="text-success">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -45,7 +45,7 @@
                                     </svg>
                                     <?php echo round($p,0); ?>% (<?php echo $this->lang->line('est'); ?>)
                                 </span>
-                            <?php elseif($p < 0): ?>
+                            <?php elseif($p <= -0.5): ?>
                                 <span class="text-danger">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>

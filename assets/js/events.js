@@ -158,6 +158,7 @@ function add_table_line(info)
 	}
 	else
 	{
+		const lotnr = info.stock_lotnr ? `${info.stock_lotnr} - ${info.stock_eol}` : "&nbsp;";
 		var newRowHtml = `
 			<tr>
 				<td>${info.name}</td>
@@ -169,7 +170,7 @@ function add_table_line(info)
 						</div>
 					</div>
 				</td>
-				<td><small>${info.stock_lotnr} - ${info.stock_eol}</small></td>
+				<td><small>${lotnr}</small></td>
 				<td>${info.btw}%</td>
 				<td>${info.brut_price.toFixed(2)} &euro;</td>
 				<td><small>${info.net_price.toFixed(2)} &euro;</small></td>
