@@ -137,7 +137,7 @@ class Stock_model extends MY_Model
 		reduce the stock with a given volume and a specified stock_id
 	*/
 	public function reduce(int $stock_id, int $product_id, float $volume, int $location = INVALID)
-	{		
+	{	
 		// if there is dead volume, add this to be removed from stock
 		$volume += $this->get_dead_volume($product_id);
 
@@ -162,6 +162,32 @@ class Stock_model extends MY_Model
 				LIMIT 1;
 			";
 		return $this->db->query($sql);
+	}
+
+	/*
+		in case there is no stock_id, we need to keep track of this
+		this is straight up to the error table :(
+	*/
+	public function fallback_reduce(int $product_id, float $volume, int $location, string $info = NULL)
+	{
+		// if there is dead volume, add this to be removed from stock
+		$volume += $this->get_dead_volume($product_id);
+
+		# if logging is required also log this remove
+		if ($this->logs->min_log_level == DEBUG)
+		{
+			$this->logs->stock(DEBUG, "stock/fallback_reduce", $product_id, -$volume, $location);
+		}
+
+		# update the stock
+		$this->insert(array(
+					"product_id" 	=> $product_id,
+					"location" 		=> $location,
+					"volume" 		=> -$volume,
+					"state"			=> STOCK_ERROR,
+					"info"			=> $info
+				));
+		return true;
 	}
 
 	/*

@@ -277,7 +277,17 @@ class Invoice extends Vet_Controller
 		$product_count = 0;
 
 		foreach ($product_list as $product) {
-			$this->stock->reduce($product['stock_id'], $product['product_id'], $product['volume']);
+			if ($product['stock_id'])
+			{
+				$this->stock->reduce($product['stock_id'], $product['product_id'], $product['volume']);
+			}
+			else
+			{
+				# this can happen when there is no stock at all for this product
+				# and so stock_id is null, this means we don't know where it was and our best guess
+				# is the event_location, but current_location is most likely fine too
+				$this->stock->fallback_reduce($product['product_id'], $product['volume'], $this->user->current_location, 'NO_STOCK');
+			}
 			$product_count++;
 		}
 

@@ -22,7 +22,7 @@
 						</select>
 					</div>
 					<div class="col">		
-						<select name="notupe" class="form-control">
+						<select name="notupe" disabled class="form-control">
 							<?php foreach($stocks as $stock): if($stock['id'] != $this->user->current_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
 							<?php endforeach; ?>
@@ -39,11 +39,12 @@
 </div>
 
 <script>
+const URL_PRODUCTS_API = "<?php echo base_url('products/get_product/search_stock'); ?>";
 
 document.addEventListener("DOMContentLoaded", function(){
 
 $('#autocomplete').autocomplete({
-		serviceUrl: '../../products/get_product_or_procedure',
+		serviceUrl: URL_PRODUCTS_API,
 		onSelect: function (suggestion) {
             var data = suggestion.data;
 			$('#new_pid').val(data.id);
@@ -89,5 +90,5 @@ $('#autocomplete').autocomplete({
 		showNoSuggestionNotice: true,
 		minChars: '2'
 	});
-	});
+});
 </script>

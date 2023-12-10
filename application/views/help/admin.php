@@ -142,6 +142,27 @@
       </div>
     </div>
 
+    <!-- item -->
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Welke stock errors zijn er ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>Sommige problemen krijgen een info veld mee. Hieronder de gekende velden:<br/>
+        <table class="table table-sm">
+            <tr>
+                <th>Info</th>
+                <th>Probleem</th>
+                <th>Oplossing</th>
+            </tr>
+            <tr>
+                <td>NO_STOCK</td>
+                <td>De dierenarts heeft een product verkocht waarvan geen stock aanwezig was. We kennen dus geen locatie, lotnr of vervaldatum.</td>
+                <td>Indien dit product een virtueel product is. Kunt U best een procedure ervan maken, of een zeer groot -virtueel- volume toevoegen. Indien het een bestaand nog niet ingevoerd product is kunt U best de stock editeren.</td>
+            </tr>
+        </table>
+        </p>
+      </div>
+    </div>
+
   </div>
 </div>
 

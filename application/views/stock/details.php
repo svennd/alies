@@ -99,38 +99,73 @@
 		</div>
 </div>
 <script type="text/javascript">
+
+const UNIT_SELL = '<?php echo $product['unit_sell']; ?>';
+
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 
+	// also used in product/profile.php
 	$("#dataTable").DataTable(
 	{
-		footerCallback: function (row, data, start, end, display) {
-		var api = this.api();
+			footerCallback: function (row, data, start, end, display) {
+            var api = this.api();
+ 
+            // Remove the formatting to get integer data for summation
+			var intVal = function (i) {
+				return typeof i === 'number' ? i : parseFloat(i.replace(/[^\d.-]/g, '')) || 0;
+			};
 
-		// Remove the formatting to get integer data for summation
-		var intVal = function (i) {
-			return typeof i === 'string' ? i.replace(/[<?php echo $detail['products']['unit_sell']; ?>,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-		};
+            // Total over all pages
+            total = api
+                .column(0)
+                .data()
+                .reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+ 
+            // Total over this page
+            pageTotal = api
+                .column(0, { page: 'current' })
+                .data()
+                .reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+ 
+            // Update footer
+            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' ' +  UNIT_SELL + ' (total : ' + Math.round(total*100)/100 + ' ' + UNIT_SELL + ' )' );
+       		},
+		});
 
-		// Total over all pages
-		total = api
-			.column(0)
-			.data()
-			.reduce(function (a, b) {
-				return intVal(a) + intVal(b);
-			}, 0);
+	// $("#dataTable").DataTable(
+	// {
+	// 	footerCallback: function (row, data, start, end, display) {
+	// 	var api = this.api();
 
-		// Total over this page
-		pageTotal = api
-			.column(0, { page: 'current' })
-			.data()
-			.reduce(function (a, b) {
-				return intVal(a) + intVal(b);
-			}, 0);
+	// 	// Remove the formatting to get integer data for summation
+	// 	var intVal = function (i) {
+	// 		return typeof i === 'string' ? i.replace(/[<?php echo $detail['products']['unit_sell']; ?>,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+	// 	};
 
-		// Update footer
-		$(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>' + ' (' + Math.round(total*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>)' );
-		},
-	});
+	// 	// Total over all pages
+	// 	total = api
+	// 		.column(0)
+	// 		.data()
+	// 		.reduce(function (a, b) {
+	// 			return intVal(a) + intVal(b);
+	// 		}, 0);
+
+	// 	// Total over this page
+	// 	pageTotal = api
+	// 		.column(0, { page: 'current' })
+	// 		.data()
+	// 		.reduce(function (a, b) {
+	// 			return intVal(a) + intVal(b);
+	// 		}, 0);
+
+	// 	// Update footer
+	// 	$(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>' + ' (' + Math.round(total*100)/100 + ' <?php echo $detail['products']['unit_sell']; ?>)' );
+	// 	},
+	// });
 });
 </script>

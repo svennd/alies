@@ -276,6 +276,9 @@ foreach ($locations as $l)
 </div>
 
 <script type="text/javascript">
+
+const UNIT_SELL = '<?php echo $product['unit_sell']; ?>';
+
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 
@@ -288,7 +291,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	);
 
 	$("#dataTable").DataTable(
-		{
+	{
 			footerCallback: function (row, data, start, end, display) {
             var api = this.api();
  
@@ -314,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 }, 0);
  
             // Update footer
-            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' ml' + ' (total : ' + Math.round(total*100)/100 + ' ml)' );
+            $(api.column(0).footer()).html(Math.round(pageTotal*100)/100 + ' ' +  UNIT_SELL + ' (total : ' + Math.round(total*100)/100 + ' ' + UNIT_SELL + ' )' );
        		},
 		});
 

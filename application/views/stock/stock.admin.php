@@ -10,6 +10,7 @@
 					<th>Product</th>
 					<th>Volume</th>
 					<th>Details</th>
+					<th>Info</th>
 					<th>Last Update</th>
 					<th>Options</th>
 				</tr>
@@ -26,6 +27,7 @@
                         <?php echo $stk['eol']; ?>
                         </p>
                     </td>
+					<td><?php echo ($stk['info']) ? $stk['info'] : "-"; ?></td>
 					<td data-sort="<?php echo ($stk['updated_at']) ? strtotime($stk['updated_at']) : 0; ?>"><?php echo ($stk['updated_at']) ?  date_format(date_create($stk['updated_at']), $user->user_date) : ""; ?></td>
 					<td>
                         <a href="<?php echo base_url('stock/clear_error/'. $stk['id']); ?>" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-broom fa-fw"></i> Clear</a>
