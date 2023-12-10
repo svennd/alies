@@ -57,7 +57,7 @@ class Events extends Vet_Controller
 
 		# todo : write a custom function for this, too complex
 		$eprod 				= $this->eprod
-										->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
+										->with_product('fields: id, name, unit_sell, btw_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, id')
 										->with_prices('fields: volume, price|order_inside:volume asc')
 										->with_vaccine('fields: id, redo, no_rappel')
@@ -116,7 +116,7 @@ class Events extends Vet_Controller
 		$volume = $this->input->post('volume');
 		$vaccin = (bool) $this->input->post('vaccin');
 		$vaccin_freq = (int) $this->input->post('vaccin_freq');
-		$stock = (int) $this->input->post('stock');
+		$stock = ($this->input->post('stock')) ? (int) $this->input->post('stock') : NULL;
 
 		// verify the booking code/btw wasn't changed
 		list ($btw, $booking) = $this->check_booking(
@@ -147,12 +147,15 @@ class Events extends Vet_Controller
 			$this->add_vaccine($vaccin, $vaccin_freq, $line, $name, $event_id, $return_id);
 
 			// add stock info
-			$stock_info = $this->stock->fields('id, lotnr, eol, volume')->get($stock);
-			$content_specific_array = array(
-					"stock_lotnr"	=> $stock_info['lotnr'],
-					"stock_eol"		=> $stock_info['eol'],
-					"stock_volume"	=> $stock_info['volume'],
-				);
+			if ($stock)
+			{
+				$stock_info = $this->stock->fields('id, lotnr, eol, volume')->get($stock);
+				$content_specific_array = array(
+						"stock_lotnr"	=> $stock_info['lotnr'],
+						"stock_eol"		=> $stock_info['eol'],
+						"stock_volume"	=> $stock_info['volume'],
+					);
+			}
 		}
 
 		echo json_encode(
@@ -198,7 +201,7 @@ class Events extends Vet_Controller
 	}
 
 	// add line to product
-	private function add_product(int $prod, $volume, int $btw, int $booking, int $event, int $stock)
+	private function add_product(int $prod, $volume, int $btw, int $booking, int $event, $stock)
 	{
 		// price calculation
 		list($net_price, $unit_price) = $this->calculate_price_product($prod, $volume);
