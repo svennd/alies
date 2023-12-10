@@ -3,6 +3,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Breeds extends Vet_Controller
 {
+    const FREQ_BREED_COUNT = 5;
+    const UNKNOWN_BREED = 1;
+    const NO_SELECTION = -1;
+
 	# constructor
 	public function __construct()
 	{
@@ -137,7 +141,7 @@ class Breeds extends Vet_Controller
         foreach ($count_int as $breed => $cnt) 
         {
             # cuttoff is 5 && don't set unknown (1)
-            if ($cnt > 5 && $breed != 1)
+            if ($cnt > self::FREQ_BREED_COUNT && $breed != self::UNKNOWN_BREED)
             {
                $this->breeds->where(array('id' => $breed))->update(array('freq' => $cnt));
             }
@@ -217,10 +221,10 @@ class Breeds extends Vet_Controller
     }
 
     # get breeds based on types (admin/breeds)
-    public function get_breeds(int $type = -1, bool $array = false)
+    public function get_breeds(int $type = self::NO_SELECTION, bool $array = false)
     {
         # no type selected
-        if ($type == -1) 
+        if ($type == self::NO_SELECTION) 
         {
             $breeds = $this->breeds->get_all();
         }
