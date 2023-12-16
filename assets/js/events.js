@@ -230,7 +230,9 @@ document.addEventListener("DOMContentLoaded", function(){
 			/* color the default booking code */
 			var select = $('[id=hidden_booking] option[value="' + data.booking + '"]');
 				select.addClass("bg-success");
-
+				// by default sends 1 =s
+				$("#hidden_booking").val("");
+				
 			// its not a product
 			if (data.type == PROCEDURE)
 			{

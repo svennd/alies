@@ -84,7 +84,6 @@ class Bills_model extends MY_Model
 		}
 
 		$total_net = 0.0;
-		$total_brut = 0.0;
 		$total_btw_0 = 0.0;
 		$total_btw_6 = 0.0;
 		$total_btw_21 = 0.0;
@@ -92,7 +91,6 @@ class Bills_model extends MY_Model
 		foreach ($total_items as $btw => $item)
 		{
 			$total_net += $item;
-			$total_brut += $item * (1 + ($btw/100));
 			switch ($btw) {
 				case 0:
 					$total_btw_0 += $item;
@@ -105,6 +103,15 @@ class Bills_model extends MY_Model
 					break;
 			}
 		}
+
+		# this makes the error consistent
+		# for example 
+		# btw 6% : 3.786 btw 21% : 15.435
+		# would give 			3.79 + 15.44 	= 19.23
+		# while sum would be 	3.786 + 15.435 	= 19.221 ~= 19.22
+		
+		$total_brut = $total_net + number_format($total_btw_6*0.06, 2) + number_format($total_btw_21*0.21, 2);
+
 		$this->update(
 					array(
 							"total_brut" 	=> $total_brut,
