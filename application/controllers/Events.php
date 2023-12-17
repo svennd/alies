@@ -350,7 +350,7 @@ class Events extends Vet_Controller
 		redirect('events/edit_price/' . $event_id, 'refresh');
 	}
 
-	private function calculate_price_product(int $pid, $volume)
+	private function calculate_price_product(int $pid, float $volume)
 	{
 		$this->load->model('Product_price_model', 'prices');
 
@@ -443,11 +443,13 @@ class Events extends Vet_Controller
 		
 		if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
 		
-		list($price, $net_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'), $this->input->post('btw'));
+		// net_price, $to_use_price
+		list($net_price, $unit_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'));
 		$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
 													"volume" 		=> $this->input->post('volume'),
-													"price_brut"	=> $price,
 													"price_net"		=> $net_price,
+													"price_brut"	=> $net_price*(1+($this->input->post('btw')/100)),
+													"unit_price"	=> $unit_price,
 									));
 		redirect('/events/event/' . $event_id);
 	}
