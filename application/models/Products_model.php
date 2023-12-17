@@ -247,8 +247,7 @@ class Products_model extends MY_Model
 		$sql = "
 		SELECT 
 			products.id, products.name, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq,
-			GROUP_CONCAT(DISTINCT prices.volume) as price_volume, GROUP_CONCAT(DISTINCT prices.price) as price_price,
-			GROUP_CONCAT(stock.id) as stock_ids, GROUP_CONCAT(location) as stock_locations, GROUP_CONCAT(eol) as stock_eol, GROUP_CONCAT(lotnr) as stock_lotnr, GROUP_CONCAT(stock.volume) as stock_volumes
+			GROUP_CONCAT(DISTINCT prices.volume) as price_volume, GROUP_CONCAT(DISTINCT prices.price) as price_price
 		FROM 
 			products
 		JOIN
@@ -266,8 +265,6 @@ class Products_model extends MY_Model
 			sellable = 1
 		AND 
 			products.deleted_at IS NULL
-		AND
-			(stock.state = " . STOCK_IN_USE . " OR stock.state IS NULL) -- null can be if there is no stock
 		GROUP BY
 			products.name
 		LIMIT

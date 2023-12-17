@@ -181,3 +181,6 @@ define('FLAG_NEUTERED', 2); # mark the pet as neutered
 define('PDF_DOWNLOAD', 1); # download file
 define('PDF_STREAM', 2); # view file
 define('PDF_FILE', 3); # store on filesystem
+
+# gs1 code
+define('GS1_CODE', 26);

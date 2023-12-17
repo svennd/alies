@@ -272,7 +272,7 @@ class Products extends Vet_Controller
 	}
 
 	/*
-		get_product is used in stock_add and stock/move
+		get_product is used in stock_add
 	*/
 	public function get_product()
 	{
@@ -284,7 +284,7 @@ class Products extends Vet_Controller
 		/*
 			if string is 26 chars long try to check if its a gs1 code
 		*/
-		$gsl = (strlen($query) >= 26) ? parse_gs1($query) : false;
+		$gsl = (strlen($query) >= GS1_CODE) ? parse_gs1($query) : false;
 
 		// gs1 lookup or generic product name
 		$result = ($gsl) ? 
@@ -430,29 +430,36 @@ class Products extends Vet_Controller
 		# in case no results
 		if (!$result) { return $return; }
 
+		# maximum 10 results
 		foreach ($result as $r) {
 			$stock = array();
 			$prices = array();
+			$product_id = $r['id'];
+
+			$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE))->order_by("eol", "ASC")->get_all();
 
 			# there is stock
-			if (isset($r['stock'])) {
-				foreach ($r['stock'] as $s) {
+			if (isset($stock)) {
+				foreach ($stock as $s)
+				{
 					$stock[] = array(
-										"location" 	=> $s['location'],
-										"lotnr" 	=> $s['lotnr'],
-										"volume" 	=> $s['volume'],
 										"id" 		=> $s['id'],
-										"eol" 		=> $s['eol']
+										"location" 	=> $s['location'],
+										"eol" 		=> $s['eol'],
+										"lotnr" 	=> $s['lotnr'],
+										"volume" 	=> $s['volume']
 										);
 				}
 			}
 
 		# there are prices
-		if ($r['prices']) {
-			foreach ($r['prices'] as $s) {
+		if ($r['price_volume']) {
+			$volumes 	= explode(",", $r['price_volume']);
+			$prices 	= explode(",", $r['price_price']);
+			for($i = 0; $i < count($volumes); $i++) {
 				$prices[] = array(
-									"volume" 	=> $s['volume'],
-									"price" 	=> $s['price'],
+									"volume" 	=> $volumes[$i],
+									"price" 	=> $prices[$i],
 									);
 			}
 		}
