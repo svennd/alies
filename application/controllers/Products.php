@@ -358,11 +358,12 @@ class Products extends Vet_Controller
 		{
 			$gsl = parse_gs1($query);
 
-			// not right format
-			if (!$gsl) { return $return; }
-
-			// search for product w/ this barcode
-			$return = $this->get_gs1_barcode($gsl);
+			// if not right format,
+			// then it might be a very long name!
+			if ($gsl) {
+				// search for product w/ this barcode
+				$return = $this->get_gs1_barcode($gsl);
+			}
 		}
 
 		if (strlen($query) > 1)
@@ -439,7 +440,7 @@ class Products extends Vet_Controller
 			$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE))->order_by("eol", "ASC")->get_all();
 
 			# there is stock
-			if (isset($stock)) {
+			if ($stock) {
 				foreach ($stock as $s)
 				{
 					$stock[] = array(
