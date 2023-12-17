@@ -5,8 +5,12 @@ if (! defined('BASEPATH')) {
 
 class Products_model extends MY_Model
 {
+
 	public $table = 'products';
 	public $primary_key = 'id';
+	
+	// how many products does product search return
+	const PRODUCT_SEARCH_LIMIT = 10;
 	
 	public function __construct()
 	{
@@ -240,14 +244,35 @@ class Products_model extends MY_Model
 	// used in products controller
 	public function get_products(string $query)
 	{
-		return $this
-			->fields('id, name, type, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq')
-			->with_prices('fields: volume, price|order_inside:volume asc')
-			->with_stock('fields: id, location, eol, lotnr, volume, state|order_inside:eol asc', 'where:`state`=\'1\'')
-			->where('name', 'like', $query, true)
-			->where('sellable', '1')
-			->limit(250) # this will count both products + prices + stock (somehow)
-			->order_by("type", "ASC")
-			->get_all();
+		$sql = "
+		SELECT 
+			products.id, products.name, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq,
+			GROUP_CONCAT(DISTINCT prices.volume) as price_volume, GROUP_CONCAT(DISTINCT prices.price) as price_price,
+			GROUP_CONCAT(stock.id) as stock_ids, GROUP_CONCAT(location) as stock_locations, GROUP_CONCAT(eol) as stock_eol, GROUP_CONCAT(lotnr) as stock_lotnr, GROUP_CONCAT(stock.volume) as stock_volumes
+		FROM 
+			products
+		JOIN
+			products_price as prices
+		ON
+			products.id = prices.product_id
+
+		LEFT JOIN
+			stock
+		ON
+			products.id = stock.product_id
+		WHERE 
+			name LIKE '%" . $query ."%' ESCAPE '!'
+		AND 
+			sellable = 1
+		AND 
+			products.deleted_at IS NULL
+		AND
+			(stock.state = " . STOCK_IN_USE . " OR stock.state IS NULL) -- null can be if there is no stock
+		GROUP BY
+			products.name
+		LIMIT
+			". self::PRODUCT_SEARCH_LIMIT ."
+			;";
+		return $this->db->query($sql)->result_array();
 	}
 }
