@@ -26,11 +26,14 @@ class Invoice extends Vet_Controller
 
 		# load library (html->pdf)
 		$this->load->library('pdf'); 
+		$this->load->library('qr'); 
 	}
 
 	# show bills of last 30 days for admin and 7 days for vets;
 	public function index()
 	{
+		echo "<img src='" . $this->qr->create(0.01, "test") . "'>";
+
 		$dt = new DateTime();
 		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
 		

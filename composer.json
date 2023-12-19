@@ -7,6 +7,8 @@
         "select2/select2": "4.*",
         "ttskch/select2-bootstrap4-theme": "*",
         "phpmailer/phpmailer": "^6.5",
-        "dompdf/dompdf": "2.*"
+        "dompdf/dompdf": "2.*",
+        "smhg/sepa-qr-data": "^2.0",
+        "chillerlan/php-qrcode": "^5.0"
     }
 }

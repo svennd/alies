@@ -217,5 +217,3 @@ document.addEventListener("DOMContentLoaded", function(){
       });
 });
 </script>
-
-<div class="work-in-progress"><i class="fa-solid fa-person-digging"></i></div>

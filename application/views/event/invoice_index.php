@@ -9,12 +9,12 @@
     <thead>
         <tr class="thead-light depad_header">
             <th><?php echo $this->lang->line('name'); ?></th>
-            <th><?php echo $this->lang->line('volume'); ?></th>
-            <th><?php echo $this->lang->line('lotnr'); ?></th>
-            <th><?php echo $this->lang->line('VAT'); ?></th>
+            <th class="d-none d-sm-table-cell"><?php echo $this->lang->line('volume'); ?></th>
+            <th class="d-none d-sm-table-cell"><?php echo $this->lang->line('lotnr'); ?></th>
+            <th class="d-none d-sm-table-cell"><?php echo $this->lang->line('VAT'); ?></th>
             <th><?php echo $this->lang->line('Price'); ?></th>
-            <th><?php echo $this->lang->line('net_price'); ?></th>
-            <th><?php echo $this->lang->line('options'); ?></th>
+            <th class="d-none d-sm-table-cell"><?php echo $this->lang->line('net_price'); ?></th>
+            <th class="d-none d-sm-table-cell"><?php echo $this->lang->line('options'); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -25,22 +25,14 @@
     </tbody>
     <tfoot>
         <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td class="d-none d-sm-table-cell">&nbsp;</td>
+            <td class="d-none d-sm-table-cell">&nbsp;</td>
+            <td class="d-none d-sm-table-cell">&nbsp;</td>
             <td><i><?php echo $this->lang->line('sum'); ?></i></td>
-            <td><i><?php echo round($total, 2); ?> &euro;</i></td>
-            <td class="sensitive"><i><?php echo round($total_excl,2); ?> &euro;</i></td>
-            <td>&nbsp;</td>
+            <td><i id="bruto_sum"><?php echo round($total, 2); ?> &euro;</i></td>
+            <td class="d-none d-sm-table-cell sensitive"><i id="netto_sum"><?php echo round($total_excl,2); ?> &euro;</i></td>
+            <td class="d-none d-sm-table-cell">&nbsp;</td>
         </tr>
     </tfoot>
     </table>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-  $(".sensitive").hover(function() {
-    $(this).toggleClass('sensitive', 300);
-  });
-});
-
-</script>

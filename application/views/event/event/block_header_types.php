@@ -1,4 +1,4 @@
-<div class="dropdown no-arrow">
+<div class="dropdown no-arrow d-none d-md-block">
     <?php if($event_info['no_history'] == 1): ?>
     <a href="<?php echo base_url('events_report/enable_history/' . $event_id); ?>" role="button" id="dropdownMenuLink" class="btn btn-outline-success btn-sm">
         <i class="fas fa-eye"></i><span>&nbsp;<?php echo $this->lang->line('enable_report'); ?></span>

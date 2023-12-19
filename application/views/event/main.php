@@ -41,26 +41,28 @@
 
 		<div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div>
-					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
+				<div class="d-none d-md-block">
+					<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> /
+					<a href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / Event
 				</div>
+				<div class="d-md-none">Event</div>
 				<?php include "event/block_header_types.php"; ?>
 			</div>
 			<div class="card-body">
-					
-				<nav class="nav nav-borders" id="headtabs">
-					<a href="#index" class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">
-						<i class="fa-solid fa-receipt"></i> <?php echo $this->lang->line('check'); ?>
-					</a>
-					<a href="#report" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-report-tab" data-toggle="tab" data-target="#nav-report" type="button" role="tab" aria-controls="nav-report" aria-selected="true">
-						<i class="fa-solid fa-notes-medical"></i> <?php echo $this->lang->line('report'); ?>
-					</a>
-				</nav>
-				<hr class="mt-0 mb-3">
+				<div class="d-none d-md-block">
+					<nav class="nav nav-borders" id="headtabs">
+						<a href="#index" class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="false">
+							<i class="fa-solid fa-receipt"></i> <?php echo $this->lang->line('check'); ?>
+						</a>
+						<a href="#report" class="nav-link <?php echo ($event_info['no_history'] == 1) ? "disabled":""; ?>" id="nav-report-tab" data-toggle="tab" data-target="#nav-report" type="button" role="tab" aria-controls="nav-report" aria-selected="true">
+							<i class="fa-solid fa-notes-medical"></i> <?php echo $this->lang->line('report'); ?>
+						</a>
+					</nav>
+					<hr class="mt-0 mb-3">
+				</div>
 				
 				<div class="tab-content" id="nav-tabContent-heads">
-					<div class="tab-pane" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+					<div class="tab-pane active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 						<?php include "invoice_index.php"; ?>
 					</div>
 					<div class="tab-pane" id="nav-report" role="tabpanel" aria-labelledby="nav-report-tab">
@@ -80,7 +82,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-xl-2">
+	<div class="col-xl-2 d-none d-md-block">
 		<?php include "event/block_client.php"; ?>
 		<?php include "application/views/pets/fiche/block_other_pets.php"; ?>
 		<?php include "application/views/pets/fiche/block_birth.php"; ?>
@@ -91,4 +93,10 @@
 
 </div>
 
+<script>
+	const URL_ADD_LINE 		= '<?php echo base_url('events/add_line/' . $event_id . '/'); ?>';
+	const URL_PROC_OR_PROD 	= '<?php echo base_url('products/get_product_or_procedure'); ?>';
+	const URL_DELETE_PROC 	= '<?php echo base_url('events/proc_remove/' . $event_id . '/'); ?>';
+	const URL_DELETE_PROD 	= '<?php echo base_url('events/prod_remove/' . $event_id . '/'); ?>';
+</script>
 <script src="<?php echo base_url('assets/js/events.js'); ?>"></script>

@@ -4,6 +4,11 @@ const PRODUCT_BARCODE = 2;
 
 var default_volume_procedures = 1;
 
+function financial(x) {
+	return Number.parseFloat(x).toFixed(2);
+}
+
+  
 function event_set_procedure()
 {
     // no specific unit
@@ -48,7 +53,7 @@ function event_set_product(suggestion, current_location)
     $('#vaccin_freq').val(suggestion.vaccin_freq);
 
     // check if there is stock
-    if (suggestion.stock != null)
+    if (suggestion.stock != null && suggestion.stock)
     {
 		var stock = suggestion.stock;
 		
@@ -80,11 +85,11 @@ function event_set_product(suggestion, current_location)
 }
 
 
-function add_line(current_event)
+function add_line()
 {
     $.ajax({
 		method: 'POST',
-		url: '../../events/add_line/' + current_event + '/' + $("#product_or_proc").val(),
+		url: URL_ADD_LINE + $("#product_or_proc").val(),
 		data: {
 			line: $("#new_pid").val(),
 			title: $("#autocomplete").val(),
@@ -140,8 +145,11 @@ function add_table_line(info)
 	{
 		var newRowHtml = `
 			<tr>
-				<td>${info.name}</td>
 				<td>
+					<span class="d-md-none">${info.volume}x</span>
+					${info.name}
+				</td>
+				<td class="d-none d-sm-table-cell">
 					<div class="input-group input-group-sm" style="width:125px;">
 						<input type="text" name="volume" value="${info.volume}" class="form-control" disabled="">
 						<div class="input-group-append">
@@ -149,10 +157,15 @@ function add_table_line(info)
 						</div>
 					</div>
 				</td>
-				<td>&nbsp;</td>
-				<td>${info.btw}%</td>
-				<td>${info.brut_price.toFixed(2)} &euro;</td>
-				<td><small>${info.net_price.toFixed(2)} &euro;</small></td>
+				<td class="d-none d-sm-table-cell">&nbsp;</td>
+				<td class="d-none d-sm-table-cell">${info.btw}%</td>
+				<td>${financial(info.brut_price)} &euro;
+					<span class="d-md-none">
+					<a href="${URL_DELETE_PROC}${info.return}" class='btn btn-outline-danger btn-sm'><i class='fas fa-trash-alt'></i></a>
+					</span>
+				</td>
+				<td class="d-none d-sm-table-cell"><small>${financial(info.net_price)} &euro;</small></td>
+				<td class="d-none d-sm-table-cell"><a href="${URL_DELETE_PROC}${info.return}" class='btn btn-outline-danger btn-sm'><i class='fas fa-trash-alt'></i></a></td>
 			</tr>
 		`;
 	}
@@ -162,7 +175,7 @@ function add_table_line(info)
 		var newRowHtml = `
 			<tr>
 				<td>${info.name}</td>
-				<td>
+				<td class="d-none d-sm-table-cell">
 					<div class="input-group input-group-sm" style="width:125px;">
 						<input type="text" name="volume" value="${info.volume}" class="form-control" disabled="">
 						<div class="input-group-append">
@@ -170,10 +183,15 @@ function add_table_line(info)
 						</div>
 					</div>
 				</td>
-				<td><small>${lotnr}</small></td>
-				<td>${info.btw}%</td>
-				<td>${info.brut_price.toFixed(2)} &euro;</td>
-				<td><small>${info.net_price.toFixed(2)} &euro;</small></td>
+				<td class="d-none d-sm-table-cell"><small>${lotnr}</small></td>
+				<td class="d-none d-sm-table-cell">${info.btw}%</td>
+				<td>${financial(info.brut_price)} &euro;
+					<span class="d-md-none">
+					<a href="${URL_DELETE_PROD}${info.return}" class='btn btn-outline-danger btn-sm'><i class='fas fa-trash-alt'></i></a>
+					</span>
+				</td>
+				<td class="d-none d-sm-table-cell"><small>${financial(info.net_price)} &euro;</small></td>
+				<td class="d-none d-sm-table-cell"><a href="${URL_DELETE_PROD}${info.return}" class='btn btn-outline-danger btn-sm'><i class='fas fa-trash-alt'></i></a></td>
 			</tr>
 		`;
 
@@ -181,19 +199,22 @@ function add_table_line(info)
 	
 	// Insert the new row after the first row
 	$("#invoice_table tbody tr:first").after(newRowHtml);
+
+	// add the brut and netto to the screen
+	$("#bruto_sum").html(parseFloat($("#bruto_sum").html()) + parseFloat(info.brut_price));
+	$("#netto_sum").html(parseFloat($("#netto_sum").html()) + parseFloat(info.net_price));
 }
 
 function reset_input()
 {
-    $("#autocomplete, #new_pid, #product_or_proc, #volume, #hidden_booking, #stock_select, #vaccin_or_no, #vaccin_freq").val("");
-    $("#autocomplete").focus();
+    $("#new_pid, #product_or_proc, #volume, #hidden_booking, #stock_select, #vaccin_or_no, #vaccin_freq").val("");
+	$('#autocomplete').val('').autocomplete('onValueChange').focus();
 }
 
 
 document.addEventListener("DOMContentLoaded", function(){
 
     const current_location = $('#current_location_vet').val();
-    const current_event = $('#current_event').val();
 
 	/* select the correct tab based on the url */
 	var strHash = document.location.hash;
@@ -215,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	// search box for products
 	$('#autocomplete').autocomplete({
-		serviceUrl: '../../products/get_product_or_procedure',
+		serviceUrl: URL_PROC_OR_PROD,
 		onSelect: function (suggestion) {
             var data = suggestion.data;
 			$('#new_pid').val(data.id);
@@ -255,10 +276,6 @@ document.addEventListener("DOMContentLoaded", function(){
 				$("#volume").focus();
 			}
 		},
-        onInvalidateSelection: function() {
-            // if we dont select anything, reset the input
-            reset_input();
-        },
 		autoSelectFirst: true,
 		showNoSuggestionNotice: true,
 		minChars: '2'
@@ -267,13 +284,19 @@ document.addEventListener("DOMContentLoaded", function(){
 
     // add a line when button is clicked
     $("#add_line").click(function() {
-		add_line(current_event);
+		add_line();
     });
 
 	// if on enter we want to push the line
     $("#volume").on("keydown", function(event) {
         if (event.which === 13) {
-			add_line(current_event);
+			add_line();
         }
     });
+
+	// hide netto
+	// since clients see this value as "to pay" so we hide it
+	$(".sensitive").hover(function() {
+		$(this).toggleClass('sensitive', 300);
+	});
 });

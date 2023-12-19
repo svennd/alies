@@ -536,6 +536,34 @@ class Stock_model extends MY_Model
 		return array('lines_merged' => $lines, 'new_merged' => $new_merged_products);
 	}
 
+	/*
+		get all the lotnr for a certain product
+		usde in stock/move
+	*/
+	public function get_product_stock(string $query, int $location)
+	{
+		$sql = "select 
+					name, unit_sell,
+					GROUP_CONCAT(stock.id) as stock_ids, GROUP_CONCAT(stock.volume) as stock_volumes, GROUP_CONCAT(stock.lotnr) as stock_lotnrs, GROUP_CONCAT(stock.eol) as stock_eols
+				from 
+					products 
+				RIGHT JOIN
+					stock
+				ON
+					stock.product_id = products.id
+				where 
+					products.name like '" . $query . "%'
+				AND
+					stock.state = " . STOCK_IN_USE . "
+				AND
+					stock.location = " . $location . "
+				GROUP BY
+					name
+				";
+
+		return $this->db->query($sql)->result_array();
+	}
+
 
 	/*
 		PRIVATE functions

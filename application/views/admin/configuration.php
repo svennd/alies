@@ -51,6 +51,16 @@
 					</div>
 				</div>
 
+				<h5>Transfer</h5>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="emailtitle">ban</label>
+						<input type="text" class="form-control" id="emailtitle" name="conf_emailtitle" value="<?php echo (isset($config['emailtitle'])) ? base64_decode($config['emailtitle']) : ''; ?>" autocomplete="emailtitle">
+					</div>
+				</div>
+
+
+				<hr />
 				<h4>Events</h4>
 				
 				<div class="form-row">
@@ -69,6 +79,7 @@
 					</div>
 				</div>
 
+				<hr />
 				<h4>Integrations</h4>
 				<!--
 				<h5>Covetrus, Nerum (NetOrder)</h5>

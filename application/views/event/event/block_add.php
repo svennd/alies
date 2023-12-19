@@ -11,20 +11,26 @@
 
 <tr>
 	<td>
-		<input type="text" name="product" class="form-control form-control-sm" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
+		<input type="text" name="product" class="form-control form-control-sm" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
 		<input type="hidden" id="new_pid" name="pid" value="" />
 		<input type="hidden" id="product_or_proc" name="prod" value="" />
 	</td>
 	<td>
-		<div class="input-group input-group-sm" style="width:125px;">
-			<input type="text" name="volume" value="" class="form-control" id="volume" required>
-			<div class="input-group-append">
-				<span class="input-group-text" id="unit_sell">st</span>
+		<div class="form-inline">
+			<div class="input-group input-group-sm">
+				<input type="text" name="volume" value="" class="form-control" placeholder="volume" id="volume" required>
+				<div class="input-group-append">
+					<span class="input-group-text" id="unit_sell">st</span>
+				</div>
 			</div>
 		</div>
 	</td>
-	<td><select class="form-control form-control-sm" style="width:175px;" name="barcode" id="stock_select" disabled></select></td>
-	<td>		
+	<td class="d-none d-sm-table-cell">
+		<div class="form-inline">
+			<select class="form-control form-control-sm" placeholder="lotnr" name="barcode" id="stock_select" disabled><option>&nbsp;&nbsp;&nbsp;&nbsp;---&nbsp;&nbsp;&nbsp;&nbsp;</option></select>
+		</div>
+	</td>
+	<td class="d-none d-sm-table-cell">		
 		<a href="#" id="show_booking_select"></a>
 		<div id="booking_select" style="display:none;">
 			<select class="form-control form-control-sm" name="booking_code" id="hidden_booking">
@@ -38,9 +44,9 @@
 		<input type="hidden" name="vaccin" value="" id="vaccin_or_no">
 		<input type="hidden" name="vaccin_freq" value="" id="vaccin_freq">
 	</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>
+	<td class="d-none d-sm-table-cell">&nbsp;</td>
+	<td class="d-none d-sm-table-cell">&nbsp;</td>
+	<td class="d-none d-sm-table-cell">
 		<button type="submit" class="btn btn-outline-success btn-sm" name="add_line" id="add_line"><i class="fas fa-plus"></i></button>
 	</td>
 </tr>	

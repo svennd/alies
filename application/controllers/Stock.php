@@ -51,8 +51,8 @@ class Stock extends Vet_Controller
 	{
 
 		$data = array(
-						"stocks" => $this->location
-					// "" => $this->stock_location->get_all()
+						"stocks" => $this->location,
+						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 		);
 		$this->_render_page('stock/move', $data);
 	}
@@ -473,5 +473,29 @@ class Stock extends Vet_Controller
 				"lines" => count($lines), 
 				"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
 	));		
+	}
+
+	public function get_product_stock(int $location)
+	{
+		// todo gs1 code
+		$term = $this->input->get('query');
+		
+		$stock = $this->stock->get_product_stock($term, $location);
+		$stock_list = array();
+
+		foreach ($stock as $stoc) {
+			$stock_list[] = array(
+									"value" => $stoc['name'],
+									"data" 	=> array(
+													"id" 		=> $stoc['stock_id'],
+													"prod" 		=> $stoc['name'],
+													"unit" 		=> $stoc['unit_sell'],
+													"volume" 	=> $stoc['volume'],
+													"lotnr" 	=> $stoc['lotnr'],
+													"eol"	 	=> $stoc['eol']
+												)
+								);
+		}
+		echo json_encode(array("query" => $term, "suggestions" => $stock_list));
 	}
 }

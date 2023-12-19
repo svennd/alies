@@ -2,11 +2,11 @@
 	<?php foreach ($consumables as $product): ?>
 		<tr style="background-color: <?php echo ($product['price_brut'] == 0) ? "#fff0ed" : "#edfff8" ?>;">
 			<td>
+				<span class="d-md-none"><?php echo floatval($product['volume']); ?>x </span>
 				<?php echo $product['product']['name']; ?>
 			</td>
-			<td>
-			
-			<form action="<?php echo base_url(); ?>events/prod_edit/<?php echo $event_id; ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
+			<td class="d-none d-sm-table-cell">
+			<form action="<?php echo base_url('events/prod_edit/' . $event_id); ?>" id="form<?php echo $product['id']; ?>" method="post" autocomplete="off" class="form-inline">
 			
 				<div class="input-group input-group-sm" style="width:125px;">
 					<input type="text" name="volume" value="<?php if($product['volume'] != 0) { echo $product['volume']; }; ?>" class="form-control <?php if($product['volume'] == 0) { echo "is-invalid"; } ?>" id="volume<?php echo $product['id']; ?>" <?php echo ($event_state == STATUS_CLOSED) ? 'disabled' : ''; ?>>
@@ -24,25 +24,28 @@
 			</form>
 			
 			</td>
-			<td>
+			<td class="d-none d-sm-table-cell">
 			<?php if (!empty($product['stock'])) : ?>
 				<small>eol: <?php echo user_format_date($product['stock']['eol'], $user->user_date); ?> lot: <?php echo $product['stock']['lotnr']; ?></small>
 			<?php else: ?>
 				<small>-</small>
 			<?php endif; ?>
 			</td>
-			<td>
-				<?php echo (!empty($product['btw'])) ? $product['btw'] : $product['product']['btw_sell']; ?>%
-			</td>
+			<td class="d-none d-sm-table-cell"><?php echo (!empty($product['btw'])) ? $product['btw'] : $product['product']['btw_sell']; ?>%</td>
 			
-			<td><?php echo round($product['price_brut'],2); ?> &euro; 
+			<td><?php echo floatval(round($product['price_brut'], 2)); ?> &euro; 
+				<span class="d-md-none float-right">
+				<?php if ($event_state != STATUS_CLOSED): ?>
+					<a href="<?php echo base_url('events/prod_remove/' . $event_id . '/' . $product['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+				<?php endif; ?>
+				</span>
 				<?php $total += $product['price_brut']; ?>
 				<?php $total_excl += $product['price_net']; ?>
 			</td>
-			<td>
+			<td class="d-none d-sm-table-cell">
 				<small><?php echo round($product['price_net'],2); ?> &euro;</small>
 			</td>		
-			<td>
+			<td class="d-none d-sm-table-cell">
 				<?php if ($event_state != STATUS_CLOSED): ?>
 					<a href="<?php echo base_url('events/prod_remove/' . $event_id . '/' . $product['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
 				<?php endif; ?>

@@ -152,9 +152,7 @@
 <script>
 	const URL_STORE_MESSAGE_API = '<?php echo base_url('invoice/store_bill_msg/' . $bill['id']); ?>';
 	const URL_SENDMAIL_API = '<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/2'); ?>';
-	const URL_STORE_MAIL = '<?php echo base_url('owners/set_email/'. $bill['owner_id']); ?>';
-
-	
+	const URL_STORE_MAIL = '<?php echo base_url('owners/set_email/'. $bill['owner_id']); ?>';	
 </script>
 
 <script src="<?php echo base_url('assets/js/invoice.js'); ?>"></script>

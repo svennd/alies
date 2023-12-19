@@ -52,14 +52,13 @@ class Events extends Vet_Controller
 									->get($event_id);
 
 		$pet_id 			= $event_info['pet'];
-		$pet_info 			= $this->pets->with_pets_weight()->get($pet_id);
-		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
+		$pet_info 			= $this->pets->get($pet_id);
+		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, name')->limit(5)->get_all();
 
 		# todo : write a custom function for this, too complex
 		$eprod 				= $this->eprod
 										->with_product('fields: id, name, unit_sell, btw_sell, vaccin, vaccin_freq')
 										->with_stock('fields: eol, lotnr, id')
-										->with_prices('fields: volume, price|order_inside:volume asc')
 										->with_vaccine('fields: id, redo, no_rappel')
 										->where(array("event_id" => $event_id))
 										->get_all();
@@ -167,7 +166,7 @@ class Events extends Vet_Controller
 					"return"		=> $return_id, 
 					"btw" 			=> $btw,
 					"net_price" 	=> $net_price,
-					"brut_price"	=> $brut_price,
+					"brut_price"	=> number_format($brut_price, 2), // graphically better
 					"type"			=> $type,
 					"event_id"		=> $event_id
 				),
