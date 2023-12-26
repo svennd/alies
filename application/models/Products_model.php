@@ -61,8 +61,8 @@ class Products_model extends MY_Model
 		return ($name) ?
 					$this->
 					group_start()->
-						like('name', $name, 'both')->
-						like('wholesale_name', $name, 'both')->
+						or_like('name', $name, 'both')->
+						or_like('wholesale_name', $name, 'both')->
 						or_like('short_name', $name, 'both')->
 					group_end()->
 					limit(100)->
