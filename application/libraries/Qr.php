@@ -25,17 +25,14 @@ class Qr extends CI_Model
 			'scale'			=> 5,
 			'versionMax'	=> 13,
 			'outputType' 	=> 'png',
-			'eccLevel' => EccLevel::Q 	// EPC standard requires M (15%), we take caution and use Q (25%)
-										// H would be 30% and is the highest level of error correction
+			'eccLevel' 		=> EccLevel::Q 	// EPC standard requires M (15%), we take caution and use Q (25%)
+											// H would be 30% and is the highest level of error correction
 		]);
 		$this->QRCode = new QRCode($qrOptions);
 
 		// pull from config
-		// $this->sepa_name = $this->config->item('sepa_name');
-		// $this->sepa_iban = $this->config->item('sepa_iban');
-		$this->sepa_name = "Svenn D'Hert";
-		$this->sepa_iban = "BE47850844587280";
-		
+		$this->sepa_name = base64_decode($this->conf['nameiban']['value']);
+		$this->sepa_iban = base64_decode($this->conf['iban']['value']);		
 	}
 
 	public function create(float $amount, string $message)
@@ -46,11 +43,7 @@ class Qr extends CI_Model
 			->setRemittanceText($message)
 			->setAmount($amount); // The amount in Euro
 
-		// add time minutes
-		// header('Content-type: image/png');
-
 		return $this->QRCode->render($paymentData);
-		// $this->QRCode->render($paymentData, "data/stored/qr/" . date("His") . "sepa.png");
 	}
 	
 }

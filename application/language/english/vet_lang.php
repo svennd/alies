@@ -325,6 +325,9 @@ $lang['bill_date']              = 'Bill date';
 $lang['bill_due_date']          = 'Due Date'; 
 $lang['Total_net_excl']         = 'Total excl. vat'; 
 $lang['Total_inc']              = 'Total incl. vat'; 
+$lang['account_number']         = 'Account number'; 
+$lang['account_name']           = 'On name of'; 
+$lang['message']                = 'Message'; 
 
 # prices
 $lang['price_from']             = 'From'; 

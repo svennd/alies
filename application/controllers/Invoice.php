@@ -32,8 +32,6 @@ class Invoice extends Vet_Controller
 	# show bills of last 30 days for admin and 7 days for vets;
 	public function index()
 	{
-		echo "<img src='" . $this->qr->create(0.01, "test") . "'>";
-
 		$dt = new DateTime();
 		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
 		
@@ -161,6 +159,13 @@ class Invoice extends Vet_Controller
 
 		if ($report == 1) 
 		{
+			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id']);
+			$data['struct'] = $struct;
+			$data['qr'] = $this->qr->create($total_brut, $struct);
+			$data['BIC'] = base64_decode($this->conf['bic']['value']);
+			$data['IBAN'] = base64_decode($this->conf['iban']['value']);
+			$data['name_owner'] = base64_decode($this->conf['nameiban']['value']);
+
 			$this->generate_pdf($data, PDF_STREAM);
 		}
 		elseif ($report == 2)

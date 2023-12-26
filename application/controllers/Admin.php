@@ -90,7 +90,7 @@ class Admin extends Admin_Controller
 				{
 					// base64 is only for accidental shoulder surfers protection
 					// we need these credentials in plain text to connect to services
-					$this->setting->store(substr($k, 5), base64_encode($v));
+					$this->setting->store(substr($k, 5), $v);
 				}
 			}
 		}

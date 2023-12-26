@@ -25,7 +25,7 @@
 										<td>". $price['volume'] ." ". $product['product']['unit_sell']."</td>
 										<td>". $price['price'] ." &euro;</td>
 										<td>
-										<a href='#' class='send btn btn-sm btn-outline-success' data-id='". $product["id"] ."' data-float-value='". $price['price']*$product['volume'] ."' >". $price['price']*$product['volume'] ." &euro; <i class='fa-solid fa-arrow-right'></i></a>
+										<a href='#' class='send btn btn-sm btn-outline-success' data-id='". $product["id"] ."' data-float-value='". $price['price']*$product['volume'] ."' >". number_format($price['price']*$product['volume'], 2) ." &euro; <i class='fa-solid fa-arrow-right'></i></a>
 										</td>
 								</tr>";
 						}

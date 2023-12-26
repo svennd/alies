@@ -32,14 +32,14 @@
 	}
     .gray {
         background-color: #eeeeee;
-		color: #443e61;
+		border-radius: 4px;
     }
 	footer {
 		position: fixed; 
-		bottom: -60px; 
+		bottom: -70px; 
 		left: 0px; 
 		right: 0px;
-		height: 150px; 
+		height: 130px; 
 	}
 
 </style>
@@ -125,8 +125,8 @@
         <th align="left"><?php echo $this->lang->line('description'); ?></th>
         <th align="right"><?php echo $this->lang->line('Quantity'); ?></th>
         <th align="right"><?php echo $this->lang->line('Unit_price'); ?></th>
-        <th align="right"><?php echo $this->lang->line('Price'); ?></th>
         <th align="right"><?php echo $this->lang->line('VAT'); ?></th>
+        <th align="right"><?php echo $this->lang->line('Price'); ?></th>
       </tr>
     </thead>
     <tbody>
@@ -154,8 +154,8 @@ foreach ($print as $pet_id => $event):
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format(round($procedure['price_net']/$procedure['volume'], 2), 2); ?></div>
 			</td>
-			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?></td>
 			<td align="right"><?php echo $procedure['btw']; ?> %</td>
+			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?></td>
 		</tr>
 	<?php endforeach; ?>
 	<?php foreach ($prod as $product): ?>
@@ -168,21 +168,21 @@ foreach ($print as $pet_id => $event):
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format(round($product['price_net']/$product['volume'], 2), 2); ?></div>
 			</td>
-			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?></td>
 			<td align="right"><?php echo $product['btw']; ?> %</td>
+			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?></td>
 		</tr>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 
 <tr>
-<td colspan="4">&nbsp;</td>
+<td colspan="5">&nbsp;</td>
 </tr>
 </tbody>
 	</table>
 	<table width="100%">
     <tfoot>
         <tr>
-			<td rowspan="2" valign="top">
+			<td rowspan="4" valign="top">
 				<table width="65%" style="text-align:center;">
   					<thead style="border-bottom:solid black 1px;">
 						<tr>
@@ -205,16 +205,16 @@ foreach ($print as $pet_id => $event):
 					</tbody>
 					</table>
 			</td>
-            <td colspan="3" align="right" valign="top"><?php echo $this->lang->line('Total_net_excl'); ?></td>
+            <td align="right" valign="top"><?php echo $this->lang->line('Total_net_excl'); ?></td>
             <td align="right" valign="top"><?php echo number_format($total_net, 2); ?> &euro;</td>
         </tr>
 		<tr>
-			<td colspan="3" align="right" valign="top"><?php echo $this->lang->line('Total'). ' ' .$this->lang->line('VAT'); ?></td>
+			<td align="right" valign="top"><?php echo $this->lang->line('Total'). ' ' .$this->lang->line('VAT'); ?></td>
 			<td align="right" valign="top">
 			<?php $sum_btw = 0.0; foreach($btw_details as $x => $y): $sum_btw += $y['calculated']; endforeach; echo number_format($sum_btw, 2); ?> &euro;</td>
 		</tr>
 		<tr>
-            <td colspan="4" align="right" class="enlarge"><?php echo $this->lang->line('to_pay'); ?></td>
+            <td align="right" class="enlarge"><?php echo $this->lang->line('to_pay'); ?></td>
             <td align="right" class="enlarge"><span class="gray" style="padding:5px;"><?php echo number_format($bill['total_brut'], 2); ?> &euro;</span></td>
         </tr>
     </tfoot>
@@ -223,6 +223,35 @@ foreach ($print as $pet_id => $event):
 
 <br/>
 <br/>
+<?php if($bill['status'] != BILL_PAID): ?>
+<div style="border:1px solid #B9B9B9; border-radius:15px; padding:5px; min-height:100px;">
+<table width="100%">
+	<tr>
+		<td>
+		<table width="100%">
+			<tr>
+				<td><?php echo $this->lang->line('amount'); ?></td>>
+				<td><?php echo number_format($bill['total_brut'], 2); ?> &euro;</td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('account_number'); ?></td>
+				<td><?php echo $IBAN; ?><?php if(!empty($BIC)): ?><br/><small>BIC: <?php echo $BIC; ?></small><?php endif; ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('account_name'); ?></td>
+				<td><?php echo $name_owner;?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('message'); ?></td>
+				<td><?php echo $struct; ?></td>
+			</tr>
+		</table>
+		</td>
+		<td><img src='<?php echo $qr; ?>' style="width:100px; height:100px; float:right;" alt="QR code" /></td>
+	</tr>
+	</table>
+</div>
+<?php endif; ?>
 <br/>
 <br/>
 

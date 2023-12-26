@@ -3,6 +3,7 @@
     $total = floatval($billing_info['total_brut']);
     $cash = floatval($billing_info['cash']);
     $card = floatval($billing_info['card']);
+    $transfer = floatval($billing_info['transfer']);
 ?>
 
 <div class="card shadow mb-4">

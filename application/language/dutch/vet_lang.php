@@ -332,6 +332,9 @@ $lang['bill_date']              = 'Factuurdatum';
 $lang['bill_due_date']          = 'Vervaldag'; 
 $lang['Total_net_excl']         = 'Totaal excl. BTW'; 
 $lang['Total_inc']              = 'Totaal incl. BTW'; 
+$lang['account_number']         = 'Op rekening'; 
+$lang['account_name']           = 'Op naam'; 
+$lang['message']                = 'Mededeling'; 
 
 # prices
 $lang['price_from']             = 'Van'; 

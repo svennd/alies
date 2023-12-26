@@ -54,8 +54,20 @@
 				<h5>Transfer</h5>
 				<div class="form-row">
 					<div class="form-group col-md-6">
-						<label for="emailtitle">ban</label>
-						<input type="text" class="form-control" id="emailtitle" name="conf_emailtitle" value="<?php echo (isset($config['emailtitle'])) ? base64_decode($config['emailtitle']) : ''; ?>" autocomplete="emailtitle">
+						<label for="nameiban">naam IBAN</label>
+						<input type="text" class="form-control" id="nameiban" name="conf_nameiban" value="<?php echo (isset($config['nameiban'])) ? base64_decode($config['nameiban']) : ''; ?>" autocomplete="nameiban">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="iban">IBAN</label>
+						<input type="text" class="form-control" id="iban" name="conf_iban" value="<?php echo (isset($config['iban'])) ? base64_decode($config['iban']) : ''; ?>" autocomplete="iban">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="bic">BIC</label>
+						<input type="text" class="form-control" id="bic" name="conf_bic" value="<?php echo (isset($config['bic'])) ? base64_decode($config['bic']) : ''; ?>" autocomplete="bic">
 					</div>
 				</div>
 

@@ -201,8 +201,8 @@ function add_table_line(info)
 	$("#invoice_table tbody tr:first").after(newRowHtml);
 
 	// add the brut and netto to the screen
-	$("#bruto_sum").html(parseFloat($("#bruto_sum").html()) + parseFloat(info.brut_price));
-	$("#netto_sum").html(parseFloat($("#netto_sum").html()) + parseFloat(info.net_price));
+	$("#bruto_sum").html(toFixed(parseFloat($("#bruto_sum").html()) + parseFloat(info.brut_price), 2));
+	$("#netto_sum").html(toFixed(parseFloat($("#netto_sum").html()) + parseFloat(info.net_price), 2));
 }
 
 function reset_input()

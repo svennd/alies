@@ -16,16 +16,32 @@ class Config_model extends MY_Model
 
 	public function store(string $name, string $value)
 	{
-		$update_tooth = "
+		$sql = "
 			INSERT INTO 
 				config 
 				(name, value, created_at)
 			VALUES 
-				('". $name ."','". $value . "', '" . date('Y-m-d H:i:s') . "')
+				('". $name ."','". base64_encode($value) . "', '" . date('Y-m-d H:i:s') . "')
 			ON DUPLICATE KEY UPDATE
-				value = '" . $value . "', 
+				value = '" . base64_encode($value) . "', 
 				updated_at = '" . date('Y-m-d H:i:s') . "';		
 		";
-		return $this->db->query($update_tooth);
+		return $this->db->query($sql);
+	}
+
+	// not used yet (we load everything at bootstrap time)
+	public function get_value(string $name)
+	{
+		$sql = "
+			SELECT 
+				value
+			FROM 
+				config 
+			WHERE 
+				name = '" . $name . "'
+			LIMIT 1;
+		";
+		$result = $this->db->query($sql)->row_array();
+		return base64_decode($result['value']);
 	}
 }
