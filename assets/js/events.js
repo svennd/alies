@@ -111,6 +111,7 @@ function add_line()
 					location.reload();
 				}
 			} catch (error) {
+				console.log(error);
 				let errorhtml = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
 				The response of the server failed, please <a href="javascript:location.reload();">REFRESH the page</a>.
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -201,8 +202,8 @@ function add_table_line(info)
 	$("#invoice_table tbody tr:first").after(newRowHtml);
 
 	// add the brut and netto to the screen
-	$("#bruto_sum").html(toFixed(parseFloat($("#bruto_sum").html()) + parseFloat(info.brut_price), 2));
-	$("#netto_sum").html(toFixed(parseFloat($("#netto_sum").html()) + parseFloat(info.net_price), 2));
+	$("#bruto_sum").html(financial(parseFloat($("#bruto_sum").html()) + parseFloat(info.brut_price), 2));
+	$("#netto_sum").html(financial(parseFloat($("#netto_sum").html()) + parseFloat(info.net_price), 2));
 }
 
 function reset_input()

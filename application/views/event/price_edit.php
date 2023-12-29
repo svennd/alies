@@ -5,6 +5,9 @@ function show_difference($price, $ori_price)
 	if ($ori_price != 0)
 	{
 		$change = round((($price-$ori_price)/$ori_price)*100);
+		if ($change == 0)
+			return "&nbsp;";
+		
 		return ($change < 0) ? 
 						'<span style="color:red;">' . $change . '%</span>' 
 					: 
@@ -17,6 +20,23 @@ function show_difference($price, $ori_price)
 }
 
 ?>
+<style>
+    .crossed-out {
+      position: relative;
+      display: inline-block;
+    }
+
+    .crossed-out::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.31); /* Change color as needed */
+      transform: translateY(-50%) rotate(-45deg);
+      transform-origin: center center;
+    }
+</style>
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
 	<div class="card shadow mb-4">

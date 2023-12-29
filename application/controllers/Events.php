@@ -192,6 +192,7 @@ class Events extends Vet_Controller
 			'volume' 			=> $volume,
 			'price_net'			=> $net_price,
 			'price_brut'		=> $brut_price,
+			'unit_price'		=> $unit_price,
 			'btw'				=> $btw,
 			'booking'			=> $booking,
 		));
@@ -257,37 +258,52 @@ class Events extends Vet_Controller
 		}
 		return array($btw, $booking);
 	}
+	
+
+	public function edit_unit_price(int $pid, int $event_id)
+	{
+		$unit_price = round($this->input->post('unit_price'), 2);
+		$volume 	= $this->input->post('volume');
+		$btw 		= $this->input->post('btw');
+		$type 		= $this->input->post('type');
+		$reason 	= $this->input->post('reason');
+		$ori_net_price = $this->input->post('price_ori_net');
 		
+		$net_price  = $unit_price * $volume;
+		$brut_price = $net_price * (1 + ($btw/100));
+
+		if ($type == PRODUCT)
+		{
+			$this->eprod->update(array(
+						"price_net" 	=> $net_price,
+						"unit_price" 	=> $unit_price,
+						"price_brut" 	=> $brut_price,
+						"price_ori_net"		=> $ori_net_price,						
+						"reduction_reason"	=> $reason
+					), 
+					$pid);
+		}
+		elseif ($type == PROCEDURE)
+		{
+			$this->eproc->update(array(
+						"price_net" 	=> $net_price,
+						"unit_price" 	=> $unit_price,
+						"price_brut" 	=> $brut_price,
+						"price_ori_net"		=> $ori_net_price,
+						"reduction_reason"	=> $reason
+					), 
+					$pid);
+		}
+		redirect('/events/edit_price/' . $event_id);
+	}
+
 	# annoying but its allowed
 	# edit the price based on what the vet tells us
 	public function edit_price($event_id)
 	{
-
-		# only if price is different from original price
-		if ($this->input->post('price') != $this->input->post('ori_net_price')) {
-			# update procedure
-			if ($this->input->post('submit') == 'store_proc_price') {
-					$this->eproc->update(array(
-												"price_net" 		=> $this->input->post('price'),
-												"price_brut"		=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-												"price_ori_net"		=> $this->input->post('price_ori_net'),
-												"reduction_reason"	=> $this->input->post('reason')
-											), array("id" => $this->input->post('event_proc_id'), "procedures_id" => $this->input->post('pid'), "event_id" => $event_id));
-			} elseif ($this->input->post('submit') == 'store_prod_price') {
-					$this->eprod->update(array(
-												"price_net" 		=> $this->input->post('price'),
-												"price_brut" 		=> $this->input->post('price')*((100 + $this->input->post('btw'))/100),
-												"price_ori_net"		=> $this->input->post('price_ori_net'),
-												"reduction_reason"	=> $this->input->post('reason')
-											), array("id" => $this->input->post('event_product_id'), "product_id" => $this->input->post('pid'), "event_id" => $event_id));
-			}
-		}
-
 		$eprod 	= $this->eprod
 						->with_product('fields: id, name, unit_sell, vaccin, vaccin_freq')
-						->with_stock('fields: eol, lotnr, id')
 						->with_prices('fields: volume, price|order_inside:volume asc')
-						// ->with_vaccine('fields: id, redo')
 						->where(array("event_id" => $event_id))
 						->get_all();
 
