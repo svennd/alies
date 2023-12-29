@@ -184,3 +184,8 @@ define('PDF_FILE', 3); # store on filesystem
 
 # gs1 code
 define('GS1_CODE', 26);
+
+# define structure message - limited to 10 useable chars
+define('CLIENT_BILL', 0); # default attempts to add CLIENT_ID + BILL_ID 
+define('CLIENT', 1); # client id only
+define('CLIENT_3DIGIT_BILL', 2); # client id (up to 7) + 3 digit bill id

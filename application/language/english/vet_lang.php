@@ -100,6 +100,7 @@ $lang['change_price']       = 'change';
 $lang['inc_vat']            = 'inc. BTW';
 $lang['ex_vat']            = 'ex. BTW';
 $lang['return_to_event']    = 'return to event';
+$lang['apply']              = 'Apply';
 
 # fiche
 $lang['edit_pet']   = 'Edit pet';

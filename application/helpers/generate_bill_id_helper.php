@@ -16,15 +16,19 @@ function get_invoice_id(int $invoice_id, $input_date = false, string $invoice_pr
    
 }
 
-function generate_struct_message(int $client_id, int $bill_id)
+function generate_struct_message(int $client_id, int $bill_id, int $mode = CLIENT_BILL)
 {
-    // check if the length isn't exceeding 10 characters
-    if (strlen($client_id . $bill_id) > 10 )
-    {
+    if ($mode == CLIENT_BILL) {
+        // if its too long fallback is CLIENT mode
+        $message = (strlen($client_id . $bill_id) > 10)
+            ? str_pad($client_id, 10, '0')
+            : str_pad($client_id, 10 - strlen($bill_id), '0') . $bill_id;
+    }
+    elseif ($mode == CLIENT) {
         $message = str_pad($client_id, 10, '0');
     }
-    else {
-        $message = str_pad($client_id, 10 - strlen($bill_id), '0') . $bill_id;
+    elseif ($mode == CLIENT_3DIGIT_BILL) {
+        $message = str_pad($client_id, 7, '0') . str_pad($bill_id, 3, '0', STR_PAD_LEFT);
     }
     
     // do modulo 97 on message and if it 0 then add 97

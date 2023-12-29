@@ -88,9 +88,10 @@
 			<?php endif; ?>
 		</td>
 		<td align="center">
-			<?php if($bill['card'] > 0 || $bill['cash'] > 0): ?>
+			<?php if($bill['card'] > 0 || $bill['cash'] > 0 || $bill['transfer'] > 0): ?>
 				<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
-				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><?php endif; ?>
+				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><br/><?php endif; ?>
+				<?php if ($bill['transfer'] != 0.00) : ?><?php echo $this->lang->line('transfer'); ?>: &euro; <?php echo $bill['transfer']; ?><?php endif; ?>
 			<?php endif; ?>
 		</td>
 	</tr>
@@ -214,7 +215,7 @@ foreach ($print as $pet_id => $event):
 			<?php $sum_btw = 0.0; foreach($btw_details as $x => $y): $sum_btw += $y['calculated']; endforeach; echo number_format($sum_btw, 2); ?> &euro;</td>
 		</tr>
 		<tr>
-            <td align="right" class="enlarge"><?php echo $this->lang->line('to_pay'); ?></td>
+            <td align="right" class="enlarge"><?php echo $this->lang->line('Total'); ?></td>
             <td align="right" class="enlarge"><span class="gray" style="padding:5px;"><?php echo number_format($bill['total_brut'], 2); ?> &euro;</span></td>
         </tr>
     </tfoot>
@@ -230,8 +231,8 @@ foreach ($print as $pet_id => $event):
 		<td>
 		<table width="100%">
 			<tr>
-				<td><?php echo $this->lang->line('amount'); ?></td>>
-				<td><?php echo number_format($bill['total_brut'], 2); ?> &euro;</td>
+				<td><?php echo $this->lang->line('to_pay'); ?></td>>
+				<td><?php echo number_format($bill['total_brut']-($bill['card'] + $bill['cash'] + $bill['transfer']), 2); ?> &euro;</td>
 			</tr>
 			<tr>
 				<td><?php echo $this->lang->line('account_number'); ?></td>

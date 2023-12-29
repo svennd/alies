@@ -105,6 +105,7 @@ $lang['change_price']       = 'Wijziging';
 $lang['inc_vat']            = 'incl. BTW';
 $lang['ex_vat']             = 'excl. BTW';
 $lang['return_to_event']    = 'Terug naar event';
+$lang['apply']              = 'Toepassen';
 
 # fiche
 $lang['edit_pet']   = 'Dier aanpassen';
@@ -391,3 +392,4 @@ $lang['expired_stock_expl']         = "Deze tabel toont producten (1)die vervall
 # teeth
 $lang['teeth']         = "Tanden fiche";
 $lang['paint_color']         = "Kleur";
+

@@ -159,7 +159,7 @@ class Invoice extends Vet_Controller
 
 		if ($report == 1) 
 		{
-			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id']);
+			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id'], base64_decode($this->conf['struct_config']['value']));;
 			$data['struct'] = $struct;
 			$data['qr'] = $this->qr->create($total_brut, $struct);
 			$data['BIC'] = base64_decode($this->conf['bic']['value']);

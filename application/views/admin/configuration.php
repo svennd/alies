@@ -37,6 +37,31 @@
 					</div>
 				</fieldset>
 				
+				<fieldset class="form-group row">
+					<legend class="col-form-label col-sm-2 float-sm-left pt-0">Structured messages</legend>
+					<div class="col-sm-10">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="conf_struct_config" id="struct1" value="<?php echo CLIENT; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT) ? 'checked' : ''; ?>>
+						<label class="form-check-label" for="struct1">
+						CLIENT ID only
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="conf_struct_config" id="struct2" value="<?php echo CLIENT_BILL; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT_BILL) ? 'checked' : ''; ?>>
+						<label class="form-check-label" for="struct2">
+						CLIENT ID + BILL ID
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="conf_struct_config" id="struct3" value="<?php echo CLIENT_3DIGIT_BILL; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT_3DIGIT_BILL) ? 'checked' : ''; ?>>
+						<label class="form-check-label" for="struct3">
+						CLIENT ID + 3 last digits of BILL ID
+						</label>
+					</div>
+					<small id="autotemplatehelp" class="form-text text-muted">Structured messages have a character limit of 10 digits, if client id + bill id is longer then 10 digits, only the client id is set.</small>
+					</div>
+				</fieldset>
+
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="emailtitle">Email title</label>
