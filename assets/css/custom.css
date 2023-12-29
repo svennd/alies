@@ -65,3 +65,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   color:black;
 }
+
+.not-allowed:hover {
+  cursor: not-allowed !important;
+}

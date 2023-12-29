@@ -57,7 +57,9 @@
 				<tr>
 					<td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
 					<td>
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo $bill['invoice_id']; ?></a>
+						<?php if ($bill['invoice_id']): ?>
+							<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></a>
+						<?php endif; ?>
 						<?php if($this->ion_auth->in_group("admin") && $bill['modified']): ?>
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>

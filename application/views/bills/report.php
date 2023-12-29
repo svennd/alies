@@ -37,6 +37,7 @@
 	                <div class="row px-5 py-2">
                         <div class="col-md-12">
 							<?php
+							$total_already_payed = $bill['cash'] + $bill['transfer'] + $bill['card'];
 							$sum = 0.0;
 							foreach ($print as $pet_id => $event_details):
 								
@@ -133,11 +134,18 @@
 							</div>
 						</div>
 					</div>
+					<?php if ($total_already_payed > 0): ?>
+	                <div class="row px-5 py-2">
+                        <div class="col-md-6"><?php echo $this->lang->line('payed'); ?></div>
+                        <div class="col-md-6 text-right"><strong><?php echo number_format($total_already_payed, 2); ?> &euro;</strong></div>
+					</div>
+					<?php endif; ?> 
+
 					<div class="d-flex justify-content-between bg-dark text-white <?php echo ($bill['status'] == BILL_PAID) ? "p-2" : "p-4"; ?>">
 						<div>&nbsp;</div>
                         <div class="px-5 text-right">
                             <div class="mb-2"><?php echo ($bill['status'] == BILL_PAID) ? '<i>' . $this->lang->line('payed') . '</i>' : $this->lang->line('to_pay'); ?></div>
-                            <div class="h2 font-weight-light"><?php echo $bill['total_brut']; ?> &euro;</div>
+                            <div class="h2 font-weight-light"><?php echo ($bill['status'] != BILL_PAID) ? number_format($bill['total_brut'] - $total_already_payed, 2) : $bill['total_brut']; ?> &euro;</div>
                         </div>
                     </div>
 			</div>

@@ -37,7 +37,6 @@
 				<th><?php echo $this->lang->line('location'); ?></th>
 				<th data-priority="1"><?php echo $this->lang->line('options'); ?></th>
 				<th class="none"><?php echo $this->lang->line('anamnese'); ?></th>
-				<th class="none">products</th>
 			</tr>
 		</thead>
 	<?php
@@ -66,18 +65,27 @@
 							: 'unknown' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
 		<td>
-			<button class="btn btn-sm btn-outline-primary ana"><?php echo $this->lang->line('show'); ?></button>
-			<a href="<?php echo base_url(); ?>events/event/<?php echo $history['id']; ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-warning<?php else: ?> btn-outline-info<?php endif; ?>"><?php echo $this->lang->line('edit'); ?></a>
+			<button class="btn btn-sm btn-outline-primary ana"><i class="fa-solid fa-eye"></i></button>
+			<a href="<?php echo base_url('events/event/' . $history['id']); ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-secondary not-allowed<?php else: ?> btn-outline-success<?php endif; ?>"><i class="fa-solid fa-pen"></i></a>
 		</td>
-		<td><?php echo nl2br ($history['anamnese']); ?></td>
-		<td><ul>
-			<?php foreach($products as $prod) : ?>
-				<li><?php echo $prod['volume'] . ' ' . $prod['unit_sell']  . ' ' . $prod['name']; ?></li>
-			<?php endforeach; ?>
-			<?php foreach($procs as $proc) : ?>
-				<li><?php echo $proc['volume'] . ' ' . $proc['name']; ?></li>
-			<?php endforeach; ?>
-			</ul>
+		<td>
+			<table width="100%">
+			<tr>
+			<td>
+				<?php echo nl2br ($history['anamnese']); ?>
+			</td>
+			<td>
+				<ul>
+				<?php foreach($products as $prod) : ?>
+					<li><?php echo $prod['volume'] . ' ' . $prod['unit_sell']  . ' ' . $prod['name']; ?></li>
+				<?php endforeach; ?>
+				<?php foreach($procs as $proc) : ?>
+					<li><?php echo $proc['volume'] . ' ' . $proc['name']; ?></li>
+				<?php endforeach; ?>
+				</ul>
+			</td>
+			</tr>
+				</table>
 		</td>
 	</tr>
 	<?php endfor; ?>

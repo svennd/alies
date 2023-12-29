@@ -1,92 +1,4 @@
-<style>
- .accordion .accordion-item {
-	 border-bottom: 1px solid #e5e5e5;
-}
- .accordion .accordion-item button[aria-expanded='true'] {
-	 border-bottom: 1px solid #03b5d2;
-}
- .accordion button {
-	 position: relative;
-	 display: block;
-	 text-align: left;
-	 width: 100%;
-	 padding: 1em 0;
-	 color: #7288a2;
-	 font-size: 1.15rem;
-	 font-weight: 400;
-	 border: none;
-	 background: none;
-	 outline: none;
-}
- .accordion button:hover, .accordion button:focus {
-	 cursor: pointer;
-	 color: #03b5d2;
-}
- .accordion button:hover::after, .accordion button:focus::after {
-	 cursor: pointer;
-	 color: #03b5d2;
-	 border: 1px solid #03b5d2;
-}
- .accordion button .accordion-title {
-	 padding: 1em 1.5em 1em 0;
-}
- .accordion button .icon {
-	 display: inline-block;
-	 position: absolute;
-	 top: 18px;
-	 right: 0;
-	 width: 22px;
-	 height: 22px;
-	 border: 1px solid;
-	 border-radius: 22px;
-}
- .accordion button .icon::before {
-	 display: block;
-	 position: absolute;
-	 content: '';
-	 top: 9px;
-	 left: 5px;
-	 width: 10px;
-	 height: 2px;
-	 background: currentColor;
-}
- .accordion button .icon::after {
-	 display: block;
-	 position: absolute;
-	 content: '';
-	 top: 5px;
-	 left: 9px;
-	 width: 2px;
-	 height: 10px;
-	 background: currentColor;
-}
- .accordion button[aria-expanded='true'] {
-	 color: #03b5d2;
-}
- .accordion button[aria-expanded='true'] .icon::after {
-	 width: 0;
-}
- .accordion button[aria-expanded='true'] + .accordion-content {
-	 opacity: 1;
-	 max-height: 35em;
-	 transition: all 200ms linear;
-	 will-change: opacity, max-height;
-}
- .accordion .accordion-content {
-	 opacity: 0;
-	 max-height: 0;
-	 overflow: hidden;
-	 transition: opacity 200ms linear, max-height 200ms linear;
-	 will-change: opacity, max-height;
-}
- .accordion .accordion-content p {
-	 font-size: 1rem;
-	 font-weight: 300;
-	 margin: 2em 0;
-}
-
-</style>
-
+<link href="<?php echo base_url('assets/css/help.css'); ?>" rel="stylesheet">
 <div class="row">
       <div class="col-lg-12 mb-4">
 
@@ -160,6 +72,49 @@
             </tr>
         </table>
         </p>
+      </div>
+    </div>
+
+    <!-- item -->
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat is een gestructureerde mededeling ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>
+            Bij overschrijving wordt steeds een gestructureerde mededeling meegegeven. Deze wordt normaal opgebouwd uit het klant ID een uniek rekening id (niet factuur nummer). <br/>
+            De gestructureerde mededeling is opgebouwd uit 10 getallen + 2 controle cijfers (modulo 97)<br/>
+            Het is mogelijk deze aan te passen naar de volgende opties : 
+            <table class="table table-sm">
+            <tr>
+                <th>Optie</th>
+                <th>Beschrijving</th>
+            </tr>
+            <tr>
+                <td>CLIENT ID only</td>
+                <td>Enkel de klant nummer zal gebruikt worden om een gestructueerde mededeling te berekenen.<br/>
+                  eg: klannummer 8312; zal een gestructueerde mededeling krijgen:<br/>
+                  +++<b>831/2</b>000/00063+++.
+                </td>
+            </tr>
+            <tr>
+                <td>CLIENT ID + BILL ID</td>
+                <td>De klant nummer en rekening id worden aan elkaar geplakt, <br/>met zoveel nullen ertussen als nodig om aan 10 getallen te komen<br/>
+                  eg: klantnummer <span style="color:green;">8312</span> en rekening <span style="color:blue;">24123</span>; zal een gestructueerde mededeling krijgen:<br/>
+                  +++<span style="color:green;">831/2</span>0<span style="color:blue;">24/123</span>33+++<br/>
+                  <i>Mocht klantnummer en rekening nummer groter zijn dan 10 getallen, vallen we terug naar klant id alleen.<i>
+                </td>
+            </tr>
+            <tr>
+                <td>CLIENT ID + 3 last digits of BILL ID</td>
+                <td>De verminderde weergave van client ID + bill ID. Enkel de laatste 3 getallen van de rekening worden aangevuld.
+                  eg: klantnummer <span style="color:green;">8312</span> en rekening 24<span style="color:blue;">123</span>; zal een gestructueerde mededeling krijgen:<br/>
+                  +++<span style="color:green;">831/2</span>000/<span style="color:blue;">123</span>89+++<br/>
+
+                </td>
+            </tr>
+            </table>
+
+            Het is steeds de bedoeling dat op deze manier facturen automatisch kunnen verwerkt worden.
+		</p>
       </div>
     </div>
 
