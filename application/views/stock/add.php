@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 	$('#autocomplete').autocomplete({
 		
-		serviceUrl: '<?php echo base_url(); ?>products/get_product',
+		serviceUrl: '<?php echo base_url('products/get_product'); ?>',
 		
 		onSelect: function (suggestion) {
 			var res = suggestion.data;
