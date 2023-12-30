@@ -9,7 +9,7 @@
 
   <title>Login</title>
 
-  <link href="<?php echo base_url(); ?>assets/css/sb-admin-2.css" rel="stylesheet">
+  <link href="<?php echo base_url('assets/css/sb-admin-2.css'); ?>" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 	
 
@@ -46,13 +46,7 @@
                       </div>
                     </div>
                     </div>
-                    <!-- <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" name="password" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
-                      </div>
-                    </div> -->
-					<input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Login">
+					          <input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Login">
                   </form>
                   <hr>
                 </div>
