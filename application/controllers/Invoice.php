@@ -287,7 +287,7 @@ class Invoice extends Vet_Controller
 		foreach ($product_list as $product) {
 			if ($product['stock_id'])
 			{
-				$this->stock->reduce($product['stock_id'], $product['product_id'], $product['volume']);
+				$this->stock->reduce($product['stock_id'], $product['product_id'], $product['volume'], $product['location']);
 			}
 			else
 			{

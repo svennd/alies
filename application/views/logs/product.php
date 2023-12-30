@@ -24,7 +24,7 @@
 					<td><?php echo $log['event']; ?></td>
 					<td><?php echo ($log['volume'] >= 0) ? '<p style="color:green">'  . $log['volume'] .  ' ' . $log['product']['unit_sell'] . '</p>' : '<p style="color:red">' . $log['volume'] .  ' ' . $log['product']['unit_sell'] . '</p>'; ?></td>
 					<td><?php echo $log['vet']['first_name']; ?></td>
-					<td><?php echo $log['locations']['name']; ?></td>
+					<td><?php echo (isset($log['locations'])) ? $log['locations']['name'] : 'invalid'; ?></td>
 					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo $log['created_at']; ?></td>
 				</tr>
 				<?php endforeach; ?>

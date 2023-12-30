@@ -186,9 +186,13 @@ class Events_model extends MY_Model
 
 		$sql = "
 			SELECT 
-				product_id, volume, stock_id
+				product_id, volume, stock_id, events.location as location
 			FROM
 				events_products
+			LEFT JOIN
+				events
+			ON
+				events.id = events_products.event_id
 			WHERE
 				events_products.event_id IN (
 					SELECT 
