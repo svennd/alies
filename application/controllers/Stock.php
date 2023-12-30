@@ -52,11 +52,12 @@ class Stock extends Vet_Controller
 
 		$data = array(
 						"stocks" => $this->location,
-						"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
+						"extra_footer" 	=> '<script src="'. base_url('assets/js/jquery.autocomplete.min.js') .'"></script>'
 		);
 		$this->_render_page('stock/move', $data);
 	}
 
+	# need to improve this by using id instead of (deprecated) barcode
 	public function move_stock()
 	{
 		if ($this->input->post('submit') == "barcode") {
@@ -70,56 +71,58 @@ class Stock extends Vet_Controller
 
 			if ($barcodes && count($barcodes) > 0) {
 				foreach ($barcodes as $barcode) {
+					// no support atm for this in the interface
 					// probably unlikely to be used atm
 					// gs1 code means we know the product/eol/... but not the location
-					if (parse_gs1($barcode)) 
-					{
-						$x = parse_gs1($barcode);
-						$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $from_location)[0];
-						if ($stock_product) {
-							$stock_list[$stock_product['barcode']] = array(
-													"name" 		=> $stock_product['pname'],
-													"eol" 		=> $stock_product['eol'],
-													"lotnr" 	=> $stock_product['lotnr'],
-													"volume" 	=> $stock_product['volume'],
-													"barcode" 	=> $stock_product['barcode'],
-													"sell_unit" => $stock_product['unit_sell']
-												);
-						}
-						# unknown barcode
-						else {
-							$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
-							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
-						}
-					}
-					else 
-					{
-						# a stock can be split so multiple results could be generated
-						$stock_product = $this->stock->with_products('fields:name, unit_sell')->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
-						# its a known stock product
-						if ($stock_product) {
-							
-							# index : safety check for doubles
-							$stock_list[$barcode] = array(
-													"name" 		=> $stock_product['products']['name'],
-													"eol" 		=> $stock_product['eol'],
-													"lotnr" 	=> $stock_product['lotnr'],
-													"volume" 	=> $stock_product['volume'],
-													"barcode"	=> $barcode,
-													"from_stock"=> $this->stock->get_stock_levels($stock_product['products']['id'], $from_location),
-													"to_stock" 	=> $this->stock->get_stock_levels($stock_product['products']['id'], $new_location),
-													"from_limit"=> $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $from_location))->get(),
-													"to_limit"  => $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $new_location))->get(),
-													"sell_unit" => $stock_product['products']['unit_sell']
-												);
-						}
-						# unknown barcode
-						else {
-							$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
-							$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
-						}
+					// if (parse_gs1($barcode)) 
+					// {
+					// 	$x = parse_gs1($barcode);
+					// 	$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $from_location)[0];
+					// 	if ($stock_product) {
+					// 		$stock_list[$stock_product['barcode']] = array(
+					// 								"name" 		=> $stock_product['pname'],
+					// 								"eol" 		=> $stock_product['eol'],
+					// 								"lotnr" 	=> $stock_product['lotnr'],
+					// 								"volume" 	=> $stock_product['volume'],
+					// 								"barcode" 	=> $stock_product['barcode'],
+					// 								"sell_unit" => $stock_product['unit_sell']
+					// 							);
+					// 	}
+					// 	# unknown barcode
+					// 	else {
+					// 		$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
+					// 		$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
+					// 	}
+					// }
+					// else 
+					// {
 
+					# a stock can be split so multiple results could be generated
+					$stock_product = $this->stock->with_products('fields:name, unit_sell')->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
+					# its a known stock product
+					if ($stock_product) {
+						
+						# index : safety check for doubles
+						$stock_list[$barcode] = array(
+												"name" 		=> $stock_product['products']['name'],
+												"eol" 		=> $stock_product['eol'],
+												"lotnr" 	=> $stock_product['lotnr'],
+												"volume" 	=> $stock_product['volume'],
+												"barcode"	=> $barcode,
+												"from_stock"=> $this->stock->get_stock_levels($stock_product['products']['id'], $from_location),
+												"to_stock" 	=> $this->stock->get_stock_levels($stock_product['products']['id'], $new_location),
+												"from_limit"=> $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $from_location))->get(),
+												"to_limit"  => $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $new_location))->get(),
+												"sell_unit" => $stock_product['products']['unit_sell']
+											);
 					}
+					# unknown barcode
+					else {
+						$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
+						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
+					}
+
+					// }
 
 				}
 			} else {
@@ -168,6 +171,7 @@ class Stock extends Vet_Controller
 
 				# increase current verify stock
 				if ($result) {
+					# we can create this more simple by making update if exist else insert (instead of reading, updating or inserting)
 					$this->logs->stock(DEBUG, "add_stock_re", $this->input->post('pid'), $this->input->post('new_volume'));
 					$sql = "UPDATE stock SET volume=volume+" . $this->input->post('new_volume') . " WHERE id = '" . $result['id'] . "' AND state = '" . STOCK_CHECK . "' limit 1;";
 					$this->db->query($sql);
@@ -483,16 +487,17 @@ class Stock extends Vet_Controller
 		$stock = $this->stock->get_product_stock($term, $location);
 		$stock_list = array();
 
+		
 		foreach ($stock as $stoc) {
 			$stock_list[] = array(
 									"value" => $stoc['name'],
 									"data" 	=> array(
-													"id" 		=> $stoc['stock_id'],
+													"id" 		=> explode(',', $stoc['stock_ids']),
+													"volume" 	=> explode(',', $stoc['stock_volumes']),
+													"lotnr" 	=> explode(',', $stoc['stock_lotnrs']),
+													"eol" 		=> explode(',', $stoc['stock_eols']),
 													"prod" 		=> $stoc['name'],
 													"unit" 		=> $stoc['unit_sell'],
-													"volume" 	=> $stoc['volume'],
-													"lotnr" 	=> $stoc['lotnr'],
-													"eol"	 	=> $stoc['eol']
 												)
 								);
 		}

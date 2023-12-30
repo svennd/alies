@@ -16,6 +16,7 @@
 				<div class="row">
 					<div class="col">				
 						<select name="from" class="form-control" id="type">
+								<option value="">---</option>
 							<?php foreach($stocks as $stock): if($stock['id'] == $this->user->current_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
 							<?php endforeach; ?>
@@ -32,9 +33,31 @@
 				<br/>
 				<div class="row">
 					<div class="col">
-						<input type="text" name="product" class="form-control form-control-sm" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
+						<input type="text" name="product" class="form-control" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
 					</div>
-					<div class="col">shortages in location?</div>
+					<div class="col"><div id="product-details"></div></div>
+
+					<form action="" method="post" autocomplete="off">
+									<div class="form-row">
+										<div class="form-group col-md-4">
+											<label for="product1un9pm">Product</label>
+											<input type="text" readonly="" class="form-control-plaintext" id="product1un9pm" value="acular 10 ml">
+										</div>
+										<div class="form-group col-md-4">
+											<label for="move_volume1un9pm">Volume</label>
+											<div class="input-group">
+											  <input type="text" class="form-control" id="move_volume1un9pm" name="move_volume[1un9pm]" required="">
+											  <div class="input-group-append">
+												<span class="input-group-text">fl</span>
+												<span class="input-group-text">/ 2.00</span>
+											  </div>
+											</div>
+										</div>
+									</div>
+										<input type="hidden" name="from_location" value="1">
+										<button type="submit" name="submit" value="quantities" class="btn btn-success">Verplaatsen</button>
+										<a href="http://localhost/alies/products" class="btn btn-danger ml-3">Annuleer</a>
+									</form>
 				</div>
 			</div>
 		</div>
@@ -46,50 +69,46 @@ const URL_PRODUCTS_API = "<?php echo base_url('stock/get_product_stock'); ?>";
 
 document.addEventListener("DOMContentLoaded", function(){
 
+
+function renderProductDetails(details) {
+	const container = $("#product-details");
+
+	details.id.forEach((id, index) => {
+		const productRow = $("<div>").addClass("product-row");
+		const productInfo = $("<div>").addClass("product-info");
+
+	// for (const key in details) {
+	// 	const label = $("<span>").addClass("label").text(key + ": ");
+	// 	const value = Array.isArray(details[key]) ? details[key][index] : details[key];
+
+	// 	productInfo.append(label, value + " ");
+	// }
+	var newRowHtml = `
+
+		`;
+	productRow.append(productInfo);
+	container.append(productRow);
+	});
+}
+
+
 $('#autocomplete').autocomplete({
-		serviceUrl: URL_PRODUCTS_API + '/' + $("#type").val() + '/',
+		serviceUrl: function (el){
+			return URL_PRODUCTS_API + '/' + $("#type").find(":selected").val() + '/';
+		},
 		onSelect: function (suggestion) {
             var data = suggestion.data;
 			console.log(data);
-			// $('#new_pid').val(data.id);
-			// $('#prod').val(data.prod);
-			// $("#btw_sell").val(data.btw);
-			// $("#booking_default").val(data.booking);
-			// $("#show_booking_select").html(data.btw + "%");
-
-			// we selected a product, now give me the amount!
-			// $("#volume").focus();
-
-			/* color the default booking code */
-			// var select = $('[id=hidden_booking] option[value="' + data.booking + '"]');
-			// 	select.addClass("bg-success");
-
-			// its not a product
-			// if (data.type == PROCEDURE)
-			// {
-            //     event_set_procedure();
-			// }
-			// else if(data.type == PRODUCT_BARCODE) 
-            // {
-            //     event_set_barcode(data);
-            // }
-			// else 
-            // {
-            //     event_set_product(data, current_location);
-			// }
+			renderProductDetails(data);
 		},
-		onSearchComplete: function (query, suggestion) { 
-			// fire onselect if only 1 results
-			if(suggestion.length == 1 && query.length > 10)
-			{
-				$(this).autocomplete().onSelect(0);
-				// $("#volume").focus();
-			}
-		},
-        onInvalidateSelection: function() {
-            // if we dont select anything, reset the input
-            // reset_input();
-        },
+		// onSearchComplete: function (query, suggestion) { 
+		// 	// fire onselect if only 1 results
+		// 	if(suggestion.length == 1 && query.length > 10)
+		// 	{
+		// 		$(this).autocomplete().onSelect(0);
+		// 		// $("#volume").focus();
+		// 	}
+		// },
 		autoSelectFirst: true,
 		showNoSuggestionNotice: true,
 		minChars: '2'
