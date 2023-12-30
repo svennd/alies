@@ -102,8 +102,6 @@ class Pets_model extends MY_Model
 				owners.id = pets.owner
 			WHERE
 				chip LIKE '" . $this->db->escape_like_str($chip) . "%' ESCAPE '!'
-			AND
-				death = 0
 			ORDER BY
 				owners.last_bill
 			DESC
@@ -113,7 +111,7 @@ class Pets_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 	
-	public function search_by_id($id)
+	public function search_by_id(int $id)
 	{
 		$sql = "
 			SELECT 
@@ -125,13 +123,11 @@ class Pets_model extends MY_Model
 			ON
 				owners.id = pets.owner
 			WHERE
-				pets.id = '" . (int) $id . "'
-			AND
-				death = 0
+				pets.id = '" . $id . "'
 			ORDER BY
 				owners.last_bill
 			DESC
-			LIMIT 250
+			LIMIT 5
 		";
 		
 		return $this->db->query($sql)->result_array();

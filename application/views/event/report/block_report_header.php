@@ -1,9 +1,12 @@
 <?php 
     $age = timespan(strtotime($pet['birth']), time(), 1); 
-    $total = floatval($billing_info['total_brut']);
-    $cash = floatval($billing_info['cash']);
-    $card = floatval($billing_info['card']);
-    $transfer = floatval($billing_info['transfer']);
+    if (isset($billing_info['total_brut']))
+    {
+        $total = floatval($billing_info['total_brut']);
+        $cash = floatval($billing_info['cash']);
+        $card = floatval($billing_info['card']);
+        $transfer = floatval($billing_info['transfer']);
+    }
 ?>
 
 <div class="card shadow mb-4">

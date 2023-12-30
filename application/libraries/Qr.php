@@ -31,8 +31,11 @@ class Qr extends CI_Model
 		$this->QRCode = new QRCode($qrOptions);
 
 		// pull from config
-		$this->sepa_name = base64_decode($this->conf['nameiban']['value']);
-		$this->sepa_iban = base64_decode($this->conf['iban']['value']);		
+		if (isset($this->conf['nameiban']['value']) && isset($this->conf['iban']['value']))
+		{
+			$this->sepa_name = base64_decode($this->conf['nameiban']['value']);
+			$this->sepa_iban = base64_decode($this->conf['iban']['value']);		
+		}
 	}
 
 	public function create(float $amount, string $message)
