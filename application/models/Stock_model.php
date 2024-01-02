@@ -152,11 +152,11 @@ class Stock_model extends MY_Model
 				UPDATE
 					stock
 				SET
-					volume = volume - " . $volume . ",
 					state = CASE
 								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
 								ELSE '" . STOCK_IN_USE . "'
-							END
+							END,
+					volume = volume - " . $volume . "
 				WHERE
 					id = '" . $stock_id . "'
 				LIMIT 1;
