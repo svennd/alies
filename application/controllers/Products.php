@@ -480,7 +480,6 @@ class Products extends Vet_Controller
 									)
 					);
 		}
-		var_dump($return);
 		return $return;
 	}
 
