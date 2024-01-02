@@ -109,6 +109,10 @@ class Invoice extends Vet_Controller
 	# generate bill screen
 	public function get_bill(int $bill_id, int $report = 0)
 	{
+		if ($bill_id == BILL_INVALID) {
+			$this->_render_page('bills/invalid', array());
+			return;
+		}
 		$bill = $this->bills->with_location('fields:name')->get($bill_id);
 
 		// set all events that have no payment linked from this owner to this new bill

@@ -329,6 +329,7 @@ $lang['Total_inc']              = 'Total incl. vat';
 $lang['account_number']         = 'Account number'; 
 $lang['account_name']           = 'On name of'; 
 $lang['message']                = 'Message'; 
+$lang['invalid_bill']           = 'Invalid bill or invoice, probably imported. Click here to go back.';
 
 # prices
 $lang['price_from']             = 'From'; 

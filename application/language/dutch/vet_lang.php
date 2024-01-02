@@ -224,6 +224,7 @@ $lang['client_id']      = 'Klantnummer';
 $lang['comment_on_bill']      = 'op de factuur';
 $lang['comment_internal']      = 'intern';
 
+
 # owners
 $lang['overview']      = 'overzicht';
 $lang['pets']      = 'Dieren';
@@ -336,6 +337,7 @@ $lang['Total_inc']              = 'Totaal incl. BTW';
 $lang['account_number']         = 'Op rekening'; 
 $lang['account_name']           = 'Op naam'; 
 $lang['message']                = 'Mededeling'; 
+$lang['invalid_bill']           = 'Ongeldige rekening of factuur, deze werd vermoedelijk geimporteerd. Klik hier om terug te keren.'; 
 
 # prices
 $lang['price_from']             = 'Van'; 
