@@ -437,22 +437,6 @@ class Products extends Vet_Controller
 			$prices = array();
 			$product_id = $r['id'];
 
-			$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE))->order_by("eol", "ASC")->get_all();
-
-			# there is stock
-			if ($stock) {
-				foreach ($stock as $s)
-				{
-					$stock[] = array(
-										"id" 		=> $s['id'],
-										"location" 	=> $s['location'],
-										"eol" 		=> $s['eol'],
-										"lotnr" 	=> $s['lotnr'],
-										"volume" 	=> $s['volume']
-										);
-				}
-			}
-
 		# there are prices
 		if ($r['price_volume']) {
 			$volumes 	= explode(",", $r['price_volume']);
@@ -465,11 +449,27 @@ class Products extends Vet_Controller
 			}
 		}
 
+		$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE, "volume >" => 0))->order_by("eol", "ASC")->get_all();
+		$list = array();
+		# there is stock
+		if ($stock) {
+			foreach ($stock as $s)
+			{
+				$list[] = array(
+									"id" 		=> $s['id'],
+									"location" 	=> $s['location'],
+									"eol" 		=> $s['eol'],
+									"lotnr" 	=> $s['lotnr'],
+									"volume" 	=> $s['volume']
+									);
+			}
+		}
+
 		$return[] = array(
 					"value" => $r['name'],
 					"data" 	=> array(
 										"id" 				=> $r['id'],
-										"stock"				=> $stock,
+										"stock"				=> $list,
 										"prices"			=> $prices,
 										"unit"				=> $r['unit_sell'],
 										"btw"				=> $r['btw_sell'],
@@ -480,6 +480,7 @@ class Products extends Vet_Controller
 									)
 					);
 		}
+		var_dump($return);
 		return $return;
 	}
 
