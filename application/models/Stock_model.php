@@ -47,6 +47,8 @@ class Stock_model extends MY_Model
 					stock_location.id = stock.location
 				WHERE
 					state = ". STOCK_ERROR ."
+					OR
+					(state = ". STOCK_IN_USE ." AND volume < 0)
 				;";
 		return $this->db->query($sql)->result_array();
 	}
