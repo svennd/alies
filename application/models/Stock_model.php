@@ -154,6 +154,7 @@ class Stock_model extends MY_Model
 				SET
 					state = CASE
 								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+								WHEN (volume - 1) = 0 THEN '" . STOCK_HISTORY . "'
 								ELSE '" . STOCK_IN_USE . "'
 							END,
 					volume = volume - " . $volume . "
