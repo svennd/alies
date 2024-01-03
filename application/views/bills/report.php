@@ -24,7 +24,7 @@
 				<?php if($bill['status'] == BILL_PAID || !is_null($bill['invoice_id'])): ?>
 					<strong class="ml-3">#<?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></strong>
 				<?php else: ?>
-					<a href="<?php echo base_url('invoice/make_invoice_id/' .  $bill['id']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-location-crosshairs"></i> <?php echo $this->lang->line('create_invoice'); ?></a>
+					<a href="<?php echo base_url('invoice/make_invoice_id/' .  $bill['id']); ?>" class="btn btn-outline-danger btn-sm ml-3"><i class="fa-solid fa-location-crosshairs"></i></a>
 				<?php endif; ?>
 			</div>
 		</div>
