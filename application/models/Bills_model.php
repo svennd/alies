@@ -41,9 +41,10 @@ class Bills_model extends MY_Model
 			SET 
 				`vet` = '" . (int) $data['vet'] . "', 
 				`location` = '" . (int) $data['location'] . "', 
-				`total_brut` = '" . $data['amount'] . "',
+				`total_brut` = '" . $data['total_brut'] . "',
 				`cash` = '" . $data['cash'] . "', 
 				`card` = '" . $data['card'] . "', 
+				`transfer` = '" . $data['transfer'] . "', 
 				`status` = '" . (int) $data['status'] . "', 
 				`created_at` = '" . $data['created'] ."' 
 			WHERE 

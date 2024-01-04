@@ -22,7 +22,7 @@
                 <div class="form-row">
                     <div class="col">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="amount" id="amount" value="<?php echo $bill['amount'] ?>">
+                            <input type="text" class="form-control" name="amount" id="amount" value="<?php echo $bill['total_brut'] ?>" disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text">&euro;</span>
                             </div>
@@ -46,6 +46,15 @@
                         <label for="exampleFormControlInput3">Cash</label>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" name="cash" id="cash" value="<?php echo $bill['cash'] ?>">
+                            <div class="input-group-append">
+                                <span class="input-group-text">&euro;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="exampleFormControlInput3">Transfer</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="transfer" id="transfer" value="<?php echo $bill['transfer'] ?>">
                             <div class="input-group-append">
                                 <span class="input-group-text">&euro;</span>
                             </div>
@@ -122,7 +131,7 @@
                         </tr>
                         <tr>
                             <td>Amount</td>
-                            <td><?php echo $bill['amount']; ?> &euro; (card : <?php echo $bill['card']; ?> &euro;, cash : <?php echo $bill['cash']; ?> &euro;)</td>
+                            <td><?php echo $bill['total_brut']; ?> &euro; (card : <?php echo $bill['card']; ?> &euro;, cash : <?php echo $bill['cash']; ?> &euro;)</td>
                         </tr>
                         <tr>
                             <td>Vet</td>

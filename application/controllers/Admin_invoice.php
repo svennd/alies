@@ -24,6 +24,7 @@ class Admin_invoice extends Admin_Controller
 										"total_brut"		=> $this->input->post('amount'),
 										"cash"		    => $this->input->post('cash'),
 										"card"		    => $this->input->post('card'),
+										"transfer"	    => $this->input->post('transfer'),
 										"status"	    => $this->input->post('status'),
 										"created"	    => $this->input->post('created'),
 									));
