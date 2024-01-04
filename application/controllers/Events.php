@@ -492,7 +492,23 @@ class Events extends Vet_Controller
 	# delete event
 	public function del($event_id, $owner_id)
 	{
-		$this->events->delete($event_id);
+		$info = $this->events->get($event_id);
+
+		# no bill was created yet
+		if ($info['payment'] == BILL_INVALID)
+		{
+			$this->events->delete($event_id);
+		}
+		# the bill was created but not a final report
+		elseif ($info['status'] != REPORT_FINAL)
+		{
+			# bills are soft-delete
+			$this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
+
+			# then delete the event
+			$this->events->delete($event_id);
+		}
+
 		redirect('/owners/detail/' . $owner_id);
 	}
 
