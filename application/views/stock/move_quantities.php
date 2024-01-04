@@ -47,6 +47,7 @@
 					<td>
 						<div class="input-group">
 							<input type="text" class="form-control" id="move_volume<?php echo $id; ?>" name="move_volume[<?php echo $id; ?>]" required>
+							<input type="hidden" id="max_volume<?php echo $id; ?>" name="max_volume[<?php echo $id; ?>]" value="<?php echo $product['volume']; ?>">
 							<div class="input-group-append">
 							<span class="input-group-text"><?php echo $product['sell_unit']; ?></span>
 							<span class="input-group-text">/ <?php echo $product['volume']; ?></span>

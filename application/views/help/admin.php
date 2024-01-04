@@ -70,6 +70,11 @@
                 <td>De dierenarts heeft een product verkocht waarvan geen stock aanwezig was. We kennen dus geen locatie, lotnr of vervaldatum.</td>
                 <td>Indien dit product een virtueel product is. Kunt U best een procedure ervan maken, of een zeer groot -virtueel- volume toevoegen. Indien het een bestaand nog niet ingevoerd product is kunt U best de stock editeren.</td>
             </tr>
+            <tr>
+                <td>OVERDRAW_MOVE</td>
+                <td>De dierenarts heeft een product in groter volume verplaats dan aanwezig/beschikbaar was op de locatie, van dit lotnr/vervaldatum dan beschikbaar.</td>
+                <td>Ander lotnummer verminderen; of correctie op lot uitvoeren.</td>
+            </tr>
         </table>
         </p>
       </div>

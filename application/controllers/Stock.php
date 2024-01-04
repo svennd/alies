@@ -144,10 +144,19 @@ class Stock extends Vet_Controller
 			$from 			= $this->input->post('from_location');
 			$to 			= $this->input->post('new_location');
 			$move_volumes 	= $this->input->post('move_volume');
+			$max_volume 	= $this->input->post('max_volume');
 
 			foreach ($move_volumes as $barcode => $value) {
 				$this->logs->logger(INFO, "move_stock", "barcode:". $barcode . " from:" . $from . "=>" . $to. " volume:" . $value);
-				$this->stock->reduce_product($barcode, $from, $value);
+
+				if ($max_volume[$barcode] < $value)
+				{
+					$this->stock->reduce_product($barcode, $from, $value, "OVERDRAW_MOVE");
+				}
+				else
+				{
+					$this->stock->reduce_product($barcode, $from, $value);
+				}
 				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
 			}
 			redirect('/products/index/' . 1);

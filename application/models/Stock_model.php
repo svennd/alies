@@ -63,12 +63,12 @@ class Stock_model extends MY_Model
 				UPDATE
 					stock
 				SET
-					volume = volume - " . $volume . ",
 					state = CASE
-								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
-								WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
-								ELSE '" . STOCK_IN_USE . "'
-							END
+							WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+							WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
+							ELSE '" . STOCK_IN_USE . "'
+						END,
+					volume = volume - " . $volume . ",
 				WHERE
 					id = '" . $stock_id . "'
 				LIMIT 1;
@@ -255,16 +255,31 @@ class Stock_model extends MY_Model
 	/*
 		called in stock/move_stock
 	*/
-	public function reduce_product($barcode, $from, $value)
+	public function reduce_product($barcode, $from, $value, $info = NULL)
 	{
 		# if logging is required also log this remove
 		if ($this->logs->min_log_level == DEBUG)
 		{
-			$info = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
-			$this->logs->stock(DEBUG, ($value < 0) ? "reduce_product/add": "reduce_product", $info['product_id'], -$value, $from);
+			$infox = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
+			$this->logs->stock(DEBUG, ($value < 0) ? "reduce_product/add": "reduce_product", $infox['product_id'], -$value, $from);
 		}
 
-		$sql = "UPDATE stock SET volume=volume-" . $value. " WHERE barcode = '" . $barcode . "' and location = '" . $from . "' and state = '" . STOCK_IN_USE . "' limit 1;";
+		$sql = "UPDATE stock 
+							SET 
+								state = CASE
+									WHEN (volume - " . $value . ") < 0 THEN '" . STOCK_ERROR . "'
+									WHEN (volume - " . $value . ") = 0 THEN '" . STOCK_HISTORY . "'
+									ELSE '" . STOCK_IN_USE . "'
+								END,
+								volume = volume-" . $value. "
+								". (($info) ? ', info = "' . $info .'" ': '') ."
+							WHERE 
+								barcode = '" . $barcode . "' 
+								AND 
+								location = '" . $from . "' 
+								AND
+								state = '" . STOCK_IN_USE . "'
+							limit 1;";
 		$this->db->query($sql);
 
 		return $this->db->affected_rows();
