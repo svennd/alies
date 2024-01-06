@@ -57,7 +57,7 @@
 				</td>
 			<td>
 				<?php echo ($product['price_ori_net']) ? '<span class="crossed-out">' . $product['price_ori_net'] . '</span>' : $product['price_net']; ?>
-				<?php if ($product['price_ori_net']): ?><small><br/><?php echo number_format($product['price_ori_net']/$product['volume'], 2) ?> / <?php echo $product['product']['unit_sell']; ?></small><?php endif; ?>
+				<?php if ($product['price_ori_net']): ?><small><br/>~<?php echo number_format($product['price_ori_net']/$product['volume'], 2) ?> / <?php echo $product['product']['unit_sell']; ?></small><?php endif; ?>
 			</td>
 			<td><?php echo $product['price_net']; ?></td>
 	

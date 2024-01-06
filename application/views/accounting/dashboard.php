@@ -7,11 +7,18 @@
         : 
         (($client_contacts-$cclm)/$cclm)*100;
     
-    # approximate a year
-    $yearly = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
-    $yearlyc = ($client_contacts_year_ly == 0 ) ? 1 : $client_contacts_year_ly;
-    $p = ((($yearly_earnings*(1+(1/(date("z")+1 / 365)))) - $yearly) / $yearly) * 100;
-    $y = ((($client_contacts_year*(1+(1/(date("z")+1 / 365)))) - $yearlyc) / $yearlyc) * 100;
+    # catch 0 division
+    $omzet_vorig_jaar   = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
+    $omzet_dit_jaar     = ($yearly_earnings == 0 ) ? 1 : $yearly_earnings;
+    $klanten_contacten     = ($client_contacts_year == 0 ) ? 1 : $client_contacts_year;
+    $klanten_contacten_vorig_jaar     = ($client_contacts_year_ly == 0 ) ? 1 : $client_contacts_year_ly;
+
+    $procent_dit_jaar_voorbij = (365 / (((int) date("z") == 0) ? 1 : (int) date("z")));
+    $predictie_omzet_dit_jaar = $procent_dit_jaar_voorbij * $omzet_dit_jaar;
+    $predictie_klanten_dit_jaar = $procent_dit_jaar_voorbij * $klanten_contacten;
+    
+    $p = (($predictie_omzet_dit_jaar - $omzet_vorig_jaar)/$predictie_omzet_dit_jaar)*100;
+    $y = (($predictie_klanten_dit_jaar - $klanten_contacten_vorig_jaar)/$predictie_klanten_dit_jaar)*100;
 ?>
 
 
