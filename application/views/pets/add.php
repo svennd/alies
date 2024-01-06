@@ -103,7 +103,7 @@ input[type='radio']:checked {
 						</div>
 						<div class="form-group col-md-8">
 							<label for="birth"><b><?php echo $this->lang->line('birth'); ?></b>*</label>
-							<input type="date" name="birth" class="form-control" id="birth" value="" required>
+							<input type="date" name="birth" class="form-control" id="birth" value="" min="<?php echo date("Y-m-d", strtotime("-30 year")); ?>" max="<?php echo date("Y-m-d", strtotime("+1 day")); ?>" required>
 							<i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i>
 						</div>
 						
@@ -113,8 +113,8 @@ input[type='radio']:checked {
 								<select name="breed" class="form-control" id="breeds" required></select>
 							</div>
 							<div class="col-md-6">
-								<label for="second_breed">x <?php echo $this->lang->line('breed'); ?></label>
-								<select name="breed2" class="form-control" id="second_breed"></select>
+								<label for="breed2">x <?php echo $this->lang->line('breed'); ?></label>
+								<select name="breed2" class="form-control" id="breed2"></select>
 							</div>
 						</div>
 					</div>
@@ -156,6 +156,15 @@ input[type='radio']:checked {
 					</div>
 				</div>
 				</div>
+				<div class="row">
+					<div class="col">
+						<div class="form-group">
+							<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
+							<input type="text" name="hairtype" class="form-control" id="hairtype" value="">
+						</div>
+					</div>
+					<div class="col">&nbsp;</div>
+				</div>
 
 				<div class="form-group">
 					<label for="exampleFormControlTextarea1"><?php echo $this->lang->line('notes'); ?></label>
@@ -181,7 +190,9 @@ input[type='radio']:checked {
 <script type="text/javascript">
 
 document.addEventListener("DOMContentLoaded", function(){
-
+	$(document).ready(function(){
+	$("#chip").inputmask("***-***-***-***-***");
+});
 
 const url = '<?php echo base_url('breeds/search_breed/'); ?>';
 	$("#breeds").select2(createBreedSelect2(url));

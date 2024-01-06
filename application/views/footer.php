@@ -60,6 +60,9 @@
 	<!-- select -->
   <script src="<?php echo base_url(); ?>assets/js/sweetalert2.all.min.js"></script>
 
+  <!-- inputmask -->
+  <script src="<?php echo base_url('vendor/robinherbots/jquery.inputmask/dist/jquery.inputmask.min.js'); ?>"></script>
+
 	<?php echo (isset($extra_footer)) ? $extra_footer : ""; ?>
 
   <script>

@@ -3,17 +3,24 @@ function get_chip_info(chip) {
       return false;
     }
   
-    if (chip.length !== 15) {
+	var clean_chip = chip.replace(/-/g, '');
+	
+    if (clean_chip.length !== 15) {
       $("#chip_info").html("Unrecognized code, not 15 numbers!");
       return;
     }
   
-    if (chip.startsWith('9')) {
+    if (clean_chip.startsWith('9')) {
       $("#chip_info").html("Manufacture code");
     } else {
-      const countryCode = country_code[chip.substr(0, 3)];
+      let countryCode = country_code[clean_chip.substr(0, 3)];
       if (typeof countryCode === 'undefined') {
+		countryCode = country_code[clean_chip.substr(0, 2)];
+		if (typeof countryCode === 'undefined') {
         $("#chip_info").html("Unknown country code");
+      	} else {
+			$("#chip_info").html("Country code: " + countryCode);
+		}
       } else {
         $("#chip_info").html("Country code: " + countryCode);
       }

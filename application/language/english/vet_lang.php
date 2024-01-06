@@ -108,6 +108,7 @@ $lang['pet_info']      = 'Pet';
 $lang['breed']      = 'Breed';
 $lang['gender']     = 'Gender';
 $lang['haircolor']  = 'Hair color';
+$lang['hairtype']  = 'Hair type';
 $lang['chip']       = 'ID Number';
 $lang['vacc_nr']    = 'Vaccine book number';
 $lang['age']        = 'Age';

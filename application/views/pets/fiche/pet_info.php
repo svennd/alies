@@ -29,10 +29,18 @@
 	<td><?php echo $this->lang->line('gender'); ?></td>
 	<td><?php echo get_gender($pet['gender']); ?></td>
 </tr>
+<?php if (!empty($pet['color'])): ?>
 <tr>
 	<td><?php echo $this->lang->line('haircolor'); ?></td>
 	<td><?php echo empty($pet['color']) ? "?" : $pet['color']; ?></td>
 </tr>
+<?php endif; ?>
+<?php if (!empty($pet['hairtype'])): ?>
+<tr>
+	<td><?php echo $this->lang->line('hairtype'); ?></td>
+	<td><?php echo empty($pet['hairtype']) ? "?" : $pet['hairtype']; ?></td>
+</tr>
+<?php endif; ?>
 <tr>
 	<td><?php echo $this->lang->line('weight'); ?></td>
 	<td><a href="<?php echo base_url('pets/history_weight/' . $pet['id']); ?>"><?php echo ($pet['last_weight'] == 0) ? "---" : $pet['last_weight'] . 'kg'; ?></td>

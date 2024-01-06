@@ -113,6 +113,7 @@ $lang['pet_info']   = 'Dier';
 $lang['breed']      = 'Ras';
 $lang['gender']     = 'Geslacht';
 $lang['haircolor']  = 'Haar kleur';
+$lang['hairtype']  = 'Haar type';
 $lang['chip']       = 'Chip Nummer';
 $lang['vacc_nr']    = 'Nummer Vaccinatie Boekje';
 $lang['age']        = 'Leeftijd';

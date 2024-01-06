@@ -9,6 +9,7 @@
         "phpmailer/phpmailer": "^6.5",
         "dompdf/dompdf": "2.*",
         "smhg/sepa-qr-data": "^2.0",
-        "chillerlan/php-qrcode": "^5.0"
+        "chillerlan/php-qrcode": "^5.0",
+        "robinherbots/jquery.inputmask": "^5.0"
     }
 }
