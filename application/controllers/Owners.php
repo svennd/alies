@@ -39,6 +39,7 @@ class Owners extends Vet_Controller
 										"invoice_addr" 		=> $this->input->post('invoice_addr'),
 										"invoice_contact"	=> $this->input->post('invoice_contact'),
 										"invoice_tel" 		=> $this->input->post('invoice_tel'),
+										"last_bill" 		=> date("Y-m-d"),
 										"low_budget" 		=> (is_null($this->input->post('low_budget'))) ? 0 : 1,
 										"debts" 			=> (is_null($this->input->post('debts'))) ? 0 : 1,
 										"contact" 			=> (is_null($this->input->post('contact'))) ? 0 : 1,
