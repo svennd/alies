@@ -147,7 +147,7 @@ class Events_model extends MY_Model
 	{
 		if ($type == PRODUCT) {
 			$sql = "SELECT 
-						product_id, volume, price_net, price_brut, events_products.btw,
+						product_id, volume, price_net, price_brut, events_products.btw, events_products.unit_price as unit_price,
 						products.name, products.unit_sell, events_products.created_at
 					FROM `events_products`
 					JOIN
@@ -161,7 +161,7 @@ class Events_model extends MY_Model
 		}
 		else if ($type == PROCEDURE) {
 			$sql = "SELECT 
-						procedures_id, volume, price_net, price_brut, events_procedures.btw,
+						procedures_id, volume, price_net, price_brut, events_procedures.btw, events_procedures.unit_price as unit_price,
 						procedures.name, events_procedures.created_at
 					FROM `events_procedures`
 					JOIN

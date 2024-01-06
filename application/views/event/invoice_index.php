@@ -30,7 +30,7 @@
             <td class="d-none d-sm-table-cell">&nbsp;</td>
             <td><i><?php echo $this->lang->line('sum'); ?></i></td>
             <td><i id="bruto_sum"><?php echo round($total, 2); ?> &euro;</i></td>
-            <td class="d-none d-sm-table-cell sensitive"><i id="netto_sum"><?php echo round($total_excl,2); ?> &euro;</i></td>
+            <td class="d-none d-sm-table-cell"><i id="netto_sum"><?php echo round($total_excl,2); ?> &euro;</i></td>
             <td class="d-none d-sm-table-cell">&nbsp;</td>
         </tr>
     </tfoot>

@@ -79,7 +79,7 @@
 										<tr>
 											<td><?php echo $procedure['name']; ?></td>
 											<td><?php echo $procedure['volume']; ?></td>
-											<td><?php echo number_format($procedure['price_net']/$procedure['volume'], 2); ?> &euro;</td>
+											<td><?php echo number_format($procedure['unit_price'], 2); ?> &euro;</td>
 											<td><?php echo $procedure['btw']; ?> %</td>
 											<td class="text-right"><?php echo $procedure['price_net']; ?> &euro;</td>
 											<?php $sum += $procedure['price_net']; ?>
@@ -89,7 +89,7 @@
 										<tr>
 											<td><?php echo $product['name']; ?></td>
 											<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
-											<td><?php echo number_format($product['price_net']/$product['volume'], 2); ?> &euro;</td>
+											<td><?php echo number_format($product['unit_price'], 2); ?> &euro;</td>
 											<td><?php echo $product['btw']; ?> %</td>
 											<td class="text-right"><?php echo $product['price_net']; ?> &euro;</td>
 											<?php $sum += $product['price_net']; ?>

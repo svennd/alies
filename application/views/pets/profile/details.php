@@ -19,6 +19,15 @@
 	  </div>
   </div>
 </div>
+<div class="row">
+    <div class="col">
+	  <div class="form-group">
+		<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
+		<input type="text" name="hairtype" class="form-control" id="hairtype" value="<?php echo ($edit_mode && isset($pet['hairtype'])) ? $pet['hairtype']: '' ?>">
+	  </div>
+	</div>
+    <div class="col">&nbsp;</div>
+</div>
 
   <div class="form-group">
     <label for="exampleFormControlTextarea1"><?php echo $this->lang->line('notes'); ?></label>

@@ -153,7 +153,7 @@ foreach ($print as $pet_id => $event):
 				<div style="display: inline-block; width:15px;">&nbsp;</div>
 			</td>
 			<td align="right">
-				<div style="display: inline-block;"><?php echo number_format(round($procedure['price_net']/$procedure['volume'], 2), 2); ?></div>
+				<div style="display: inline-block;"><?php echo number_format($procedure['unit_price'], 2); ?></div>
 			</td>
 			<td align="right"><?php echo $procedure['btw']; ?> %</td>
 			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?></td>
@@ -167,7 +167,7 @@ foreach ($print as $pet_id => $event):
 				<div style="display: inline-block; width:15px;"><?php echo $product['unit_sell']; ?></div>
 			</td>
 			<td align="right">
-				<div style="display: inline-block;"><?php echo number_format(round($product['price_net']/$product['volume'], 2), 2); ?></div>
+				<div style="display: inline-block;"><?php echo number_format($product['unit_price'], 2); ?></div>
 			</td>
 			<td align="right"><?php echo $product['btw']; ?> %</td>
 			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?></td>

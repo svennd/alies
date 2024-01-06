@@ -23,12 +23,12 @@
 					  </div>
 					  <div class="form-row">
 							<div class="form-group col">
-								<label for="street"><?php echo $this->lang->line('street'); ?></label>
-								<input type="text" name="street" class="form-control" id="street" autocomplete="dezzd">
+								<label for="street"><b><?php echo $this->lang->line('street'); ?>*</b></label>
+								<input type="text" name="street" class="form-control" id="street" autocomplete="dezzd" required>
 							</div>
 							<div class="form-group col-md-4">
-								<label for="nr">nr</label>
-								<input type="text" name="nr" class="form-control" id="nr" autocomplete="dezzd" maxlength="30">
+								<label for="nr"><b>nr*</b></label>
+								<input type="text" name="nr" class="form-control" id="nr" autocomplete="dezzd" maxlength="30" required>
 							</div> 
 						</div>
 					   <div class="form-row">
@@ -37,8 +37,8 @@
 						  <input type="text" name="zip" class="form-control" id="inputZip" autocomplete="dezzd" maxlength="6">
 						</div>
 						<div class="form-group col">
-						  <label for="city"><?php echo $this->lang->line('city'); ?></label>
-						  <input type="text" name="city" class="form-control" id="city" autocomplete="dezzd">
+						  <label for="city"><b><?php echo $this->lang->line('city'); ?>*</b></label>
+						  <input type="text" name="city" class="form-control" id="city" autocomplete="dezzd" require>
 						</div>
 					  </div>
 					  <div class="form-group">

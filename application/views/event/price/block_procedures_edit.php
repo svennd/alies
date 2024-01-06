@@ -24,7 +24,7 @@
 				</form>
 		</td>
 		<td><?php echo ($done['price_ori_net'] != 0) ? '<span class="crossed-out">' . $done['price_ori_net'] . '</span>' : $done['price_net']; ?>
-				<?php if ($done['price_ori_net']): ?><small><br/><?php echo number_format($done['price_ori_net']/$done['volume'], 2) ?> / st</small><?php endif; ?>
+				<?php if ($done['price_ori_net']): ?><small><br/>~<?php echo number_format($done['price_ori_net']/$done['volume'], 2) ?> / st</small><?php endif; ?>
 		</td>
 		<td><?php echo $done['price_net']; ?></td>
 		<td><?php echo show_difference($done['price_net'], $done['price_ori_net']); ?></td>

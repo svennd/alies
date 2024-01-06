@@ -150,7 +150,7 @@
 				<tr>
 					<td>last_name</td>
 					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">
+						<a href="<?php echo base_url('owners/detail/' . $res['id']); ?>" class="text-nowrap">
 							<?php if($res['disabled']): ?><s><?php endif; ?>
 								<?php echo $res['last_name']; ?>
 							<?php if($res['disabled']): ?></s><?php endif; ?>
