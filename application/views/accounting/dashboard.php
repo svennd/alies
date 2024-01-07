@@ -1,18 +1,14 @@
 <?php 
-    $str_monthly = ($month == 0) ? $this->lang->line('monthly') : $current_date->Format('F');
 
-    $cclm = ($client_contacts_lm == 0) ? 1 : $client_contacts_lm;
-    $c = ($month == 0) ? 
-        ((($client_contacts*(1/(date("j") / date("t"))))-$cclm)/$cclm)*100
-        : 
-        (($client_contacts-$cclm)/$cclm)*100;
-    
     # catch 0 division
-    $omzet_vorig_jaar   = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
-    $omzet_dit_jaar     = ($yearly_earnings == 0 ) ? 1 : $yearly_earnings;
-    $klanten_contacten     = ($client_contacts_year == 0 ) ? 1 : $client_contacts_year;
+    $omzet_vorig_jaar                 = ($yearly_earnings_ly == 0 ) ? 1 : $yearly_earnings_ly;
+    $omzet_dit_jaar                   = ($yearly_earnings == 0 ) ? 1 : $yearly_earnings;
+    $klanten_contacten                = ($client_contacts_year == 0 ) ? 1 : $client_contacts_year;
     $klanten_contacten_vorig_jaar     = ($client_contacts_year_ly == 0 ) ? 1 : $client_contacts_year_ly;
 
+    $str_monthly = ($month == 0) ? $this->lang->line('monthly') : $current_date->Format('F');
+
+    
     $procent_dit_jaar_voorbij = (365 / (((int) date("z") == 0) ? 1 : (int) date("z")));
     $predictie_omzet_dit_jaar = $procent_dit_jaar_voorbij * $omzet_dit_jaar;
     $predictie_klanten_dit_jaar = $procent_dit_jaar_voorbij * $klanten_contacten;
@@ -44,7 +40,7 @@
                         <div class="text-black-75 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
                         <div class="text-lg fw-bold">&euro; <?php echo number_format($yearly_earnings, 0, ',', '.'); ?></div>
                         <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($p >= 0.5): ?>
+                            <?php if($omzet_vorig_jaar != 1 && $p >= 0.5): ?>
                                 <span class="text-success">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -52,7 +48,7 @@
                                     </svg>
                                     <?php echo round($p,0); ?>% (<?php echo $this->lang->line('est'); ?>)
                                 </span>
-                            <?php elseif($p <= -0.5): ?>
+                            <?php elseif($omzet_vorig_jaar != 1 && $p <= -0.5): ?>
                                 <span class="text-danger">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
@@ -60,8 +56,6 @@
                                     </svg>
                                     <?php echo abs(round($p,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
                                 </span>
-                            <?php else: ?>
-                                <?php echo $this->lang->line('no_change'); ?>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -77,27 +71,6 @@
                     <div class="me-3">
                         <div class="text-black-50 small"><?php echo $this->lang->line('events'); ?> (<?php echo $str_monthly; ?>)</div>
                         <div class="text-lg fw-bold"><?php echo $client_contacts; ?></div>
-                        <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($c > 0): ?>
-                                <span class="text-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                            <polyline points="17 6 23 6 23 12"></polyline>
-                                    </svg>
-                                    <?php echo round($c,0); ?>% <?php echo ($month == 0) ? '('.$this->lang->line('est').')' : "";?>
-                                </span>
-                            <?php elseif($c < 0): ?>
-                                <span class="text-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-                                        <polyline points="17 18 23 18 23 12"></polyline>
-                                    </svg>
-                                    <?php echo abs(round($c,0)); ?>% <?php echo ($month == 0) ? '('.$this->lang->line('est').')' : "";?>
-                                </span>
-                            <?php else: ?>
-                                no change
-                            <?php endif; ?>
-                        </div>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square feather-xl text-black-50"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
                 </div>
@@ -112,7 +85,7 @@
                         <div class="text-black-75 small"><?php echo $this->lang->line('events'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
                         <div class="text-lg fw-bold"><?php echo $client_contacts_year; ?></div>
                         <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($y > 0): ?>
+                            <?php if($klanten_contacten_vorig_jaar != 1 && $y > 0): ?>
                                 <span class="text-success">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -120,7 +93,7 @@
                                     </svg>
                                     <?php echo round($y,0); ?>% (<?php echo $this->lang->line('est'); ?>)
                                 </span>
-                            <?php elseif($y < 0): ?>
+                            <?php elseif($klanten_contacten_vorig_jaar != 1 && $y < 0): ?>
                                 <span class="text-danger">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
@@ -128,8 +101,6 @@
                                     </svg>
                                     <?php echo abs(round($y,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
                                 </span>
-                            <?php else: ?>
-                                <?php echo $this->lang->line('no_change'); ?>
                             <?php endif; ?>
                         </div>
                     </div>
