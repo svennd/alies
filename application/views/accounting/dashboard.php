@@ -25,7 +25,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="me-3">
                         <div class="text-black-50 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $str_monthly; ?>)</div>
-                        <div class="text-lg fw-bold">&euro; <?php echo number_format($monthly_earnings, 0, ',', '.'); ?></div>
+                        <div class="text-lg fw-bold"><a href="<?php echo base_url('reports/revenue'); ?>">&euro; <?php echo number_format($monthly_earnings, 0, ',', '.'); ?></a></div>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign feather-xl text-black-50"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                 </div>

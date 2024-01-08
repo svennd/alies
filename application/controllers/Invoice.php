@@ -30,10 +30,11 @@ class Invoice extends Vet_Controller
 	}
 
 	# show bills of last 30 days for admin and 7 days for vets;
-	public function index()
+	public function index($search_from = null, $search_to = null)
 	{
 		$dt = new DateTime();
-		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
+		$search_to = (!is_null($search_to)) ? date("Y-m-d", $search_to) : ((!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d'));
+		
 		
 		# restrict normal vets to 250 (todo: make config variable)
 		$search_limit = 250;
@@ -48,7 +49,7 @@ class Invoice extends Vet_Controller
 			$search_limit = 5000;
 		}  
 
-		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
+		$search_from = (!is_null($search_from)) ? date("Y-m-d", $search_from) : ((!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d'));
 
 		$bill_overview = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)

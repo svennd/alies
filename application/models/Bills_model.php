@@ -235,7 +235,9 @@ class Bills_model extends MY_Model
 		$sql = "SELECT 
 					year(bills.created_at) as y, 
 					month(bills.created_at) as m, 
-					sum(total_net) as total
+					sum(total_net) as total,
+					sum(total_brut) as total_brut,
+					count(invoice_id) as invoices
 				FROM 
 					bills
 				WHERE 
