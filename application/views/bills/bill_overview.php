@@ -42,7 +42,11 @@
 					<th><?php echo $this->lang->line('date'); ?></th>
 					<th><?php echo $this->lang->line('invoice_id'); ?></th>
 					<th><?php echo $this->lang->line('amount'); ?></th>
-					<th><?php echo $this->lang->line('client_id'); ?></th>
+					<?php if($this->ion_auth->in_group("admin")): ?>
+						<th><?php echo $this->lang->line('net_price'); ?></th>
+					<?php else: ?>
+						<th><?php echo $this->lang->line('client_id'); ?></th>
+					<?php endif; ?>
 					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('state'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
@@ -64,7 +68,7 @@
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>
 					</td>
-					<td>
+					<td data-sort="<?php echo $bill['total_brut']; ?>">
 							<?php
 								$total 	= floatval($bill['total_brut']);
 								$cash 	= floatval($bill['cash']);
@@ -87,9 +91,17 @@
 								</small>
                             <?php endif; ?>
 					</td>
-					<td><?php echo $bill['owner']['user_id']; ?></td>		
-					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a></td>
-					<td>
+					<?php if($this->ion_auth->in_group("admin")): ?>
+						<td data-sort="<?php echo $bill['total_net']; ?>"><?php echo number_format($bill['total_net'], 2); ?> &euro;</td>
+					<?php else: ?>
+						<td><?php echo $bill['owner']['user_id']; ?></td>
+					<?php endif; ?>	
+					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a>
+						<?php if($this->ion_auth->in_group("admin")): ?>
+						(<?php echo $bill['owner']['user_id']; ?>)
+						<?php endif; ?>
+					</td>
+					<td data-sort="<?php echo $bill['status']; ?>">
 						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
 							<?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
 						</a>
@@ -102,6 +114,18 @@
 					</tr>
 				<?php endforeach; ?>
 				</tbody>
+
+				<?php if($this->ion_auth->in_group("admin")): ?>
+				<tfoot>
+					<tr>
+						<th>&nbsp;</th>
+						<th>&nbsp;</th>
+						<th class="bg-secondary text-white" colspan="1">&nbsp;</th>
+						<th class="bg-secondary text-white" colspan="1">&nbsp;</th>
+						<th colspan="5">&nbsp;</th>
+					</tr>
+				</tfoot>
+				<?php endif; ?>
 				</table>
 			<?php else: ?>
 				No bills in this view
@@ -115,14 +139,59 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
+
 	$("#invoice").addClass('active');
-	var table = $("#dataTable").DataTable({		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+	var table = $("#dataTable").DataTable({
+		responsive: true,
+		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
-            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
-        ],"order": [[0, 'desc']]}
-	
-	);
+            { text:'<i class="fa-regular fa-circle-xmark"></i>', className:'btn btn-outline-danger btn-sm', 
+				action: function (e, dt, node, config) {
+					dt.column(5, { search: 'applied' }).nodes().each(function(node, index) {
+						var dataSortValue = $(node).data('sort');
+						if (dataSortValue != 4) {
+							$(node).closest('tr').show();
+						} else {
+							$(node).closest('tr').hide();
+						}
+					});
+				}
+				
+			}
+        ],
+		"order": [[0, 'desc']],
+		"footerCallback": function(row, data, start, end, display) {
+				var api = this.api();
+
+				api.columns(2, {
+					page: 'current'
+				}).every(function() {
+					var sum = this
+					.nodes()
+					.reduce(function(a, b) {
+						var x = parseFloat(a) || 0;
+						var y = parseFloat($(b).attr('data-sort')) || 0;
+						return x + y;
+					}, 0);
+					$(this.footer()).html(sum.toFixed(2) + ' &euro;');
+				});
+
+				// var api = this.api();
+				api.columns(3, {
+					page: 'current'
+				}).every(function() {
+					var sum = this
+					.nodes()
+					.reduce(function(a, b) {
+						var x = parseFloat(a) || 0;
+						var y = parseFloat($(b).attr('data-sort')) || 0;
+						return x + y;
+					}, 0);
+					$(this.footer()).html(sum.toFixed(2) + ' &euro;');
+				});
+		}
+	});
 
 	<?php if(!$this->ion_auth->in_group("admin")): ?>
 	toggleHiddenRows(6, <?php echo $this->user->id; ?>);
