@@ -6,7 +6,7 @@
 				<div><?php echo $this->lang->line('Reporting'); ?> / Revenue</div>
 			</div>
             <div class="card-body">
-				<!-- <form action="<?php echo base_url('reports/revenue'); ?>" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url('reports/revenue'); ?>" method="post" autocomplete="off" class="form-inline">
 
 				  <div class="form-group mb-2 mr-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
@@ -23,9 +23,9 @@
 					<input type="date" name="search_to" class="form-control <?php echo ($search_to) ? 'is-valid' : ''; ?>" value="<?php echo ($search_to) ? $search_to : ''; ?>" id="search_to">
 				  </div>
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
-				</form> -->
+				</form>
 				<?php if($revenue): ?>
-				<!-- <br> -->
+				<br>
 				<table class="table" id="dataTable">
     			<thead>
 					<tr>
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		responsive: true,
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         buttons: [
-            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'}
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
         ]
 	});
 });

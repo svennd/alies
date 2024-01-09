@@ -261,6 +261,37 @@ class Bills_model extends MY_Model
 
 	}
 
+	public function get_yearly_earnings_by_date($from, $to)
+	{
+		$sql = "SELECT 
+					year(bills.created_at) as y, 
+					month(bills.created_at) as m, 
+					sum(total_net) as total,
+					sum(total_brut) as total_brut,
+					count(invoice_id) as invoices
+				FROM 
+					bills
+				WHERE 
+					(
+						status = '" . BILL_PAID . "' 
+						OR
+						status = '" . BILL_HISTORICAL . "'
+					)
+				AND
+					bills.created_at > STR_TO_DATE('" . $from . " 00:00', '%Y-%m-%d %H:%i')
+				AND
+					bills.created_at < STR_TO_DATE('" . $to . " 23:59', '%Y-%m-%d %H:%i')
+				GROUP BY 
+					year(bills.created_at), 
+					month(bills.created_at)
+				ORDER BY
+					bills.created_at ASC				
+			";
+		
+		return ($this->db->query($sql)->result_array());
+
+	}
+
 	// check if events under this bill were
 	// manually changed by a vet
 	public function is_bill_modified(int $bill_id) 
