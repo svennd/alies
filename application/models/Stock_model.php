@@ -68,7 +68,7 @@ class Stock_model extends MY_Model
 							WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
 							ELSE '" . STOCK_IN_USE . "'
 						END,
-					volume = volume - " . $volume . ",
+					volume = volume - " . $volume . "
 				WHERE
 					id = '" . $stock_id . "'
 				LIMIT 1;

@@ -473,7 +473,7 @@ class Products extends Vet_Controller
 										"prices"			=> $prices,
 										"unit"				=> $r['unit_sell'],
 										"btw"				=> $r['btw_sell'],
-										"booking"			=> $r['id'],
+										"booking"			=> $r['booking_code'],
 										"vaccin"			=> $r['vaccin'],
 										"vaccin_freq"		=> $r['vaccin_freq'],
 										"type"				=> PRODUCT
@@ -489,7 +489,7 @@ class Products extends Vet_Controller
 	private function get_procedures(string $query, array $list) {
 		$result = $this->procedures
 							->fields('id, name, price, booking_code')
-							->with_booking_code('fields:category, code, btw')
+							->with_booking_code('fields:btw')
 							->where('name', 'like', $query, true)
 							->get_all();
 
@@ -501,8 +501,8 @@ class Products extends Vet_Controller
 								"data" 	=> array(
 												"id" 			=> $r['id'],
 												"price"			=> $r['price'],
-												"btw"			=> (isset($r['booking_code']['btw'])) ?$r['booking_code']['btw'] : "21",
-												"booking"		=> (isset($r['booking_code']['id'])) ?$r['booking_code']['id'] : "99",
+												"btw"			=> (isset($r['booking_code']['btw'])) ? $r['booking_code']['btw'] : "21",
+												"booking"		=> $r['booking_code'],
 												"type"			=> PROCEDURE
 											)
 							);

@@ -256,6 +256,10 @@ class Events extends Vet_Controller
 			$booking 	= $result['id'];
 			$btw 		= $result['btw'];
 		}
+		else
+		{
+			$booking = $booking_default;
+		}
 		return array($btw, $booking);
 	}
 	
