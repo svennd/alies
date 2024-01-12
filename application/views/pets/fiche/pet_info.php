@@ -51,7 +51,7 @@
 </tr>
 <tr>
 	<td><?php echo $this->lang->line('chip'); ?></td>
-	<td><?php echo empty($pet['chip']) ? "?" : $pet['chip']; ?></td>
+	<td><?php echo empty($pet['chip']) ? "?" : number_format($pet['chip'], 0, '', '-'); ?></td>
 </tr>
 <tr>
 	<td><?php echo $this->lang->line('vacc_nr'); ?></td>
