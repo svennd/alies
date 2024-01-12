@@ -19,7 +19,7 @@
 					<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix">
 				  </div>
 				  <div class="form-group">
-					<label for="product"><?php echo $this->lang->line('product') . ' ' . $this->lang->line('or') . ' ' . $this->lang->line('gs1_barcode'); ?></label>
+					<label for="autocomplete"><?php echo $this->lang->line('product') . ' ' . $this->lang->line('or') . ' ' . $this->lang->line('gs1_barcode'); ?></label>
 					<div class="input-group">
 						<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>" autofocus>
 						<div class="input-group-append" style="display:none" id="reset_button">
@@ -45,7 +45,7 @@
 				  
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="exampleFormControlInput3"><?php echo $this->lang->line('sellable_volume'); ?></label>
+							<label for="sell"><?php echo $this->lang->line('sellable_volume'); ?></label>
 							<div class="input-group mb-3">
 							  <input type="text" class="form-control" name="new_volume" id="sell" value="">
 							  <div class="input-group-append">
@@ -68,7 +68,7 @@
 							<small id="tip">Does not impact selling price!</small>
 						</div>
 						<div class="col">
-							<label for="exampleFormControlInput3"><?php echo $this->lang->line('price_alies'); ?></label>
+							<label for="catalog_price"><?php echo $this->lang->line('price_alies'); ?></label>
 							<input type="text" class="form-control" name="catalog_price" disabled id="catalog_price" value="">
 						</div>
 					</div>
