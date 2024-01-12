@@ -83,13 +83,21 @@ setInterval(function() {
 }, 5*1000);
 <?php endif; ?>
 
+$('#finish_report').on('click', function() {
+    HasChanged = false;
+});
+$('#save_report_submit').on('click', function() {
+    HasChanged = false;
+});
+
+
+
 // Check for unsaved data
 window.onbeforeunload = function() {
   if (HasChanged) {
     return 'There are unsaved changes. Are you sure you want to leave?';
   }
 }
-
 $("#show_extra_vets").on("click", function() {
 	event.preventDefault();
 	$('#extra_vet').collapse('toggle');
