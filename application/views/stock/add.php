@@ -20,7 +20,12 @@
 				  </div>
 				  <div class="form-group">
 					<label for="product"><?php echo $this->lang->line('product') . ' ' . $this->lang->line('or') . ' ' . $this->lang->line('gs1_barcode'); ?></label>
-					<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>" autofocus>
+					<div class="input-group">
+						<input type="text" name="product" class="form-control" id="autocomplete" value="<?php echo ($preselected) ? $preselected['name']: '' ?>" autofocus>
+						<div class="input-group-append" style="display:none" id="reset_button">
+							<button class="btn btn-outline-danger" id="reset_search" type="button"><i class="fa-solid fa-ban"></i></button>
+						</div>
+					</div>
 					<input type="hidden" name="pid" id="pid" value="<?php echo ($preselected) ? $preselected['id']: '' ?>">
 					<input type="hidden" name="new_barcode_input" id="new_barcode_input" value="0">
 					<input type="hidden" name="barcode_gs1" id="barcode_gs1" value="">
@@ -143,6 +148,17 @@
 </div>
 
 <script type="text/javascript">
+
+function getLastDayOfMonth(year, month) {
+  // Month in JavaScript is 0-indexed (0 for January, 1 for February, etc.)
+  // So, subtract 1 from the provided month to get the correct month in the Date object.
+  // 0 = last day of previous month
+  var lastDay = new Date(year, month, 0);
+
+  // getDate() returns the day of the month, which is the last day in this case.
+  return lastDay.getDate();
+}
+
 function process_datamatrix(barcode) {
 	// GS1 data matrix 
 	// 01 05420036903635 17 210400 10 111219
@@ -178,11 +194,14 @@ function process_datamatrix(barcode) {
 			var gsbarcode = result[1];
 			var date = (typeof(result[3]) === 'undefined') ? result[6] : result[4];
 			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
-			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
+			var year = "20" + date.substr(0, 2);
+			var month = date.substr(2,2);
+			var day = (date.substr(4,2) == "00") ? getLastDayOfMonth(year, month) : date.substr(4,2);
+			
 			
 			// enter lotnr + date and disable them
 			$("#lotnr").val(lotnr).prop("readonly", true);
-			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day).prop("readonly", true);
+			$("#date").val( year + "-" + month + "-" + day).prop("readonly", true);
 			
 			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
 				if (data.state)
@@ -258,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			$("#unit_sell").html(res.unit_sell);
 			$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
 			$("#lotnr").focus();
+			$("#reset_button").show();
 		},
 		onSearchComplete: function (query, suggestion) { 
 			if(query.length > 26)
@@ -276,6 +296,26 @@ document.addEventListener("DOMContentLoaded", function(){
 		},
 		autoSelectFirst: true,
 		minChars: '2'
+	});
+
+	$("#reset_search").on("click", function() {
+		$("#autocomplete").val("").focus().prop("readonly", false);
+		$("#pid").val("").prop("readonly", false);
+		$("#lotnr").val("").prop("readonly", false);
+		$("#date").val("").prop("readonly", false);
+		$("#sell").val("");
+		$("#buy").val("");
+		$("#current_buy_price").val("");
+		$("#catalog_price").val("");
+		$("#unit_buy").html("");
+		$("#unit_sell").html("");
+		$("#tip").html("");
+		$("#reset_button").hide();
+		$("#product_tip").html("");
+		$("#new_barcode_input").val(0);
+		$("#barcode_gs1").val("");
+		$("#matrix").hide();
+		$('#autocomplete').autocomplete().enable();
 	});
 });
 </script>
