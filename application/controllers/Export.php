@@ -25,9 +25,9 @@ class Export extends Admin_Controller
 		generic export function for owners
 		following import_export_alies.docx guidelines
 	 */
-	public function owners($days = false)
+	public function owners($search_from, $search_to)
 	{
-		$clients = $this->get_owners($days);
+		$clients = $this->get_owners($search_from, $search_to);
 
 		if (!$clients) { return $this->empty_xml('owners'); }
 
@@ -129,16 +129,10 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 	
-	public function clients($days = false, int $status = 0)
+	public function clients($domtree, $xmlRoot, $search_from, $search_to)
 	{
 		# owners
-		$clients = $this->get_owners($days);
-
-		/* create a dom document with encoding utf8 */
-		$domtree = new DOMDocument('1.0', 'Windows-1252');
-
-		/* create the root element of the xml tree */
-		$xmlRoot = $this->MPlus_headers($domtree);
+		$clients = $this->get_owners($search_from, $search_to);
 
 		/* set template */
 		$Customers = $domtree->createElement("Customers");
@@ -167,15 +161,16 @@ class Export extends Admin_Controller
 							'GSM'			=> (($client['mobile']) ? $client['mobile'] : ''),
 							'Email'			=> (($client['mail']) ? $client['mail'] : ''),
 							'FreeField1'	=> (($client['msg']) ? $client['msg'] : ''),
-							'Status'		=> $status, // status : 0 : new, 1 : already known, 2 : known but editted
+							'Status'		=> 0, // status : 0 : new, 1 : already known, 2 : known but editted
 
 				));
 		}
-		Header('Content-type: text/xml');
-		echo $domtree->saveXML();
+		// Header('Content-type: text/xml');
+		// echo $domtree->saveXML();
+		return $domtree;
 	}
 
-	public function facturen($search_from, $search_to, int $status = 0)
+	private function facturen($domtree, $xmlRoot,$search_from, $search_to): DOMDocument
 	{
 		$bill_overview = $this->bills
 			->where('invoice_id IS NOT NULL', null, null, false, false, true)
@@ -183,17 +178,6 @@ class Export extends Admin_Controller
 			->where('invoice_date < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->order_by('invoice_date', 'asc')
 			->get_all();
-
-		if (!$bill_overview) {
-			echo "No valid result to be shown.";
-			return false;
-		}
-
-		/* create a dom document with encoding utf8 */
-		$domtree = new DOMDocument('1.0', 'Windows-1252');
-
-		/* create the root element of the xml tree */
-		$xmlRoot = $this->MPlus_headers($domtree);
 
 		/* set template */
 		$Sales = $domtree->createElement("Sales");
@@ -207,7 +191,7 @@ class Export extends Admin_Controller
 					- docnumber			: factuurnr : Y + (padding)(int)
 					- amount			:
 					- status			: (0 : niet geimporteerd, 1 : geimporteerd, 2 : gewijzigt geimporteerd)
-						details
+						(details)
 						- acount		: centralisatierekening / grootboekrekening
 						- amount		:
 						- debcre		: 1 = D -1 = C
@@ -219,19 +203,6 @@ class Export extends Admin_Controller
 					- Year_Alfa 		: Jaar
 
 			*/
-
-			/* query events */
-			$events = $this->events
-				->where(array("payment" => $factuur['id']))
-				->fields('id, pet, payment')
-				->get_all();
-
-			/* if events fail don't even book this */
-			if (!$events) {
-				continue;
-			}
-
-			list($event_tally, $event_booking) = $this->event_tally_booking($events);
 
 			/* set item */
 			$Sale = $domtree->createElement("Sale");
@@ -250,6 +221,7 @@ class Export extends Admin_Controller
 				optional and used here :
 					- DocDate : DD/MM/YYYY
 					- VATAmount
+					- OurRef : bill_id
 
 				optional :
 					- Journal_Prime (int)
@@ -265,12 +237,7 @@ class Export extends Admin_Controller
 
 			*/
 			$dt = DateTime::createFromFormat('Y-m-d H:i:s', $factuur['invoice_date']);
-
-			# btw account
-			$total_btw = (float) 0.0;
-			foreach ($event_tally as $btw => $tally) {
-				$total_btw += round(($btw/100)*$tally, 4);
-			}
+			$total_btw = $factuur['total_brut'] - $factuur['total_net'];
 
 			$this->append_child_element($Sale, $domtree,
 				array(
@@ -278,9 +245,10 @@ class Export extends Admin_Controller
 							'DocType' 			=> '10',
 							'DocNumber'			=> get_invoice_id($factuur['invoice_id'], $factuur['invoice_date'], $this->conf['invoice_prefix']['value']),
 							'DocDate' 			=> $dt->format('d/m/Y'),
-							'Amount' 			=> $this->amount($factuur['amount']),
+							'Amount' 			=> $this->amount($factuur['total_brut']),
 							'VATAmount' 		=> $this->amount($total_btw),
-							'Status' 			=> $status,
+							'OurRef'			=> $factuur['id'],
+							'Status' 			=> 0,
 
 				));
 
@@ -305,10 +273,11 @@ class Export extends Admin_Controller
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 
+			// reqyured since 13.03.210.01
 			$this->append_child_element($detail, $domtree,
 				array(
 							'Account'			=> 400000, // 400000 == booking of full amount
-							'Amount' 			=> $this->amount($factuur['amount']),
+							'Amount' 			=> $this->amount($factuur['total_brut']),
 							'DebCre'			=> 1,
 							'Ventil' 			=> 0, // for full amount this must be 0
 
@@ -327,58 +296,77 @@ class Export extends Admin_Controller
 				));
 
 			# booking codes
-			$this->generate_booking_xml($event_booking, $domtree, $Details);
+			$this->generate_booking_xml($domtree, $Details, $factuur['id']);
 		}
 		/* get the xml printed */
+		return $domtree;
+	}
+
+	public function kluwer($search_from, $search_to)
+	{
+		/* create a dom document with encoding utf8 */
+		$domtree = new DOMDocument('1.0', 'Windows-1252');
+
+		/* create the root element of the xml tree */
+		$xmlRoot = $this->MPlus_headers($domtree);
+
+		$domtree = $this->clients($domtree, $xmlRoot, $search_from, $search_to);
+		$domtree = $this->facturen($domtree, $xmlRoot, $search_from, $search_to);
+		
+		// var_dump($domtree);
 		Header('Content-type: text/xml');
 		echo $domtree->saveXML();
 	}
-
+	
 	/*
 		generate booking codes
 	*/
-	private function generate_booking_xml(array $event_booking, $domtree, $Details)
+	private function generate_booking_xml($domtree, $Details, int $bill_id)
 	{
-		foreach ($event_booking	as $booking => $tally) {
-			$current_booking_code = $this->booking->fields('code, btw')->get($booking);
 
+		/* query events */
+		$events = $this->events
+			->where(array("payment" => $bill_id))
+			->fields('id, pet, payment')
+			->get_all();
+		
+		# transform to array with only id's
+		$events_list = array_map(function($item) { return (int)$item['id']; }, $events);
+				
+		$products = ($this->events->get_booking_export($events_list, PRODUCT));
+		foreach ($products as $book)
+		{
 			$detail = $domtree->createElement("Detail");
 			$detail = $Details->appendChild($detail);
 
 			$this->append_child_element($detail, $domtree,
 				array(
-							'Account'			=> $current_booking_code['code'],
-							'Amount' 			=> $this->amount($tally),
+							'Account'			=> $book['code'],
+							'Amount' 			=> $this->amount($book['total_net']),
 							'DebCre'			=> -1,
-							'Ventil' 			=> $this->get_btw_id($current_booking_code['btw']), // btw
+							'Ventil' 			=> $this->get_btw_id($book['btw']), // btw
+							// 1:0%, 2:6%, 3:12%, 4:21%
+
+				));
+		}
+
+		$procedures = ($this->events->get_booking_export($events_list, PROCEDURE));
+		foreach ($procedures as $book)
+		{
+			$detail = $domtree->createElement("Detail");
+			$detail = $Details->appendChild($detail);
+
+			$this->append_child_element($detail, $domtree,
+				array(
+							'Account'			=> $book['code'],
+							'Amount' 			=> $this->amount($book['total_net']),
+							'DebCre'			=> -1,
+							'Ventil' 			=> $this->get_btw_id($book['btw']), // btw
 							// 1:0%, 2:6%, 3:12%, 4:21%
 
 				));
 		}
 		return $domtree;
-	}
-
-	/*
-
-	*/
-	private function event_tally_booking(array $events)
-	{
-		foreach ($events as $e) {
-			$event_bill = $this->events->get_products_and_procedures($e['id']);
-			
-			if (count($event_bill['tally']) == 0) {
-				continue;
-			}
-
-			foreach ($event_bill['tally'] as $btw => $value) {
-				$event_tally[$btw] = (isset($event_tally[$btw])) ? $event_tally[$btw] + $value : $value;
-			}
-			foreach ($event_bill['booking'] as $booking => $value) {
-				$event_booking[$booking] = (isset($event_booking[$booking])) ? $event_booking[$booking] + $value: $value;
-			}
-		}
-
-		return array($event_tally, $event_booking);
 	}
 
 	/*
@@ -458,21 +446,16 @@ class Export extends Admin_Controller
 	/*
 		return a list of owners
 	*/
-	private function get_owners($days = false)
+	private function get_owners($search_from, $search_to)
 	{
-		# owners
-		if (!$days) {
-			return $this->owners->get_all();
-		}
-
 		return $this->owners
 						->group_start()
-							->where('created_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-							->where('created_at < NOW()', null, null, false, false, true)
+							->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+							->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 						->group_end()
 						->or_group_start()
-							->where('updated_at > DATE_ADD(NOW(), INTERVAL -' .  $days. ' DAY)', null, null, false, false, true)
-							->where('updated_at < NOW()', null, null, false, false, true)
+							->where('updated_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+							->where('updated_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 						->group_end()
 						->get_all();
 	}

@@ -92,7 +92,7 @@
 			<?php endif; ?>
 			
 			<?php if($event_info['report'] != REPORT_DONE): ?>
-				<button type="submit" name="submit" value="finished_report" class="btn btn-outline-primary float-right"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
+				<button type="submit" name="submit" value="finished_report" id="finish_report" class="btn btn-outline-primary float-right"><i class="fas fa-clipboard-check"></i> <?php echo $this->lang->line('finish'); ?></button>
 			<?php endif; ?>
 			</div>
 	</div>

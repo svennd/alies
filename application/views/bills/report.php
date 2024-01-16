@@ -77,7 +77,11 @@
 									<tbody>
 									<?php foreach ($proc as $procedure): ?>
 										<tr>
-											<td><?php echo $procedure['name']; ?></td>
+											<td>
+												<?php if($this->ion_auth->in_group("admin") && !is_null($procedure['reduction_reason']) && !empty($procedure['reduction_reason'])): ?>
+													<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="left" title="<?php echo $procedure['reduction_reason']; ?>"></i>
+												<?php endif; ?>
+												<?php echo $procedure['name']; ?></td>
 											<td><?php echo $procedure['volume']; ?></td>
 											<td><?php echo number_format($procedure['unit_price'], 2); ?> &euro;</td>
 											<td><?php echo $procedure['btw']; ?> %</td>
@@ -87,7 +91,11 @@
 									<?php endforeach; ?>
 									<?php foreach ($prod as $product): ?>
 										<tr>
-											<td><?php echo $product['name']; ?></td>
+											<td>
+												<?php if($this->ion_auth->in_group("admin") && !is_null($product['reduction_reason']) && !empty($product['reduction_reason'])): ?>
+													<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="left" title="<?php echo $product['reduction_reason']; ?>"></i>
+												<?php endif; ?>
+												<?php echo $product['name']; ?></td>
 											<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 											<td><?php echo number_format($product['unit_price'], 2); ?> &euro;</td>
 											<td><?php echo $product['btw']; ?> %</td>

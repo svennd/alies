@@ -116,6 +116,30 @@ class Events_model extends MY_Model
 	/*
 		called in bills_model for invoice controller
 	*/
+	public function get_booking_export(array $event, int $type)
+	{
+		$table = ($type == PROCEDURE) ?  'events_procedures' : 'events_products';
+		$sql = "
+				SELECT 
+					SUM(price_net) as total_net, booking_codes.code, booking_codes.btw
+				FROM `" . $table . "`
+				LEFT JOIN
+					booking_codes
+					on
+					booking_codes.id = " . $table . ".booking
+				WHERE 
+					`event_id` IN (" . implode(',', $event) . ")
+				GROUP BY
+					booking
+		";
+		$products = $this->db->query($sql)->result_array();
+		
+		return $products;
+	}
+
+	/*
+		called in bills_model for invoice controller
+	*/
 	public function get_all_items(array $event, int $type)
 	{
 		$table = ($type == PROCEDURE) ?  'events_procedures' : 'events_products';
@@ -148,6 +172,7 @@ class Events_model extends MY_Model
 		if ($type == PRODUCT) {
 			$sql = "SELECT 
 						product_id, volume, price_net, price_brut, events_products.btw, events_products.unit_price as unit_price,
+						reduction_reason,
 						products.name, products.unit_sell, events_products.created_at
 					FROM `events_products`
 					JOIN
@@ -162,6 +187,7 @@ class Events_model extends MY_Model
 		else if ($type == PROCEDURE) {
 			$sql = "SELECT 
 						procedures_id, volume, price_net, price_brut, events_procedures.btw, events_procedures.unit_price as unit_price,
+						reduction_reason,
 						procedures.name, events_procedures.created_at
 					FROM `events_procedures`
 					JOIN
