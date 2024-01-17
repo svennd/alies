@@ -6,10 +6,6 @@
 				<div class="dropdown no-arrow">
 					<?php if($this->ion_auth->in_group("admin")): ?>
 						<a href="<?php echo base_url('export'); ?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-file-export"></i> export</a>
-					<?php else: ?>
-						<a href="#" id="toggleAll" role="button" class="btn btn-outline-success btn-sm">
-							<i class="fa-solid fa-users"></i><span>&nbsp;<?php echo $this->lang->line('AllVets'); ?></span>
-						</a>
 					<?php endif; ?>
 				</div>	
 			</div>
@@ -142,6 +138,9 @@
 </div>
 
 <script type="text/javascript">
+const USER_ID = <?php echo $this->user->id; ?>;
+const VET_COLUMN = 6;
+
 document.addEventListener("DOMContentLoaded", function(){
 
 	$("#invoice").addClass('active');
@@ -149,8 +148,18 @@ document.addEventListener("DOMContentLoaded", function(){
 		responsive: true,
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
+			<?php if($this->ion_auth->in_group("admin")): ?>
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
-            { text:'<i class="fa-regular fa-circle-xmark"></i>', className:'btn btn-outline-danger btn-sm', 
+			<?php else: ?>
+            { text:'<i class="fa-solid fa-fw fa-users"></i>', className:'btn btn-outline-success btn-sm', 
+				action: function (e, dt, node, config) { 
+					dt.buttons(0).text(dt.buttons(0).text()[0] === '<i class="fa-solid fa-fw fa-users"></i>' ? '<i class="fa-solid fa-fw fa-users-slash"></i>' : '<i class="fa-solid fa-fw fa-users"></i>');
+					node[0].className = (node[0].className === 'btn btn-outline-success btn-sm' ? 'btn btn-outline-warning btn-sm' : 'btn btn-outline-success btn-sm');
+					toggleHiddenRows(VET_COLUMN, USER_ID);
+				}
+			},
+			<?php endif; ?>
+			{ text:'<i class="fa-regular fa-circle-xmark"></i>', className:'btn btn-outline-danger btn-sm', 
 				action: function (e, dt, node, config) {
 					dt.column(5, { search: 'applied' }).nodes().each(function(node, index) {
 						var dataSortValue = $(node).data('sort');
@@ -181,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					$(this.footer()).html(sum.toFixed(2) + ' &euro;');
 				});
 
-				// var api = this.api();
 				api.columns(3, {
 					page: 'current'
 				}).every(function() {
@@ -198,19 +206,9 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 
 	<?php if(!$this->ion_auth->in_group("admin")): ?>
-	toggleHiddenRows(6, <?php echo $this->user->id; ?>);
+		toggleHiddenRows(VET_COLUMN, USER_ID);
 	<?php endif; ?>
 
-	$('#toggleAll').on('click', function() {
-		toggleHiddenRows(6, <?php echo $this->user->id; ?>);
-
-		$(this).toggleClass('btn-outline-danger btn-outline-success');
-		if ($(this).hasClass('btn-outline-success')) {
-        	$(this).html('<i class="fa-solid fa-fw fa-users"></i> <?php echo $this->lang->line('AllVets'); ?>');
-        } else {
-			$(this).html('<i class="fa-solid fa-fw fa-users-slash"></i> <?php echo $this->lang->line('OnlyMe'); ?>');
-        }
-	});
 
 	function toggleHiddenRows(field, input_value) {
 
