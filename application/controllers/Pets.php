@@ -141,7 +141,8 @@ class Pets extends Vet_Controller
 									$this->input->post('current_breed2');
 
 			$this->pets->update(
-				array(
+				array(	
+											"type" 			=> (int) $this->input->post('type'),
 											"name" 			=> $this->input->post('name'),
 											"gender" 		=> (!empty($this->input->post('gender_custom')) ? $this->input->post('gender_custom') : $this->input->post('gender')),
 											"birth" 		=> $this->input->post('birth'),

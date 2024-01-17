@@ -40,6 +40,37 @@ input[type='radio']:checked {
 <h5><?php echo $this->lang->line('required'); ?></h5>
 <hr>
 <div class="form-row">
+	<div class="form-group col-md-12">
+	<label><b><a data-toggle="collapse" href="#Type" role="button" aria-expanded="false" aria-controls="Type">Type</a></b></label>
+	<div class="collapse" id="Type">
+				<?php 
+					$pet_type = array(
+								"0" => array("dog", "#f2a10d", "dog", DOG),
+								"1" => array("cat", "#005248", "cat", CAT),
+								"2" => array("horse", "#402E32", "horse", HORSE),
+								"3" => array("bird", "#FFB087", "dove", BIRD),
+								"5" => array("rabbit", "#AD4CF4", "paw", RABBIT),
+								"4" => array("other", "#DFE0DF", "ghost", OTHER),
+					);
+				?>
+				<div class="row">
+					<?php foreach($pet_type as $pid => $p): ?>
+						<div class="col text-center noradio">
+							<input type="radio" name="type" value="<?php echo $pid; ?>" id="<?php echo $pid; ?>" <?php echo ($pet['type'] == $p['3']) ? 'checked' : ''; ?>  required />
+							<label for="<?php echo $pid; ?>" class="lbl-radio">
+							<div class="content bounceit" >
+								<div class="title"><span style="color:<?php echo $p[1]; ?>"><i class="fas fa-<?php echo $p[2]; ?> fa-fw fa-2x"></i></span></div>
+								<?php echo $this->lang->line($p[0]); ?>
+							</div>
+							</label>
+						</div>
+					<?php endforeach; ?>
+				</div>
+		</div>
+	</div>
+</div>
+
+<div class="form-row">
 	<div class="form-group col-md-4">
 		<label for="name"><b><?php echo $this->lang->line('gender'); ?></b>*</label>
 		<div class="col">
