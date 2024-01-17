@@ -5,8 +5,8 @@
 	<div class="card mb-4">
 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<div>
-			<a href="<?php echo base_url(); ?>invoice"><?php echo $this->lang->line('Invoice'); ?></a> /
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
+			<a href="<?php echo base_url('invoice'); ?>"><?php echo $this->lang->line('Invoice'); ?></a> /
+			<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> /
 			<?php echo $this->lang->line('check'); ?>
 			</div>
 			<div class="dropdown no-arrow">

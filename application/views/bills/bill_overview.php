@@ -5,7 +5,7 @@
 				<?php echo $this->lang->line('title_invoice'); ?>
 				<div class="dropdown no-arrow">
 					<?php if($this->ion_auth->in_group("admin")): ?>
-						<a href="<?php echo base_url(); ?>export/facturen/<?php echo $search_from; ?>/<?php echo $search_to; ?>" class="btn btn-outline-info btn-sm" download><i class="fas fa-file-export"></i> xml export</a>
+						<a href="<?php echo base_url('export'); ?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-file-export"></i> export</a>
 					<?php else: ?>
 						<a href="#" id="toggleAll" role="button" class="btn btn-outline-success btn-sm">
 							<i class="fa-solid fa-users"></i><span>&nbsp;<?php echo $this->lang->line('AllVets'); ?></span>
@@ -59,7 +59,11 @@
 				<tbody>
 				<?php foreach ($bills as $bill): ?>
 				<tr>
-					<td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
+					<?php if ($bill['invoice_id']): ?>
+						<td data-sort="<?php echo strtotime($bill['invoice_date']) ?>"><?php echo user_format_date($bill['invoice_date'], $user->user_date); ?></td>
+					<?php else: ?>
+						<td data-sort="<?php echo strtotime($bill['created_at']) ?>"><?php echo user_format_date($bill['created_at'], $user->user_date); ?></td>
+					<?php endif; ?>
 					<td>
 						<?php if ($bill['invoice_id']): ?>
 							<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>"><?php echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></a>

@@ -264,8 +264,8 @@ class Bills_model extends MY_Model
 	public function get_yearly_earnings_by_date($from, $to)
 	{
 		$sql = "SELECT 
-					year(bills.created_at) as y, 
-					month(bills.created_at) as m, 
+					year(bills.invoice_date) as y, 
+					month(bills.invoice_date) as m, 
 					sum(total_net) as total,
 					sum(total_brut) as total_brut,
 					count(invoice_id) as invoices
@@ -278,18 +278,19 @@ class Bills_model extends MY_Model
 						status = '" . BILL_HISTORICAL . "'
 					)
 				AND
-					bills.created_at > STR_TO_DATE('" . $from . " 00:00', '%Y-%m-%d %H:%i')
+					bills.invoice_date > STR_TO_DATE('" . $from . " 00:00', '%Y-%m-%d %H:%i')
 				AND
-					bills.created_at < STR_TO_DATE('" . $to . " 23:59', '%Y-%m-%d %H:%i')
+					bills.invoice_date < STR_TO_DATE('" . $to . " 23:59', '%Y-%m-%d %H:%i')
+				AND
+					invoice_id IS NOT NULL
 				GROUP BY 
-					year(bills.created_at), 
-					month(bills.created_at)
+					year(bills.invoice_date), 
+					month(bills.invoice_date)
 				ORDER BY
-					bills.created_at ASC				
+					bills.invoice_date ASC				
 			";
-		
-		return ($this->db->query($sql)->result_array());
 
+		return ($this->db->query($sql)->result_array());
 	}
 
 	// check if events under this bill were

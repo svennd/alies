@@ -17,9 +17,12 @@ require_once(dirname(__FILE__) . '/../../vendor/autoload.php');
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+use \Clegginabox\PDFMerger\PDFMerger;
+
 class Pdf
 {
 	private $dompdf; 
+	private $pdfmerge;
 
     public function __construct()
 	{
@@ -28,6 +31,8 @@ class Pdf
 		$options->set('isRemoteEnabled', true);
 
 	    $this->dompdf = new Dompdf($options);
+		$this->pdfmerge = new PDFMerger;
+
 	}
 
 	public function create($html, $filename, int $mode)
@@ -60,5 +65,16 @@ class Pdf
 	public function create_file($html, $filename)
 	{
 		$this->create($html, $filename, PDF_FILE);
+	}
+
+	public function merge_pdf(string $filename, array $list)
+	{
+		foreach ($list as $pdf)
+		{
+			$this->pdfmerge->addPDF($pdf, 'all');
+		}
+
+		$this->pdfmerge->merge('file', $filename, 'P');
+		return $filename;
 	}
 }

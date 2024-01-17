@@ -7,6 +7,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Export extends Admin_Controller
 {
 
+	# probably needs to be a configuration or something
+	private string $invoice_storage_path = "data/stored/.invoices/";
+
 	# constructor
 	public function __construct()
 	{
@@ -18,8 +21,39 @@ class Export extends Admin_Controller
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Booking_code_model', 'booking');
+
+		// merging pdf
+		$this->load->library('pdf'); 
 	}
 
+
+	public function index()
+	{
+        
+		/* input */
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-01") : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-t") : $this->input->post('search_to');
+
+		# bills -> in pdf & kluwer xml
+		$bills = $this->bills->get_yearly_earnings_by_date($search_from, $search_to)[0];
+		$checks = $this->bills
+			->where('invoice_id IS NULL', null, null, false, false, true)
+			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->count_rows();
+
+		# clients
+		# pets ?
+
+		$data = array(
+			"checks" 		=> $checks,
+			"bills" 		=> $bills,
+			"search_from"	=> $search_from,
+			"search_to"		=> $search_to,
+		);
+
+		$this->_render_page('export/index', $data);
+	}
 
 	/*
 		generic export function for owners
@@ -78,6 +112,51 @@ class Export extends Admin_Controller
 	}
 
 	/*
+		export invoices into a single pdf
+	 */
+	public function pdf($search_from, $search_to)
+	{
+		$bill_overview = $this->bills
+			->fields("id, invoice_id, invoice_date")
+			->where('invoice_id IS NOT NULL', null, null, false, false, true)
+			->where('invoice_date > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('invoice_date < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->order_by('invoice_date', 'asc')
+			->get_all();
+
+		$warning = false;
+		# check if pdf already exists
+		foreach ($bill_overview as $bill)
+		{
+			$invoice_date = $bill['invoice_date'];
+			$time 		= strtotime($invoice_date);
+			$filename 	= "bill_" . get_invoice_id($bill['invoice_id'], $invoice_date, $this->conf['invoice_prefix']['value']) . '.pdf';
+			$path 		= $this->invoice_storage_path . date('Y', $time) . '/' . date('W', $time) . '/';
+
+			if(!file_exists($path . $filename))
+			{
+				echo "warning : <a href='" . base_url('invoice/get_bill/' . $bill["id"]) . "'>" . $filename . "</a> not found, click this link to generate and try again.<br />";
+				$warning = true;
+			}
+			$list[] = $path . $filename;
+		}
+
+		if ($warning)
+		{
+			exit;
+		}
+		$filename = $this->pdf->merge_pdf($this->invoice_storage_path . "list" . $search_from . "_" . $search_to . ".pdf", $list);
+
+		// open this new file
+		header('Content-type: application/pdf');
+		header('Content-Disposition: inline; filename="' . $filename . '"');
+		header('Content-Transfer-Encoding: binary');
+		header('Content-Length: ' . filesize($filename));
+		@readfile($filename);
+		exit;
+	}
+
+	/*
 		generic export function for pets
 		following import_export_alies.docx guidelines
 	 */
@@ -129,7 +208,7 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 	
-	public function clients($domtree, $xmlRoot, $search_from, $search_to)
+	private function clients($domtree, $xmlRoot, $search_from, $search_to)
 	{
 		# owners
 		$clients = $this->get_owners($search_from, $search_to);

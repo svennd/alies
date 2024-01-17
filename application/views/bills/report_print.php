@@ -51,7 +51,7 @@
   <table width="100%">
     <tr>
 		<td valign="top" width="60%">
-			<h3 class="enlarge"><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?></h3>
+			<h3 class="enlarge"><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_header'); ?></h3>
 		</td>
         <td align="left" valign="top" class="letterhead">
 			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br>
@@ -72,7 +72,7 @@
   <hr style="min-height: 1px; border:0px; background: #DCDDE1;"/>
 <table width="100%">
 	<tr>
-		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_id'); ?></th>
+		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_id'); ?></th>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
 		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
 		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != BILL_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
@@ -127,7 +127,7 @@
         <th align="right"><?php echo $this->lang->line('Quantity'); ?></th>
         <th align="right"><?php echo $this->lang->line('Unit_price'); ?></th>
         <th align="right"><?php echo $this->lang->line('VAT'); ?></th>
-        <th align="right"><?php echo $this->lang->line('Price'); ?></th>
+        <th align="right"><?php echo $this->lang->line('Total'); ?></th>
       </tr>
     </thead>
     <tbody>

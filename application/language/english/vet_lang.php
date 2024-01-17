@@ -155,6 +155,7 @@ $lang['finish']         = 'Finish';
 $lang['attachments']         = 'Attachments';
 $lang['bill']         = 'Bill';
 $lang['check']          = 'Check';
+$lang['nota']           = 'Nota';
 $lang['tools']         = 'Tools';
 $lang['color']         = 'Color';
 $lang['custom_color']         = 'Custom Color';
