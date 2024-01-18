@@ -195,7 +195,7 @@ class Pets extends Vet_Controller
 									where(
 										array(
 												"pet" 			=> $pet_id,
-												// "no_history" 	=> 0 // perhaps this is needed
+												"no_history" 	=> 0
 												))->
 									order_by('created_at', 'DESC')->
 									get_all();

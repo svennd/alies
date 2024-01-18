@@ -112,7 +112,7 @@ input[type='radio']:checked {
 				<input type="hidden" id="current_breed" name="current_breed" value="<?php echo ($edit_mode && isset($pet['breed'])) ? $pet['breed']: 1; ?>">
 			</div>
 			<div class="col-md-6">
-				<label for="breeds2">x <?php echo $this->lang->line('breed'); ?></label>
+				<label for="second_breed">x <?php echo $this->lang->line('breed'); ?></label>
 				<select name="breed2" class="form-control" id="second_breed" data-placeholder='<?php echo ($edit_mode && isset($pet['breeds2'])) ? $pet['breeds2']['name']: ''; ?>'></select>
 				<input type="hidden" id="current_breed2" name="current_breed2" value="<?php echo ($edit_mode && isset($pet['breed2'])) ? $pet['breed2']: -1; ?>">
 			</div>

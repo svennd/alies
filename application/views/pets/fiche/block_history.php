@@ -13,15 +13,8 @@
 		</div>
 		<div class="dropdown no-arrow d-none d-sm-block">
 
-			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Basic example">
-				<a class="btn btn-outline-primary filter" data-search="disease" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('disease'); ?>"><i class="fas fa-fw fa-virus"></i></a>
-				<a class="btn btn-outline-primary filter" data-search="operation" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('operation'); ?>"><i class="fas fa-fw fa-hand-holding-medical"></i></a>
-				<!-- <a class="btn btn-outline-primary filter" data-search="medicine" href="#" role="button" data-toggle="tooltip" data-placement="top" title="medicine"><i class="fas fa-fw fa-prescription-bottle-alt"></i></a> -->
-				<a class="btn btn-outline-primary filter" data-search="clear" href="#" role="button" data-toggle="tooltip" data-placement="top" title="reset"><i class="fas fa-fw fa-undo-alt"></i></a>
-				<a class="btn btn-outline-danger" data-search="" href="#" role="button" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('no_history_explain'); ?>" id="toggleHidden"><i class="far fa-fw fa-eye-slash"></i></a>
-			</div>
-			<a href="<?php echo base_url(); ?>pets/export/<?php echo $pet['id']; ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
-			<a href="<?php echo base_url(); ?>pets/change_owner/<?php echo $pet['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
+			<a href="<?php echo base_url('pets/export/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
+			<a href="<?php echo base_url('pets/change_owner/' . $pet['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
 		</div>
 	</div>
 
@@ -99,11 +92,50 @@
 </div>
 
 <script type="text/javascript">
+
+function searchFor(term, table)
+{
+	table
+	.columns(1)
+	.search(term)
+	.draw();
+}
+
 document.addEventListener("DOMContentLoaded", function(){
 	var table = $("#dataTable").DataTable({
-		"pageLength": 10, 
-		"lengthMenu": [[10, -1], [10, "All"]],
+		"pageLength": 10,
 		"order": [[ 0, "desc" ]],
+		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+		buttons: [
+			{
+				text:'<i class="fas fa-fw fa-virus"></i>', className:'btn btn-outline-primary btn-sm', 
+				action: function (e, dt, node, config) {
+					searchFor('disease', dt);
+				},
+				init: function (api, node, config) {
+                    $(node).tooltip({
+                        title: '<?php echo $this->lang->line('disease'); ?>', placement: 'top', container: 'body'
+                    });
+                }
+			},
+			{
+				text:'<i class="fas fa-fw fa-hand-holding-medical"></i>', className:'btn btn-outline-primary btn-sm', 
+				action: function (e, dt, node, config) {
+					searchFor('operation', dt);
+				},
+				init: function (api, node, config) {
+                    $(node).tooltip({
+                        title: '<?php echo $this->lang->line('operation'); ?>', placement: 'top', container: 'body'
+                    });
+                }
+			},
+			{ text:'<i class="fas fa-fw fa-undo-alt"></i>', className:'btn btn-outline-danger btn-sm', 
+				action: function (e, dt, node, config) {
+					searchFor("", dt);
+				}
+				
+			}
+        ],
         responsive: {
             details: {
                 type: 'column',
@@ -117,15 +149,6 @@ document.addEventListener("DOMContentLoaded", function(){
         },
 		{ "targets": [ 1 ], "visible": false }
 	 ]
-	});
-
-	// hide nohistory first
-	table.rows().every(function() {
-		var value = this.data()[1];
-
-		if (value === 'nohistory') {
-		this.nodes().to$().hide();
-		}
 	});
 
 	// filter for types
@@ -147,35 +170,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			.draw();
 		}
 	});
-	
-	// toggle nohistory
-	function toggleHiddenRows() {
-        table.rows().every(function() {
-          var value = this.data()[1]; 
-
-          if (value === 'nohistory') {
-            var row = this.nodes().to$();
-
-            if (row.is(":hidden")) {
-              row.show();
-            } else {
-              row.hide();
-            }
-          }
-        });
-      }
-
-	$('#toggleHidden').on('click', function() {
-		$(this).toggleClass('btn-outline-danger btn-outline-success');
-		toggleHiddenRows();
 		
-		if ($(this).hasClass('btn-outline-success')) {
-        	$(this).html('<i class="fas fa-fw fa-eye"></i>');
-        } else {
-			$(this).html('<i class="far fa-fw fa-eye-slash"></i>');
-        }
-	});
-	
 	$('[data-toggle="tooltip"]').tooltip();
 });
 </script>
