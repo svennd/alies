@@ -24,7 +24,6 @@
 		<thead>
 			<tr>
 				<th><?php echo $this->lang->line('date'); ?></th>
-				<th>type</th>
 				<th data-priority="2"><?php echo $this->lang->line('title'); ?></th>
 				<th><?php echo $this->lang->line('vet'); ?></th>
 				<th><?php echo $this->lang->line('location'); ?></th>
@@ -40,7 +39,6 @@
 	?>
 	<tr>
 		<td data-sort="<?php echo strtotime($history['created_at']) ?>"><?php echo user_format_date($history['created_at'], $user->user_date); ?></td>
-		<td><?php echo ($history['no_history']) ? "nohistory" : get_event_type($history['type'], true); ?></td>
 		<td>
 		<?php if(preg_match('/lab:(\d*)/', $history['title'], $match)): ?>
 			<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" style="padding: 0.05rem 0.5rem;" target="_blank"><?php echo get_event_type($history['type']); ?> <?php echo $this->lang->line('Lab'); ?></a>
@@ -57,7 +55,7 @@
 							. ((isset($history['vet_2_sup'])) ? ', ' . $history['vet_2_sup']['first_name'] : '')
 							: 'unknown' ; ?></td>
 		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
-		<td>
+		<td data-search="<?php echo $history['type']; ?>">
 			<button class="btn btn-sm btn-outline-primary ana"><i class="fa-solid fa-eye"></i></button>
 			<a href="<?php echo base_url('events/event/' . $history['id']); ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-secondary not-allowed<?php else: ?> btn-outline-success<?php endif; ?>"><i class="fa-solid fa-pen"></i></a>
 		</td>
@@ -96,9 +94,9 @@
 function searchFor(term, table)
 {
 	table
-	.columns(1)
-	.search(term)
-	.draw();
+		.column(4)
+		.search(term)
+		.draw();
 }
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -110,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			{
 				text:'<i class="fas fa-fw fa-virus"></i>', className:'btn btn-outline-primary btn-sm', 
 				action: function (e, dt, node, config) {
-					searchFor('disease', dt);
+					searchFor(<?php echo DISEASE; ?>, dt);
 				},
 				init: function (api, node, config) {
                     $(node).tooltip({
@@ -121,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			{
 				text:'<i class="fas fa-fw fa-hand-holding-medical"></i>', className:'btn btn-outline-primary btn-sm', 
 				action: function (e, dt, node, config) {
-					searchFor('operation', dt);
+					searchFor(<?php echo OPERATION; ?>, dt);
 				},
 				init: function (api, node, config) {
                     $(node).tooltip({
@@ -131,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			},
 			{ text:'<i class="fas fa-fw fa-undo-alt"></i>', className:'btn btn-outline-danger btn-sm', 
 				action: function (e, dt, node, config) {
-					searchFor("", dt);
+					table.columns().search('').draw();
 				}
 				
 			}
@@ -147,28 +145,7 @@ document.addEventListener("DOMContentLoaded", function(){
             orderable: false,
             targets: -1
         },
-		{ "targets": [ 1 ], "visible": false }
 	 ]
-	});
-
-	// filter for types
-	$(".filter").click(function() {
-		let search = $(this).data("search");
-		$(".filter").removeClass("btn-outline-success");
-		$(this).addClass("btn-outline-success");
-		if (search == "clear")
-		{
-			table
-			.columns( 1 )
-			.search("")
-			.draw();
-		}
-		else{
-			table
-			.columns( 1 )
-			.search(search)
-			.draw();
-		}
 	});
 		
 	$('[data-toggle="tooltip"]').tooltip();
