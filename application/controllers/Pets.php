@@ -200,7 +200,7 @@ class Pets extends Vet_Controller
 									order_by('created_at', 'DESC')->
 									get_all();
 
-		$other_pets = $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->fields('id, name')->limit(5)->get_all();
+		$other_pets = $this->pets->other_pets($pet_info['owner'], $pet_id);
 
 		$data = array(
 			"pet"				=> $pet_info,

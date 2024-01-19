@@ -5,10 +5,9 @@
 			<div class="col mr-2">
 				<div class="text-xs font-weight-bold text-uppercase mb-1"><?php echo $this->lang->line('other_pets'); ?></div>
 				<div class="text-gray-800">
-				<ul>
-				<?php foreach($other_pets as $p): if($p['id'] == $pet['id']) { continue; }?>
-				
-				<li><a href="<?php echo base_url(); ?>pets/fiche/<?php echo $p['id']; ?>"><?php echo $p['name']; ?></a></li>
+				<ul class="list-unstyled">
+				<?php foreach($other_pets as $p): ?>
+					<li><?php echo get_symbol($p['type']); ?><a href="<?php echo base_url('pets/fiche/' . $p['id']); ?>"><?php echo $p['name']; ?></a></li>
 				<?php endforeach; ?>
 				</ul>
 				</div>

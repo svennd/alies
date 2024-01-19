@@ -53,8 +53,8 @@ class Events extends Vet_Controller
 
 		$pet_id 			= $event_info['pet'];
 		$pet_info 			= $this->pets->get($pet_id);
-		$other_pets 		= $this->pets->where(array('owner' => $pet_info['owner'], 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, name')->limit(5)->get_all();
-
+		$other_pets 		= $this->pets->other_pets($pet_info['owner'], $pet_id);
+		
 		# todo : write a custom function for this, too complex
 		$eprod 				= $this->eprod
 										->with_product('fields: id, name, unit_sell, btw_sell, vaccin, vaccin_freq')

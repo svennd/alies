@@ -154,4 +154,13 @@ class Pets_model extends MY_Model
 	{
 		return $this->with_breeds('field:name')->with_breeds2('field:name')->where(array("owner" => $owner))->order_by(array("birth, death"), "desc")->get_all();
 	}
+
+	/*
+		generate a list of pets of the owner
+		that isn't the current_pet
+	*/
+	public function other_pets(int $owner, int $pet_id, int $limit = 5)
+	{
+		return $this->where(array('owner' => $owner, 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, type, name')->limit($limit)->get_all();
+	}
 }
