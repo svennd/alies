@@ -36,18 +36,10 @@ class Invoice extends Vet_Controller
 		$search_to = (!is_null($search_to)) ? date("Y-m-d", $search_to) : ((!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d'));
 		
 		
-		# restrict normal vets to 250 (todo: make config variable)
-		$search_limit = 250;
+		# restrict normal vets to 250 or config value
+		$search_limit = (int) base64_decode($this->conf['RestrictBills']['value']) ? (int) base64_decode($this->conf['RestrictBills']['value']) : 250;
 		# set default lookback to 7 days for vets
 		$dt->modify('-7 day');
-
-		if ($this->ion_auth->in_group("admin"))
-		{
-			# set default lookback to ~1month
-			$dt->modify('-23 day');
-			# set restriction for admin loose
-			$search_limit = 5000;
-		}  
 
 		$search_from = (!is_null($search_from)) ? date("Y-m-d", $search_from) : ((!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d'));
 

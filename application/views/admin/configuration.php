@@ -13,6 +13,14 @@
 				
 				<div class="form-row">
 					<div class="form-group col-md-6">
+						<label for="RestrictBills">Restrict Bills</label>
+						<input type="text" class="form-control" id="RestrictBills" name="conf_RestrictBills" value="<?php echo (isset($config['RestrictBills'])) ? base64_decode($config['RestrictBills']) : ''; ?>" autocomplete="RestrictBills">
+						<small id="RestrictBillshelp" class="form-text text-muted">Maximum amount of invoices visible to vets. (default : 250)</small>
+					</div>
+				</div>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
 						<label for="due_date">Due date</label>
 						<input type="text" class="form-control" id="due_date" name="conf_due_date" value="<?php echo (isset($config['due_date'])) ? base64_decode($config['due_date']) : ''; ?>" autocomplete="due_date">
 						<small id="due_datehelp" class="form-text text-muted">Bills are due, this many days. (default : 30)</small>
