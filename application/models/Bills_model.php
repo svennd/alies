@@ -180,9 +180,9 @@ class Bills_model extends MY_Model
 			FROM
 				bills
 			WHERE
-				DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
+				DATE(invoice_date) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
 			AND
-				DATE(created_at) <= LAST_DAY('" . $date->format('Y-m-d') . "')
+				DATE(invoice_date) <= LAST_DAY('" . $date->format('Y-m-d') . "')
 			AND
 			(
 				status = '" . BILL_PAID . "' 

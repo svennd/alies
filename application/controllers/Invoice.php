@@ -158,7 +158,7 @@ class Invoice extends Vet_Controller
 		{
 			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id'], base64_decode($this->conf['struct_config']['value']));;
 			$data['struct'] = $struct;
-			$data['qr'] = $this->qr->create($total_brut, $struct);
+			$data['qr'] = ($total_brut > 0.01) ? $this->qr->create($total_brut, $struct) : false;
 			$data['BIC'] = base64_decode($this->conf['bic']['value']);
 			$data['IBAN'] = base64_decode($this->conf['iban']['value']);
 			$data['name_owner'] = base64_decode($this->conf['nameiban']['value']);
@@ -176,25 +176,26 @@ class Invoice extends Vet_Controller
 	}
 
 	# in case the client does not pay
-	public function bill_unpay($bill_id)
-	{
-		# make this traceable
-		$this->logs->logger(INFO, "bill_unpay", "bill_id: " . $bill_id);
+	// deprecated
+	// public function bill_unpay($bill_id)
+	// {
+	// 	# make this traceable
+	// 	$this->logs->logger(INFO, "bill_unpay", "bill_id: " . $bill_id);
 
-		$bill = $this->bills->get($bill_id);
+	// 	$bill = $this->bills->get($bill_id);
 
-		if ($bill['status'] != BILL_INCOMPLETE) {
-			$this->remove_from_stock($bill_id);
-		}
+	// 	if ($bill['status'] != BILL_INCOMPLETE) {
+	// 		$this->remove_from_stock($bill_id);
+	// 	}
 
-		# set status
-		$this->bills->update(array("status" => BILL_INCOMPLETE), $bill_id);
+	// 	# set status
+	// 	$this->bills->update(array("status" => BILL_INCOMPLETE), $bill_id);
 
-		# set all the events linked to this bill to closed so we can't add anything anymore
-		$this->events->where(array('payment' => $bill_id))->update(array("status" => STATUS_CLOSED));
+	// 	# set all the events linked to this bill to closed so we can't add anything anymore
+	// 	$this->events->where(array('payment' => $bill_id))->update(array("status" => STATUS_CLOSED));
 
-		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
-	}
+	// 	redirect('/invoice/get_bill/' . $bill_id, 'refresh');
+	// }
 
 	# remove products from stock
 	# set bill amount to payed part
@@ -260,12 +261,13 @@ class Invoice extends Vet_Controller
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
-	public function make_invoice_id(int $bill_id)
-	{
-		$is_modified = $this->bills->is_bill_modified($bill_id);
-		$this->bills->set_invoice_id($bill_id, $is_modified);
-		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
-	}
+	// deprecated
+	// public function make_invoice_id(int $bill_id)
+	// {
+	// 	$is_modified = $this->bills->is_bill_modified($bill_id);
+	// 	$this->bills->set_invoice_id($bill_id, $is_modified);
+	// 	redirect('/invoice/get_bill/' . $bill_id, 'refresh');
+	// }
 
 	# on bill_unpay we need to send this in the background
 	public function store_bill_msg(int $bill_id)

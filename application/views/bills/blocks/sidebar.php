@@ -1,7 +1,6 @@
 <div class="col-lg-3 mb-4">
     <?php if ($bill['status'] != BILL_PAID): ?>
 
-        <p class="lead"><?php echo $this->lang->line('payment'); ?> : <?php echo get_bill_status($bill['status']); ?></p>
         <?php
             $cash = round((float) $bill['cash'], 2);
             $card = round((float) $bill['card'], 2);
@@ -92,9 +91,12 @@
                 <label for="msg_invoice"><?php echo $this->lang->line('comment_on_bill'); ?></label>
                 <textarea class="form-control" id="msg_invoice" name="msg_invoice" rows="3"><?php echo (isset($bill['msg_invoice']) ? $bill['msg_invoice'] : ""); ?></textarea>
             </div>
-            </div>
+        </div>
 
-        <button type="submit" name="submit" value="1" class="btn btn-outline-success bounceit"><i class="fa-solid fa-house-medical-circle-check"></i> <?php echo $this->lang->line('payment_complete'); ?></button>
+        <button type="submit" name="submit" value="1" class="btn btn-outline-success bounceit"><i class="fa-solid fa-house-medical-circle-check"></i> <?php echo $this->lang->line('payment_process'); ?></button>
+        
+        <small><br/><?php echo $this->lang->line('payment'); ?> : <?php echo get_bill_status($bill['status']); ?></small>
+
     <?php endif; ?>
     
     <?php if ($bill['status'] == BILL_PAID): ?>
@@ -119,9 +121,4 @@
         <a href="#" class="btn btn-outline-success mx-2 bounceit" id="store_messages" onclick="event.preventDefault()"><i class="fa-solid fa-floppy-disk"></i> <?php echo $this->lang->line('store'); ?></a>
         
     <?php endif; ?>
-
-    <?php if ($bill['status'] != BILL_PAID && $bill['status'] != BILL_INCOMPLETE): ?>
-        <a href="<?php echo base_url(); ?>invoice/bill_unpay/<?php echo $bill['id']; ?>" class="btn btn-outline-danger mx-2 shakeit" id="bill_unpay" onclick="event.preventDefault()"><i class="fa-solid fa-house-medical-circle-xmark"></i> <?php echo $this->lang->line('drop_from_stock'); ?></a>
-    <?php endif; ?>
-
 </div>

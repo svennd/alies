@@ -221,6 +221,7 @@ $lang['payment']      = 'Betaling';
 $lang['payed']      = 'Betaald';
 $lang['payment_incomplete']   = 'Niet compleet';
 $lang['payment_complete']      = 'Betaling voldaan';
+$lang['payment_process']      = 'Factuur verwerken';
 $lang['drop_from_stock']      = 'Uit stock halen';
 $lang['client_id']      = 'Klantnummer';
 $lang['comment_on_bill']      = 'op de factuur';
