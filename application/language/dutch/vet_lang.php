@@ -61,6 +61,7 @@ $lang['sticky']            = 'Plakbriefjes';
 $lang['type_your_sticky']            = 'Schrijf uw bericht hier ...';
 $lang['sticky_saved']            = 'Plakbriefje bewaard!';
 $lang['logout']         = 'Uitloggen';
+$lang['stats']         = 'Statistieken';
 
 # password
 $lang['change_password']        = 'Wachtwoord wijzigen';

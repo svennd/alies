@@ -254,6 +254,30 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col py-2">
+                        <div class="card h-100 p-1">
+                            <img src="<?php echo base_url('assets/img/stats.png'); ?>" class="card-img-top" alt="stats">
+                            <div class="card-body text-center">
+                                <a href="<?php echo base_url('stats'); ?>" class="stretched-link"><?php echo $this->lang->line('stats'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col py-2">
+                        &nbsp;
+                    </div>
+                    <div class="col py-2">
+                        &nbsp;
+                    </div>
+                    <div class="col py-2">
+                        &nbsp;
+                    </div>
+                    <div class="col py-2">
+                        &nbsp;
+                    </div>
+                    
+                </div>
             </div> 
         </div>
 	</div>

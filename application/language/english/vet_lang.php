@@ -59,6 +59,7 @@ $lang['sticky']            = 'Sticky Notes';
 $lang['type_your_sticky']            = 'Type your message here...';
 $lang['sticky_saved']            = 'Sticky saved!';
 $lang['logout']         = 'logout';
+$lang['stats']         = 'Statistics';
 
 # password
 $lang['change_password']        = 'Change Password'; 
