@@ -214,6 +214,7 @@ $lang['transfer']               = 'Transfer';
 $lang['Payment']              = 'Payment';
 $lang['payment_complete']     = 'payment complete';
 $lang['payment_process']      = 'process invoice';
+$lang['payment_processing']      = 'Payment processing';
 $lang['payed']                = 'Payed';
 $lang['payment_incomplete']   = 'Incomplete';
 $lang['drop_from_stock']      = 'Drop from stock';

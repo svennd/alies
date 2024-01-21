@@ -9,6 +9,7 @@ class Migration_stats extends CI_Migration {
 	public function up()
 	{
 		$sql = array();
+		$sql[] = "ALTER TABLE `bills` ADD `transfer_verified` TINYINT NOT NULL DEFAULT '0' AFTER `transfer`;";
 		$sql[] = "ALTER TABLE `bills` CHANGE `total_net` `total_net` DECIMAL(10,2) NULL DEFAULT NULL;";
 		$sql[] = "ALTER TABLE `bills` CHANGE `total_brut` `total_brut` DECIMAL(10,2) NULL DEFAULT NULL;";
 		$sql[] = "CREATE TABLE `stats` (`id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(255) NOT NULL , `query` TEXT NOT NULL ,`help` text NOT NULL, `updated_at` DATETIME NULL , `created_at` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";

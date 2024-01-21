@@ -1,8 +1,7 @@
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		<div>
-        <a href="<?php echo base_url('reports'); ?>">Report</a> /
-        <a href="<?php echo base_url('reports/bills'); ?>">Invoices</a> /
+        <a href="<?php echo base_url('Invoice'); ?>">Invoices</a> /
          Edit #<?php echo get_bill_id($bill['id']); ?>
         </div>
 	</div>

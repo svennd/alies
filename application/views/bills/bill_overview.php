@@ -38,11 +38,6 @@
 					<th><?php echo $this->lang->line('date'); ?></th>
 					<th><?php echo $this->lang->line('invoice_id'); ?></th>
 					<th><?php echo $this->lang->line('amount'); ?></th>
-					<?php if($this->ion_auth->in_group("admin")): ?>
-						<th><?php echo $this->lang->line('net_price'); ?></th>
-					<?php else: ?>
-						<th><?php echo $this->lang->line('client_id'); ?></th>
-					<?php endif; ?>
 					<th><?php echo $this->lang->line('client'); ?></th>
 					<th><?php echo $this->lang->line('state'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
@@ -91,41 +86,46 @@
 								</small>
                             <?php endif; ?>
 					</td>
-					<?php if($this->ion_auth->in_group("admin")): ?>
-						<td data-sort="<?php echo $bill['total_net']; ?>"><?php echo number_format($bill['total_net'], 2); ?> &euro;</td>
-					<?php else: ?>
-						<td><?php echo $bill['owner']['user_id']; ?></td>
-					<?php endif; ?>	
 					<td><a href="<?php echo base_url('owners/detail/' . $bill['owner']['user_id']); ?>"><?php echo $bill['owner']['last_name']; ?></a>
-						<?php if($this->ion_auth->in_group("admin")): ?>
 						(<?php echo $bill['owner']['user_id']; ?>)
-						<?php endif; ?>
 					</td>
 					<td data-sort="<?php echo $bill['status']; ?>">
-						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']. '/1'); ?>" target="_blank" class="btn btn-sm <?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? 'btn-outline-success' : 'btn-outline-danger'; ?>">
-							<?php echo in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)) ? '<i class="fa-regular fa-fw fa-circle-check"></i> ' . $this->lang->line('payed') : '<i class="fa-regular fa-circle-xmark"></i> ' . $this->lang->line('payment_incomplete'); ?>
-						</a>
+						<?php
+							if (in_array($bill['status'], array(BILL_PAID, BILL_HISTORICAL)))
+							{
+								if ($transfer != 0 && $bill['transfer_verified'] == 1 || $transfer == 0)
+								{
+									$state = PAYMENT_PAID;
+									$color = 'btn-outline-success';
+									$icon = '<i class="fa-regular fa-fw fa-circle-check"></i>';
+								}
+								else
+								{
+									$state = PAYMENT_PROCESSING;
+									$color = 'btn-outline-warning';
+									$icon = '<i class="fa-solid fa-fw fa-gear fa-spin"></i>';
+								}
+							}
+							else
+							{
+								$state = PAYMENT_UNPAID;
+								$color = 'btn-outline-danger';
+								$icon = '<i class="fa-regular fa-fw fa-circle-xmark"></i>';
+							}
+						?>
+						<a href="<?php echo base_url('invoice/get_bill/' . $bill['id']); ?>" target="_blank" class="btn btn-sm <?php echo $color; ?>"><?php echo $icon; ?></a>
+						<?php if($state == PAYMENT_PROCESSING): ?>
+							<a href="<?php echo base_url('invoice/verify/' . $bill['id']); ?>" class="btn btn-sm btn-outline-primary ml-5"><i class="fa-regular fa-circle-check"></i> verify</a>
+						<?php endif; ?>
 					</td>
 					<td data-sort="<?php echo $bill['vet']['id']; ?>"><?php echo $bill['vet']['first_name']; ?></td>
 					<td><?php echo (isset($bill['location']['name'])) ? $bill['location']['name']: 'unknown'; ?></td>
 					<?php if($this->ion_auth->in_group("admin")): ?>
-					<td><a href='<?php echo base_url('admin_invoice/edit_bill/' . $bill['id']); ?>' class="btn btn-outline-danger btn-sm">edit</a></td>
+						<td data-search="<?php echo (($transfer != 0) ? 1 : "0") . $bill['transfer_verified']; ?>"><a href='<?php echo base_url('admin_invoice/edit_bill/' . $bill['id']); ?>' class="btn btn-outline-danger btn-sm">edit</a></td>
 					<?php endif; ?>
 					</tr>
 				<?php endforeach; ?>
 				</tbody>
-
-				<?php if($this->ion_auth->in_group("admin")): ?>
-				<tfoot>
-					<tr>
-						<th>&nbsp;</th>
-						<th>&nbsp;</th>
-						<th class="bg-secondary text-white" colspan="1">&nbsp;</th>
-						<th class="bg-secondary text-white" colspan="1">&nbsp;</th>
-						<th colspan="5">&nbsp;</th>
-					</tr>
-				</tfoot>
-				<?php endif; ?>
 				</table>
 			<?php else: ?>
 				No bills in this view
@@ -139,7 +139,7 @@
 
 <script type="text/javascript">
 const USER_ID = <?php echo $this->user->id; ?>;
-const VET_COLUMN = 6;
+const VET_COLUMN = 5;
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -150,6 +150,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		buttons: [
 			<?php if($this->ion_auth->in_group("admin")): ?>
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+			{ text:'<i class="fa-solid fa-fw fa-money-bill-transfer"></i>', className:'btn btn-outline-danger btn-sm', 
+				action: function (e, dt, node, config) {
+					dt
+					.columns(7)
+					.search(10)
+					.draw();
+				}
+			},
 			<?php else: ?>
             { text:'<i class="fa-solid fa-fw fa-users"></i>', className:'btn btn-outline-success btn-sm', 
 				action: function (e, dt, node, config) { 
@@ -170,39 +178,17 @@ document.addEventListener("DOMContentLoaded", function(){
 						}
 					});
 				}
-				
+			},
+			{ text:'<i class="fa-solid fa-fw fa-rotate-right"></i>', className:'btn btn-outline-primary btn-sm', 
+				action: function (e, dt, node, config) {
+					dt
+					.columns(7)
+					.search("")
+					.draw();
+				}
 			}
         ],
-		"order": [[0, 'desc']],
-		"footerCallback": function(row, data, start, end, display) {
-				var api = this.api();
-
-				api.columns(2, {
-					page: 'current'
-				}).every(function() {
-					var sum = this
-					.nodes()
-					.reduce(function(a, b) {
-						var x = parseFloat(a) || 0;
-						var y = parseFloat($(b).attr('data-sort')) || 0;
-						return x + y;
-					}, 0);
-					$(this.footer()).html(sum.toFixed(2) + ' &euro;');
-				});
-
-				api.columns(3, {
-					page: 'current'
-				}).every(function() {
-					var sum = this
-					.nodes()
-					.reduce(function(a, b) {
-						var x = parseFloat(a) || 0;
-						var y = parseFloat($(b).attr('data-sort')) || 0;
-						return x + y;
-					}, 0);
-					$(this.footer()).html(sum.toFixed(2) + ' &euro;');
-				});
-		}
+		"order": [[0, 'desc']]
 	});
 
 	<?php if(!$this->ion_auth->in_group("admin")): ?>

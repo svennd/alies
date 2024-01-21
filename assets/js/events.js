@@ -106,6 +106,7 @@ function add_line()
 				var parsedData = JSON.parse(response);
 				add_table_line(parsedData);
 				enable_generate_invoice();
+				$("#remove_event_button").hide();
 				if(parsedData.vaccin == 1) { 
 					// reload page
 					location.reload();

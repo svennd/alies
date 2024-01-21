@@ -1,3 +1,6 @@
+<?php
+$transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 || $bill['transfer'] == 0);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -81,7 +84,7 @@
 		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></td>
 		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? date_format(date_create($bill['created_at']), "d-m-Y") : date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
 		<td align="center">
-			<?php if ($bill['status'] != BILL_PAID): ?>
+			<?php if ($bill['status'] != BILL_PAID || !$transfer_complete): ?>
 				<?php echo date('d-m-Y', strtotime($bill['invoice_date']. ' +'. $due_date_days .' days')); ?>
 			<?php else: ?>
 				<i><?php echo ($bill['status'] == BILL_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
@@ -224,7 +227,7 @@ foreach ($print as $pet_id => $event):
 
 <br/>
 <br/>
-<?php if($bill['status'] != BILL_PAID): ?>
+<?php if($bill['status'] != BILL_PAID || !$transfer_complete): ?>
 <div style="border:1px solid #B9B9B9; border-radius:15px; padding:5px; min-height:100px;">
 <table width="100%">
 	<tr>

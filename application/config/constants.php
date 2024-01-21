@@ -119,6 +119,7 @@ define('PAYMENT_UNPAID', 1); 		// calculated bill
 define('PAYMENT_PARTIALLY', 2); 	// payed partially
 define('PAYMENT_PAID', 3);			// fully payed
 define('PAYMENT_NON_COLLECTABLE', 4); // can't be collected anymore
+define('PAYMENT_PROCESSING', 5);	// not yet verified
 
 # event w/o a bill
 # for imported ones

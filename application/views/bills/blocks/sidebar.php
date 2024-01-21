@@ -100,12 +100,27 @@
     <?php endif; ?>
     
     <?php if ($bill['status'] == BILL_PAID): ?>
-        <p class="lead"><?php echo $this->lang->line('payment_complete'); ?></p>
         <?php
             $cash = round((float) $bill['cash'], 2);
             $card = round((float) $bill['card'], 2);
+            $transfer = round((float) $bill['transfer'], 2);
         ?>
-        <?php echo $this->lang->line('payed'); ?> : <?php echo $bill['total_brut']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;)
+
+        <p class="lead"><?php echo ($transfer != 0 && $bill['transfer_verified'] == 0) ?  '<i class="fa-solid fa-fw fa-gear fa-spin"></i> ' . $this->lang->line('payment_processing') : $this->lang->line('payment_complete'); ?></p>
+        <?php
+            if ($transfer != 0 && $bill['transfer_verified'] == 0)
+            {
+                if ($this->ion_auth->in_group("admin"))
+                {
+                    echo '<a href="' . base_url('invoice/verify/' . $bill['id']) . '" class="btn btn-sm btn-outline-primary"><i class="fa-regular fa-circle-check"></i> verify</a><br/><br/>';
+                }
+                else
+                {
+                    echo '<p class="lead">' . $this->lang->line('payment_not_verified') . '</p>';
+                }
+            }
+        ?>
+        <?php echo $this->lang->line('payed'); ?> : <?php echo $bill['total_brut']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;, <?php echo $this->lang->line('transfer'); ?> : <?php echo $transfer; ?> &euro;)
         
         <div class="form-group">
             <label for="msg"><?php echo $this->lang->line('comment'); ?> (<?php echo $this->lang->line('comment_internal'); ?>)</label>

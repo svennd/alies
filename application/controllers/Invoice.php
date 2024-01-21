@@ -174,6 +174,13 @@ class Invoice extends Vet_Controller
 			$this->_render_page('bills/report', $data);
 		}
 	}
+	public function verify(int $bill_id)
+	{
+		$this->bills->update(array("transfer_verified" => 1), $bill_id);
+		$this->logs->logger(DEBUG, "verify_transfer", "bill_id: " . $bill_id);
+		
+		redirect('/invoice', 'refresh');
+	}
 
 	# in case the client does not pay
 	// deprecated
