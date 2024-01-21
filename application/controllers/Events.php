@@ -335,14 +335,17 @@ class Events extends Vet_Controller
 		{
 			foreach ($eprod as $prod) {
 				if ($prod['price_ori_net'] != 0) {
-					$new_net_price = $prod['price_ori_net'] * ((100 - $reduction) / 100);
+					$new_unit_price = round($prod['price_ori_net']/$prod['volume'], 2) * ((100 - $reduction) / 100);
 				} else {
-					$new_net_price = $prod['price_net'] * ((100 - $reduction) / 100);
+					$new_unit_price = $prod['unit_price'] * ((100 - $reduction) / 100);
 				}
-
+				$new_net 		= $new_unit_price * $prod['volume'];
+				$brut_price 	= $new_net * (1 + ($prod['btw']/100));
+				
 				$this->eprod->where(array('id' => $prod['id'], 'event_id' => $event_id))->update(array(
-								"price_net" 			=> $new_net_price,
-								"price_brut" 			=> $new_net_price * ((100 + $prod['btw'])/100),
+								"price_net" 			=> $new_net,
+								"unit_price" 			=> $new_unit_price,
+								"price_brut" 			=> $brut_price,
 								"price_ori_net"			=> ($prod['price_ori_net'] != 0) ? $prod['price_ori_net'] : $prod['price_net'],
 								"reduction_reason"		=> "AUTO_REDUCTION"
 							));
@@ -354,13 +357,17 @@ class Events extends Vet_Controller
 		{
 			foreach ($eproc as $proc) {
 				if ($proc['price_ori_net'] != 0) {
-					$new_net_price = $proc['price_ori_net'] * ((100 - $reduction) / 100);
+					$new_unit_price = round($proc['price_ori_net']/$proc['volume'], 2) * ((100 - $reduction) / 100);
 				} else {
-					$new_net_price = $proc['price_net'] * ((100 - $reduction) / 100);
+					$new_unit_price = $proc['unit_price'] * ((100 - $reduction) / 100);
 				}
+				$new_net 		= $new_unit_price * $proc['volume'];
+				$brut_price 	= $new_net * (1 + ($proc['btw']/100));
+
 				$this->eproc->where(array('id' => $proc['id'], 'event_id' => $event_id))->update(array(
-								"price_net" 			=> $new_net_price,
-								"price_brut" 			=> $new_net_price * ((100 + $proc['btw'])/100),
+								"price_net" 			=> $new_net,
+								"unit_price" 			=> $new_unit_price,
+								"price_brut" 			=> $brut_price,
 								"price_ori_net"			=> ($proc['price_ori_net'] != 0) ? $proc['price_ori_net'] : $proc['price_net'],
 								"reduction_reason"		=> "AUTO_REDUCTION"
 							));
