@@ -308,6 +308,7 @@ $lang['btw_sell']         = 'btw sell';
 
 # product page
 $lang['search_product']         = 'Search Product'; 
+$lang['search_product_help']    = 'Search for a product or action by name, wholesale name or abbreviation';
 $lang['new_product']            = 'New Product'; 
 $lang['product_sheet']          = 'Product sheet'; 
 $lang['expired']                = 'Expired'; 

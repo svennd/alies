@@ -6,24 +6,53 @@
 				<div><?php echo $this->lang->line('search_product'); ?></div>
 				<div class="dropdown no-arrow">
 	  			<?php if ($this->ion_auth->in_group("admin")): ?>
-					  <a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-plus"></i><?php echo $this->lang->line('new_product'); ?></a>
+					  <a href="<?php echo base_url('products/new'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-plus"></i><?php echo $this->lang->line('new_product'); ?></a>
 				  <?php endif; ?>
 				</div>		
 			</div>
-            <div class="card-body">
-				<form action="<?php echo base_url(); ?>products" method="post" autocomplete="off" class="form-inline">
-					<label class="sr-only" for="name"><?php echo $this->lang->line('product_sheet'); ?></label>
-					<input type="text" class="form-control mb-2 mr-sm-2 form-control-sm" id="name" name="name" autocomplete="false" placeholder="<?php echo (isset($search_q)) ? $search_q : $this->lang->line('product_sheet'); ?>">
-					<button type="submit" name="submit" value="search_product" class="btn btn-primary btn-sm mb-2"><?php echo $this->lang->line('title_search'); ?></button>
-					<a href="<?php echo base_url('products/product_list'); ?>" class="btn btn-success btn-sm mb-2 ml-2"><i class="fas fa-list"></i> <?php echo $this->lang->line('list_products'); ?></a>
+			<div class="card-body">
+				<form action="<?php echo base_url('products'); ?>" method="get" autocomplete="off">
+				<div class="row align-items-center justify-content-between px-1">
+					<div class="col-lg-8">
+						<div class="d-none d-sm-block">
+							<p class="lead mb-4"><?php echo $this->lang->line('search_product_help'); ?></p>
+						</div>
+						<div class="shadow rounded">
+						  <div class="form-group has-search">
+							<span class="fa fa-search form-control-feedback"></span>
+							 <div class="input-group">
+								<input type="text" class="form-control" name="search_query" placeholder="search" value="">
+								<div class="input-group-append">
+								  <button class="btn btn-primary" type="submit" type="button">
+									<div class="d-none d-sm-block"><?php echo $this->lang->line('title_search'); ?></div>
+									<div class="d-block d-sm-none d-md-none">S</div>
+								  </button>
+									<a href="<?php echo base_url('products/product_list'); ?>" class="btn btn-success"><i class="fas fa-list"></i> <?php echo $this->lang->line('list_products'); ?></a>
+								</div>
+							</div>
+						  </div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<img class="img-fluid" src="<?php echo base_url('assets/img/product_search.png'); ?>">
+					</div>
+				</div>
 				</form>
-			<?php if ($search): ?>
+			<?php if ($search_product): ?>
 			<ul>
-				<?php foreach($search as $sear): ?>
+				<?php foreach($search_product as $sear): ?>
 					<li><a href="<?php echo base_url(); ?>products/profile/<?php echo $sear['id']; ?>"><?php echo $sear['name']; ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 			<?php endif; ?>
+			<?php if ($search_procedure): ?>
+			<ul>
+				<?php foreach($search_procedure as $sear): ?>
+					<li><?php echo $sear['name']; ?> (procedure)</li>
+				<?php endforeach; ?>
+			</ul>
+			<?php endif; ?>
+
 			</div>
 		</div>
 

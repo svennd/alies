@@ -315,6 +315,7 @@ $lang['btw_sell']         = 'btw verkoop';
 
 # product page
 $lang['search_product']         = 'Product opzoeken'; 
+$lang['search_product_help']    = 'Zoek een product of handeling op naam, groothandel naam of afkorting'; 
 $lang['new_product']            = 'Nieuw Product'; 
 $lang['product_sheet']          = 'Product fiche'; 
 $lang['expired']                = 'Vervallen'; 

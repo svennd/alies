@@ -34,7 +34,7 @@ class Products extends Vet_Controller
 					$this->stock->get_all_products($clocation);
 
 		$data = array(
-						"search_q"					=> $this->input->post('name'),
+						"search_q"					=> $this->input->get('search_query'),
 						"types" 					=> $this->prod_type->get_all(),
 						"expired"					=> $this->stock
 																		->fields('eol, volume')
@@ -47,7 +47,8 @@ class Products extends Vet_Controller
 						"locations" 			=> $this->location,
 						"success" 				=> $success,
 						"clocation"				=> $clocation,
-						"search"				=> $this->products->search_product($this->input->post('name')),
+						"search_product"		=> $this->products->search_product($this->input->get('search_query')),
+						"search_procedure"		=> $this->procedures->search_procedure($this->input->get('search_query')),
 						"products" 				=> $products,
 						);
 
