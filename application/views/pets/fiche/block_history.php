@@ -7,15 +7,7 @@
 <!-- full screen -->
 <div class="card mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div>
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / 
-			<?php echo $pet['name'] ?> <small>(#<?php echo $pet['id']; ?>)</small>
-		</div>
-		<div class="dropdown no-arrow d-none d-sm-block">
-
-			<a href="<?php echo base_url('pets/export/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
-			<a href="<?php echo base_url('pets/change_owner/' . $pet['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
-		</div>
+		history
 	</div>
 
 	<div class="card-body">
