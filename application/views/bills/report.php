@@ -35,7 +35,7 @@
 	                <div class="row px-5 py-2">
                         <div class="col-md-12">
 							<?php
-							$total_already_payed = $bill['cash'] + $bill['transfer'] + $bill['card'];
+							$total_already_payed = $bill['cash'] + (($bill['transfer_verified'] == 1 ) ? $bill['transfer'] : 0) + $bill['card'];
 							$sum = 0.0;
 							foreach ($print as $pet_id => $event_details):
 								

@@ -109,7 +109,7 @@ define('BILL_UNPAID', 2);       # ???
 define('BILL_INCOMPLETE', 3);   # incomplete or no payment, but stock has been dropped
 define('BILL_PAID', 4);         # fully payed bill, invoice_id generated
 define('BILL_OVERDUE', 5);      # not paid and beyond due date -- not implemented
-define('BILL_ONHOLD', 6);       # might be complete, but verficiation needed -- not implemented
+define('BILL_ONHOLD', 6);       # might be complete, but verficiation needed
 define('BILL_HISTORICAL', 7);   # imported bills
 
 # event / bill payed

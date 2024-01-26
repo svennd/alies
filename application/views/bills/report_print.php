@@ -94,7 +94,7 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
 			<?php if($bill['card'] > 0 || $bill['cash'] > 0 || $bill['transfer'] > 0): ?>
 				<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
 				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><br/><?php endif; ?>
-				<?php if ($bill['transfer'] != 0.00) : ?><?php echo $this->lang->line('transfer'); ?>: &euro; <?php echo $bill['transfer']; ?><?php endif; ?>
+				<?php if ($bill['transfer'] != 0.00 && $transfer_complete) : ?><?php echo $this->lang->line('transfer'); ?>: &euro; <?php echo $bill['transfer']; ?><?php endif; ?>
 			<?php endif; ?>
 		</td>
 	</tr>
@@ -235,7 +235,7 @@ foreach ($print as $pet_id => $event):
 		<table width="100%">
 			<tr>
 				<td><?php echo $this->lang->line('to_pay'); ?></td>>
-				<td><?php echo number_format($bill['total_brut']-($bill['card'] + $bill['cash'] + $bill['transfer']), 2); ?> &euro;</td>
+				<td><?php echo number_format($bill['total_brut']-($bill['card'] + $bill['cash'] + (($bill['transfer'] && $transfer_complete) ? $bill['transfer'] : 0)), 2); ?> &euro;</td>
 			</tr>
 			<tr>
 				<td><?php echo $this->lang->line('account_number'); ?></td>

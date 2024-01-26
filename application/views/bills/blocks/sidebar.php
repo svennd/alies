@@ -1,5 +1,5 @@
 <div class="col-lg-3 mb-4">
-    <?php if ($bill['status'] != BILL_PAID): ?>
+    <?php if ($bill['status'] != BILL_PAID && $bill['status'] != BILL_ONHOLD): ?>
 
         <?php
             $cash = round((float) $bill['cash'], 2);
@@ -99,7 +99,7 @@
 
     <?php endif; ?>
     
-    <?php if ($bill['status'] == BILL_PAID): ?>
+    <?php if ($bill['status'] == BILL_PAID || $bill['status'] == BILL_ONHOLD): ?>
         <?php
             $cash = round((float) $bill['cash'], 2);
             $card = round((float) $bill['card'], 2);

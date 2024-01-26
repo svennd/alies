@@ -176,33 +176,11 @@ class Invoice extends Vet_Controller
 	}
 	public function verify(int $bill_id)
 	{
-		$this->bills->update(array("transfer_verified" => 1), $bill_id);
+		$this->bills->update(array("transfer_verified" => 1, "status" => BILL_PAID), $bill_id);
 		$this->logs->logger(DEBUG, "verify_transfer", "bill_id: " . $bill_id);
 		
 		redirect('/invoice', 'refresh');
 	}
-
-	# in case the client does not pay
-	// deprecated
-	// public function bill_unpay($bill_id)
-	// {
-	// 	# make this traceable
-	// 	$this->logs->logger(INFO, "bill_unpay", "bill_id: " . $bill_id);
-
-	// 	$bill = $this->bills->get($bill_id);
-
-	// 	if ($bill['status'] != BILL_INCOMPLETE) {
-	// 		$this->remove_from_stock($bill_id);
-	// 	}
-
-	// 	# set status
-	// 	$this->bills->update(array("status" => BILL_INCOMPLETE), $bill_id);
-
-	// 	# set all the events linked to this bill to closed so we can't add anything anymore
-	// 	$this->events->where(array('payment' => $bill_id))->update(array("status" => STATUS_CLOSED));
-
-	// 	redirect('/invoice/get_bill/' . $bill_id, 'refresh');
-	// }
 
 	# remove products from stock
 	# set bill amount to payed part
@@ -231,11 +209,11 @@ class Invoice extends Vet_Controller
 
 			# update the bill
 			$total_payed = ($cash_value + $card_value + $transfer_value) - (float)$bill['total_brut'];
-			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? BILL_PAID : BILL_INCOMPLETE;
+			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? (($transfer_value != 0) ? BILL_ONHOLD : BILL_PAID) : BILL_INCOMPLETE;
 
 			# check if bill was modified
 			# only run once since its "expensive"
-			if ($status == BILL_PAID) { $is_modified = $this->bills->is_bill_modified($bill_id); }
+			if ($status == BILL_PAID || $status == BILL_ONHOLD) { $is_modified = $this->bills->is_bill_modified($bill_id); }
 
 			$this->bills->update(array(
 								"status" 	=> $status, 
