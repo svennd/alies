@@ -169,114 +169,90 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/stock_error.png'); ?>" class="card-img-top" alt="stock_error">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('stock/stock_check'); ?>" class="stretched-link"><?php echo $this->lang->line('stock_error'); ?><?php echo ($stock_error_count > 0) ? " (" . $stock_error_count . ")" : "" ; ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/wholesale.png'); ?>" class="card-img-top" alt="wholesale">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('import/import_covetrus'); ?>" class="stretched-link"><?php echo $this->lang->line('wholesale'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/settings.png'); ?>" class="card-img-top" alt="settings">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('admin/settings'); ?>" class="stretched-link"><?php echo $this->lang->line('settings'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/breeds.png'); ?>" class="card-img-top" alt="breeds">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('breeds'); ?>" class="stretched-link"><?php echo $this->lang->line('breeds'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/stock_list.png'); ?>" class="card-img-top" alt="stock_list">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('reports/stock_list'); ?>" class="stretched-link"><?php echo $this->lang->line('stock_list'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div style="display:flex; flex-wrap: wrap; gap: 1em;">
+                <?php 
+    $tiles = array(
+                array(
+                    'img' => 'stock_error.png',
+                    'alt' => 'stock_error',
+                    'link' => 'stock/stock_check',
+                    'text' => $this->lang->line('stock_error') . ' (' . $stock_error_count . ')',
+                ),
+                array(
+                    'img' => 'wholesale.png',
+                    'alt' => 'wholesale',
+                    'link' => 'import/import_covetrus',
+                    'text' => $this->lang->line('wholesale'),
+                ),
+                array(
+                    'img' => 'settings.png',
+                    'alt' => 'settings',
+                    'link' => 'admin/settings',
+                    'text' => $this->lang->line('settings'),
+                ),
+                array(
+                    'img' => 'breeds.png',
+                    'alt' => 'breeds',
+                    'link' => 'breeds',
+                    'text' => $this->lang->line('breeds'),
+                ),
+                array(
+                    'img' => 'stock_list.png',
+                    'alt' => 'stock_list',
+                    'link' => 'reports/stock_list',
+                    'text' => $this->lang->line('stock_list'),
+                ),
+                array(
+                    'img' => 'locations.png',
+                    'alt' => 'locations',
+                    'link' => 'admin/locations',
+                    'text' => $this->lang->line('locations'),
+                ),
+                array(
+                    'img' => 'types.png',
+                    'alt' => 'types',
+                    'link' => 'admin/product_types',
+                    'text' => $this->lang->line('product_types'),
+                ),
+                array(
+                    'img' => 'backup.png',
+                    'alt' => 'backup',
+                    'link' => 'backup',
+                    'text' => $this->lang->line('backup'),
+                ),
+                array(
+                    'img' => 'booking.png',
+                    'alt' => 'booking',
+                    'link' => 'admin/booking',
+                    'text' => $this->lang->line('booking_codes'),
+                ),
+                array(
+                    'img' => 'members.png',
+                    'alt' => 'members',
+                    'link' => 'member',
+                    'text' => $this->lang->line('user_mgm'),
+                ),
+                array(
+                    'img' => 'stats.png',
+                    'alt' => 'stats',
+                    'link' => 'stats',
+                    'text' => $this->lang->line('stats'),
+                ),
+                
+    );
+?>
 
-                <div class="row">
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/locations.png'); ?>" class="card-img-top" alt="Locations">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('admin/locations'); ?>" class="stretched-link"><?php echo $this->lang->line('locations'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/types.png'); ?>" class="card-img-top" alt="types">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('admin/product_types'); ?>" class="stretched-link"><?php echo $this->lang->line('product_types'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/backup.png'); ?>" class="card-img-top" alt="backup">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('backup'); ?>" class="stretched-link"><?php echo $this->lang->line('backup'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/booking.png'); ?>" class="card-img-top" alt="backup">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('admin/booking'); ?>" class="stretched-link"><?php echo $this->lang->line('booking_codes'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/members.png'); ?>" class="card-img-top" alt="members">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('member'); ?>" class="stretched-link"><?php echo $this->lang->line('user_mgm'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<?php foreach($tiles as $tile): ?>
+    <div style="width:190px;">
+        <div class="card h-100 p-1">
+            <img src="<?php echo base_url('assets/img/' . $tile['img']); ?>" class="card-img-top" alt="<?php echo $tile['alt']; ?>">
+            <div class="card-body text-center">
+                <a href="<?php echo base_url($tile['link']); ?>" class="stretched-link"><?php echo $tile['text']; ?></a>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
 
-                <div class="row">
-                    <div class="col py-2">
-                        <div class="card h-100 p-1">
-                            <img src="<?php echo base_url('assets/img/stats.png'); ?>" class="card-img-top" alt="stats">
-                            <div class="card-body text-center">
-                                <a href="<?php echo base_url('stats'); ?>" class="stretched-link"><?php echo $this->lang->line('stats'); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col py-2">
-                        &nbsp;
-                    </div>
-                    <div class="col py-2">
-                        &nbsp;
-                    </div>
-                    <div class="col py-2">
-                        &nbsp;
-                    </div>
-                    <div class="col py-2">
-                        &nbsp;
-                    </div>
-                    
                 </div>
             </div> 
         </div>
