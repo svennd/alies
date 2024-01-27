@@ -60,10 +60,8 @@
           <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
 
-      <?php if (!$this->ion_auth->in_group("admin")): ?>
       <li class="nav-item" id="help">
       <a class="nav-link" href="<?php echo base_url('help/vet'); ?>">
           <i class="fa-regular fa-fw fa-circle-question"></i>
           <span>Help</span></a>
       </li> 
-      <?php endif; ?>

@@ -10,18 +10,7 @@
             <div class="card-body">
   <div class="accordion">
 
-    <!-- item -->
-    <div class="accordion-item">
-      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Hoe hou ik de stock correct bij een verlies van (lot) product ?</span><span class="icon" aria-hidden="true"></span></button>
-      <div class="accordion-content">
-        <p>
-			Wanneer een lot komt te vervallen zal het volledige lot te vinden zijn bij de <a href="<?php echo base_url('stock/expired_stock'); ?>">vervallen producten pagina</a>.<br/>
-			Wanneer een product verloren gaat, bijvoorbeeld door een ongeval, kan je dit (deel van) een lot verwijderen uit de stock door naar het profiel van het product te gaan. (Producten -> Product opzoeken, product fiche -> tab blad stock)<br/>
-			En vervolgens op dit icoontje klikken <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-person-falling-burst"></i></a> om een (deel van) het lot te verwijderen.
-		</p>
-      </div>
-    </div>
-
+    <h5>Klanten</h5>
     <!-- item -->
     <div class="accordion-item">
       <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Hoe kan ik een klant opzoeken ?</span><span class="icon" aria-hidden="true"></span></button>
@@ -88,6 +77,51 @@
       </div>
     </div>
 
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat betekenen de kleuren bij kant opzoekingen ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>Er zijn 4 mogelijke statussen voor klanten. Deze worden weergegeven met een kleur. <br/>
+            <table class="table table-sm">
+            <tr>
+                <th>Kleur</th>
+                <th>Beschrijving</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-danger">rood</span></td>
+                <td>De klant is aangeduid als, klant met schulden.</td>
+            </tr>
+            <tr>
+                <td><span class="badge" style="color:#fff;background-color:#a77628;">bruin</span></td>
+                <td>De klant is aangeduid als, klant met beperk/laag budget.</td>
+            </tr>
+            <tr>
+                <td><s>Geschrapt</s></td>
+                <td>Ongeldige klant, gelieve niet te gebruiken.</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-primary">blauw</span></td>
+                <td>Gewone klant</td>
+            </tr>
+            </table>
+            Voorbeeld van deze statussen ziet U hieronder :<br/>
+            <img src='<?php echo base_url('assets/promo/help_clients.png'); ?>' class='img-fluid' alt='client colors' />
+		</p>
+      </div>
+    </div>
+
+    <h5 class="pt-4">Varia</h5>
+    <!-- item -->
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Hoe hou ik de stock correct bij een verlies van (lot) product ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>
+			Wanneer een lot komt te vervallen zal het volledige lot te vinden zijn bij de <a href="<?php echo base_url('stock/expired_stock'); ?>">vervallen producten pagina</a>.<br/>
+			Wanneer een product verloren gaat, bijvoorbeeld door een ongeval, kan je dit (deel van) een lot verwijderen uit de stock door naar het profiel van het product te gaan. (Producten -> Product opzoeken, product fiche -> tab blad stock)<br/>
+			En vervolgens op dit icoontje klikken <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-person-falling-burst"></i></a> om een (deel van) het lot te verwijderen.
+		</p>
+      </div>
+    </div>
+
     <!-- item -->
     <div class="accordion-item">
       <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Welke symbolen worden er gebruikt voor betalingen ?</span><span class="icon" aria-hidden="true"></span></button>
@@ -119,6 +153,9 @@
 		</p>
       </div>
     </div>
+
+
+
   </div>
 </div>
 
