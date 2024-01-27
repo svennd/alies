@@ -190,8 +190,8 @@ input[type='radio']:checked {
 <script type="text/javascript">
 
 document.addEventListener("DOMContentLoaded", function(){
-	$(document).ready(function(){
-	$("#chip").inputmask("***-***-***-***-***");
+$(document).ready(function(){
+		$("#chip").inputmask("***-***-***-***-***");
 });
 
 const url = '<?php echo base_url('breeds/search_breed/'); ?>';

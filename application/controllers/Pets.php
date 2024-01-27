@@ -150,7 +150,7 @@ class Pets extends Vet_Controller
 											"breed2" 		=> $breed2,
 											"color" 		=> $this->input->post('color'),
 											"hairtype" 		=> $this->input->post('hairtype'),
-											"chip" 			=> $this->input->post('chip'),
+											"chip" 			=> str_replace('-', '', $this->input->post('chip')),
 											"last_weight" 	=> $this->input->post('weight'),
 											"nr_vac_book" 	=> $this->input->post('vacbook'),
 											"nutritional_advice" => $this->input->post('nutritional_advice'),

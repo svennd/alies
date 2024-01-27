@@ -219,7 +219,7 @@ document.onmousemove = function() {
 <?php endif; ?>
   </script>
 
-<div class="work-in-progress"><i class="fa-solid fa-person-digging"></i></div>
+<!-- <div class="work-in-progress"><i class="fa-solid fa-person-digging"></i></div> -->
 </body>
 
 </html>
