@@ -47,7 +47,8 @@ foreach ($locations as $l)
 
 		<div class="row">
 			<div class="col-sm-8">
-				<h2><?php echo (isset($product['name'])) ? $product['name']: '' ?> <span class="badge badge-secondary"><?php echo (isset($product['type']['name'])) ? $product['type']['name']: '' ?></span></h2>
+				<h2><?php echo (isset($product['name'])) ? $product['name']: '' ?> 
+					<a href="<?php echo base_url('products/product_list/' . $product['type']['id']); ?>"><span class="badge badge-secondary"><?php echo (isset($product['type']['name'])) ? $product['type']['name']: '' ?></span></a></h2>
 			</div>
 			<div class="col-sm-4">
 				<div class="row">
