@@ -181,7 +181,7 @@
                 array(
                     'img' => 'wholesale.png',
                     'alt' => 'wholesale',
-                    'link' => 'import/import_covetrus',
+                    'link' => 'wholesale/index',
                     'text' => $this->lang->line('wholesale'),
                 ),
                 array(

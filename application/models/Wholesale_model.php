@@ -13,6 +13,7 @@ class Wholesale_model extends MY_Model
 		parent::__construct();
 		
 		$this->load->model('Wholesale_price_model', 'wh_price');
+		$this->load->model('Wholesale_type_model', 'wh_type');
 
 		$this->has_many['wholesale_prices'] = array(
 			'foreign_model' => 'Wholesale_price_model',
@@ -20,6 +21,26 @@ class Wholesale_model extends MY_Model
 			'foreign_key' => 'art_nr',
 			'local_key' => 'vendor_id'
 		);
+		$this->has_many['deliveries'] = array(
+			'foreign_model' => 'Delivery_model',
+			'foreign_table' => 'delivery',
+			'foreign_key' => 'wholesale_id',
+			'local_key' => 'id'
+		);
+		$this->has_one['product'] = array(
+			'foreign_model' => 'Products_model',
+			'foreign_table' => 'products',
+			'foreign_key' => 'wholesale',
+			'local_key' => 'id'
+		);
+	}
+
+	public function accept_price(int $id)
+	{
+		$accept_price = "
+				UPDATE `wholesale` SET `last_bruto` = bruto, `last_bruto_date` = '" . date("Y-m-d") . "' WHERE `wholesale`.`id` = '" . $id ."';	
+			";
+		return $this->db->query($accept_price);
 	}
 
 	public function get_wh_id(string $wh_artnr)
@@ -48,7 +69,7 @@ class Wholesale_model extends MY_Model
 		return true;
 	}
 
-	public function update_record($art_nr, $omschrijving, $bruto, $btw, $verk_pr_apotheek, $verdeler, $CNK, $VHB)
+	public function update_record($art_nr, $omschrijving, $bruto, $btw, $verk_pr_apotheek, $verdeler, $CNK, $VHB, $distr_id, $group)
 	{
 		// no buy data (product gone/out of stock/...)
 		if ($bruto == '-') 
@@ -58,8 +79,16 @@ class Wholesale_model extends MY_Model
 
 		$result = $this->where(array('vendor_id' => $art_nr))->get();
 
-
 		$bruto_format = str_replace(',', '.', $bruto);
+		$verk_pr_apotheek = str_replace(',', '.', $verk_pr_apotheek);
+
+		if ($group == null)
+		{
+			$group = "unknown";
+		}
+
+		$group_info = $this->wh_type->where(array("name" => $group))->get();
+		$type_id = (!$group_info) ? $this->wh_type->insert(array("name" => $group)) : $group_info['id'];
 
 		// the product already exists
 		if($result)
@@ -71,19 +100,13 @@ class Wholesale_model extends MY_Model
 				"sell_price" 	=> $verk_pr_apotheek,
 				"distributor" 	=> $verdeler,
 				"CNK" 			=> $CNK,
-				"VHB" 			=> $VHB
+				"VHB" 			=> $VHB,
+				"distributor_id"=> $distr_id,
+				"type" 			=> $type_id
 			));
 
 			if (!$update){
-				echo "bad line : " . implode(array(
-					"description" 	=> $omschrijving,
-					"bruto" 		=> $bruto_format,
-					"btw" 			=> $btw,
-					"sell_price" 	=> $verk_pr_apotheek,
-					"distributor" 	=> $verdeler,
-					"CNK" 			=> $CNK,
-					"VHB" 			=> $VHB
-				)) . "<br/>";
+				echo "ERROR : issue updating product\n";
 			}
 
 			// only if price is different
@@ -97,14 +120,18 @@ class Wholesale_model extends MY_Model
 		else
 		{
 			$this->insert(array(
-							"vendor_id" 	=> $art_nr,
-							"description" 	=> $omschrijving,
-							"bruto" 		=> $bruto_format,
-							"btw" 			=> $btw,
-							"sell_price"	=> $verk_pr_apotheek,
-							"distributor" 	=> $verdeler,
-							"CNK" 			=> $CNK,
-							"VHB" 			=> $VHB
+							"vendor_id" 		=> $art_nr,
+							"description" 		=> $omschrijving,
+							"bruto" 			=> $bruto_format,
+							"last_bruto"		=> $bruto_format, // since its new, the last bruto price is the same as the current
+							"last_bruto_date" 	=> date("Y-m-d"),
+							"btw" 				=> $btw,
+							"sell_price"		=> $verk_pr_apotheek,
+							"distributor" 		=> $verdeler,
+							"CNK" 				=> $CNK,
+							"VHB" 				=> $VHB,
+							"distributor_id"	=> $distr_id,
+							"type" 				=> $type_id
 						));
 		}
 		return array();

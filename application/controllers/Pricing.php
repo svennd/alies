@@ -43,7 +43,6 @@ class Pricing extends Accounting_Controller
 						"product" 		=> $this->products
 												->with_prices('fields:volume, price, id|order_inside:volume asc')
 												->with_wholesale()
-												->where(array("sellable" => 1))
 												->fields('id, name, buy_volume, buy_price, buy_price_date, updated_at, unit_buy, unit_sell')
 												->get($id),
 

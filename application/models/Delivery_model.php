@@ -26,13 +26,6 @@ class Delivery_model extends MY_Model
 			'foreign_key' => 'id',
 			'local_key' => 'wholesale_id'
 		);
-
-		$this->has_one['product'] = array(
-			'foreign_model' => 'Products_model',
-			'foreign_table' => 'products',
-			'foreign_key' => 'id',
-			'local_key' => 'product_id'
-		);
 		
 	}
 
