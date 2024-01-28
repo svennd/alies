@@ -9,8 +9,8 @@
 				</div>
 				<div class="mb-0 text-gray-800">
 					<?php echo $owner['street'] . ' ' . $owner['nr']. '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
-					<?php if ($owner['telephone']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['telephone']; ?><br/><?php endif; ?>
-					<?php if ($owner['mobile']) : ?><abbr title="Mobile">M:</abbr> <?php echo $owner['mobile']; ?><br/><?php endif; ?>
+					<?php if ($owner['telephone']) : ?><?php echo print_phone($owner['telephone']); ?><br/><?php endif; ?>
+					<?php if ($owner['mobile']) : ?><?php echo print_phone($owner['mobile']); ?><br/><?php endif; ?>
 					<?php if ($owner['btw_nr']) : ?><br/><?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
 					<small><?php if ($owner['last_bill']) : ?><br/><?php echo $this->lang->line('last_visit'); ?>: <?php echo user_format_date($owner['last_bill'], $user->user_date); ?><br/><?php endif; ?></small>				
 				</div>
