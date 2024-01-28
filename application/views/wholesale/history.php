@@ -150,13 +150,13 @@
 						<tbody>
 						<?php foreach ($data['deliveries'] as $d): ?>
 						<tr>
-							<td><?php echo user_format_date($d['delivery_date'], $user->user_date); ?></td>
+							<td data-sort="<?php echo strtotime($d['delivery_date']); ?>"><?php echo user_format_date($d['delivery_date'], $user->user_date); ?></td>
 							<td><?php echo $d['delivery_nr']; ?></td>
 							<td><?php echo $d['bruto_price']; ?></td>
 							<td><?php echo $d['netto_price']; ?></td>
 							<td><?php echo $d['amount']; ?></td>
 							<td><?php echo $d['lotnr']; ?></td>
-							<td>
+							<td data-sort="<?php echo strtotime($d['due_date']); ?>">
 							<?php 
 										echo 
 												(strtotime($d['due_date']) < strtotime(date('Y-m-d'))) ? 
@@ -192,11 +192,11 @@
 						<tbody>
 						<?php foreach ($manual_delivery as $d): ?>
 						<tr>
-							<td><?php echo $d['delivery_slip']['regdate']; ?></td>
+							<td data-sort="<?php echo strtotime($d['delivery_slip']['regdate']); ?>"><?php echo $d['delivery_slip']['regdate']; ?></td>
 							<td><?php echo $d['volume']; ?></td>
 							<td><?php echo $d['in_price']; ?></td>
 							<td><?php echo $d['lotnr']; ?></td>
-							<td><?php echo $d['eol']; ?></td>
+							<td data-sort="<?php echo strtotime($d['eol']); ?>"><?php echo $d['eol']; ?></td>
 							<td><?php echo $d['supplier']; ?></td>
 						</tr>
 						<?php endforeach; ?>
