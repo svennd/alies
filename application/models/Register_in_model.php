@@ -20,8 +20,8 @@ class Register_in_model extends MY_Model
 		$this->has_one['product'] = array(
 			'foreign_model' => 'Products_model',
 			'foreign_table' => 'products',
-			'foreign_key' => 'id',
-			'local_key' => 'product'
+			'foreign_key' 	=> 'id',
+			'local_key' 	=> 'product'
 		);
 					
 		parent::__construct();

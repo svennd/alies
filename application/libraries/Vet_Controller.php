@@ -75,12 +75,12 @@ class Vet_Controller extends MY_Controller
 		$compass = '
 		<div class="dropdown show">
 			<a class="btn ' . (($current == 'none') ? "btn-outline-danger" : "btn-outline-success") . ' btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<i class="far fa-compass"></i> '. $current .'
+			<i class="fa-solid fa-fw fa-location-dot"></i> '. $current .'
 			</a>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 		';
 		foreach ($this->location as $location) {
-			$compass .= '<a class="dropdown-item" href="' . base_url() . '/welcome/change_location/' . $location['id'] . '">'. $location['name'] .'</a>';
+			$compass .= '<a class="dropdown-item" href="' . base_url('welcome/change_location/' . $location['id']). '">'. $location['name'] .'</a>';
 		}
 		$compass .= "</div></div>";
 		return $compass;
