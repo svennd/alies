@@ -69,7 +69,7 @@ class Pets_model extends MY_Model
 		$query = $this->db->escape_like_str($query);
 		$sql = "
 			SELECT 
-				pets.id as pet_id, pets.name, owners.*
+				pets.id as pet_id, pets.name, pets.type as type, owners.*
 			FROM 
 				pets
 			LEFT JOIN

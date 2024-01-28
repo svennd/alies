@@ -31,6 +31,7 @@ class Breeds_model extends MY_Model
 		$sql = "
 			SELECT 
 				breeds.name as breed,
+				pets.type as type,
 				pets.name, owners.*
 			FROM
 				breeds

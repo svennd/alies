@@ -37,7 +37,6 @@
   background-color: #e1f5f0 !important;
   transition: background-color 0.2s ease;
 }
-
 </style>
 
 <!-- normal button : on small screens -->
@@ -109,17 +108,7 @@
 	</div>	
 	<!-- large button : on large screens -->
 	<div class="col-lg-2 mb-4">
-		<a href="<?php echo base_url(); ?>owners/add" class="btn btn-success btn-lg mb-3 d-none d-sm-block bounceit"><i class="fa-solid fa-fw fa-user-plus"></i> <?php echo $this->lang->line('New_client'); ?></a>
-		<?php if (!isset($query) && $this->ion_auth->in_group("admin")): ?>
-		<div class="card border-danger my-3">
-			<div class="card-header text-danger">Client Export (admin)</div>
-			<div class="card-body">
-				<a href="<?php echo base_url(); ?>export/clients/90" class="btn btn-success btn-sm" download><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export_client_90d'); ?></a>
-				<a href="<?php echo base_url(); ?>export/clients" class="btn btn-primary btn-sm ml-3" download><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export_client_all'); ?></a><br/>
-				<?php echo $this->lang->line('export_clients'); ?>
-			</div>
-		</div>
-		<?php endif; ?>
+		<a href="<?php echo base_url('owners/add'); ?>" class="btn btn-success btn-lg mb-3 d-none d-sm-block bounceit"><i class="fa-solid fa-fw fa-user-plus"></i> <?php echo $this->lang->line('New_client'); ?></a>
 	</div>
 </div>
 
@@ -128,12 +117,11 @@
 	<div class="col-lg-12">
 	<?php if (isset($query)): ?>
 		<div class="card shadow mb-4">
-			<div class="card-header"><?php echo $this->lang->line('search_client'); ?></div>
+			<!-- <div class="card-header"><?php echo $this->lang->line('search_client'); ?></div> -->
 			<div class="card-body">
 				<table class="table table-search display dt-responsive nowrap" width="100%" id="dataTable">
 				<thead>
 				<tr>
-					<th>Q</th>
 					<th><?php echo $this->lang->line('last_name'); ?></th>
 					<th><?php echo $this->lang->line('first_name'); ?></th>
 					<th><?php echo $this->lang->line('adress'); ?></th>
@@ -146,145 +134,60 @@
 				</tr>
 				</thead>
 				<tbody>
-				<?php foreach ($last_name as $res):?>
-				<tr>
-					<td>last_name</td>
-					<td>
-						<a href="<?php echo base_url('owners/detail/' . $res['id']); ?>" class="text-nowrap">
-							<?php if($res['disabled']): ?><s><?php endif; ?>
-								<?php echo $res['last_name']; ?>
-							<?php if($res['disabled']): ?></s><?php endif; ?>
-						</a>
-					</td>
-					<td><?php echo $res['first_name']; ?></td>
-					<td><?php echo $res['street']; ?></td>
-					<td><?php echo $res['nr']; ?></td>
-					<td><?php echo $res['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $res['last_bill']; ?></td>
-				</tr>
+
+				<?php foreach (array(
+						"last_name" 	=> $last_name, 
+						"first_name" 	=> $first_name,
+						"street"		=> $street,
+						"pets"			=> $pets,
+						"phone"			=> $phone,
+						"breeds"		=> $breeds,
+
+						) as $key => $current): ?>
+					
+					<?php foreach ($current as $res):?>
+						<tr>
+							<td>								
+								<a href="<?php echo base_url('owners/detail/' . $res['id']); ?>" class="text-nowrap">
+										<?php if($res['debts']): ?>
+											<span style="color:tomato !important;">
+										<?php endif; ?>
+										<?php if($res['low_budget']): ?>
+											<span style="color:#a77628 !important;">
+										<?php endif; ?>
+										<?php if($res['disabled']): ?><s><?php endif; ?>
+											<?php echo $res['last_name']; ?>
+										<?php if($res['disabled']): ?></s><?php endif; ?>
+										<?php if($res['low_budget']): ?>
+											</span>
+										<?php endif; ?>
+										<?php if($res['debts']): ?>
+											</span>
+										<?php endif; ?>
+								</a> 
+								<?php if ($key == "pets"): ?>
+									<small>(<?php echo get_symbol($res['type']); ?><?php echo $res['name'] ?>)</small>
+								<?php elseif ($key == "breeds"): ?>
+									<small>(<?php echo get_symbol($res['type']); ?><?php echo $res['name'] ?>, <strong><?php echo $res['breed']; ?></strong>)</small>
+								<?php endif; ?>
+							</td>
+							<td><?php echo $res['first_name']; ?></td>
+							<td><?php echo $res['street']; ?></td>
+							<td><?php echo $res['nr']; ?></td>
+							<td><?php echo $res['city']; ?></td>
+							<?php if (count($phone)): ?>
+							<td>
+								<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
+								<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
+								<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
+								<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
+							</td>
+							<?php endif; ?>
+							<td data-filter="<?php echo $key; ?>" data-sort="<?php echo is_null($res['last_bill']) ? 0 : strtotime($res['last_bill']); ?>"><?php echo $res['last_bill']; ?></td>
+						</tr>
+					<?php endforeach; ?>
 				<?php endforeach; ?>
-				<?php foreach ($first_name as $res): ?>
-				<tr>
-					<td>first_name</td>
-					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">
-							<?php echo $res['last_name']; ?>
-						</a>
-					</td>
-					<td><?php echo $res['first_name']; ?></td>
-					<td><?php echo $res['street']; ?></td>
-					<td><?php echo $res['nr']; ?></td>
-					<td><?php echo $res['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $res['last_bill']; ?></td>
-				</tr>
-				<?php endforeach; ?>
-				<?php foreach ($street as $res): ?>
-				<tr>
-					<td>street</td>
-					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">
-							<?php echo $res['last_name']; ?>
-						</a>
-					</td>
-					<td><?php echo $res['first_name']; ?></td>
-					<td><?php echo $res['street']; ?></td>
-					<td><?php echo $res['nr']; ?></td>
-					<td><?php echo $res['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $res['last_bill']; ?></td>
-				</tr>
-				<?php endforeach; ?>
-				<?php foreach ($pets as $res): ?>
-				<tr>
-					<td>pets</td>
-					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap"><?php echo $res['last_name']; ?></a> <small>(<i class="fas fa-fw fa-dog"></i><?php echo $res['name'] ?>)</small>
-					</td>
-					<td><?php echo $res['first_name']; ?></td>
-					<td><?php echo $res['street']; ?></td>
-					<td><?php echo $res['nr']; ?></td>
-					<td><?php echo $res['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $res['last_bill']; ?></td>
-				</tr>
-				<?php endforeach; ?>
-				<?php foreach ($phone as $res): ?>
-				<tr>
-					<td>phone</td>
-					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $res['id']; ?>" class="text-nowrap">
-							<?php echo $res['last_name']; ?>
-						</a>
-					</td>
-					<td><?php echo $res['first_name']; ?></td>
-					<td><?php echo $res['street']; ?></td>
-					<td><?php echo $res['nr']; ?></td>
-					<td><?php echo $res['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $res['last_bill']; ?></td>
-				</tr>
-				<?php endforeach; ?>
-				<?php foreach ($breeds as $breed): ?>
-				<tr>
-					<td>breeds</td>
-					<td>
-						<a href="<?php echo base_url() . 'owners/detail/' . $breed['id']; ?>" class="text-nowrap">
-							<?php echo $breed['last_name']; ?>
-						</a>
-						<small>(<i class="fas fa-fw fa-dog"></i><?php echo $breed['name'] ?>, <strong><?php echo $breed['breed']; ?></strong>)</small>
-					</td>
-					<td><?php echo $breed['first_name']; ?></td>
-					<td><?php echo $breed['street']; ?></td>
-					<td><?php echo $breed['nr']; ?></td>
-					<td><?php echo $breed['city']; ?></td>
-					<?php if (count($phone)): ?>
-					<td>
-						<?php echo (!empty($res['telephone'])) ? print_phone($res['telephone']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['mobile'])) ? print_phone($res['mobile']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone2'])) ? print_phone($res['phone2']) . '<br/>' : ''; ?>
-						<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
-					</td>
-					<?php endif; ?>
-					<td><?php echo $breed['last_bill']; ?></td>
-				</tr>
-				<?php endforeach; ?>
+
 			</tbody>
 			</table>
 		<?php endif; ?>
@@ -297,27 +200,26 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#home").addClass('active');
 	
-	var dt = $("#dataTable").DataTable({
+	var table = $("#dataTable");
+	var key_column = $(table).find('th:last').index();
+
+	var dt = table.DataTable({
+		scrollY: '63vh',
+		deferRender:    true,
+		scroller:       true,
 		"responsive": {
         	"details": {
             "type": 'column',
             "target": 'tr'
         }
   	  },
-	  "columnDefs": [
-		{ "responsivePriority": 1, "targets": 1 },
-		{ "type": "date", "targets": 5 },
-		{ "targets": [ 0 ], "visible": false }
-	  ]
+	  "order": [[ key_column, 'desc' ]]
 	});
-	dt
-    .order( [ 6, 'desc' ] )
-    .draw();	
 	
 	// initial filter if required
 	if($('.filter_type.active').attr('id')) {
 		dt
-		.column(0)
+		.column(key_column)
         .search($('.filter_type.active').attr('id'))
         .draw();
 	}
@@ -333,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	  $(this).removeClass('btn-info').addClass('active')
 	  
       dt
-		.column(0)
+		.column(key_column)
         .search($(this).attr('id'))
         .draw();
     });
@@ -347,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	  $(this).addClass('active');
 		
       dt
-		.column(0)
+		.column(key_column)
         .search('')
         .draw();
     });
