@@ -188,13 +188,13 @@ class Stock extends Vet_Controller
 				# create new verify stock
 				else {
 					# also generate a barcode here
-					$this->load->library('barcode');
+					// $this->load->library('barcode');
 
 					# generate barcode
 					# reduce time with 01/12/2019
 					# move to a base36 (to use letters)
 					$barcode = base_convert((time() - 1575158400), 10, 36);
-					$this->barcode->generate($barcode);
+					// $this->barcode->generate($barcode);
 
 					$this->logs->stock(DEBUG, "add_stock", $this->input->post('pid'), $this->input->post('new_volume'));
 					$this->stock->insert(array(
@@ -203,6 +203,7 @@ class Stock extends Vet_Controller
 											"location" 			=> $this->user->current_location,
 											"in_price" 			=> $this->input->post('in_price'),
 											"lotnr" 			=> $this->input->post('lotnr'),
+											"supplier" 			=> (!empty($this->input->post('supplier'))) ? $this->input->post('supplier') : NULL,
 											"barcode"			=> $barcode,
 											"volume" 			=> $this->input->post('new_volume'),
 											"state"				=> STOCK_CHECK
@@ -256,7 +257,7 @@ class Stock extends Vet_Controller
 			));
 		
 		# registry_in
-		$stock = $this->stock->fields('product_id, eol, volume, in_price, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
+		$stock = $this->stock->fields('product_id, eol, volume, in_price, supplier, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
 		foreach ($stock as $stoc)
 		{
 			$this->registry_in->insert(array(
@@ -264,6 +265,7 @@ class Stock extends Vet_Controller
 						"eol" 		=> $stoc['eol'],
 						"volume" 	=> $stoc['volume'],
 						"in_price" 	=> $stoc['in_price'],
+						"supplier" 	=> $stoc['supplier'],
 						"lotnr" 	=> $stoc['lotnr'],
 						"delivery_slip"	=> $slip
 			));

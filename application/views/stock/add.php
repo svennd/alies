@@ -32,7 +32,7 @@
 					<small id="product_tip">&nbsp;</small>
 				  </div>
 				  
-					<div class="form-row mb-3">
+				<div class="form-row mb-3">
 					  <div class="col">
 						<label for="lotnr"><?php echo $this->lang->line('lotnr'); ?></label>
 						<input type="text" name="lotnr" class="form-control" id="lotnr" value="">
@@ -55,6 +55,15 @@
 							<small id="tip">&nbsp;</small>
 						</div>
 					</div>
+				  
+					<div class="form-row mb-3">
+						<div class="col">
+							<label for="sell"><?php echo $this->lang->line('supplier'); ?></label>
+							<div class="input-group mb-3">
+							  <input type="text" class="form-control" name="supplier" id="supplier" placeholder="" value="">
+							</div>
+						</div>
+					</div>
 					
 					<div class="form-row mb-3">
 						<div class="col">
@@ -73,7 +82,7 @@
 						</div>
 					</div>
 					
-				  <button type="submit" name="submit" value="1" class="btn btn-primary">Submit</button>
+				  <button type="submit" name="submit" value="1" class="btn btn-success"><?php echo $this->lang->line('add'); ?></button>
 				</form>
 			</div>
 		</div>
@@ -100,13 +109,12 @@
 			<?php if($products): ?>
 			<table class="table">
 				<tr>
-					<td>Name</td>
-					<td>LotNr</td>
-					<td>EOL</td>
-					<td>In Price</td>
-					<td>Volume</td>
-					<td>Barcode</td>
-					<td>Option</td>
+					<td><?php echo $this->lang->line('name'); ?></td>
+					<td><?php echo $this->lang->line('lotnr'); ?></td>
+					<td><?php echo $this->lang->line('eol'); ?></td>
+					<td><?php echo $this->lang->line('price_dayprice'); ?></td>
+					<td><?php echo $this->lang->line('volume'); ?></td>
+					<td><?php echo $this->lang->line('option'); ?></td>
 				</tr>
 			<?php foreach($products as $prod): ?>
 			<?php
@@ -118,28 +126,22 @@
 					<td><?php echo $prod['eol']; ?></td>
 					<td><?php echo $prod['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
 					<td><?php echo $prod['volume'] . ' ' . $prod['products']['unit_sell']; ?></td>
-					<td><img src="<?php echo base_url(); ?>assets/barcode/<?php echo $prod['barcode']; ?>.png" alt="<?php echo $prod['barcode']; ?>"/></td>
-					<td><a href="<?php echo base_url(); ?>stock/delete_stock/<?php echo $prod['id']; ?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a></td>
+					<td><a href="<?php echo base_url('stock/delete_stock/' . $prod['id']); ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a></td>
 				</tr>
 			<?php endforeach; ?>
 			</table>
 			
-			<form action="<?php echo base_url(); ?>stock/verify_stock" method="post" autocomplete="off">
+			<form action="<?php echo base_url('stock/verify_stock'); ?>" method="post" autocomplete="off">
 				<hr>
-				<a data-toggle="collapse" href="#collapseExample" role="button" class="btn btn-sm btn-success" aria-expanded="false" aria-controls="collapseExample"><i class="fas fa-clipboard-check"></i> Delivery slip</a>
-				<button type="submit" name="submit" value="1" class="btn btn-sm btn-primary"><i class="fas fa-shipping-fast"></i> Verify Stock</button>
-				<br/>
-				<br/>
-						<div class="collapse" id="collapseExample">
-							<div class="form-group">
-								<label for="delivery_slip">Delivery date</label>
-								<input type="date" name="regdate" class="form-control" id="date" value="<?php echo date('Y-m-d') ?>">
-							</div>
-							<div class="form-group">
-								<label for="delivery_slip"><?php echo $this->lang->line('comment'); ?></label>
-								<textarea class="form-control" name="delivery_slip" id="delivery_slip" rows="3"></textarea>
-							</div>
-						</div> 
+				<div class="form-group">
+					<label for="delivery_slip"><?php echo $this->lang->line('delivery_date'); ?></label>
+					<input type="date" name="regdate" class="form-control" id="date" value="<?php echo date('Y-m-d') ?>">
+				</div>
+				<div class="form-group">
+					<label for="delivery_slip"><?php echo $this->lang->line('comment'); ?></label>
+					<textarea class="form-control" name="delivery_slip" id="delivery_slip" rows="3"></textarea>
+				</div>
+				<button type="submit" name="submit" value="1" class="btn btn-sm btn-primary"><i class="fas fa-shipping-fast"></i> <?php echo $this->lang->line('verify_stock'); ?></button>
 			</form>
 			<?php endif; ?>
 			</div>
@@ -149,6 +151,8 @@
 
 <script type="text/javascript">
 
+const PRODUCT_GS1_LOOKUP = '<?php echo base_url('products/gs1_to_product?gs1='); ?>';
+const PRODUCT_LOOKUP = '<?php echo base_url('products/get_product'); ?>';
 function getLastDayOfMonth(year, month) {
   // Month in JavaScript is 0-indexed (0 for January, 1 for February, etc.)
   // So, subtract 1 from the provided month to get the correct month in the Date object.
@@ -203,7 +207,7 @@ function process_datamatrix(barcode) {
 			$("#lotnr").val(lotnr).prop("readonly", true);
 			$("#date").val( year + "-" + month + "-" + day).prop("readonly", true);
 			
-			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
+			$.getJSON(PRODUCT_GS1_LOOKUP + gsbarcode , function(data, status){
 				if (data.state)
 				{
 					$("#pid").val(data[0].id);
@@ -211,6 +215,7 @@ function process_datamatrix(barcode) {
 					$("#sell").val(1);
 					$("#buy").focus();
 
+					$("#supplier").attr("placeholder", data[0].supplier);
 					$("#unit_buy").html(data[0].unit_buy);
 					$("#unit_sell").html(data[0].unit_sell);
 					$("#tip").html("Min buy volume, " + data[0].buy_volume + " " + data[0].unit_buy + " => sell volume, " + data[0].sell_volume + " " + data[0].unit_sell);
@@ -265,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 	$('#autocomplete').autocomplete({
 		
-		serviceUrl: '<?php echo base_url('products/get_product'); ?>',
+		serviceUrl: PRODUCT_LOOKUP,
 		
 		onSelect: function (suggestion) {
 			var res = suggestion.data;
@@ -275,6 +280,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 			$("#unit_buy").html(res.unit_buy);
 			$("#unit_sell").html(res.unit_sell);
+			$("#supplier").attr("placeholder", res.supplier);
 			$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
 			$("#lotnr").focus();
 			$("#reset_button").show();
@@ -305,6 +311,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#date").val("").prop("readonly", false);
 		$("#sell").val("");
 		$("#buy").val("");
+		$("#supplier").attr("placeholder","");
 		$("#current_buy_price").val("");
 		$("#catalog_price").val("");
 		$("#unit_buy").html("");

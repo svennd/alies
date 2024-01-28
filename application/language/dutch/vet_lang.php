@@ -289,7 +289,8 @@ $lang['six_months']             = '6 maanden';
 $lang['one_year']             = '1 jaar'; 
 
 $lang['product_details']        = 'Product details'; 
-$lang['producer_supplier']      = 'Producent - Leverancier'; 
+$lang['producer_supplier']      = 'Producent - Leverancier';
+$lang['supplier']               = 'leverancier'; 
 $lang['dead_volume']            = 'Dood Volume'; 
 $lang['administration']         = 'Toedieningsweg'; 
 $lang['sell_volume']            = 'Verkoopsvolume'; 
@@ -328,6 +329,7 @@ $lang['to_location']            = 'Naar';
 $lang['products_remove_stock']  = 'Producten verwijderd van de stock !'; 
 $lang['updated']                = 'Aangepast';
 $lang['vhbcode']                = 'Registratienummer';
+$lang['alternative_name']       = 'Alternatieve naam';
 
 # bills
 $lang['bill_header']            = 'Factuur'; 
@@ -384,11 +386,13 @@ $lang['no_recent_reports']      = 'Geen recente verslagen.';
 $lang['sellable_volume']       = "Volume (verkoopbaar)";
 $lang['product_name']          = "Product naam";
 $lang['product_wholesale']     = "Groothandel naam";
-$lang['wholesale_link']     = "Groothandel link";
+$lang['wholesale_link']        = "Groothandel link";
 $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "of";
 $lang['reason']                = "Reden";
+$lang['delivery_date']         = "leverdatum";
+$lang['verify_stock']         = "Stock verifiëren";
 
 
 # stock / product index

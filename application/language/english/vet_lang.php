@@ -283,6 +283,7 @@ $lang['one_year']             = '1 year';
 
 $lang['product_details']        = 'Product Details'; 
 $lang['producer_supplier']      = 'Producer - Supply'; 
+$lang['supplier']               = 'Supplier'; 
 $lang['dead_volume']            = 'Dead Volume'; 
 $lang['administration']         = 'Administration'; 
 $lang['sell_volume']            = 'Sell Volume'; 
@@ -321,6 +322,7 @@ $lang['to_location']            = 'To location';
 $lang['products_remove_stock']  = 'Products removed from stock !'; 
 $lang['updated']                = 'Updated';
 $lang['vhbcode']                = 'vhbcode';
+$lang['alternative_name']       = 'Alternative name';
 
 # bills
 $lang['bill_header']            = 'Bill'; 
@@ -382,6 +384,8 @@ $lang['product']               = "Product";
 $lang['gs1_barcode']           = "GS1 Barcode";
 $lang['or']                    = "or";
 $lang['reason']                    = "reason";
+$lang['delivery_date']         = "delivery date";
+$lang['verify_stock']         = "Verify Stock";
 
 # stock / product index
 $lang['list_products']         = "Product List";
