@@ -127,6 +127,8 @@ function make_date(date)
 function get_chip_info(chip)
 {
 	if (!chip) {return false;}
+
+	var clean_chip = chip.replace(/-/g, '');
 	if(chip.toString().length == 15)
 	{
 		if (chip.substr(0,1) == 9)
@@ -204,6 +206,10 @@ document.addEventListener("DOMContentLoaded", function(){
 		} else {
 
 		}
+	});
+
+	$(document).ready(function(){
+		$("#chip").inputmask("***-***-***-***-***");
 	});
 
 	make_date($("#birth").val());

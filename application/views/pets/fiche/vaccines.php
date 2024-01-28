@@ -1,4 +1,10 @@
-<div class="test">
+<div class="card shadow mb-4" style="width:100%;">
+	<div class="card-header d-flex flex-row align-items-center justify-content-between">
+		<div><?php echo $this->lang->line('vaccines'); ?>
+		</div>
+	</div>
+	<div class="card-body">
+		
 <?php if($vaccines): ?>
 	<table class="table table-sm">
 		<thead>
@@ -24,4 +30,5 @@
 	<div class="text-center pt-3">
 		<a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary"><i class="fa-solid fa-syringe fa-fw"></i> <?php echo $this->lang->line('title_vaccines'); ?></a>					
 	</div>
+</div>
 </div>

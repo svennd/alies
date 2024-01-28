@@ -1,17 +1,17 @@
-<style>
-.test {
-	background-color: #ffffff;
-	box-shadow: 0 0 3px 0 rgba(20,27,202,.17);
-	border-radius: 10px;
-	padding:15px;
-	height: 100%;
-}
-.notest {
-	/* flex: 1 1 auto; */
-    padding: 1.25rem;
-}
-</style>
-<div class="test">
+<div class="card shadow mb-4" style="width:100%;">
+	<div class="card-header d-flex flex-row align-items-center justify-content-between">
+		<div>
+			<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> / 
+			<?php echo $pet['name'] ?> <small>(#<?php echo $pet['id']; ?>)</small>
+			
+		</div>
+		<div class="dropdown no-arrow d-none d-sm-block">
+			<a href="<?php echo base_url('pets/export/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
+			<a href="<?php echo base_url('pets/change_owner/' . $pet['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> <?php echo $this->lang->line('change_owner'); ?></a>
+		</div>
+	</div>
+	<div class="card-body">
+
 	<table class="table table-sm">
 	<tr>
 		<td>ID</td>
@@ -55,12 +55,14 @@
 	</tr>
 	<tr>
 		<td><?php echo $this->lang->line('chip'); ?></td>
-		<td><?php echo (empty($pet['chip']) || !is_int($pet['chip'])) ? "?" : number_format((int)$pet['chip'], 0, '', '-'); ?></td>
+		<td><?php echo (empty($pet['chip']) || !is_numeric($pet['chip'])) ? "?" : number_format((int)$pet['chip'], 0, '', '-'); ?></td>
 	</tr>
+	<?php if (!empty($pet['nr_vac_book'])): ?>
 	<tr>
 		<td><?php echo $this->lang->line('vacc_nr'); ?></td>
 		<td><?php echo empty($pet['nr_vac_book']) ? "?" : $pet['nr_vac_book']; ?></td>
 	</tr>
+	<?php endif; ?>
 	</table>
 	<?php if (!empty($pet['note'])): ?>
 		<div class="card bg-warning text-white">
@@ -70,9 +72,10 @@
 		</div>
 		<br/>
 	<?php endif; ?>
-	<div class="text-center pt-3">
+	<div class="text-center">
 		<a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-outline-primary"><i class="fas fa-fw fa-paw"></i> <?php echo $this->lang->line('edit_pet'); ?></a>
-		<a href="<?php echo base_url('tooth/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary ml-4"><i class="fas fa-fw fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>
-						
+		<a href="<?php echo base_url('tooth/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary ml-4"><i class="fas fa-fw fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>			
+	</div>
+
 	</div>
 </div>
