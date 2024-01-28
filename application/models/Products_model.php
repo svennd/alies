@@ -65,7 +65,7 @@ class Products_model extends MY_Model
 						or_like('wholesale_name', $name, 'both')->
 						or_like('short_name', $name, 'both')->
 					group_end()->
-					limit(100)->
+					limit(50)->
 					get_all() 
 					: 
 					false;

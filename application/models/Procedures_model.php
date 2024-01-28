@@ -21,4 +21,20 @@ class Procedures_model extends MY_Model
 						);
 		parent::__construct();
 	}
+
+
+	/*
+		search a product based on name
+		search/index
+	*/
+	public function search_procedure($name)
+	{
+		return ($name) ?
+					$this->
+					like('name', $name, 'both')->
+					limit(50)->
+					get_all() 
+					: 
+					false;
+	}
 }

@@ -66,14 +66,6 @@
 				</div>
 			</div>
             <div class="card-body">
-			<p>
-				<?php if($locations): ?>
-					<?php foreach ($locations as $loc): ?>
-						<a href="<?php echo base_url(); ?>products/index/<?php echo $loc['id'] ?>" class="btn <?php echo ($loc['id'] == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm"><?php echo $loc['name']; ?></a>
-					<?php endforeach; ?>
-				<?php endif; ?>
-					<a href="<?php echo base_url(); ?>products/index/all" class="btn <?php echo ($clocation == 'all') ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm"><?php echo $this->lang->line('search_all'); ?></a>
-			</p>
 
 			<?php if($success == 2): ?>
 				<div class="alert alert-success alert-dismissible fade show" style="width:450px;" role="alert">
@@ -83,11 +75,9 @@
 					</button>
 				</div>
 			<?php endif; ?>
-			<hr/>
-			<br/>
 			<?php if ($products): ?>
 				<?php if($clocation == "all"): ?>
-					<table class="table" id="full_stock">
+					<table class="table table-sm" id="full_stock">
 					<thead>
 					<tr>
 						<th><?php echo $this->lang->line('Products'); ?></th>
@@ -108,7 +98,7 @@
 					</tbody>
 					</table>
 				<?php else : ?>
-					<table class="table" id="dataTable">
+					<table class="table table-sm" id="dataTable">
 					<thead>
 					<tr>
 						<th data-priority="1"><?php echo $this->lang->line('Products'); ?></th>
@@ -124,7 +114,15 @@
 					<?php foreach ($products as $product): ?>
 					<tr>
 						<td><a href="<?php echo base_url('products/profile/' . $product['product_id']); ?>"><?php echo $product['product_name']; ?></td>
-						<td data-sort="<?php echo ($product['eol']) ? strtotime($product['eol']) : time(); ?>"><?php echo user_format_date($product['eol'], $user->user_date); ?></td>
+						<td data-sort="<?php echo ($product['eol'] && $product['eol'] != "0000-00-00") ? strtotime($product['eol']) : time() + (60*60*24*7*52*5); ?>">
+									<?php 
+										echo 
+												(strtotime($product['eol']) < strtotime(date('Y-m-d'))) ? 
+													'<span style="color:tomato;"> ' . user_format_date($product['eol'], $user->user_date) . '</span>'
+														: 
+														user_format_date($product['eol'], $user->user_date)
+										; ?>
+						</td>
 						<td><?php echo $product['lotnr']; ?></td>
 						<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 						<td><?php echo $product['type']; ?></td>
@@ -141,7 +139,6 @@
 							<?php else: ?>
 								&nbsp;
 							<?php endif; ?>
-							<!--<a href="<?php echo base_url('stock/write_off/' . $product['barcode']. '/' . $clocation); ?>" class="btn btn-danger btn-sm ml-3"><i class="fas fa-ban"></i></a> -->
 						</td>
 					</tr>
 					<?php endforeach; ?>
@@ -160,8 +157,8 @@
       <div class="col-lg-3 mb-4">
 
       <a href="<?php echo base_url(); ?>stock/add_stock" class="btn btn-success btn-lg"><i class="fas fa-shopping-cart"></i> <?php echo $this->lang->line('add_stock'); ?></a> <br/><br/>
-      <div class="card shadow mb-4" id="move_stock_tab" style="display:none;">
-			<form action="<?php echo base_url(); ?>stock/move_stock" method="post" autocomplete="off">
+      <div class="card shadow mb-4 position-fixed" id="move_stock_tab" style="display:none;">
+			<form action="<?php echo base_url('stock/move_stock'); ?>" method="post" autocomplete="off">
 				<div class="card-header text-success">
 					<i class="fas fa-shipping-fast fa-bounce"></i> <?php echo $this->lang->line('move_stock'); ?>
 				</div>
@@ -193,47 +190,58 @@
 </div>
 
 <script type="text/javascript">
+const URL_REQ 	= '<?php echo base_url('products/a_pid_by_type/'); ?>';
+const URL_STOCK_LOCATION = '<?php echo base_url('products/index/'); ?>';
+const BUTTON_LOCATIONS = [
+			<?php foreach ($locations as $loc): ?>
+            { 
+				text:'<?php if ($loc['id'] == $user_location): ?><i class="fa-solid fa-location-dot"></i> <?php endif; ?><?php echo $loc['name']; ?>', 
+				className:'btn <?php echo ($loc['id'] == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
+				action: function ( e, dt, button, config ) {
+					window.location = URL_STOCK_LOCATION + '<?php echo $loc['id']; ?>';
+				}     
+			},
+			<?php endforeach; ?>
+            { 
+				text:'<?php echo $this->lang->line('search_all'); ?>', 
+				className:'btn <?php echo ("all" == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
+				action: function ( e, dt, button, config ) {
+					window.location = URL_STOCK_LOCATION + 'all';
+				}     
+			}
+	];
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 
-  var requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/1";
-
-  // no longer used ?
-//   var table = $("#table-info").DataTable({
-//     ajax: requestUrl,
-//     "columnDefs": [
-//       { "targets": 0, "data": null, "render": function ( data, type, row ) {
-//         return "<a href='<?php echo base_url(); ?>products/profile/" + row[0] + "'>" + row[1] + "</a>";
-//         }
-//       },
-//       { "targets": 1, "data": null, "render": function ( data, type, row ) {
-//         var result = row[3] +" "+ row[2];
-//         return result;
-//         }
-//       },
-//     //   { "visible": false, "targets": [2,3]},
-//     ],
-
-//     "order": [[ 3, "desc" ]]
-//   });
-
-
-  $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-      var element_id = this.id.split("-")[1]; // info-id-tab
-      requestUrl = "<?php echo base_url(); ?>products/a_pid_by_type/" + element_id;
-      table.ajax.url( requestUrl ).load();
-  });
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+		var element_id = this.id.split("-")[1]; // info-id-tab
+		var requestUrl = URL_REQ + element_id;
+		table.ajax.url( requestUrl ).load();
+	});
 
 // main table
 $("#dataTable").DataTable({
 	responsive: true,
+	scrollY:        '45vh',
+    deferRender:    true,
+    scroller:       true,
+	dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+	buttons: BUTTON_LOCATIONS,
 	"columnDefs": [
 		{ "visible": false, "targets": [5]}
-	]
+	],
+	"order": [[1, 'asc']]
 });
 
 // if selected "ALL" -> less columns
-$("#full_stock").DataTable({ responsive: true });
+$("#full_stock").DataTable({ 
+	responsive: true,
+	scrollY:        '45vh',
+    deferRender:    true,
+    scroller:       true,
+	dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+	buttons: BUTTON_LOCATIONS
+});
 
 const move_products = [];
 $("#dataTable").on('click','.move_product', function() {

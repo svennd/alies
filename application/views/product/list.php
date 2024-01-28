@@ -11,45 +11,32 @@
 			</div>
 
             <div class="card-body">
-			<p>Type :
-				<?php foreach ($types as $type): ?>
-					<a href="<?php echo base_url(); ?>products/product_list/<?php echo $type['id'] ?>" class="btn btn-outline-primary"><?php echo $type['name']; ?></a>
-				<?php endforeach; ?>
-				<a href="<?php echo base_url(); ?>products/product_list/other" class="btn btn-outline-primary">Other</a>
-			</p>
+			<?php foreach ($types as $type): ?>
+				<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm btn-outline-primary"><?php echo $type['name']; ?></a>
+			<?php endforeach; ?>
 			<hr/>
-			<br/>
-			<?php if ($products): ?>
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Name</th>
-					<th>Type</th>
+					<th><?php echo $this->lang->line("name"); ?></th>
+					<th><?php echo $this->lang->line("alternative_name"); ?></th>
+					<th><?php echo $this->lang->line("type"); ?></th>
 				</tr>
 				</thead>
-				<tbody>
-				<?php foreach ($products as $product): ?>
-				<tr>
-					<td>
-						<a href="<?php echo base_url('products/profile/' . $product['id']); ?>"><?php echo $product['name']; ?></a>
-						<?php if ($product['name'] != $product['short_name']) : ?>
-						<br/>
-						<small><?php echo $product['short_name']; ?></small>
-						<?php endif; ?>
-					</td>
-					<td><?php echo (isset($product['type']['name'])) ? $product['type']['name'] : 'Other'; ?></td>
-				</tr>
-				<?php endforeach; ?>
-				</tbody>
 				</table>
-			<?php endif; ?>
                 </div>
 		</div>
 	</p>
 
 <script type="text/javascript">
+const URL_LIST_PROD 	= '<?php echo base_url('products/get/'. $query); ?>';
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable();
+	$("#dataTable").DataTable({
+			ajax:           URL_LIST_PROD,
+			scrollY:        580,
+			deferRender:    true,
+			scroller:       true
+	});
 	$("#products").addClass('active');
 });
 </script>

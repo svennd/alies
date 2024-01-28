@@ -45,6 +45,7 @@ class Products extends Vet_Controller
 																		->order_by('eol', 'ASC')
 																		->count_rows(),
 						"locations" 			=> $this->location,
+						"user_location"			=> $this->user->current_location,
 						"success" 				=> $success,
 						"clocation"				=> $clocation,
 						"search_product"		=> $this->products->search_product($this->input->get('search_query')),
@@ -150,19 +151,45 @@ class Products extends Vet_Controller
 	generate a list with all products based on category
 	or if none is set "other"
 	*/
-	public function product_list($id_or_product = false)
+	public function product_list(int $id = 1)
 	{
-		$id = ($id_or_product == "other") ? 0 : $id_or_product;
 		$data = array(
-						"products" 		=> ($id_or_product) ? $this->products
-																		->with_booking_code()
-																		->with_type('fields:name')
-																		->where('type', $id)
-																		->get_all() : false,
-						"types" 			=> $this->prod_type->get_all()
+						"query"			=> $id,
+						"types" 		=> $this->prod_type->get_all()
 					);
 
 		$this->_render_page('product/list', $data);
+	}
+
+	/*
+		get all products of a certain type
+		- ajax for datatables
+	*/
+	public function get(int $id)
+	{
+		$x = $this->products
+			->with_booking_code()
+			->with_type('fields:name')
+			->where('type', $id)
+			->get_all();
+
+		if (!$x)
+		{
+			echo json_encode(array("aaData" => array()));
+			return 0;
+		}
+
+		foreach($x as $product)
+		{
+			$aaData[] = array(
+				"<a href='". base_url('products/profile/' . $product['id']) ."'>" . $product['name'] . "</a>",
+				"<small>" . $product['short_name']
+				. ($product['wholesale_name']) ? "<br/>" .$product['wholesale_name'] : "". "</small>",
+
+				$product['type']['name']
+			);
+		}
+		echo json_encode(array("aaData" => $aaData));
 	}
 
 	public function product(int $id)
@@ -290,13 +317,13 @@ class Products extends Vet_Controller
 		// gs1 lookup or generic product name
 		$result = ($gsl) ? 
 						$this->products
-							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
+							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, supplier, buy_price')
 							->with_type()
 							->where(array('input_barcode' => $gsl['pid']))
 							->get_all() // only 1 can return but code expects an array!
 						:
 						$this->products
-							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
+							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, supplier, buy_price')
 							->with_type()
 							->where('name', 'like', $query, true)
 							->where('short_name', 'like', $query, true) // not always visible
@@ -316,6 +343,7 @@ class Products extends Vet_Controller
 											"id" 				=> $r['id'],
 											"buy_volume"		=> $r['buy_volume'],
 											"unit_buy"			=> $r['unit_buy'],
+											"supplier"			=> $r['supplier'],
 											"sell_volume"		=> $r['sell_volume'],
 											"unit_sell"			=> $r['unit_sell'],
 											"buy_price"			=> $r['buy_price'],
@@ -334,7 +362,7 @@ class Products extends Vet_Controller
 		$gs1 = ($gls) ? $gls : $this->input->get('gs1');
 
 		$result = $this->products
-							->fields('id, name, buy_volume, unit_buy, sell_volume, unit_sell, buy_price')
+							->fields('id, name, buy_volume, unit_buy, sell_volume, supplier, unit_sell, buy_price')
 							->limit(2)
 							->where('input_barcode', $gs1)
 							->get();
