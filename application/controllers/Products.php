@@ -283,7 +283,7 @@ class Products extends Vet_Controller
 	{
 		# in order to delete a product, it might be worth it to check wheter we still have stock ?
 		$this->products->delete($id);
-		$this->logs->logger(WARNING, "delete_product", " id : " . $id);
+		$this->logs->logger(WARN, "delete_product", " id : " . $id);
 		redirect('/products/product_list');
 	}
 
