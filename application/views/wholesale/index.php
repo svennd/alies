@@ -120,6 +120,35 @@
 					</form>
 				</div>
 			</div>
+
+			<!--- deliveries -->
+			<?php if ($deliveries): ?>
+			<div class="card shadow mb-4">		
+				<div class="card-header">
+					Last 5 deliveries
+				</div>
+				<div class="card-body">
+					<table class="table table-sm">
+						<thead>
+							<tr>
+								<th>Delivery</th>
+								<th>Products</th>
+								<th>Packages</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($deliveries as $delivery): ?>
+								<tr>
+									<td><a href="<?php echo base_url('wholesale/delivery/' . $delivery['delivery_date']); ?>"><?php echo $delivery['delivery_date'] ?></a></td>
+									<td><?php echo $delivery['products'] ?></td>
+									<td><?php echo $delivery['number'] ?></td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<?php endif; ?>
 	</div>
 </div>
 

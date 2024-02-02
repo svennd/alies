@@ -9,14 +9,25 @@ class Wholesale extends Admin_Controller {
 
 		$this->load->model('Wholesale_model', 'wholesale');
 		$this->load->model('Register_in_model', 'ri');
+		$this->load->model('Delivery_model', 'delivery');
 	}
+
 
 	public function index()
 	{
 		$data = array(
 			"products" => $this->wholesale->with_product()->get_all(),
+			"deliveries" => $this->delivery->fields(array('delivery_date', 'count(id) as products', 'sum(amount) as number'), false)->limit(5)->group_by("delivery_date")->order_by('delivery_date', "desc")->get_all(),
 		);
 		$this->_render_page('wholesale/index', $data);
+	}
+
+	public function delivery(string $delivery_date)
+	{
+		$data = array(
+			"deliveries" => $this->delivery->with_wholesale()->where(array('delivery_date' => $delivery_date))->get_all(),
+		);
+		$this->_render_page('wholesale/delivery', $data);
 	}
 
 	/*

@@ -7,7 +7,6 @@ var default_volume_procedures = 1;
 function financial(x) {
 	return Number.parseFloat(x).toFixed(2);
 }
-
   
 function event_set_procedure()
 {
@@ -56,7 +55,8 @@ function event_set_product(suggestion, current_location)
     if (suggestion.stock != null && suggestion.stock)
     {
 		var stock = suggestion.stock;
-		
+		var no_valid_location = true;
+
 		stock.sort((a, b) => {
 			if (current_location === a.location && current_location === b.location) {
 				return parseFloat(a.volume) - parseFloat(b.volume);
@@ -69,16 +69,21 @@ function event_set_product(suggestion, current_location)
 			}
 		});
 		
+		
 		stock.forEach(s => {
 			const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()})`, s.id);
 		
 			if (current_location === s.location) {
 				$("#stock_select").append(option);
+				no_valid_location = false;
 			} else {
 				option.setAttribute("class", "bg-warning");
 				$("#stock_select").append(option);
 			}
 		});
+		if (no_valid_location) {
+			$("#stock_select").addClass("is-invalid");
+		}
     }
 
     $("volume").focus();
@@ -211,6 +216,7 @@ function reset_input()
 {
     $("#new_pid, #product_or_proc, #volume, #hidden_booking, #stock_select, #vaccin_or_no, #vaccin_freq").val("");
 	$('#autocomplete').val('').autocomplete('onValueChange').focus();
+	$("#stock_select").removeClass("is-invalid");
 }
 
 

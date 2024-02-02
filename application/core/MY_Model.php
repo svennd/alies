@@ -1328,7 +1328,7 @@ class MY_Model extends CI_Model
 	 * @param $fields the fields needed
 	 * @return $this
 	 */
-	public function fields($fields = null)
+	public function fields($fields = null, $add_table_name = true)
 	{
 		if (isset($fields)) {
 			if ($fields == '*count*') {
@@ -1341,7 +1341,7 @@ class MY_Model extends CI_Model
 					foreach ($fields as &$field) {
 						$exploded = explode('.', $field);
 						if (sizeof($exploded) < 2) {
-							$field = $this->table . '.' . $field;
+							$field = ($add_table_name) ? $this->table . '.' . $field : $field;
 						}
 					}
 				}
