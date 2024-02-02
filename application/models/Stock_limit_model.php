@@ -48,7 +48,7 @@ class Stock_limit_model extends MY_Model
 		WHERE
 			limit_stock > 0
 		AND
-			backorder = 0
+			(backorder = 0 OR backorder IS NULL)
 		GROUP BY
 			products.id
 		HAVING
