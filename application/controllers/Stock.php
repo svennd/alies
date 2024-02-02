@@ -422,13 +422,16 @@ class Stock extends Vet_Controller
 	public function clear_error(int $stock_id)
 	{
 		# get the info for logging purpose
-		$stock_info = $this->stock->with_products('fields: id, name')->get($stock_id);
+		$stock_info = $this->stock->with_products('fields: name')->get($stock_id);
 		
+		# happens when product is deleted
+		$product_name = (isset($stock_info['products']['name'])) ? $stock_info['products']['name']: "unknown";
+
 		# log in general logs
-		$this->logs->logger(INFO, "clear_error", "s:" . $stock_info['id'] . " p:" . $stock_info['products']['name'] . " v:" . $stock_info['volume'] . " l:" . $stock_info['lotnr']);
+		$this->logs->logger(INFO, "clear_error", "s:" . $stock_info['id'] . " p:" . $product_name . " v:" . $stock_info['volume'] . " l:" . $stock_info['lotnr']);
 
 		# log in stock
-		$this->logs->stock(ERROR, "clear_error", $stock_info['products']['id'], -$stock_info['volume']);
+		$this->logs->stock(ERROR, "clear_error", $stock_info['product_id'], -$stock_info['volume']);
 
 		# clear the error
 		$this->stock->where(array("id" => $stock_id))->update(array("state" => STATUS_HISTORY, "volume" => 0));
