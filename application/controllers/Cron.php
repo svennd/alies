@@ -202,24 +202,27 @@ class Cron extends Frontend_Controller
             $detail_response = $this->req_curl_json($url . "staal/" . $staal['id'] . ".json");
             $staal = json_decode($detail_response, true);
 
-            foreach($staal["resultaten"] as $line)
+            if ($staal["resultaten"])
             {
-                $this->lab_line->add_line(
-                                            $internal_id,
-                                            $staal['id'], // lab_id
-                                            array(
-                                                'resultaat'       => $line['resultaat'],  
-                                                'sp_resultaat'    => (!empty($line['sp_resultaat']) ? $line['sp_resultaat'] : $line['tek_resultaat']),
-                                                'bovenlimiet'     => $line['bovenlimiet'],  
-                                                'onderlimiet'     => $line['onderlimiet'],  
-                                                'rapport'         => ($line['rapport'] == "J") ? 1 : 0,  
-                                                'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),  
-                                                'updated_at'      => $line['updated_at'],  
-                                                'tabulatie_code'  => $line['tabulatie_code'],  
-                                                'lab_code_text'   => (isset($test_id_to_names[$line["tabulatie_code"]]) ? $test_id_to_names[$line["tabulatie_code"]] : '---'),  
-                                                'commentaar'      => $line['commentaar'], 
-                                            )
-                                );
+                foreach($staal["resultaten"] as $line)
+                {
+                    $this->lab_line->add_line(
+                                                $internal_id,
+                                                $staal['id'], // lab_id
+                                                array(
+                                                    'resultaat'       => $line['resultaat'],  
+                                                    'sp_resultaat'    => (!empty($line['sp_resultaat']) ? $line['sp_resultaat'] : $line['tek_resultaat']),
+                                                    'bovenlimiet'     => $line['bovenlimiet'],  
+                                                    'onderlimiet'     => $line['onderlimiet'],  
+                                                    'rapport'         => ($line['rapport'] == "J") ? 1 : 0,  
+                                                    'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),  
+                                                    'updated_at'      => $line['updated_at'],  
+                                                    'tabulatie_code'  => $line['tabulatie_code'],  
+                                                    'lab_code_text'   => (isset($test_id_to_names[$line["tabulatie_code"]]) ? $test_id_to_names[$line["tabulatie_code"]] : '---'),  
+                                                    'commentaar'      => $line['commentaar'], 
+                                                )
+                                    );
+                }
             }
     
         }
