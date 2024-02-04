@@ -263,6 +263,8 @@ class Bills_model extends MY_Model
 
 	public function get_yearly_earnings_by_date($from, $to)
 	{
+		// before we looked also at the status
+		// but since its a invoice we expect this to be paid
 		$sql = "SELECT 
 					year(bills.invoice_date) as y, 
 					month(bills.invoice_date) as m, 
@@ -272,12 +274,6 @@ class Bills_model extends MY_Model
 				FROM 
 					bills
 				WHERE 
-					(
-						status = '" . BILL_PAID . "' 
-						OR
-						status = '" . BILL_HISTORICAL . "'
-					)
-				AND
 					bills.invoice_date > STR_TO_DATE('" . $from . " 00:00', '%Y-%m-%d %H:%i')
 				AND
 					bills.invoice_date < STR_TO_DATE('" . $to . " 23:59', '%Y-%m-%d %H:%i')
