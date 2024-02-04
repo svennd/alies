@@ -35,7 +35,7 @@ class Export extends Admin_Controller
 		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-t") : $this->input->post('search_to');
 
 		# bills -> in pdf & kluwer xml
-		$bills = $this->bills->get_yearly_earnings_by_date($search_from, $search_to)[0];
+		$bills = $this->bills->get_yearly_earnings_by_date($search_from, $search_to);
 		$checks = $this->bills
 			->where('invoice_id IS NULL', null, null, false, false, true)
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
@@ -47,7 +47,7 @@ class Export extends Admin_Controller
 
 		$data = array(
 			"checks" 		=> $checks,
-			"bills" 		=> $bills,
+			"bills" 		=> ($bills) ? $bills[0] : false,
 			"search_from"	=> $search_from,
 			"search_to"		=> $search_to,
 		);
@@ -154,6 +154,43 @@ class Export extends Admin_Controller
 		header('Content-Length: ' . filesize($filename));
 		@readfile($filename);
 		exit;
+	}
+
+	/*
+		export invoices into a single csv
+	 */
+	public function csv($search_from, $search_to)
+	{
+		$bill_overview = $this->bills
+			->with_owner('fields:id, last_name')
+			->with_vet('fields:id, first_name')
+			->with_location('fields:id, name')
+			->where('invoice_id IS NOT NULL', null, null, false, false, true)
+			->where('invoice_date > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('invoice_date < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->order_by('invoice_date', 'asc')
+			->get_all();
+
+		echo "invoice_id,invoice_date,total_brut,total_net,BTW_0,BTW_6,BTW_21,cash,card,transfer,modified,owner_id,owner_last_name,vet_first_name,location_name\n";
+		foreach($bill_overview as $bill)
+		{
+			echo get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']) . ",";
+			echo $bill['invoice_date'] . ",";
+			echo $bill['total_brut'] . ",";
+			echo $bill['total_net'] . ",";
+			echo $bill['BTW_0'] . ",";
+			echo $bill['BTW_6'] . ",";
+			echo $bill['BTW_21'] . ",";
+			echo $bill['cash'] . ",";
+			echo $bill['card'] . ",";
+			echo $bill['transfer'] . ",";
+			echo $bill['modified'] . ",";
+			echo $bill['owner']['id'] . ",";
+			echo $bill['owner']['last_name'] . ",";
+			echo $bill['vet']['first_name'] . ",";
+			echo $bill['location']['name'];
+			echo "\n";
+		}
 	}
 
 	/*

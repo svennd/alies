@@ -25,6 +25,7 @@
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
 				<br>
+				<?php if($bills): ?>
 				<table class="table">
     			<thead>
 					<tr>
@@ -42,6 +43,7 @@
                         <td>
                             <a href="<?php echo base_url('export/pdf/' . $search_from . '/' . $search_to); ?>" class="btn btn-outline-primary"><i class="fa-regular fa-file-pdf"></i> PDF</a>
                             <a href="<?php echo base_url('export/kluwer/' . $search_from . '/' . $search_to); ?>" class="btn btn-outline-success" download="kluwer_<?php echo $search_from; ?>_<?php echo $search_from; ?>.xml"><i class="fa-regular fa-file-code"></i> Expert/M</a>
+                            <a href="<?php echo base_url('export/csv/' . $search_from . '/' . $search_to); ?>" class="btn btn-outline-info" download="csv_<?php echo $search_from; ?>_<?php echo $search_from; ?>.csv"><i class="fa-solid fa-file-csv"></i> CSV</a>
                         </td>
                     </tr>
     			</tbody>
@@ -49,6 +51,7 @@
                     <?php if($checks != 0): ?>
                     <div class="alert alert-danger" role="alert">Found <i><?php echo $checks; ?> <?php echo $this->lang->line('nota'); ?></i> in this period.</div>
                     <?php endif; ?>
+				<?php endif; ?>
                 </div>
 		</div>
 	</div>
