@@ -109,10 +109,12 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-										<?php echo (isset($user)) ? substr($user->first_name, 0, 1) . '. ' . $user->last_name : 'error name'; ?>
-								</span>
-                <img class="img-profile rounded" src="<?php echo base_url() . 'assets/public/' . (!empty($user->image) && is_readable('assets/public/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
+                <!-- fun and games -->
+                <?php if (date('m') == 2 && date('d') == 14): ?>
+                  <i class="fa-solid fa-heart fa-lg" style="color: #ff708d;"></i>
+                <?php else: ?>
+                  <img class="img-profile rounded" src="<?php echo base_url('assets/public/') . (!empty($user->image) && is_readable('assets/public/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
+                <?php endif; ?>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
