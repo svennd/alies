@@ -57,9 +57,11 @@ function event_set_product(suggestion, current_location)
 		var stock = suggestion.stock;
 		var no_valid_location = true;
 
+		// should not be needed, but just to be sure
 		stock.sort((a, b) => {
 			if (current_location === a.location && current_location === b.location) {
-				return parseFloat(a.volume) - parseFloat(b.volume);
+				// return parseFloat(a.volume) - parseFloat(b.volume);
+				return new Date(a.eol) - new Date(b.eol);
 			} else if (current_location === a.location) {
 				return -1;
 			} else if (current_location === b.location) {
@@ -69,9 +71,8 @@ function event_set_product(suggestion, current_location)
 			}
 		});
 		
-		
 		stock.forEach(s => {
-			const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()})`, s.id);
+			const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()}) ${s.eol}`, s.id);
 		
 			if (current_location === s.location) {
 				$("#stock_select").append(option);
@@ -81,6 +82,7 @@ function event_set_product(suggestion, current_location)
 				$("#stock_select").append(option);
 			}
 		});
+
 		if (no_valid_location) {
 			$("#stock_select").addClass("is-invalid");
 		}
@@ -247,6 +249,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		serviceUrl: URL_PROC_OR_PROD,
 		onSelect: function (suggestion) {
             var data = suggestion.data;
+			
 			$('#new_pid').val(data.id);
 			$('#prod').val(data.prod);
 			$("#btw_sell").val(data.btw);
