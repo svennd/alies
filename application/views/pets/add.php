@@ -141,7 +141,7 @@ input[type='radio']:checked {
 					<div class="col">
 					<div class="form-group">
 						<label for="color"><?php echo $this->lang->line('haircolor'); ?></label>
-						<input type="text" name="color" class="form-control" id="color" value="">
+						<select class="form-control" name="color" id="color"></select>
 					</div>
 					</div>
 					<div class="col">
@@ -190,6 +190,13 @@ input[type='radio']:checked {
 <script type="text/javascript">
 
 document.addEventListener("DOMContentLoaded", function(){
+
+$("#color").select2({
+	// need to map since they don't have an id
+	data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
+  	tags: true
+});
+
 $(document).ready(function(){
 		$("#chip").inputmask("***-***-***-***-***");
 });

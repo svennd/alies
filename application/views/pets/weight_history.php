@@ -3,8 +3,8 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $pets['owners']['id']; ?>"><?php echo $pets['owners']['last_name'] ?></a> / 
-				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pets['id']; ?>"><?php echo $pets['name'] ?></a> / Weight
+				<a href="<?php echo base_url('owners/detail/' . $pets['owners']['id']); ?>"><?php echo $pets['owners']['last_name'] ?></a> / 
+				<a href="<?php echo base_url('pets/fiche/' .  $pets['id']); ?>"><?php echo $pets['name'] ?></a> / <?php echo $this->lang->line('weight'); ?>
 			</div>
             <div class="card-body">
 				<canvas id="chart1" style="height:20vh; width:40vw"></canvas>
@@ -15,18 +15,20 @@
 				<div class="col-lg-6">
 			<?php if ($weight_history): ?>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table table-sm">
 				<thead>
 				<tr>
-					<th>date</th>
-					<th>weight</th>
+					<th><?php echo $this->lang->line('date'); ?></th>
+					<th><?php echo $this->lang->line('weight'); ?></th>
+					<th><?php echo $this->lang->line('options'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($weight_history as $weight): ?>
 				<tr>
-					<td><?php echo $weight['created_at'] . " (" . timespan(strtotime($weight['created_at']), time(), 1) . ")"; ?></td>
+					<td><?php echo user_format_date($weight['created_at'], $user->user_date) . " (" . timespan(strtotime($weight['created_at']), time(), 1) . ")"; ?></td>
 					<td><?php echo $weight['weight']; ?></td>
+					<td><a href="<?php echo base_url('pets/del_weight/' . $weight['id'].'/'.$pets['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-ban"></i></a></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -35,15 +37,15 @@
 			<?php endif; ?>
                 </div>
 				<div class="col-lg-6">
-						<form action="<?php echo base_url(); ?>pets/add_weight/<?php echo $pets['id'] ?>" method="POST">
+						<form action="<?php echo base_url('pets/add_weight/' . $pets['id']); ?>" method="POST">
 						  <div class="card card-body">
-						  New Weight:
+							<?php echo $this->lang->line('weight') ?>
 						  <div class="form-row">
 							<div class="col-3">
 							  <input type="text" name="weight" class="form-control" />
 							</div>
 							
-						   <button type="submit" name="submit" value="1" class="btn btn-primary">Add</button>
+						   <button type="submit" name="submit" value="1" class="btn btn-outline-primary"><?php echo $this->lang->line('add') ?></button>
 						  </div>
 							</div>
 						</form>
@@ -82,7 +84,7 @@ else
 		data: { 
 				labels: <?php echo json_encode($plot_label); ?>,
 				datasets: [{
-					label : "weight",
+					label : "<?php echo $this->lang->line('weight') ?>",
 					backgroundColor: 'rgba(54, 162, 235, 0.3)',
 					borderColor : 'rgb(54, 162, 235)',
 					borderWidth: 1,

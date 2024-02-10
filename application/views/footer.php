@@ -63,6 +63,9 @@
   <!-- inputmask -->
   <script src="<?php echo base_url('vendor/robinherbots/jquery.inputmask/dist/jquery.inputmask.min.js'); ?>"></script>
 
+  <!-- default config -->
+  <script src="<?php echo base_url('assets/js/settings.js'); ?>"></script>
+
 	<?php echo (isset($extra_footer)) ? $extra_footer : ""; ?>
 
   <script>

@@ -30,7 +30,6 @@ function get_chip_info(chip) {
 
 function createBreedSelect2(apiUrl) {
 	return {
-		theme: 'bootstrap4',
 		ajax: {
 		url: function (params) { 
 			return apiUrl + ((params.term === undefined) ? '' : params.term); 
@@ -146,4 +145,5 @@ var country_code = [];
 	country_code[858] = "Uruguay";
 	country_code[862] = "Venezuela";
 	country_code[891] = "Yogoslavia";
-    
+
+var simple_colors = [{text: 'abrikoos'},{text: 'albino'},{text: 'beige'},{text: 'beige bruin'},{text: 'beige grijs'},{text: 'beige langhaar'},{text: 'beige wit'},{text: 'beige zwart'},{text: 'black en tan'},{text: 'blauw'},{text: 'blauwgrijs'},{text: 'blauw wit'},{text: 'blond'},{text: 'bont'},{text: 'bruin'},{text: 'bruinachtig'},{text: 'bruin beige'},{text: 'bruin gestroomd'},{text: 'bruin gestroomd wit'},{text: 'bruin getijgerd'},{text: 'bruin getijgerd lang'},{text: 'bruin getijgerd wit'},{text: 'bruin grijs'},{text: 'bruin grijs tijger'},{text: 'bruin langhaar'},{text: 'bruin schimmel'},{text: 'bruin tabby'},{text: 'bruin tijger'},{text: 'bruin tijger wit'},{text: 'bruin wit'},{text: 'bruin wit zwart'},{text: 'bruin zwart'},{text: 'bruin zwart masker'},{text: 'calico'},{text: 'chocolade'},{text: 'creme'},{text: 'donkerblauw'},{text: 'donkerbruin'},{text: 'donkergrijs'},{text: 'driekleur'},{text: 'geel'},{text: 'gestroomd'},{text: 'gestroomd wit'},{text: 'getijgerd'},{text: 'getijgerd langhaar'},{text: 'getijgerd wit'},{text: 'goud'},{text: 'grijs'},{text: 'grijs beige'},{text: 'grijsblauw'},{text: 'grijs bruin'},{text: 'grijs bruin tijger'},{text: 'grijs gestreept'},{text: 'grijs getijgerd'},{text: 'grijs getijgerd wit'},{text: 'grijs langhaar'},{text: 'grijs tabby'},{text: 'grijs tijger'},{text: 'grijs tijger wit'},{text: 'grijs wit'},{text: 'grijs wit getijgerd'},{text: 'grijs wit tijger'},{text: 'grijs zwart'},{text: 'groen'},{text: 'kastanjebruin'},{text: 'lapjeskat'},{text: 'lichtbruin'},{text: 'lichtzilver'},{text: 'lila'},{text: 'lilac'},{text: 'oranje'},{text: 'peper en zout'},{text: 'reekalf'},{text: 'roest'},{text: 'rood'},{text: 'roodbruin'},{text: 'roomkleurig'},{text: 'ros'},{text: 'rosbruin'},{text: 'ros getijgerd'},{text: 'ros getijgerd wit'},{text: 'ros tijger'},{text: 'ros wit'},{text: 'ros wit getijgerd'},{text: 'ros wit tijger'},{text: 'schildpad'},{text: 'schimmel'},{text: 'seal point'},{text: 'tarwekleurig'},{text: 'tricolor'},{text: 'vos'},{text: 'wildkleur'},{text: 'wit'},{text: 'wit beige'},{text: 'wit bruin'},{text: 'wit bruin zwart'},{text: 'wit getijgerd'},{text: 'wit gevlekt'},{text: 'wit grijs'},{text: 'wit grijs getijgerd'},{text: 'wit grijs tijger'},{text: 'wit ros'},{text: 'wit zwart'},{text: 'zilver'},{text: 'zwart'},{text: 'zwart beige'},{text: 'zwart bruin'},{text: 'zwart bruin wit'},{text: 'zwart grijs'},{text: 'zwart halflang'},{text: 'zwart langhaar'},{text: 'zwart wit'},{text: 'zwart wit bruin'},{text: 'zwart wit langhaar'}];

@@ -40,6 +40,13 @@ class Pets extends Vet_Controller
 		redirect('/pets/history_weight/' . $pet_id, 'refresh');
 	}
 
+	# delete weight from weight page
+	public function del_weight(int $weight_id, int $pet_id)
+	{
+		$this->pets_weight->delete($weight_id);
+		redirect('/pets/history_weight/' . $pet_id, 'refresh');
+	}
+
 	public function history_weight(int $pet_id)
 	{
 		$data = array(
@@ -162,11 +169,19 @@ class Pets extends Vet_Controller
 										),
 				$pet_id
 			);
-			# add weight to history
-			$this->pets_weight->insert(array(
-									"pets" 		=> $pet_id,
-									"weight" 	=> $this->input->post("weight")
-								));
+
+			# add weight to history if it's new and not zero
+			$weight = $this->pets_weight->fields('weight')->where(array('pets' => $pet_id))->order_by('created_at', 'DESC')->limit(1)->get();
+			$prev_weight = (isset($weight['weight'])) ? $weight['weight'] : 0;
+			$weight = $this->input->post('weight');
+
+			if ($weight && $weight > 0 && $prev_weight != $weight) {
+				$this->pets_weight->insert(array(
+										"pets" => $pet_id,
+										"weight" => $weight
+									));
+									
+			}
 
 			redirect('/pets/fiche/' . (int)  $pet_id);
 		}
