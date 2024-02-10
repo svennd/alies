@@ -6,30 +6,6 @@
 
 /*
   https://www.barcodefaq.com/barcode-properties/definitions/gs1-application-identifiers/
-  the one we see here :
-  (01) GTIN --> 13 + mod10 check
-  (10) batch / lotnr --> up to 20 digits
-  (11) production date
-  (12) due date
-  (13) packaging date
-  (15) best before date
-  (16) sell by date
-  (17) expiry date
-
-(01)05420036936138 (17)211000 (10)19KQ173
-0105420036936138172110001019KQ173
-01054200369036351721040010111219
-01054147360028281722080010B449703
-0108714225153497172207001020A73
-01087142251534731721070010120131
-010871318415409517220630102292480
-010871318415409517220630102292480
-010360587409584717220619109C1924B
-01040072210261671722050010KP0EDBR
-01036611030078451721010810L474281
-01087131841145491721010010A023C01
-01036611030078381722030910L479175
-01054147360441251721080810401461
 */
 function parse_gs1($barcode)
 {
@@ -53,58 +29,115 @@ function parse_gs1($barcode)
 }
 
 /*
-	if (barcode.length > 26)
-	{
-		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
-		if(result)
-		{
-			var gsbarcode = result[1];
-			var date = (typeof(result[3]) === 'undefined') ? result[6] : result[4];
-			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
-			var day = (date.substr(4,2) == "00") ? "01" : date.substr(4,2);
-			
-			// enter lotnr + date and disable them
-			$("#lotnr").val(lotnr).prop("readonly", true);
-			$("#date").val("20" + date.substr(0, 2) + "-" + date.substr(2,2) + "-" + day).prop("readonly", true);
-			
-			$.getJSON("<?php echo base_url(); ?>products/gs1_to_product?gs1=" + gsbarcode , function(data, status){
-				if (data.state)
-				{
-					$("#pid").val(data[0].id);
-					$("#autocomplete").val(data[0].name).prop("readonly", true);
-					$("#sell").val(1);
-					$("#buy").focus();
+demo data : 
+	gs1('010123456789012310ABCD17YYMMDD21ABCD'); // false
+	gs1('0105420036936138172110001019KQ173');
+	gs1('(01)05420036936138(17)211000(10)19KQ173');
+	gs1('01054200369036351721040010111219');
+	gs1('01054147360028281722080010B449703');
+	gs1('0108714225153497172207001020A73');
+	gs1('01087142251534731721070010120131');
+	gs1('010871318415409517220630102292480');
+	gs1('010360587409584717220619109C1924B');
+	gs1('01040072210261671722050010KP0EDBR');
+	gs1('01036611030078451721010810L474281');
+	gs1('01087131841145491721010010A023C01');
+	gs1('01036611030078381722030910L479175');
+	gs1('010084016450365421139167056223[GS]1725022810W009516');
+	gs1('010084016450685321200429323663[GS]1726093010A104212');
+	gs1('010357466114011721136230334509[GS]1722013110JBB1G00');
+	gs1('01054005810046501723083110LC50364[GS]2110FXGAW0PX');
+	gs1('01054147360441251721080810401461');
 
-					$("#unit_buy").html(data[0].unit_buy);
-					$("#unit_sell").html(data[0].unit_sell);
-					$("#tip").html("Min buy volume, " + data[0].buy_volume + " " + data[0].unit_buy + " => sell volume, " + data[0].sell_volume + " " + data[0].unit_sell);
-			
-					$("#catalog_price").val(data[0].buy_price + " € / " + data[0].buy_volume + " " + data[0].unit_sell);
-					$("#current_buy_price").val(data[0].buy_price);
-					$("#sell").focus();
-
-					$('#autocomplete').autocomplete().disable();
-				}
-				else 
-				{
-					// need to re-enable everything.
-					$("#new_barcode_input").val(1);
-					$("#barcode_gs1").val(gsbarcode);
-					$("#product_tip").html("unknown GS1, please select product!"); 
-				
-					$("#autocomplete").val("").focus();
-					$("#gs1_datamatrix").val(barcode);
-					$("#matrix").show();
-				}
-			});
-			
-			// getJSON is out of sync
-			return true;
-		}
-		else 
-		{
-			$("#product_tip").html("invalid code; not recognized"); 
-		}
-	}
-	return false;
+	the [GS] is what Honeywell 1900 spit out for function codes
 */
+function gs1(string $code, bool $text = true): array {
+
+	$ai_text = array(
+		'01' => 'GTIN',
+		'10' => 'LOTNR',
+		'11' => 'PROD_DATE',
+		'12' => 'DUE_DATE',
+		'13' => 'PACK_DATE',
+		'15' => 'BEST_BEFORE_DATE',
+		'16' => 'SELL_BY_DATE',
+		'17' => 'EXP_DATE',
+		'20' => 'PROD_VAR',
+		'21' => 'SERIAL'
+	);
+
+	# init
+	$data = array();
+
+	# remove spaces and brackets
+	$code = preg_replace('/[() ]/', '', $code);
+
+	# split the code into parts
+	$parts = explode('[GS]', $code);
+
+	# [GS] is the function code that splits up data elements that have no static length
+	foreach ($parts as $part)
+	{
+		# every part should have AI (Application Identifier) and data
+        while (strlen($part) > 0) {
+
+            # get the AI
+            $ai = substr($part, 0, 2);
+
+			# the key of AI
+            $key = (isset($ai_text[$ai]) && $text) ? $ai_text[$ai] : $ai;
+
+            ## GTIN
+            # has to be 14 & control check
+            if ($ai == '01' && gtincheck(substr($part, 2, 14))) {
+				
+                $data[$key] = substr($part, 2, 14);
+                $part = substr($part, 16);
+            }
+            ## date
+            else if (in_array($ai, array(11, 12, 13, 15, 16, 17)) && preg_match('/^[0-9]{6}$/', substr($part, 2, 6))) {
+                $data[$key] = "20" . substr($part, 2, 2) . "-" . substr($part, 4, 2) . "-" . substr($part, 6, 2);
+                $part = substr($part, 8);
+            }
+            # product variant
+            else if ($ai == '20' && preg_match('/^[0-9]{2}$/', substr($part, 2, 2))) {
+                $data[$key] = substr($part, 2, 2);
+                $part = substr($part, 4);
+            }   
+            # random up to 20
+            else if (in_array($ai, array(10, 21)) && preg_match('/^.{1,20}$/', substr($part, 2, 20))) {
+                $data[$key] = substr($part, 2, 20);
+                $part = substr($part, 22);
+            }
+            else 
+            {
+                // unknown piece of data
+                // can't trust anything
+                return array();
+            }
+        }
+	}
+
+	return ($data) ? $data : array();
+}
+
+function gtincheck(string $gs1Data): bool {
+    $reversedDigits = str_split(substr($gs1Data, 0, -1));
+    $reversedDigits = array_reverse($reversedDigits);
+    $sum = 0;
+
+    for ($i = 0; $i < count($reversedDigits); $i++) {
+        $digit = intval($reversedDigits[$i]);
+
+        if ($i % 2 === 0) {
+            $sum += $digit * 3;
+        } else {
+            $sum += $digit;
+        }
+    }
+
+    $mod10 = $sum % 10;
+    $checkDigit = ($mod10 !== 0) ? (10 - $mod10) : 0;
+
+    return ($checkDigit == substr($gs1Data, -1));
+}
