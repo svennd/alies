@@ -1,42 +1,3 @@
-<style>
-
-.lbl-radio {
-	display: block;
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	padding: 15px;
-	position: relative;
-	cursor: pointer;
-}
-
-.lbl-radio .content .title {
-	margin-bottom: 7px; 
-}
-
-input[type='radio']:checked + .lbl-radio {
-	border-color: #97cf9b;
-	background-color: #eeffef;
-}
-
-.noradio input[type='radio'] {
-	display: none;
-}
-
-input[type='radio']:checked {
-	border-color: red;
-}
-
-.opacy-disabled {
-	opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.gender-select {
-    border-color: #5194cf;
-	background-color: aliceblue;
-}
-</style>
-
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
 		<div class="card shadow mb-4">
@@ -50,16 +11,6 @@ input[type='radio']:checked {
 				<hr>
 				<!-- type -->
 				<label><b>Type</b>*</label>
-				<?php 
-					$pet_type = array(
-								"0" => array("dog", "#f2a10d", "dog"),
-								"1" => array("cat", "#005248", "cat"),
-								"2" => array("horse", "#402E32", "horse"),
-								"3" => array("bird", "#FFB087", "dove"),
-								"5" => array("rabbit", "#AD4CF4", "paw"),
-								"4" => array("other", "#DFE0DF", "ghost"),
-					);
-				?>
 				<div class="row">
 					<?php foreach($pet_type as $pid => $p): ?>
 						<div class="col text-center noradio">
@@ -76,16 +27,9 @@ input[type='radio']:checked {
 
 			<div id="pre-type-select" class="opacy-disabled">
 				<div class="row py-3">
+
+					<!-- gender list -->
 					<div class="col">
-						<?php 
-							$gender_type = array(
-										"0" => array("Male", "#4c6ef5", "mars"),
-										"2" => array("Male neutered", "#000", "mars"),
-										"1" => array("Female", "#f783ac", "venus"),
-										"3" => array("Female neutered", "#000", "venus"),
-										"4" => array("Other", "#6cce23", "genderless"),
-							);
-						?>
 						<label><b><?php echo $this->lang->line('gender'); ?></b>*</label>
 						<?php foreach($gender_type as $gid => $g): ?>
 							<label for="g<?php echo $gid; ?>" class="lbl-radio gender">
@@ -96,6 +40,8 @@ input[type='radio']:checked {
 							</label>
 						<?php endforeach; ?>
 					</div>
+
+					<!-- required info -->
 					<div class="col">
 						<div class="form-group col-md-8">
 							<label for="name"><b><?php echo $this->lang->line('pet_name'); ?></b>*</label>
@@ -120,6 +66,8 @@ input[type='radio']:checked {
 					</div>
 				</div>
 
+				<h5><?php echo $this->lang->line('identification') ?></h5>
+				<hr>
 				<div class="form-row">
 						<div class="col">
 							<div class="form-group">
@@ -135,17 +83,15 @@ input[type='radio']:checked {
 							</div>
 						</div>
 					</div>
+
 				<h5>Trivia</h5>
 				<hr>
 				<div class="row">
 					<div class="col">
-					<div class="form-group">
 						<label for="color"><?php echo $this->lang->line('haircolor'); ?></label>
 						<select class="form-control" name="color" id="color"></select>
 					</div>
-					</div>
 					<div class="col">
-					<div class="form-group">
 						<label for="weight"><?php echo $this->lang->line('weight'); ?></label>
 						<div class="input-group mb-3">
 							<input type="text" class="form-control" name="weight" id="weight" aria-describedby="basic-addon2"  value="">
@@ -155,13 +101,10 @@ input[type='radio']:checked {
 						</div>
 					</div>
 				</div>
-				</div>
 				<div class="row">
 					<div class="col">
-						<div class="form-group">
-							<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
-							<input type="text" name="hairtype" class="form-control" id="hairtype" value="">
-						</div>
+						<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
+						<input type="text" name="hairtype" class="form-control" id="hairtype" value="">
 					</div>
 					<div class="col">&nbsp;</div>
 				</div>
@@ -175,7 +118,7 @@ input[type='radio']:checked {
 			<!-- opacy-disable -->
 			</div>
 
-				</form>
+			</form>
 </div>
 		</div>
 
@@ -185,50 +128,66 @@ input[type='radio']:checked {
 	</div>
 </div>
 
-<script src="<?php echo base_url('assets/js/add_pet.js'); ?>"></script>
+<script src="<?php echo base_url('assets/js/pet_profile.js'); ?>"></script>
 
 <script type="text/javascript">
 
+const SEARCH_BREED = '<?php echo base_url('breeds/search_breed/'); ?>';
+
 document.addEventListener("DOMContentLoaded", function(){
 
-$("#color").select2({
-	// need to map since they don't have an id
-	data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
-  	tags: true
-});
+	$("#color").select2({
+		// need to map since they don't have an id
+		data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
+		tags: true
+	});
 
-$(document).ready(function(){
-		$("#chip").inputmask("***-***-***-***-***");
-});
+	/*
+		make chip readable
+	*/
+	$("#chip").inputmask("***-***-***-***-***");
 
-const url = '<?php echo base_url('breeds/search_breed/'); ?>';
-	$("#breeds").select2(createBreedSelect2(url));
-	$("#second_breed").select2(createBreedSelect2(url));
+	$("#breeds").select2(createBreedSelect2(SEARCH_BREED));
+	$("#second_breed").select2(createBreedSelect2(SEARCH_BREED));
 
+
+	/*
+		calculate the age
+	*/
+	make_date($("#birth").val());
 	$("#birth").change(function() {
 		make_date(this.value);
 	});
+
+	/*
+		check the chip, return the info
+	*/
+	get_chip_info($("#chip").val());
 	$("#chip").change(function() {
 		get_chip_info(this.value);
 	});
 
-	make_date($("#birth").val());
-	get_chip_info($("#chip").val());
 
-      $('input[name="type"]').change(function() {
-        $('label.lbl-radio').removeClass('opacy-disabled');
+	/*
+		type selection animation
+	*/
+	$('input[name="type"]').change(function() {
+		$('label.lbl-radio').removeClass('opacy-disabled');
 		$('#pre-type-select').removeClass('opacy-disabled');
-        $('input[name="type"]:not(:checked)').each(function() {
-          $('label[for="' + this.id + '"]').addClass('opacy-disabled');
-        });
-      });
+		$('input[name="type"]:not(:checked)').each(function() {
+			$('label[for="' + this.id + '"]').addClass('opacy-disabled');
+		});
+	});
 
-      $('input[name="gender"]').change(function() {
-        $('label.gender').addClass('gender-select');
-        $('input[name="gender"]:not(:checked)').each(function() {
-          $('label[for="' + this.id + '"]').removeClass('gender-select');
-        });
-      });
+	/*
+		gender selection animation
+	*/
+	$('input[name="gender"]').change(function() {
+		$('label.gender').addClass('gender-select');
+		$('input[name="gender"]:not(:checked)').each(function() {
+			$('label[for="' + this.id + '"]').removeClass('gender-select');
+		});
+	});
 });
 
 </script>

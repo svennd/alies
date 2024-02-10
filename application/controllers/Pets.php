@@ -4,6 +4,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Pets extends Vet_Controller
 {
 
+	public $d_pet_type 		= array(
+									"0" => array("dog", "#f2a10d", "dog", DOG),
+									"1" => array("cat", "#005248", "cat", CAT),
+									"2" => array("horse", "#402E32", "horse", HORSE),
+									"3" => array("bird", "#FFB087", "dove", BIRD),
+									"5" => array("rabbit", "#AD4CF4", "paw", RABBIT),
+									"4" => array("other", "#DFE0DF", "ghost", OTHER)
+							);
+	public $d_gender_type 	= array(
+									"0" => array("Male", "#4c6ef5", "mars", MALE),
+									"2" => array("Male neutered", "#000", "mars", MALE_NEUTERED),
+									"1" => array("Female", "#f783ac", "venus", FEMALE),
+									"3" => array("Female neutered", "#000", "venus", FEMALE_NEUTERED),
+									"4" => array("Other", "#6cce23", "genderless", OTHER),
+							);
+
 	# constructor
 	public function __construct()
 	{
@@ -106,7 +122,9 @@ class Pets extends Vet_Controller
 		}
 
 		$data = array(
-						"owner" => $this->owners->get($owner)
+						"pet_type" 		=> $this->d_pet_type,
+						"gender_type" 	=> $this->d_gender_type,
+						"owner" 		=> $this->owners->get($owner)
 					);
 
 		$this->_render_page('pets/add', $data);
@@ -188,8 +206,10 @@ class Pets extends Vet_Controller
 
 		$pet_info = $this->pets->with_owners()->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
 		$data = array(
-						"pet" => $pet_info,
-						"owner" => $pet_info['owners']
+						"pet_type" 		=> $this->d_pet_type,
+						"gender_type" 	=> $this->d_gender_type,
+						"pet" 			=> $pet_info,
+						"owner" 		=> $pet_info['owners']
 					);
 
 		$this->_render_page('pets/profile', $data);

@@ -1,220 +1,209 @@
-<?php
-// determ if we are editing or adding a pet profile
-$edit_mode = (isset($pet)) ? true : false;
-?>
-
 <div class="row">
 	<div class="col-lg-7 col-xl-10">
 		<div class="card shadow mb-4">
 			<div class="card-header">
-					<a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> /
-					<?php if($pet['death'] == 1 || $pet['lost'] == 1): ?>
-					<?php echo (isset($pet['name'])) ? $pet['name']: '' ?>
-					<?php else : ?>
-					<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo (isset($pet['name'])) ? $pet['name']: '' ?></a>
-					<?php endif; ?>
-					/ Edit pet
+					<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> / <a href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>"><?php echo (isset($pet['name'])) ? $pet['name']: '' ?></a> / <?php echo $this->lang->line('edit_pet'); ?>
 			</div>
 			<div class="card-body">
-<form action="<?php echo ($edit_mode) ?
-						base_url() . 'pets/edit/' . $pet['id'] :
-						base_url() . 'pets/add/' . $owner['id']; ?>" method="post" autocomplete="off" name="<?php echo ($edit_mode) ? 'edit_pet':'new_pet'; ?>">
+				<form action="<?php echo base_url('pets/edit/' . $pet['id']); ?>" method="post" autocomplete="off" name="edit_pet">
 
-<?php include 'profile/required.php'; ?>
-<?php include 'profile/details.php'; ?>
-<input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
-<button type="submit" name="submit" value="1" class="btn btn-primary"><?php echo ($edit_mode) ? $this->lang->line('edit') : $this->lang->line('add'); ?></button>
+				<h5><?php echo $this->lang->line('required'); ?></h5>
+				<hr>
+				<!-- type, hidden by default -->
+				<label><b><a data-toggle="collapse" href="#Type" role="button" aria-expanded="false" aria-controls="Type">Type</a></b></label>
+				<div class="collapse" id="Type">
+					<div class="row">
+						<?php foreach($pet_type as $pid => $p): ?>
+							<div class="col text-center noradio">
+								<input type="radio" name="type" value="<?php echo $pid; ?>" id="<?php echo $pid; ?>" <?php echo ($pet['type'] == $p['3']) ? 'checked' : ''; ?>  required />
+								<label for="<?php echo $pid; ?>" class="lbl-radio">
+								<div class="content bounceit" >
+									<div class="title"><span style="color:<?php echo $p[1]; ?>"><i class="fas fa-<?php echo $p[2]; ?> fa-fw fa-2x"></i></span></div>
+									<?php echo $this->lang->line($p[0]); ?>
+								</div>
+								</label>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
 
 
-<?php if ($this->ion_auth->in_group("admin")): ?>
-	<a href="<?php echo base_url('pets/delete/' . $pet['id']); ?>" class="btn btn-outline-danger float-right"><i class="fa-solid fa-triangle-exclamation fa-beat"></i> Delete Pet</a>
-<?php endif; ?>
+				<div class="row py-3">
+					<!-- gender list -->
+					<div class="col">
+						<label for="name"><b><?php echo $this->lang->line('gender'); ?></b>*</label>
+						<?php foreach($gender_type as $gid => $g): ?>
+							<label for="g<?php echo $gid; ?>" class="lbl-radio gender <?php echo ($pet['gender'] == $g['3']) ? 'gender-select' : ''; ?>">
+							<div class="content">
+								<input type="radio" name="gender" value="<?php echo $gid; ?>" id="g<?php echo $gid; ?>" <?php echo ($pet['gender'] == $g['3']) ? 'checked' : ''; ?>  required/>
+								<span style="color:<?php echo $g['1']; ?>"><i class="fas fa-<?php echo $g['2']; ?> fa-fw"></i></span> <?php echo $g['0']; ?>
+							</div>
+							</label>
+						<?php endforeach; ?>
+					</div>
 
-</div>
+					<!-- required info -->
+					<div class="col">
+						<div class="form-group col-md-8">
+							<label for="name"><b><?php echo $this->lang->line('pet_name'); ?></b>*</label>
+							<input type="text" name="name" class="form-control" id="name" value="<?php echo $pet['name']; ?>" required>
+						</div>
+						<div class="form-group col-md-8">
+							<label for="birth"><b><?php echo $this->lang->line('birth'); ?></b>*</label>
+							<input type="date" name="birth" class="form-control" id="birth" value="<?php echo (isset($pet['birth'])) ? $pet['birth']: '' ?>" required>
+							<?php if(!$pet['death']): ?><i><small id="birth_info" class="form-text text-muted ml-2">&nbsp;</small></i><?php endif; ?>
+						</div>
+		
+						<div class="row form-group mx-1">
+							<div class="col-md-6">
+								<label for="breeds"><b><?php echo $this->lang->line('breed'); ?></b>*</label>
+								<select name="breed" class="form-control" id="breeds" data-placeholder='<?php echo (isset($pet['breeds'])) ? $pet['breeds']['name']: ''; ?>'></select>
+								<input type="hidden" id="current_breed" name="current_breed" value="<?php echo (isset($pet['breed'])) ? $pet['breed']: 1; ?>">
+							</div>
+							<div class="col-md-6">
+								<label for="second_breed">x <?php echo $this->lang->line('breed'); ?></label>
+								<select name="breed2" class="form-control" id="second_breed" data-placeholder='<?php echo (isset($pet['breeds2'])) ? $pet['breeds2']['name']: ''; ?>'></select>
+								<input type="hidden" id="current_breed2" name="current_breed2" value="<?php echo (isset($pet['breed2'])) ? $pet['breed2']: -1; ?>">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<h5><?php echo $this->lang->line('identification') ?></h5>
+				<hr>
+				<div class="form-row">
+					<div class="col">
+						<div class="form-group">
+							<label for="chip"><?php echo $this->lang->line('chip'); ?></label>
+							<input type="text" name="chip" class="form-control" id="chip" value="<?php echo (isset($pet['chip'])) ? $pet['chip']: '' ?>">
+							<i><small id="chip_info" class="form-text text-muted ml-2">&nbsp;</small></i>
+						</div>
+					</div>
+					<div class="col">
+						<div class="form-group">
+							<label for="vacbook"><?php echo $this->lang->line('vacc_nr'); ?></label>
+							<input type="text" name="vacbook" class="form-control" id="vacbook" value="<?php echo (isset($pet['nr_vac_book'])) ? $pet['nr_vac_book']: '' ?>">
+						</div>
+					</div>
+				</div>
+
+				<h5>Trivia</h5>
+				<hr>
+				<div class="row">
+					<div class="col">
+							<label for="color"><?php echo $this->lang->line('haircolor'); ?></label>
+							<select class="form-control" name="color" id="color">
+								<?php if(isset($pet['color'])): ?>
+									<option value="<?php echo $pet['color']; ?>" checked><?php echo $pet['color']; ?></option>
+								<?php endif; ?>
+							</select>
+					</div>
+					<div class="col">
+						<label for="weight"><?php echo $this->lang->line('weight'); ?></label>
+						<div class="input-group mb-3">
+							<input type="text" class="form-control" name="weight" id="weight" aria-describedby="basic-addon2"  value="<?php echo (isset($pet['last_weight'])) ? $pet['last_weight']: '' ?>">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2">kg</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						<div class="form-group">
+							<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
+							<input type="text" name="hairtype" class="form-control" id="hairtype" value="<?php echo (isset($pet['hairtype'])) ? $pet['hairtype']: '' ?>">
+						</div>
+					</div>
+					<div class="col">&nbsp;</div>
+				</div>
+
+				<!-- text fields -->
+				<div class="form-group">
+					<label for="notes"><?php echo $this->lang->line('notes'); ?></label>
+					<textarea class="form-control" name="msg" id="notes" rows="3"><?php echo (isset($pet['note'])) ? $pet['note']: '' ?></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="nutrion"><?php echo $this->lang->line('nutrition'); ?></label>
+					<textarea class="form-control" name="nutritional_advice" id="nutrion" rows="3"><?php echo (isset($pet['nutritional_advice'])) ? $pet['nutritional_advice']: '' ?></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="medication"><?php echo $this->lang->line('medicine'); ?></label>
+					<textarea class="form-control" name="medication" id="medication" rows="3"><?php echo (isset($pet['medication'])) ? $pet['medication']: '' ?></textarea>
+				</div>
+
+				<h5><?php echo $this->lang->line('state'); ?></h5>
+				<hr>
+					<div class="form-group">
+						<div class="form-check">
+							<input class="form-check-input" name="dead" type="checkbox" value="1" id="dead" <?php echo (isset($pet['death']) && $pet['death'] == 1) ? 'checked': ''; ?>>
+							<label class="form-check-label" for="dead"><?php echo $this->lang->line('passed_away'); ?></label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" name="lost" type="checkbox" value="1" id="lost" <?php echo (isset($pet['lost']) && $pet['lost'] == 1) ? 'checked': ''; ?>>
+							<label class="form-check-label" for="lost"><?php echo $this->lang->line('gone_or_lost'); ?></label>
+						</div>
+					</div>
+
+				<input type="hidden" name="owner" value="<?php echo $owner['id']; ?>">
+				<button type="submit" name="submit" value="1" class="btn btn-outline-success"><i class="fa-solid fa-pen"></i> <?php echo $this->lang->line('edit'); ?></button>
+
+
+				<?php if ($this->ion_auth->in_group("admin")): ?>
+					<a href="<?php echo base_url('pets/delete/' . $pet['id']); ?>" class="btn btn-outline-danger float-right"><i class="fa-solid fa-triangle-exclamation fa-beat"></i> Delete Pet</a>
+				<?php endif; ?>
+
+			</div>
 		</div>
-
 	</div>
 	<div class="col-lg-5 col-xl-2">
 		<?php include "application/views/blocks/block_full_client.php"; ?>
 	</div>
 </div>
 
+<script src="<?php echo base_url('assets/js/pet_profile.js'); ?>"></script>
+
 <script type="text/javascript">
-// based on ISO 11784
-// info : https://www.icar.org/index.php/rfid-injectable/
-// info : https://www.albertaanimalhealthsource.ca/sites/default/files/uploads/manufacturersisosandcountrycodes.pdf
-// info : https://github.com/Proxmark/proxmark3/blob/master/client/cmdlffdx.c
-// info : https://www.pet-detect.com/pages/Interpreting-microchip-numeric-codes.aspx?pageid=610 (france)
-// country code:  https://nl.wikipedia.org/wiki/ISO_3166-1 ???
-var country_code = [];
-	// incomplete list
-	country_code[32] = "Argentina";
-	country_code[36] = "Australia";
-	country_code[40] = "Austria";
-	country_code[44] = "Bahamas";
-	country_code[52] = "Barbados";
-	country_code[56] = "Belgium";
-	country_code[60] = "Bermuda";
-	country_code[76] = "Brazil";
-	country_code[100] = "Bulgaria";
-	country_code[124] = "Canada";
-	country_code[152] = "Chile";
-	country_code[156] = "China";
-	country_code[158] = "Taiwan";
-	country_code[203] = "Czech Republic";
-	country_code[208] = "Denmark";
-	country_code[214] = "Dominican Republic";
-	country_code[246] = "Finland";
-	country_code[250] = "France";
-	country_code[276] = "Germany";
-	country_code[300] = "Greece";
-	country_code[348] = "Hungary";
-	country_code[356] = "India";
-	country_code[360] = "Indonesia";
-	country_code[372] = "Ireland";
-	country_code[376] = "Israel";
-	country_code[380] = "Italy";
-	country_code[392] = "Japan";
-	country_code[442] = "Luxembourg";
-	country_code[458] = "Malaysia";
-	country_code[484] = "Mexico";
-	country_code[492] = "Monaco";
-	country_code[528] = "Netherlands";
-	country_code[554] = "New Zealand";
-	country_code[578] = "Norway";
-	country_code[604] = "Peru";
-	country_code[608] = "Philippines";
-	country_code[616] = "Poland";
-	country_code[620] = "Portugal";
-	country_code[630] = "Puerto Rico";
-	country_code[642] = "Romania";
-	country_code[643] = "Russian Federation";
-	country_code[710] = "South Africa";
-	country_code[724] = "Spain";
-	country_code[752] = "Sweden";
-	country_code[756] = "Switzerland";
-	country_code[764] = "Thailand";
-	country_code[792] = "Turkey";
-	country_code[804] = "Ukraine";
-	country_code[818] = "Egypt";
-	country_code[826] = "United Kingdom";
-	country_code[840] = "Unite States";
-	country_code[858] = "Uruguay";
-	country_code[862] = "Venezuela";
-	country_code[891] = "Yogoslavia";
 
-function make_date(date)
-{
-	if($("#dead").prop("checked") == true) { return false; }
-	if (!date) {return false;}
-	var today = new Date();
-	var birthDate = new Date(date);
-	var years = (today.getFullYear() - birthDate.getFullYear());
-	if (today.getMonth() < birthDate.getMonth() ||
-		today.getMonth() == birthDate.getMonth() && today.getDate() < birthDate.getDate()) {
-		years--;
-	}
-	if (isNaN(years))
-	{
-		$("#birth_info").html("Wrong date!");
-	}
-	else
-	{
-		$("#birth_info").html(years + " years old");
-	}
-}
-
-function get_chip_info(chip)
-{
-	if (!chip) {return false;}
-
-	var clean_chip = chip.replace(/-/g, '');
-	if(chip.toString().length == 15)
-	{
-		if (chip.substr(0,1) == 9)
-		{
-			$("#chip_info").html("manufacture code");
-		}
-		else
-		{
-			if(typeof country_code[chip.substr(0,3)] === 'undefined')
-			{
-				$("#chip_info").html("Unknown country code");
-			}
-			else
-			{
-				$("#chip_info").html("Country code : " + country_code[chip.substr(0,3)]);
-			}
-		}
-	}
-	else
-	{
-		$("#chip_info").html("Unrecognized code, not 15 numbers!");
-	}
-}
+const SEARCH_BREED = '<?php echo base_url('breeds/search_breed/'); ?>';
 
 document.addEventListener("DOMContentLoaded", function(){
-
-	$("#breeds").select2({
-		theme: 'bootstrap4',
-		ajax: {
-			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + ((params.term === undefined) ? '' : params.term); },
-			dataType: 'json',
-			data: function (params) {
-				let query = {
-					type: $("input:radio[name ='type']:checked").val()
-				}
-				return query;
-			}
-		}
+	$("#color").select2({
+		// need to map since they don't have an id
+		data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
+		tags: true
 	});
 
-	$("#second_breed").select2({
-		theme: 'bootstrap4',
-		ajax: {
-			url: function (params) { return '<?php echo base_url('breeds/search_breed/'); ?>' + ((params.term === undefined) ? '' : params.term); },
-			dataType: 'json',
-			data: function (params) {
-				let query = {
-					type: $("input:radio[name ='type']:checked").val()
-				}
-				return query;
-			},
-			processResults: function (data) {
-				let resultsArray = data.results;
-				resultsArray.unshift({
-					id: '-1',
-					text: '---'
-				});
-				return {
-					results: resultsArray
-				};
-			}
-		}
-	});
+	$("#breeds").select2(createBreedSelect2(SEARCH_BREED));
+	$("#second_breed").select2(createBreedSelect2(SEARCH_BREED));
 
+	/*
+		make chip readable
+	*/
+	$("#chip").inputmask("***-***-***-***-***");
+
+	/*
+		calculate the age
+	*/
+	make_date($("#birth").val());
 	$("#birth").change(function() {
 		make_date(this.value);
 	});
+
+	/*
+		check the chip, return the info
+	*/
+	get_chip_info($("#chip").val());
 	$("#chip").change(function() {
 		get_chip_info(this.value);
 	});
 
-	$("dead").change(function(event) {
-		var checkbox = event.target;
-		if (checkbox.checked) {
-		} else {
-
-		}
-	});
-
-	$(document).ready(function(){
-		$("#chip").inputmask("***-***-***-***-***");
-	});
-
-	make_date($("#birth").val());
-	get_chip_info($("#chip").val());
-
+	/*
+		gender selection animation
+	*/
 	$('input[name="gender"]').change(function() {
         $('label.gender').addClass('gender-select');
         $('input[name="gender"]:not(:checked)').each(function() {

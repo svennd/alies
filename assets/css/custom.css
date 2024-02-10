@@ -69,3 +69,43 @@
 .not-allowed:hover {
   cursor: not-allowed !important;
 }
+
+
+/*
+  pets profile
+*/
+.lbl-radio {
+	display: block;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	padding: 15px;
+	position: relative;
+	cursor: pointer;
+}
+
+.lbl-radio .content .title {
+	margin-bottom: 7px; 
+}
+
+input[type='radio']:checked + .lbl-radio {
+	border-color: #97cf9b;
+	background-color: #eeffef;
+}
+
+.noradio input[type='radio'] {
+	display: none;
+}
+
+input[type='radio']:checked {
+	border-color: red;
+}
+
+.opacy-disabled {
+	opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.gender-select {
+    border-color: #5194cf;
+	background-color: aliceblue;
+}
