@@ -313,66 +313,67 @@ class Products extends Vet_Controller
 		/*
 			if string is 26 chars long try to check if its a gs1 code
 		*/
-		$gsl = (strlen($query) >= GS1_CODE) ? parse_gs1($query) : false;
+		$gs1 = (strlen($query) >= GS1_CODE) ? gs1($query) : false;
 
-		// gs1 lookup or generic product name
-		$result = ($gsl) ? 
-						$this->products
+		if ($gs1)
+		{
+			$result =  $this->products
 							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, supplier, buy_price')
 							->with_type()
-							->where(array('input_barcode' => $gsl['pid']))
-							->get_all() // only 1 can return but code expects an array!
-						:
-						$this->products
-							->fields('id, name, type, buy_volume, unit_buy, sell_volume, unit_sell, supplier, buy_price')
-							->with_type()
-							->where('name', 'like', $query, true)
-							->where('short_name', 'like', $query, true) // not always visible
-							->limit(20)
-							->order_by("type", "ASC")
-							->get_all()
-						;
-		# in case no results
-		if (!$result) { echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
-
-		$return = array();
-		foreach ($result as $r) {
-			$return[] = array(
-						"value" => $r['name'],
-						"data" 	=> array(
-											"type" 				=> (isset($r['type']['name']) ? $r['type']['name'] : "other"),
-											"id" 				=> $r['id'],
-											"buy_volume"		=> $r['buy_volume'],
-											"unit_buy"			=> $r['unit_buy'],
-											"supplier"			=> $r['supplier'],
-											"sell_volume"		=> $r['sell_volume'],
-											"unit_sell"			=> $r['unit_sell'],
-											"buy_price"			=> $r['buy_price'],
-										)
-						);
-		}
-		echo json_encode(array("query" => $query, "suggestions" => $return));
-	}
-
-	/*
-		similar function gto gs1_to_barcode
-		this is used in stock_add.php
-	*/
-	public function gs1_to_product($gls = false, $return = false)
-	{
-		$gs1 = ($gls) ? $gls : $this->input->get('gs1');
-
-		$result = $this->products
-							->fields('id, name, buy_volume, unit_buy, sell_volume, supplier, unit_sell, buy_price')
-							->limit(2)
-							->where('input_barcode', $gs1)
+							->where(array('input_barcode' => $gs1['GTIN']))
 							->get();
 
-		if (!$return) {
-			echo ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
-		} else {
-			return ($result) ? json_encode(array("state" => 1, $result)) : json_encode(array("state" => 0));
+			if (!$result) { 
+				echo json_encode(array("query" => $query, "suggestions" => array(), "gs1" => $gs1));
+				return 0;
+			}
+
+			$return[] = array(
+				"value" => $result['name'],
+				"data" 	=> array(
+									"type" 				=> (isset($result['type']['name']) ? $result['type']['name'] : "other"),
+									"id" 				=> $result['id'],
+									"buy_volume"		=> $result['buy_volume'],
+									"unit_buy"			=> $result['unit_buy'],
+									"supplier"			=> $result['supplier'],
+									"sell_volume"		=> $result['sell_volume'],
+									"unit_sell"			=> $result['unit_sell'],
+									"buy_price"			=> $result['buy_price'],
+									"gs1"				=> $gs1
+								)
+				);
 		}
+		else
+		{
+			$result = $this->products
+								->fields('id, name, buy_volume, unit_buy, sell_volume, unit_sell, supplier, buy_price')
+								->group_start() // required for IS_NULL on deleted items
+									->where('name', 'like', $query, true)
+									->where('short_name', 'like', $query, true) // not always visible
+								->group_end()
+								->limit(20)
+								->get_all()
+							;
+			# in case no results
+			if (!$result) { echo json_encode(array("query" => $query, "suggestions" => array())); return 0; }
+
+			$return = array();
+			foreach ($result as $r) {
+				$return[] = array(
+							"value" => $r['name'],
+							"data" 	=> array(
+												"id" 				=> $r['id'],
+												"buy_volume"		=> $r['buy_volume'],
+												"unit_buy"			=> $r['unit_buy'],
+												"supplier"			=> $r['supplier'],
+												"sell_volume"		=> $r['sell_volume'],
+												"unit_sell"			=> $r['unit_sell'],
+												"buy_price"			=> $r['buy_price'],
+											)
+							);
+			}
+		}
+		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 
 	# return an ajax readable object of possible results
@@ -426,21 +427,21 @@ class Products extends Vet_Controller
 		# should only return a single result
 		$result = $stck['0'];
 
-		$query_prices = $this->pprice->where(array('product_id' => (int)$result['pid']))->order_by('volume', 'ASC')->get_all();
-		$prices = array();
-		foreach ($query_prices as $s) {
-			$prices[] = array(
-								"volume" 	=> $s['volume'],
-								"price" 	=> $s['price'],
-								);
-		}
+		// $query_prices = $this->pprice->where(array('product_id' => (int)$result['pid']))->order_by('volume', 'ASC')->get_all();
+		// $prices = array();
+		// foreach ($query_prices as $s) {
+		// 	$prices[] = array(
+		// 						"volume" 	=> $s['volume'],
+		// 						"price" 	=> $s['price'],
+		// 						);
+		// }
 
 		$return[] = array(
 						"value" => $result['pname'],
 						"data" => array(
 								"id" 			=> $result['pid'],
 								"lotnr"			=> $gsl['lotnr'],
-								"prices" 		=> $prices,
+								// "prices" 		=> $prices,
 								"barcode"		=> $result['barcode'], // internal barcode
 								"unit"			=> $result['unit_sell'],
 								"volume"		=> $result['volume'],
@@ -468,18 +469,18 @@ class Products extends Vet_Controller
 			$product_id = $r['id'];
 
 		# there are prices
-		if ($r['price_volume']) {
-			$volumes 	= explode(",", $r['price_volume']);
-			$prices 	= explode(",", $r['price_price']);
-			for($i = 0; $i < count($volumes); $i++) {
-				$prices[] = array(
-									"volume" 	=> $volumes[$i],
-									"price" 	=> $prices[$i],
-									);
-			}
-		}
+		// if ($r['price_volume']) {
+		// 	$volumes 	= explode(",", $r['price_volume']);
+		// 	$prices 	= explode(",", $r['price_price']);
+		// 	for($i = 0; $i < count($volumes); $i++) {
+		// 		$prices[] = array(
+		// 							"volume" 	=> $volumes[$i],
+		// 							"price" 	=> $prices[$i],
+		// 							);
+		// 	}
+		// }
 
-		$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE, "volume >" => 0))->order_by("eol", "ASC")->get_all();
+		$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE, "volume >" => 0))->order_by(array("location" => "ASC", "eol" => "ASC"))->get_all();
 		$list = array();
 		# there is stock
 		if ($stock) {
@@ -500,7 +501,7 @@ class Products extends Vet_Controller
 					"data" 	=> array(
 										"id" 				=> $r['id'],
 										"stock"				=> $list,
-										"prices"			=> $prices,
+										// "prices"			=> $prices,
 										"unit"				=> $r['unit_sell'],
 										"btw"				=> $r['btw_sell'],
 										"booking"			=> $r['booking_code'],
@@ -518,7 +519,7 @@ class Products extends Vet_Controller
 	*/
 	private function get_procedures(string $query, array $list) {
 		$result = $this->procedures
-							->fields('id, name, price, booking_code')
+							->fields('id, name, price')
 							->with_booking_code('fields:btw')
 							->where('name', 'like', $query, true)
 							->get_all();
@@ -530,9 +531,9 @@ class Products extends Vet_Controller
 								"value" => $r['name'],
 								"data" 	=> array(
 												"id" 			=> $r['id'],
-												"price"			=> $r['price'],
+												// "price"			=> $r['price'],
 												"btw"			=> (isset($r['booking_code']['btw'])) ? $r['booking_code']['btw'] : "21",
-												"booking"		=> $r['booking_code'],
+												"booking"		=> $r['booking_code']['id'],
 												"type"			=> PROCEDURE
 											)
 							);

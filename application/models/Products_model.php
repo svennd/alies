@@ -246,15 +246,9 @@ class Products_model extends MY_Model
 	{
 		$sql = "
 		SELECT 
-			products.id, products.name, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq,
-			GROUP_CONCAT(DISTINCT prices.volume) as price_volume, GROUP_CONCAT(DISTINCT prices.price) as price_price
+			products.id, products.name, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq
 		FROM 
 			products
-		JOIN
-			products_price as prices
-		ON
-			products.id = prices.product_id
-
 		LEFT JOIN
 			stock
 		ON

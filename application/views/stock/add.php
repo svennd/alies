@@ -13,7 +13,7 @@
 				Stock / <?php echo $this->lang->line('add'); ?>
 			</div>
 			<div class="card-body">
-				<form action="<?php echo base_url(); ?>stock/add_stock" method="post" autocomplete="off">
+				<form action="<?php echo base_url('stock/add_stock'); ?>" method="post" autocomplete="off">
 				  <div class="form-group" id="matrix" style="display:none;">
 					<label for="gs1_datamatrix">GS1 DataMatrix</label>
 					<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix">
@@ -28,6 +28,7 @@
 					</div>
 					<input type="hidden" name="pid" id="pid" value="<?php echo ($preselected) ? $preselected['id']: '' ?>">
 					<input type="hidden" name="new_barcode_input" id="new_barcode_input" value="0">
+					<!-- GTIN only -->
 					<input type="hidden" name="barcode_gs1" id="barcode_gs1" value="">
 					<small id="product_tip">&nbsp;</small>
 				  </div>
@@ -35,11 +36,11 @@
 				<div class="form-row mb-3">
 					  <div class="col">
 						<label for="lotnr"><?php echo $this->lang->line('lotnr'); ?></label>
-						<input type="text" name="lotnr" class="form-control" id="lotnr" value="">
+						<input type="text" name="lotnr" class="form-control" id="lotnr" value="" required>
 					  </div>
 					  <div class="col">
 						<label for="date"><?php echo $this->lang->line('eol'); ?></label>
-						<input type="date" name="eol" class="form-control" id="date" value="">
+						<input type="date" name="eol" class="form-control" id="date" value="" required>
 					  </div>
 				  </div>
 				  
@@ -47,7 +48,7 @@
 						<div class="col">
 							<label for="sell"><?php echo $this->lang->line('sellable_volume'); ?></label>
 							<div class="input-group mb-3">
-							  <input type="text" class="form-control" name="new_volume" id="sell" value="">
+							  <input type="text" class="form-control" name="new_volume" id="sell" value="" required>
 							  <div class="input-group-append">
 								<span class="input-group-text" id="unit_sell"><?php echo ($preselected) ? $preselected['unit_buy']: 'fl' ?></span>
 							  </div>
@@ -58,7 +59,7 @@
 				  
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="sell"><?php echo $this->lang->line('supplier'); ?></label>
+							<label for="supplier"><?php echo $this->lang->line('supplier'); ?></label>
 							<div class="input-group mb-3">
 							  <input type="text" class="form-control" name="supplier" id="supplier" placeholder="" value="">
 							</div>
@@ -90,7 +91,7 @@
 	<div class="col-lg-7 mb-4">
 		<div class="card shadow mb-4">		
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>stock">Stock</a> / check
+				<a href="<?php echo base_url('stock'); ?>">Stock</a> / check
 			</div>
 			<div class="card-body">
 			<?php if (isset($error) && $error): ?>
@@ -118,7 +119,8 @@
 				</tr>
 			<?php foreach($products as $prod): ?>
 			<?php
-				$change = (isset($prod['in_price'])) ? round((($prod['in_price']-$prod['products']['buy_price'])/$prod['products']['buy_price'])*100) : '';
+				$buy_price = (isset($prod['products']['buy_price'])) ? $prod['products']['buy_price'] : 1;
+				$change = (isset($prod['in_price'])) ? round((($prod['in_price']-$buy_price)/$buy_price)*100) : '';
 			?>
 				<tr>
 					<td><?php echo $prod['products']['name']; ?></td>
@@ -151,7 +153,6 @@
 
 <script type="text/javascript">
 
-const PRODUCT_GS1_LOOKUP = '<?php echo base_url('products/gs1_to_product?gs1='); ?>';
 const PRODUCT_LOOKUP = '<?php echo base_url('products/get_product'); ?>';
 function getLastDayOfMonth(year, month) {
   // Month in JavaScript is 0-indexed (0 for January, 1 for February, etc.)
@@ -163,93 +164,43 @@ function getLastDayOfMonth(year, month) {
   return lastDay.getDate();
 }
 
-function process_datamatrix(barcode) {
-	// GS1 data matrix 
-	// 01 05420036903635 17 210400 10 111219
-	// length : ~30 
-	// 01 EAN/GTIN  (14 length)
-	// 17 YY MM DD date (6 length)
-	// 10 barcode (variable length)
-	// 6 + 14 + 6 + x
-	/**
-	0: "0105060249176305109947450-2 172209302124100317851583 "
-	1: "05060249176305"
-	2: "109947450-2 172209302124100317851583 "
-	3: "9947450-2 "
-	4: "220930"
-	5: "24100317851583 "
-	6: undefined
-	7: undefined
-
-	0: "01040072210261671722050010KP0EDBR"
-	1: "04007221026167"
-	2: "1722050010KP0EDBR"
-	3: undefined
-	4: undefined
-	5: undefined
-	6: "220500"
-	7: "KP0EDBR"
-	*/
-	if (barcode.length > 26)
-	{
-		result = barcode.match(/01([0-9]{14})(10(.*?)17([0-9]{6})21(.*)|17([0-9]{6})10(.*))/);
-		if(result)
-		{
-			var gsbarcode = result[1];
-			var date = (typeof(result[3]) === 'undefined') ? result[6] : result[4];
-			var lotnr = (typeof(result[3]) === 'undefined') ?  result[7] : result[3];
-			var year = "20" + date.substr(0, 2);
-			var month = date.substr(2,2);
-			var day = (date.substr(4,2) == "00") ? getLastDayOfMonth(year, month) : date.substr(4,2);
-			
-			
-			// enter lotnr + date and disable them
-			$("#lotnr").val(lotnr).prop("readonly", true);
-			$("#date").val( year + "-" + month + "-" + day).prop("readonly", true);
-			
-			$.getJSON(PRODUCT_GS1_LOOKUP + gsbarcode , function(data, status){
-				if (data.state)
-				{
-					$("#pid").val(data[0].id);
-					$("#autocomplete").val(data[0].name).prop("readonly", true);
-					$("#sell").val(1);
-					$("#buy").focus();
-
-					$("#supplier").attr("placeholder", data[0].supplier);
-					$("#unit_buy").html(data[0].unit_buy);
-					$("#unit_sell").html(data[0].unit_sell);
-					$("#tip").html("Min buy volume, " + data[0].buy_volume + " " + data[0].unit_buy + " => sell volume, " + data[0].sell_volume + " " + data[0].unit_sell);
-			
-					$("#catalog_price").val(data[0].buy_price + " € / " + data[0].buy_volume + " " + data[0].unit_sell);
-					$("#current_buy_price").val(data[0].buy_price);
-					$("#sell").focus();
-
-					$('#autocomplete').autocomplete().disable();
-				}
-				else 
-				{
-					// need to re-enable everything.
-					$("#new_barcode_input").val(1);
-					$("#barcode_gs1").val(gsbarcode);
-					$("#product_tip").html("unknown GS1, please select product!"); 
-				
-					$("#autocomplete").val("").focus();
-					$("#gs1_datamatrix").val(barcode);
-					$("#matrix").show();
-				}
-			});
-			
-			// getJSON is out of sync
-			return true;
-		}
-		else 
-		{
-			$("#product_tip").html("invalid code; not recognized"); 
-		}
-	}
-	return false;
+function new_gs1(gs1)
+{
+	$("#gs1_datamatrix").val($("#autocomplete").val());
+	$("#new_barcode_input").val(1);
+	$("#barcode_gs1").val(gs1.GTIN);
+	$("#autocomplete").val("");
+	$("#lotnr").val(gs1.LOTNR);
+	$("#date").val(gs1.EXP_DATE);
+	$("#product_tip").html("New GS1 barcode detected, please fill in the details");
+	$("#matrix").show();
 }
 
+function read_gs1(gs1) {
+    $("#lotnr").val(gs1.LOTNR);
+    console.log(gs1);
+    if (gs1.EXP_DATE || gs1.DUE_DATE || gs1.BEST_BEFORE_DATE || gs1.SELL_BY_DATE) {
+        $("#date").val(gs1.EXP_DATE || gs1.DUE_DATE || gs1.BEST_BEFORE_DATE || gs1.SELL_BY_DATE);
+        $("#sell").focus();
+    } else {
+        $("#date").focus();
+    }
+}
+
+function read_product(res)
+{
+	$("#pid").val(res.id);
+	$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_buy);
+	$("#current_buy_price").val(res.buy_price);
+
+	$("#unit_buy").html(res.unit_buy);
+	$("#unit_sell").html(res.unit_sell);
+	$("#supplier").attr("placeholder", res.supplier);
+	$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
+	$("#lotnr").focus();
+}
+
+// 010084016450685321200429323663[GS]1726093010A104212
 document.addEventListener("DOMContentLoaded", function(){
 	var _changeInterval = null;
 	var barcode = null;
@@ -259,49 +210,42 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	$("#product_list").addClass('active');
 	
-	$("#gs1_datamatrix").keyup(function(){
-		barcode = this.value;
-		clearInterval(_changeInterval)
-		_changeInterval = setInterval(function() {
-		clearInterval(_changeInterval)
-			process_datamatrix(barcode);
-		
-		}, 500);
-	});
 	$('#autocomplete').autocomplete({
 		
 		serviceUrl: PRODUCT_LOOKUP,
-		
 		onSelect: function (suggestion) {
 			var res = suggestion.data;
-			$("#pid").val(res.id);
-			$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_buy);
-			$("#current_buy_price").val(res.buy_price);
-
-			$("#unit_buy").html(res.unit_buy);
-			$("#unit_sell").html(res.unit_sell);
-			$("#supplier").attr("placeholder", res.supplier);
-			$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
-			$("#lotnr").focus();
+			read_product(res);
+			if (res.gs1) {
+				read_gs1(res.gs1);
+			}
 			$("#reset_button").show();
 		},
-		onSearchComplete: function (query, suggestion) { 
-			if(query.length > 26)
-			{
-				clearInterval(_changeInterval)
-				_changeInterval = setInterval(function() {
-					clearInterval(_changeInterval)
-					process_datamatrix(query);
-				}, 500);
+		transformResult: function(response, query) {
+			// Process the raw JSON results here
+			resp = JSON.parse(response);
 
-			}
-			else if(suggestion.length == 1)
+			// in case its a new product
+			if (resp.suggestions.length == 0 && resp.gs1 !== undefined) { new_gs1(resp.gs1); }
+			
+			// return default mapping
+			return {
+				suggestions: $.map(resp.suggestions, function(dataItem) {
+					return { value: dataItem.value, data: dataItem.data };
+				})
+        	};
+    	},
+		onSearchComplete: function (query, suggestion) {
+			// in case its a barcode
+			// autoselect
+			if(suggestion.length == 1 && suggestion[0].data.gs1 !== undefined)
 			{
 				$(this).autocomplete().onSelect(0);
 			}
 		},
 		autoSelectFirst: true,
-		minChars: '2'
+		minChars: '2',
+		deferRequestBy: 10
 	});
 
 	$("#reset_search").on("click", function() {

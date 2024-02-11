@@ -49,10 +49,11 @@ demo data :
 	gs1('01054005810046501723083110LC50364[GS]2110FXGAW0PX');
 	gs1('01054147360441251721080810401461');
 
+    # 00 date
+    gs1('010341111207988917210200103145600')
 	the [GS] is what Honeywell 1900 spit out for function codes
 */
 function gs1(string $code, bool $text = true): array {
-
 	$ai_text = array(
 		'01' => 'GTIN',
 		'10' => 'LOTNR',
@@ -96,7 +97,11 @@ function gs1(string $code, bool $text = true): array {
             }
             ## date
             else if (in_array($ai, array(11, 12, 13, 15, 16, 17)) && preg_match('/^[0-9]{6}$/', substr($part, 2, 6))) {
-                $data[$key] = "20" . substr($part, 2, 2) . "-" . substr($part, 4, 2) . "-" . substr($part, 6, 2);
+                # in the year 3000 this code will break - I guess that's fine, AI will fix itself by then
+                $year = "20" . substr($part, 2, 2);
+                $month = substr($part, 4, 2);
+                $day = (substr($part, 6, 2) == "00") ? date("t", strtotime("$year-$month-01")) : substr($part, 6, 2);
+                $data[$key] = $year . "-" . $month . "-" . $day;
                 $part = substr($part, 8);
             }
             # product variant

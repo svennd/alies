@@ -4,6 +4,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Stock extends Vet_Controller
 {
 
+	# limit for adding stock
+	const LIMIT_ADD_VOLUME = 5000;
+
 	# constructor
 	public function __construct()
 	{
@@ -213,14 +216,16 @@ class Stock extends Vet_Controller
 						$this->product
 								->where(array("id" => $this->input->post('pid')))
 								->update(array("input_barcode" => $this->input->post('barcode_gs1')));
+						$this->logs->logger(INFO, "new_gs1", "pid: " . $this->input->post('pid') . " gs1:" . $this->input->post('barcode_gs1'));
+			
 					}
 				}
 				$this->product->set_backorder_filled($this->input->post('pid'));
 			} else {
-				$error = ($this->input->post('new_volume') > 5000) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
+				$error = ($this->input->post('new_volume') > self::LIMIT_ADD_VOLUME) ? "Invalid volume (>5000)" : "Not a valid product or no volume...";
 
 				# log this
-				$this->logs->logger(WARN, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
+				$this->logs->logger(INFO, "bad_stock_entry", "pid: " . $this->input->post('pid') . " eol: " . $this->input->post('eol') . " in_price" . $this->input->post('in_price') . " lotnr:" . $this->input->post('lotnr') . " volume:" . $this->input->post('new_volume'));
 			}
 		}
 
