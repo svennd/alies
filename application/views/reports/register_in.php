@@ -26,17 +26,20 @@
 				</form>
 				<?php if($register_in): ?>
 				<br>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
     			<thead>
 					<tr>
 						<th><?php echo $this->lang->line('name'); ?></th>
 						<th><?php echo $this->lang->line('volume'); ?></th>
+						<th><?php echo $this->lang->line('delivery_date'); ?></th>
 						<th><?php echo $this->lang->line('eol'); ?></th>
 						<th><?php echo $this->lang->line('lotnr'); ?></th>
 						<th><?php echo $this->lang->line('vhbcode'); ?></th>
 						<th><?php echo $this->lang->line('price_dayprice'); ?></th>
 						<th><?php echo $this->lang->line('price_alies'); ?></th>
 						<th><?php echo $this->lang->line('catalog_price'); ?></th>
+						<th><?php echo $this->lang->line('btw_buy'); ?></th>
+						<th><?php echo $this->lang->line('btw_sell'); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -44,12 +47,15 @@
 					<tr>
 						<td><?php echo $us['name']; ?></td>
 						<td><?php echo $us['volume']; ?></td>
+						<td><?php echo $us['regdate']; ?></td>
 						<td><?php echo $us['eol']; ?></td>
 						<td><?php echo $us['lotnr']; ?></td>
 						<td><?php echo (!empty($us['vhbcode'])) ? $us['vhbcode']: '-'; ?></td>
 						<td><?php echo $us['in_price']; ?></td>
-						<td><?php echo $us['buy_price']; ?></td>
+						<td><?php echo $us['in_price']; ?></td>
 						<td><?php echo (!empty($us['bruto'])) ? $us['bruto']: '-'; ?></td>
+						<td><?php echo $us['btw_buy']; ?></td>
+						<td><?php echo $us['btw_sell']; ?></td>
 					</tr>
 					<?php endforeach; ?>
     			</tbody>
