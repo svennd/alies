@@ -19,8 +19,8 @@
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
 	<!-- select 2 -->
-	<link href="<?php echo base_url(); ?>vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
-	<link href="<?php echo base_url(); ?>assets/css/select2-bootstrap4.min.css" rel="stylesheet">
+	<link href="<?php echo base_url('vendor/select2/select2/dist/css/select2.min.css'); ?>" rel="stylesheet">
+	<link href="<?php echo base_url('vendor/ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css'); ?>" rel="stylesheet">
 
   <!-- sweetalert2 -->
   <link href="<?php echo base_url('node_modules/sweetalert2/dist/sweetalert2.min.css'); ?>" rel="stylesheet">
