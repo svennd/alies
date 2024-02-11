@@ -11,6 +11,7 @@ $.fn.select2.defaults.set("theme", "bootstrap4");
 // set defaults
 $.extend(true, $.fn.dataTable.defaults, {
 	"pageLength": 50,
+    conditionalPaging: true,
 	"lengthMenu": [[50, 100, -1], [50, 100, "All"]],
 	language: {
         url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/nl-NL.json',

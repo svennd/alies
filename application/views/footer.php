@@ -52,13 +52,14 @@
 	<script src="<?php echo base_url(); ?>assets/js/sb-admin-2.js"></script>
 
 	<!-- datatables -->
-	<script src="<?php echo base_url(); ?>assets/js/datatables.min.js"></script>
+	<script src="<?php echo base_url('assets/js/datatables.min.js'); ?>"></script>
+	<script src="<?php echo base_url('assets/js/datatables.plugin.min.js'); ?>"></script>
 
 	<!-- select -->
 	<script src="<?php echo base_url(); ?>vendor/select2/select2/dist/js/select2.min.js"></script>
 
 	<!-- select -->
-  <script src="<?php echo base_url(); ?>assets/js/sweetalert2.all.min.js"></script>
+  <script src="<?php echo base_url('node_modules/sweetalert2/dist/sweetalert2.all.min.js'); ?>"></script>
 
   <!-- inputmask -->
   <script src="<?php echo base_url('vendor/robinherbots/jquery.inputmask/dist/jquery.inputmask.min.js'); ?>"></script>
