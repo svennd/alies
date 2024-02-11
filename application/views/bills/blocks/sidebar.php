@@ -1,4 +1,4 @@
-<div class="col-lg-3 mb-4">
+<div class="col-xl">
     <?php if ($bill['status'] != BILL_PAID && $bill['status'] != BILL_ONHOLD): ?>
 
         <?php
@@ -32,7 +32,14 @@
         <!-- card -->
         <div class="input-group mb-1">
             <div class="input-group-prepend">
-                <span class="input-group-text" for="card_value" style="width: 150px;"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-fw fa-cc-visa" style="color:blue"></i>&nbsp;<?php echo $this->lang->line('card'); ?></a></span>
+                <span class="input-group-text" for="card_value"><a href="#" id="select_card" onclick="event.preventDefault()"><i class="fab fa-fw fa-cc-visa" style="color:blue"></i>&nbsp;
+                    <span class="d-xl-none d-sm-inline">
+                        <?php echo substr($this->lang->line('card'), 0, 1); ?>
+                    </span>
+                    <span class="d-none d-xl-inline">
+                        <?php echo $this->lang->line('card'); ?>
+                    </span>
+                </a></span>
             </div>
             <input type="text" class="form-control" id="card_value" name="card_value" value="<?php echo ($card != 0) ? $card:'';?>" />
             <div class="input-group-append">
@@ -43,7 +50,10 @@
         <!-- cash -->
         <div class="input-group mb-1">
             <div class="input-group-prepend">
-                <span class="input-group-text" for="cash_value" style="width: 150px;"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill" style="color:green"></i>&nbsp;<?php echo $this->lang->line('cash'); ?></a></span>
+                <span class="input-group-text" for="cash_value"><a href="#" id="select_cash" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill" style="color:green"></i>&nbsp;
+                <span class="d-xl-none d-sm-inline"><?php echo substr($this->lang->line('cash'), 0, 1); ?></span>
+                <span class="d-none d-xl-inline"><?php echo $this->lang->line('cash'); ?></span>
+            </a></span>
             </div>
             <input type="text" class="form-control" id="cash_value" name="cash_value" value="<?php echo ($cash != 0) ? $cash:'';?>" />
             <div class="input-group-append">
@@ -54,7 +64,10 @@
         <!-- transfer -->
         <div class="input-group mb-1">
             <div class="input-group-prepend">
-                <span class="input-group-text" for="transfer_value" style="width: 150px;"><a href="#" id="select_transfer" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill-transfer" style="color:tomato"></i>&nbsp;<?php echo $this->lang->line('transfer'); ?></a></span>
+                <span class="input-group-text" for="transfer_value"><a href="#" id="select_transfer" onclick="event.preventDefault()"><i class="fa-solid fa-fw fa-money-bill-transfer" style="color:tomato"></i>&nbsp;
+                <span class="d-xl-none d-sm-inline"><?php echo substr($this->lang->line('transfer'), 0, 1); ?></span>
+                <span class="d-none d-xl-inline"><?php echo $this->lang->line('transfer'); ?></span>
+            </a></span>
             </div>
             <input type="text" class="form-control" id="transfer_value" name="transfer_value" value="<?php echo ($transfer != 0) ? $transfer:'';?>" />
             <div class="input-group-append">
@@ -65,13 +78,16 @@
 
         <!-- help & status -->
         <input type="hidden" id="total_brut" name="total_brut" value="<?php echo $bill['total_brut']; ?>" />
-        <div class="input-group mt-3" style="padding-left: 150px;">
-            <div class="input-group-prepend">
-                <span class="input-group-text" for="transfer_value"><a href="#" id="calculate"><i class="fas fa-calculator"></i></a></span>
-            </div>
-            <input type="text" disabled class="form-control disabled" id="payment_info" name="payment_info"/>
-            <div class="input-group-append">
-                <span class="input-group-text">&euro;</span>
+
+        <div class="d-none d-xl-inline">
+            <div class="input-group mt-3" style="padding-left: 150px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" for="transfer_value"><a href="#" id="calculate"><i class="fas fa-calculator"></i></a></span>
+                </div>
+                <input type="text" disabled class="form-control disabled" id="payment_info" name="payment_info"/>
+                <div class="input-group-append">
+                    <span class="input-group-text">&euro;</span>
+                </div>
             </div>
         </div>
        

@@ -1,17 +1,21 @@
 <form action="<?php echo base_url('invoice/bill_pay/' . $bill['id']); ?>" method="post" autocomplete="off">
 <div class="row">
-	<div class="col-lg-12 mb-4">
-		<?php include "blocks/open_bills.php"; ?>
-	<div class="card mb-4">
+	<div class="col-lg-12">
+	<!-- optional warning -->
+	<?php include "blocks/open_bills.php"; ?>
+
+	<div class="card">
 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<div>
-			<a href="<?php echo base_url('invoice'); ?>"><?php echo $this->lang->line('Invoice'); ?></a> /
-			<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> /
-			<?php echo $this->lang->line('check'); ?>
+				<span class="d-none d-xl-inline">
+				<a href="<?php echo base_url('invoice'); ?>"><?php echo $this->lang->line('Invoice'); ?></a> /
+				<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> /
+				</span>
+				<?php echo $this->lang->line('check'); ?>
 			</div>
 			<div class="dropdown no-arrow">
 
-				<a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>/1" target="_blank" class="btn btn-outline-success btn-sm"><i class="fas fa-print"></i> print</a> 
+				<a href="<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/1'); ?>" target="_blank" class="btn btn-outline-success btn-sm d-none d-xl-inline"><i class="fas fa-print"></i> print</a> 
 
 				<?php if($bill['mail'] == 0): ?>
 					<a href="#" <?php if(!empty($owner['mail'])): ?>id="sendmail"<?php else: ?>id="get_mail"<?php endif; ?> class="btn <?php echo (!empty($owner['mail'])) ? "btn-outline-primary" : "btn-outline-secondary"; ?> btn-sm ml-1">
@@ -29,9 +33,10 @@
 		<div class="card-body">
 			<div class="card-body p-0">
 			<div class="row">
-			<?php include "blocks/sidebar.php" ?>
+				
+				<?php include "blocks/sidebar.php" ?>
 
-		<div class="col-lg-9 mb-4" style="border-left: 1px solid #dcdcdc;">
+		<div class="col-lg-8" style="border-left: 1px solid #dcdcdc;">
 	                <div class="row px-5 py-2">
                         <div class="col-md-12">
 							<?php
@@ -52,7 +57,7 @@
 								<div class="col-md-6">
 									<h5><?php echo ucfirst(strtolower($pet['name'])); ?>
 									<?php foreach($event_details['events'] as $event_id): ?>
-										<a href="<?php echo base_url('events/event/' . $event_id); ?>" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-circle-arrow-left"></i> <?php echo $this->lang->line('consult'); ?></a>
+										<a href="<?php echo base_url('events/event/' . $event_id); ?>" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-circle-arrow-left"></i> <span class="d-none d-xl-inline"><?php echo $this->lang->line('consult'); ?></span></a>
 									<?php endforeach; ?>
 								</h5>
 								</div>
@@ -67,8 +72,8 @@
 										<tr>
 											<th class="border-0 text-uppercase small font-weight-bold">Item</th>
 											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('Quantity'); ?></th>
-											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('Unit_price'); ?></th>
-											<th class="border-0 text-uppercase small font-weight-bold"><?php echo $this->lang->line('VAT'); ?></th>
+											<th class="border-0 text-uppercase small font-weight-bold d-none d-sm-table-cell"><?php echo $this->lang->line('Unit_price'); ?></th>
+											<th class="border-0 text-uppercase small font-weight-bold d-none d-sm-table-cell"><?php echo $this->lang->line('VAT'); ?></th>
 											<th class="border-0 text-uppercase small font-weight-bold text-right"><?php echo $this->lang->line('net_price'); ?></th>
 										</tr>
 									</thead>
@@ -81,8 +86,8 @@
 												<?php endif; ?>
 												<?php echo $procedure['name']; ?></td>
 											<td><?php echo $procedure['volume']; ?></td>
-											<td><?php echo number_format($procedure['unit_price'], 2); ?> &euro;</td>
-											<td><?php echo $procedure['btw']; ?> %</td>
+											<td class="d-none d-sm-table-cell"><?php echo number_format($procedure['unit_price'], 2); ?> &euro;</td>
+											<td class="d-none d-sm-table-cell"><?php echo $procedure['btw']; ?> %</td>
 											<td class="text-right"><?php echo $procedure['price_net']; ?> &euro;</td>
 											<?php $sum += $procedure['price_net']; ?>
 										</tr>
@@ -95,8 +100,8 @@
 												<?php endif; ?>
 												<?php echo $product['name']; ?></td>
 											<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
-											<td><?php echo number_format($product['unit_price'], 2); ?> &euro;</td>
-											<td><?php echo $product['btw']; ?> %</td>
+											<td class="d-none d-sm-table-cell"><?php echo number_format($product['unit_price'], 2); ?> &euro;</td>
+											<td class="d-none d-sm-table-cell"><?php echo $product['btw']; ?> %</td>
 											<td class="text-right"><?php echo $product['price_net']; ?> &euro;</td>
 											<?php $sum += $product['price_net']; ?>
 										</tr>
