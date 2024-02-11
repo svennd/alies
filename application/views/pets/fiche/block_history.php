@@ -12,7 +12,7 @@
 
 	<div class="card-body">
 		<?php if ($pet_history): ?>
-		<table class="table dt-responsive nowrap" style="width:100%" id="dataTable">
+		<table class="table table-sm dt-responsive nowrap" style="width:100%" id="dataTable">
 		<thead>
 			<tr>
 				<th><?php echo $this->lang->line('date'); ?></th>
