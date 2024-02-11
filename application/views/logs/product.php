@@ -8,7 +8,7 @@
             <div class="card-body">
 			<?php if ($logs): ?>
 			
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th>Event</th>
