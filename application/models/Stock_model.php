@@ -143,12 +143,9 @@ class Stock_model extends MY_Model
 		// if there is dead volume, add this to be removed from stock
 		$volume += $this->get_dead_volume($product_id);
 
-		# if logging is required also log this remove
-		if ($this->logs->min_log_level == DEBUG)
-		{
-			$this->logs->stock(DEBUG, "stock/reduce", $product_id, -$volume, $location);
-		}
-		
+		# log this remove
+		$this->logs->stock(DEBUG, "stock/reduce", $product_id, -$volume, $location);
+				
 		# update the stock
 		$sql = "
 				UPDATE
@@ -156,7 +153,7 @@ class Stock_model extends MY_Model
 				SET
 					state = CASE
 								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
-								WHEN (volume - 1) = 0 THEN '" . STOCK_HISTORY . "'
+								WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
 								ELSE '" . STOCK_IN_USE . "'
 							END,
 					volume = volume - " . $volume . "
@@ -378,8 +375,8 @@ class Stock_model extends MY_Model
 						p.input_barcode,
 						s.eol,
 						s.lotnr,
-						s.barcode,
 						s.volume,
+						s.location,
 						s.id as stock_id
 					FROM `products` as p
 					LEFT JOIN stock as s ON
@@ -393,8 +390,45 @@ class Stock_model extends MY_Model
 					LIMIT
 						1
 				";
+		$result = $this->db->query($sql)->result_array();
+		
+		# in case the location is faulty
+		# we wouldn't find this product
+		# so we try to find it without the location
+		if (!$result)
+		{
+			$sql = "SELECT
+				p.id as pid,
+				p.name as pname,
+				btw_sell,
+				booking_code,
+				p.unit_sell,
+				p.vaccin,
+				p.vaccin_freq,
+				p.input_barcode,
+				s.eol,
+				s.lotnr,
+				s.volume,
+				s.location,
+				s.id as stock_id
+			FROM `products` as p
+			LEFT JOIN stock as s ON
+				p.id = s.product_id
+			WHERE
+				p.input_barcode = '" . $input_barcode . "' and
+				s.lotnr = '" . $lotnr . "' and
+				s.eol = '" . $eol . "' and
+				s.state = ". STOCK_IN_USE ."
+			";
 
-				return $this->db->query($sql)->result_array();
+			$result = $this->db->query($sql)->result_array();
+
+			if(count($result) > 1)
+			{
+				$this->logs->logger(DEBUG, "wrong_gs1_location", "");
+			}
+		}
+		return $result;
 	}
 
 	/*
