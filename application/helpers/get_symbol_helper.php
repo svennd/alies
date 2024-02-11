@@ -153,7 +153,23 @@ function stock_state(int $stock_state) {
 /*
 	ERROR levels
 */
-function get_error_level(int $error) {
+function get_error_level(int $error, bool $icon = false) {
+	if ($icon) {
+		switch ($error) {
+			case DEBUG:
+				return '<i class="fa-solid fa-fw fa-bug" style="color: #f8afaf;"></i>';
+			case INFO:
+				return '<i class="fa-solid fa-fw  fa-info" style="color: #74C0FC;"></i>';
+			case WARN:
+				return '<i class="fa-solid fa-fw  fa-triangle-exclamation" style="color: #ee5353;"></i>';
+			case ERROR:
+				return '<i class="fa-solid fa-fw fa-circle-exclamation fa-beat" style="color: #ff0a0a;"></i>';
+			case FATAL:
+				return '<i class="fa-solid fa-fw fa-skull-crossbones fa-fade" style="color: #000000;"></i>';
+			default:
+				return '<i class="fa-solid fa-fw fa-question"></i>';
+		}
+	}
 	switch ($error) {
 		case DEBUG:
 			return "DEBUG";
