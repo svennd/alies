@@ -16,6 +16,8 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 vendor
+node_modules
+/node_modules/
 
 # config files
 application/config/config.php
@@ -46,3 +48,4 @@ application/config/database.php
 /assets/public/*.png
 /data/stored/*
 application/controllers/Import_private.php
+package-lock.json
