@@ -146,3 +146,19 @@ function gtincheck(string $gs1Data): bool {
 
     return ($checkDigit == substr($gs1Data, -1));
 }
+
+function gs1_get_due_date(array $array): string {
+    if (isset($array['EXP_DATE'])) {
+        return $array['EXP_DATE'];
+    }
+    else if (isset($array['DUE_DATE'])) {
+        return $array['DUE_DATE'];
+    }
+    else if (isset($array['BEST_BEFORE_DATE'])) {
+        return $array['BEST_BEFORE_DATE'];
+    }
+    else if (isset($array['SELL_BY_DATE'])) {
+        return $array['SELL_BY_DATE'];
+    }
+    return false;
+}

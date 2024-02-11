@@ -383,12 +383,11 @@ class Products extends Vet_Controller
 		$return = array();
 
 		/*
-			if string is 20 chars long its most likely GS1 barcode
+			if string is 26 chars long its most likely GS1 barcode
 		*/
-		if (strlen($query) >= 20)
+		if (strlen($query) >= GS1_CODE)
 		{
-			$gsl = parse_gs1($query);
-
+			$gsl = gs1($query);
 			// if not right format,
 			// then it might be a very long name!
 			if ($gsl) {
@@ -408,49 +407,45 @@ class Products extends Vet_Controller
 	}
 
 	# probably broken due to type switch
-	private function get_gs1_barcode(array $gsl) {
+	private function get_gs1_barcode(array $gsl): array {
 
 		// init
 		$return = array();
 
 		// lookup in database
-		$stck = $this->stock->gs1_lookup($gsl['pid'], $gsl['lotnr'], $gsl['date'], $this->user->current_location);
+		$stck = $this->stock->gs1_lookup($gsl['GTIN'], $gsl['LOTNR'], gs1_get_due_date($gsl), $this->user->current_location);
 
 		if (!$stck) { return $return; }
 
-		# log this if there are multiple returns (==> bad gsl code )
-		if (count($stck) > 1)
+		$list = array();
+		
+		foreach ($stck as $s)
 		{
-			$this->logs->logger(ERROR, "multi hit on gsl code", var_export($stck, true));
+			$list[] = array(
+								"id" 		=> $s['stock_id'],
+								"location" 	=> $s['location'],
+								"eol" 		=> $s['eol'],
+								"lotnr" 	=> $s['lotnr'],
+								"volume" 	=> $s['volume']
+								);
 		}
 
-		# should only return a single result
-		$result = $stck['0'];
-
-		// $query_prices = $this->pprice->where(array('product_id' => (int)$result['pid']))->order_by('volume', 'ASC')->get_all();
-		// $prices = array();
-		// foreach ($query_prices as $s) {
-		// 	$prices[] = array(
-		// 						"volume" 	=> $s['volume'],
-		// 						"price" 	=> $s['price'],
-		// 						);
-		// }
+		# every line is the same product
+		$r = $stck[0];
 
 		$return[] = array(
-						"value" => $result['pname'],
-						"data" => array(
-								"id" 			=> $result['pid'],
-								"lotnr"			=> $gsl['lotnr'],
-								// "prices" 		=> $prices,
-								"barcode"		=> $result['barcode'], // internal barcode
-								"unit"			=> $result['unit_sell'],
-								"volume"		=> $result['volume'],
-								"btw" 			=> $result['btw_sell'],
-								"booking"		=> $result['booking_code'],
-								"vaccin"		=> $result['vaccin'],
-								"vaccin_freq"	=> $result['vaccin_freq'],
-								"type" 			=> PRODUCT_BARCODE,
-							));
+					"value" => $r['pname'],
+					"data" 	=> array(
+										"id" 				=> $r['pid'],
+										"stock"				=> $list,
+										"unit"				=> $r['unit_sell'],
+										"btw"				=> $r['btw_sell'],
+										"booking"			=> $r['booking_code'],
+										"vaccin"			=> $r['vaccin'],
+										"vaccin_freq"		=> $r['vaccin_freq'],
+										"type"				=> PRODUCT_BARCODE
+									)
+					);
 
 		return $return;
 	}
@@ -465,7 +460,7 @@ class Products extends Vet_Controller
 		# maximum 10 results
 		foreach ($result as $r) {
 			$stock = array();
-			$prices = array();
+			// $prices = array();
 			$product_id = $r['id'];
 
 		# there are prices

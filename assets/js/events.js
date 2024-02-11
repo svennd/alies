@@ -23,19 +23,6 @@ function event_set_procedure()
     $('#volume').val(default_volume_procedures);
 }
 
-function event_set_barcode(suggestion)
-{
-    $('#unit_sell').html(suggestion.unit);
-    $('#stock_select').prop('disabled', false);
-    $('#product_or_proc').val(1);
-    $('#vaccin_or_no').val(suggestion.vaccin);
-    $('#vaccin_freq').val(suggestion.vaccin_freq);
-
-    // there should only be one
-    $("#stock_select").append(new Option(suggestion.lotnr, suggestion.id, true, true));
-    $('#unit_sell').html("/ " + suggestion.volume + " " + suggestion.unit);
-}
-
 function event_set_product(suggestion, current_location)
 {
     // product
@@ -54,37 +41,42 @@ function event_set_product(suggestion, current_location)
     // check if there is stock
     if (suggestion.stock != null && suggestion.stock)
     {
-		var stock = suggestion.stock;
-		var no_valid_location = true;
+		if (suggestion.stock.length > 1) {
+			$("#stock_select").append(new Option(suggestion.stock[0].lotnr, suggestion.stock[0].id, true, true));
+		}
+		else
+		{
+			var stock = suggestion.stock;
+			var no_valid_location = true;
 
-		// should not be needed, but just to be sure
-		stock.sort((a, b) => {
-			if (current_location === a.location && current_location === b.location) {
-				// return parseFloat(a.volume) - parseFloat(b.volume);
-				return new Date(a.eol) - new Date(b.eol);
-			} else if (current_location === a.location) {
-				return -1;
-			} else if (current_location === b.location) {
-				return 1;
-			} else {
-				return 0;
+			// should not be needed, but just to be sure
+			stock.sort((a, b) => {
+				if (current_location === a.location && current_location === b.location) {
+					// return parseFloat(a.volume) - parseFloat(b.volume);
+					return new Date(a.eol) - new Date(b.eol);
+				} else if (current_location === a.location) {
+					return -1;
+				} else if (current_location === b.location) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+			
+			stock.forEach(s => {
+				const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()}) ${s.eol}`, s.id);
+			
+				if (current_location === s.location) {
+					$("#stock_select").append(option);
+					no_valid_location = false;
+				} else {
+					option.setAttribute("class", "bg-warning");
+					$("#stock_select").append(option);
+				}
+			});
+			if (no_valid_location) {
+				$("#stock_select").addClass("is-invalid");
 			}
-		});
-		
-		stock.forEach(s => {
-			const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()}) ${s.eol}`, s.id);
-		
-			if (current_location === s.location) {
-				$("#stock_select").append(option);
-				no_valid_location = false;
-			} else {
-				option.setAttribute("class", "bg-warning");
-				$("#stock_select").append(option);
-			}
-		});
-
-		if (no_valid_location) {
-			$("#stock_select").addClass("is-invalid");
 		}
     }
 
@@ -270,10 +262,6 @@ document.addEventListener("DOMContentLoaded", function(){
 			{
                 event_set_procedure();
 			}
-			else if(data.type == PRODUCT_BARCODE) 
-            {
-                event_set_barcode(data);
-            }
 			else 
             {
                 event_set_product(data, current_location);
@@ -289,7 +277,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		},
 		autoSelectFirst: true,
 		showNoSuggestionNotice: true,
-		minChars: '2'
+		minChars: '2',
+		deferRequestBy: 100
 	});
 
 
