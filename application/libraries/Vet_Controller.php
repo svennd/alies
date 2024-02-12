@@ -71,11 +71,16 @@ class Vet_Controller extends MY_Controller
 		// $this->output->enable_profiler(TRUE);
 	}
 
-	public function _get_compass_locations($location)
+	public function _get_compass_locations($location) : string
 	{
+		if (!$location)
+		{
+			return "";
+		}
+		
 		$compass = '
 		<div class="dropdown show">
-			<a class=" dropdown-toggle btn ' . ((!$location) ? "btn-outline-danger" : "btn-outline-success") . ' btn-sm" style="color:#1cc88a;background-color:rgba(0,0,0,0);" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<a class=" dropdown-toggle btn btn-outline-success btn-sm" style="color:#1cc88a;background-color:rgba(0,0,0,0);" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fa-solid fa-fw fa-location-dot" style="color:' . $location['color'] . '"></i> '. $location['name'] .'
 			</a>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">

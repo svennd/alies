@@ -16,7 +16,6 @@
 								<th><?php echo $this->lang->line('location'); ?></th>
 								<th><?php echo $this->lang->line('vet'); ?></th>
 								<th><?php echo $this->lang->line('last_update'); ?></th>
-								<th><?php echo $this->lang->line('created_at'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -46,7 +45,6 @@
 									<td><?php echo $report['loc_name']; ?></td>
 									<td data-sort="<?php echo $report['vet_id'] ?>"><?php echo $report['first_name']; ?></td>
 									<td data-sort="<?php echo strtotime($report['updated_at']); ?>"><?php echo user_format_date($report['updated_at'], $user->user_date); ?></td>
-									<td data-sort="<?php echo strtotime($report['updated_at']); ?>"><?php echo user_format_date($report['updated_at'], $user->user_date); ?></td>
 								</tr>
 						<?php endforeach; ?>
 								</tbody>
@@ -62,7 +60,7 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#reports").addClass('active');
 	var table = $("#dataTable").DataTable({
-		"order": [[ 7, "desc" ]],
+		"order": [[ 6, "desc" ]],
 	});
 });
 </script>
