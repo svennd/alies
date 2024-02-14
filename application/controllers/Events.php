@@ -501,7 +501,7 @@ class Events extends Vet_Controller
 	}
 
 	# delete event
-	public function del($event_id, $owner_id)
+	public function del(int $event_id, int $owner_id)
 	{
 		$info = $this->events->get($event_id);
 
@@ -509,6 +509,7 @@ class Events extends Vet_Controller
 		if ($info['payment'] == BILL_INVALID)
 		{
 			$this->events->delete($event_id);
+			$this->logs->logger(INFO, "remove_event", "event_id: " . $event_id);
 		}
 		# the bill was created but not a final report
 		elseif ($info['status'] != REPORT_FINAL)
@@ -518,6 +519,9 @@ class Events extends Vet_Controller
 
 			# then delete the event
 			$this->events->delete($event_id);
+
+			# def log this
+			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment']);
 		}
 
 		redirect('/owners/detail/' . $owner_id);
