@@ -227,7 +227,7 @@ foreach ($print as $pet_id => $event):
 
 <br/>
 <br/>
-<?php if($bill['status'] != BILL_PAID || !$transfer_complete): ?>
+<?php if(($bill['status'] != BILL_PAID || !$transfer_complete) && isset($IBAN)): ?>
 <div style="border:1px solid #B9B9B9; border-radius:15px; padding:5px; min-height:100px;">
 <table width="100%">
 	<tr>

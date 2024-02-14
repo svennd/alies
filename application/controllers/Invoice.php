@@ -314,11 +314,6 @@ class Invoice extends Vet_Controller
 			mkdir($path, 0700, true);
 		}
 
-		# don't make duplicates in case of file
-		if (file_exists($path . '/' . $filename . '.pdf') && $mode == PDF_FILE) {
-			return $path . '/' . $filename . '.pdf';
-		}
-
 		# generate the pdf based
 		return $this->pdf->create($template_data, $path . '/' . $filename, $mode);
 	}
