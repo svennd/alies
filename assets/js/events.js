@@ -41,7 +41,7 @@ function event_set_product(suggestion, current_location)
     // check if there is stock
     if (suggestion.stock != null && suggestion.stock)
     {
-		if (suggestion.stock.length > 1) {
+		if (suggestion.stock.length == 1) {
 			$("#stock_select").append(new Option(suggestion.stock[0].lotnr, suggestion.stock[0].id, true, true));
 		}
 		else
