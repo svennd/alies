@@ -17,7 +17,6 @@ class Vet_Controller extends MY_Controller
 			# this needs 404
 			# if not we can get in a redirect loop
 			show_error("Not part of the correct group;");
-			// redirect('/');
 		}
 
 		$this->load->model('Stock_location_model', 'stock_location');
@@ -28,9 +27,7 @@ class Vet_Controller extends MY_Controller
 
 		$this->lang->load('vet', 'dutch');
 		$this->lang->load('admin', 'dutch');
-		// $this->lang->load('vet', 'english');
 		
-		// $conf = $this->settings->set_cache('all_config')->get_all();
 		$conf = $this->settings->get_all();
 		if ($conf) {
 			foreach ($conf as $c) {

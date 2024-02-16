@@ -15,6 +15,7 @@ class Auth extends CI_Controller
 
 		$this->lang->load('auth');
 		$this->load->helper('language');
+		$this->load->model('Users_model', 'users');
 		
 		$this->data = array();
 	}
@@ -29,7 +30,7 @@ class Auth extends CI_Controller
 	//log the user in
 	public function login(int $location = -1)
 	{
-		$this->set_user_location($location);
+		$this->set_login_suggestion($location);
 
 		$this->data['title'] = "Login";
 
@@ -45,6 +46,10 @@ class Auth extends CI_Controller
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
 				//if the login is successful
 				//redirect them back to the home page
+
+				// reset location
+				$this->unset_location();
+
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
 				$this->logs->logger(DEBUG, "login_success", "user : " . $this->input->post('identity'));
 				redirect('/', 'refresh');
@@ -52,8 +57,7 @@ class Auth extends CI_Controller
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				// var_dump($this->ion_auth->errors());
-
+				
 				$this->logs->logger(INFO, "login_failed", "user : " . $this->input->post('identity'));
 				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
@@ -80,9 +84,7 @@ class Auth extends CI_Controller
 	public function logout()
 	{
 		// reset location
-		$this->load->model('Users_model', 'users');
-		$user = $this->ion_auth->user()->row();
-		$this->users->update(array("current_location" => 0, 'vsens' => 0), $user->id);
+		$this->unset_location();
 		
 		$this->data['title'] = "Logout";
 
@@ -295,12 +297,21 @@ class Auth extends CI_Controller
 	}
 
 	# just used to give a suggestion
-	private function set_user_location(int $location)
+	private function set_login_suggestion(int $location)
 	{
-		if ($location == -1) { return 0; }
+		if ($location == -1) { 
+			return false;
+		}
 
 		$this->load->helper('cookie');
-		
 		set_cookie("alies_location", (int) $location, 300);
+	}
+
+	# unset location
+	private function unset_location()
+	{
+		$user = $this->ion_auth->user()->row();
+		$this->users->update(array("current_location" => 0, 'vsens' => 0), $user->id);
+		$this->logs->logger(DEBUG, "logout", "user : " . $this->input->post('identity'));
 	}
 }
