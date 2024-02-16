@@ -99,4 +99,4 @@
 	const URL_DELETE_PROC 	= '<?php echo base_url('events/proc_remove/' . $event_id . '/'); ?>';
 	const URL_DELETE_PROD 	= '<?php echo base_url('events/prod_remove/' . $event_id . '/'); ?>';
 </script>
-<script src="<?php echo base_url('assets/js/events.js'); ?>"></script>
+<script src="<?php echo javascript('assets/js/events.js'); ?>"></script>
