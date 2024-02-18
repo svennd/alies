@@ -89,7 +89,8 @@
 				<div class="row">
 					<div class="col">
 						<label for="color"><?php echo $this->lang->line('haircolor'); ?></label>
-						<select class="form-control" name="color" id="color"></select>
+						<!-- <select class="form-control" name="color" id="color"></select> -->
+						<input type="text" name="color" class="form-control" id="color" value="">
 					</div>
 					<div class="col">
 						<label for="weight"><?php echo $this->lang->line('weight'); ?></label>
@@ -136,11 +137,11 @@ const SEARCH_BREED = '<?php echo base_url('breeds/search_breed/'); ?>';
 
 document.addEventListener("DOMContentLoaded", function(){
 
-	$("#color").select2({
-		// need to map since they don't have an id
-		data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
-		tags: true
-	});
+	// $("#color").select2({
+	// 	// need to map since they don't have an id
+	// 	data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
+	// 	tags: true
+	// });
 
 	/*
 		make chip readable

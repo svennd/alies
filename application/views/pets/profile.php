@@ -92,11 +92,7 @@
 				<div class="row">
 					<div class="col">
 							<label for="color"><?php echo $this->lang->line('haircolor'); ?></label>
-							<select class="form-control" name="color" id="color">
-								<?php if(isset($pet['color'])): ?>
-									<option value="<?php echo $pet['color']; ?>" checked><?php echo $pet['color']; ?></option>
-								<?php endif; ?>
-							</select>
+							<input type="text" name="color" class="form-control" id="color" value="<?php echo (isset($pet['color'])) ? $pet['color']: '' ?>">
 					</div>
 					<div class="col">
 						<label for="weight"><?php echo $this->lang->line('weight'); ?></label>
@@ -171,11 +167,11 @@
 const SEARCH_BREED = '<?php echo base_url('breeds/search_breed/'); ?>';
 
 document.addEventListener("DOMContentLoaded", function(){
-	$("#color").select2({
-		// need to map since they don't have an id
-		data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
-		tags: true
-	});
+	// $("#color").select2({
+	// 	// need to map since they don't have an id
+	// 	data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
+	// 	tags: true
+	// });
 
 	$("#breeds").select2(createBreedSelect2(SEARCH_BREED));
 	$("#second_breed").select2(createBreedSelect2(SEARCH_BREED));
