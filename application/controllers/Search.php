@@ -31,11 +31,13 @@ class Search extends Vet_Controller
 		$phone 		= $this->owners->search_by_phone_ex(format_phone($query));
 		
 		# if its numeric it might be a chip, client_id or pet_id
-		if (ctype_digit(strval($query)))
+		# chips allow for - as seperator
+		$read = str_replace('-', '', $query);
+		if (ctype_digit(strval($read)))
 		{
-			$pets		= (strlen($query) >= 10) ? $this->pets->search_by_chip_ex($query) : $this->pets->search_by_id($query);
+			$pets		= (strlen($read) >= 10) ? $this->pets->search_by_chip_ex($read) : $this->pets->search_by_id($readss);
 			# if the first digit is a 0 its not a client id but a phone number		
-			$last_name 	= (substr($query, 0, 1) == 0) ? array() : $this->owners->get_all((int)$query);
+			$last_name 	= (substr($read, 0, 1) == 0) ? array() : $this->owners->get_all((int)$read);
 		}
 		else
 		{

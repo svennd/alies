@@ -49,7 +49,7 @@
             <tr>
                 <td>Dier chip nr.</td>
                 <td>input*</td>
-                <td>Partiële chip is mogelijk (minimaal 10 cijfers), doorzoekt enkel lokale databank.</td>
+                <td>Partiële chip is mogelijk (minimaal 10 cijfers), doorzoekt enkel lokale databank.<br/>Formatering toegelaten (***-***-***-***-***)</td>
             </tr>
             <tr>
                 <td>Dier naam</td>

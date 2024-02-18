@@ -93,7 +93,7 @@ class Pets_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				pets.name, owners.*
+				pets.name, pets.type as type, owners.*
 			FROM 
 				pets
 			LEFT JOIN
@@ -115,7 +115,7 @@ class Pets_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				pets.name, owners.*
+				pets.name, pets.type as type, owners.*
 			FROM 
 				pets
 			LEFT JOIN
