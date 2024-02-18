@@ -18,7 +18,7 @@ function get_symbol($type, $name = false)
 		case RABBIT:
 			return '<span style="color:#dec5a1"><i class="fas fa-paw fa-fw" data-toggle="tooltip" data-placement="left" title="Rabbit"></i></span>'. ($name ? " Rabbit" : "");
 		default:
-			return '<span style="color:#DFD5A5"><i class="fas fa-fw"></i></span>'. ($name ? " Other" : "");
+			return '<span style="color:#DFD5A5"><i class="fas fa-ghost fa-fw"></i></span>'. ($name ? " Other" : "");
 	}
 }
 
