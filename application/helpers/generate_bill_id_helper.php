@@ -9,7 +9,7 @@ function get_invoice_id(int $invoice_id, $input_date = false, string $invoice_pr
 {
     $date = ($input_date) ? DateTime::createFromFormat('Y-m-d H:i:s', $input_date) : new DateTime();
 
-    return (base64_decode($invoice_prefix) == "YYYY") ? 
+    return (base64_decode($invoice_prefix)) ? 
         $date->format("Y") . str_pad($invoice_id, 5, '0', STR_PAD_LEFT) 
         : 
         str_pad($invoice_id, 5, '0', STR_PAD_LEFT);

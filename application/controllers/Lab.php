@@ -16,7 +16,6 @@ class Lab extends Vet_Controller
 	public function index()
     {
     	$this->_render_page('lab/index', array(
-			"cron_key" => config_item('cron_key'),
 			"data" => $this->lab->with_pet('fields: name,id')->get_all(),
 		));
 	}

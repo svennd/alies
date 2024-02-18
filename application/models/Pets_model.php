@@ -163,4 +163,30 @@ class Pets_model extends MY_Model
 	{
 		return $this->where(array('owner' => $owner, 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, type, name')->limit($limit)->get_all();
 	}
+
+
+	/*
+		cli cron job
+	*/
+	public function auto_death(int $type, int $years)
+	{
+		$sql = "
+			UPDATE pets
+			SET death = 1,
+				death_date = DATE_SUB(CURDATE(), INTERVAL 14 DAY), -- killed withouth a trace :)
+				note = CONCAT(note, ' [auto-death]')
+			WHERE 
+				death = 0
+			AND
+				type = " . $type . "
+			AND TIMESTAMPDIFF(YEAR, birth, CURDATE()) > " . $years . "
+			AND id NOT IN (
+				SELECT DISTINCT pet
+				FROM events
+				WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+			);
+		";
+		$this->db->query($sql);
+		return $this->db->affected_rows();
+	}
 }

@@ -1,22 +1,19 @@
-# medilab integration
+# crons
+see `php index.php cli` for all options.
 
-Suggestions for crons : 
+
+# suggested timing
+
 ```
-php index.php cron medilab
+# run daily : stock_clean, auto_death, prune, autoclose 
+@daily php /var/www/html/public/index.php cli daily
+
+# or if you want to specify 
+# 0 0 * * * php /var/www/html/public/index.php cli daily
+
+# run every 15 minutes
+*/15 * * * * php /var/www/html/public/index.php cli medilab
+
 ```
 
-possible to add multiple for quick followup : 
-```
-# no_redirect, 1 day scan (every 10 min for example)
-php index.php lab cron_medilab 0 1
-
-# no_redirect, 30 day scan
-php index.php lab cron_medilab 0 30
-```
-
-By default 14 days are scanned.
-
-
-
-*/9 * * * * php /var/www/html/public/index.php cron medilab -1 $cron_key >> /var/www/html/public/cron.log
-50 23 * * * php /var/www/html/public/index.php cron stock_clean $cron_key >> /var/www/html/public/stock_clean.log
+_note : /var/www/html/public is the path here, your path most likely will be different_

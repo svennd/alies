@@ -550,8 +550,3 @@ $config['mail_reply_to'] = "";
 
 // bcc
 $config['mail_bcc'] = "";
-
-// cron key
-// generate a random long key that is hard to be bruteforced
-// https://randomkeygen.com
-$config['cron_key'] = "A72568C3D34E9B9E6714C98F44D17";

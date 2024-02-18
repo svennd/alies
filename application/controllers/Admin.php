@@ -93,6 +93,18 @@ class Admin extends Admin_Controller
 					$this->setting->store(substr($k, 5), $v);
 				}
 			}
+
+			# check_* don't send if not checked
+			$keys = array('autodisable', 'invoice_prefix', 'pruning', 'autdeath');
+			foreach ($keys as $key)
+			{
+				if ($this->input->post('check_' . $key) == "on") {
+					$this->setting->store($key, 1);
+				}
+				else {
+					$this->setting->store($key, 0);
+				}
+			}			
 		}
 		
 		$temp_settings = $this->settings->get_all();

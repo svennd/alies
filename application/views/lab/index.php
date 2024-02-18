@@ -5,7 +5,6 @@
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div><?php echo $this->lang->line('Lab'); ?></div>
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url('cron/medilab/sync/' . $cron_key); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-sync"></i> Sync</a>
 				</div>
 			</div>
 			<div class="card-body">
