@@ -66,6 +66,11 @@ class Vet_Controller extends MY_Controller
 		
 		// $this->output->set_profiler_sections($sections);
 		// $this->output->enable_profiler(TRUE);
+
+		// just print the queries
+		// foreach ($this->db->queries as $query) {
+		// 	echo $query . PHP_EOL;
+		// }
 	}
 
 	public function _get_compass_locations($location) : string

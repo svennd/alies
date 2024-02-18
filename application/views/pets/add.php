@@ -128,7 +128,7 @@
 	</div>
 </div>
 
-<script src="<?php echo base_url('assets/js/pet_profile.js'); ?>"></script>
+<script src="<?php echo javascript('assets/js/pet_profile.js'); ?>"></script>
 
 <script type="text/javascript">
 

@@ -4,7 +4,7 @@
 	</div>
 	<div class="card-body">
         <?php if($stock): ?>
-            <table class="table" id="dataTable">
+            <table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th>Product</th>
