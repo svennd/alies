@@ -265,7 +265,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <strong class="mb-0">Auto Death</strong>
-                <p class="text-muted mb-0">Allow the system to mark pets as death.<br/>Based on the years defined below and<br/> atleast <strong>no event</strong> for 2 years. (including hidden events)<br/>
+                <p class="text-muted mb-0">Allow the system to mark pets as death.<br/>Based on the age defined below and<br/> atleast <strong>no event</strong> for 2 years. (including hidden events)<br/>
                     <i>The value "0 years" disables auto death for this type.</i>
                 </p>
             </div>
