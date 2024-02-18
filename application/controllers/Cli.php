@@ -73,7 +73,7 @@ class Cli extends Frontend_Controller {
 		$p_stock = (isset($this->conf['prune_stock'])) ? (int) $this->conf['prune_stock'] : false;
 		if ($p_stock)
 		{
-			$this->stock->where(array("status" => STOCK_HISTORY))->where('created_at < DATE_SUB(NOW(), INTERVAL ' . $p_stock . ' YEAR)', null, null, false, false, true)->delete();
+			$this->stock->where(array("state" => STOCK_HISTORY))->where('created_at < DATE_SUB(NOW(), INTERVAL ' . $p_stock . ' YEAR)', null, null, false, false, true)->delete();
 			$r = $this->db->affected_rows();
 			if ($r >= 1)
 			{
