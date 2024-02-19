@@ -35,7 +35,7 @@ class Search extends Vet_Controller
 		$read = str_replace('-', '', $query);
 		if (ctype_digit(strval($read)))
 		{
-			$pets		= (strlen($read) >= 10) ? $this->pets->search_by_chip_ex($read) : $this->pets->search_by_id($readss);
+			$pets		= (strlen($read) >= 10) ? $this->pets->search_by_chip_ex($read) : $this->pets->search_by_id($read);
 			# if the first digit is a 0 its not a client id but a phone number		
 			$last_name 	= (substr($read, 0, 1) == 0) ? array() : $this->owners->get_all((int)$read);
 		}
