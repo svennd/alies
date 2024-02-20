@@ -148,11 +148,6 @@ class Invoice extends Vet_Controller
 			"bill"			=> $bill_info
 		);
 
-		// if the bill is paid or there is an invoice_id defined (= legal document) generate a pdf
-		if (in_array($bill_info['status'], array(BILL_PAID)) || $bill_info['invoice_id'])
-		{
-			$this->generate_pdf($data, PDF_FILE);
-		}
 
 		if ($report == 1) 
 		{
@@ -171,6 +166,11 @@ class Invoice extends Vet_Controller
 		}
 		else
 		{
+			// if the bill is paid or there is an invoice_id defined (= legal document) generate a pdf
+			if (in_array($bill_info['status'], array(BILL_PAID)) || $bill_info['invoice_id'])
+			{
+				$this->generate_pdf($data, PDF_FILE);
+			}
 			$this->_render_page('bills/report', $data);
 		}
 	}
@@ -245,14 +245,6 @@ class Invoice extends Vet_Controller
 		}
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
-
-	// deprecated
-	// public function make_invoice_id(int $bill_id)
-	// {
-	// 	$is_modified = $this->bills->is_bill_modified($bill_id);
-	// 	$this->bills->set_invoice_id($bill_id, $is_modified);
-	// 	redirect('/invoice/get_bill/' . $bill_id, 'refresh');
-	// }
 
 	# on bill_unpay we need to send this in the background
 	public function store_bill_msg(int $bill_id)

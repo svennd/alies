@@ -27,7 +27,7 @@ class Pdf
     public function __construct()
 	{
 		$options    =   new Options();
-		$options->set('enable_html5_parser', true);
+		
 		$options->set('isRemoteEnabled', true);
 
 	    $this->dompdf = new Dompdf($options);
@@ -37,10 +37,9 @@ class Pdf
 
 	public function create($html, $filename, int $mode)
 	{
-		
 		$this->dompdf->loadHtml($html);
-		$this->dompdf->render();
 
+		$this->dompdf->render();
 		if ($mode == PDF_DOWNLOAD)
 		{
 			$this->dompdf->stream($filename.'.pdf', array("Attachment" => true));
