@@ -9,7 +9,6 @@ class Migration_stock_value extends CI_Migration {
 	public function up()
 	{
 		$sql = array();
-		# yes this is bad
 		$sql[] = "CREATE TABLE `stock_value` (
 			`id` int(11) NOT NULL,
 			`value` decimal(10,2) NOT NULL,
