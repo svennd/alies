@@ -33,7 +33,7 @@
 				</form>
 				<br>
                 <?php if($stat_info): ?>
-                    results for <strong><?php echo $stat_info['title']; ?></strong><br/><br/>
+                    results for <strong><?php echo $stat_info['title']; ?></strong><br/><br/><p><?php echo $stat_info['help'] ?></p>
                 <?php endif; ?>
                 <?php if($result): ?>
 				<table class="table table-sm" id="dataTable">
