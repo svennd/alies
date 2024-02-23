@@ -6,6 +6,7 @@ class Cli extends Frontend_Controller {
     public $delivery;
     public $wholesale;
 	public $conf = array();
+	public $stock_value;
 
     public function __construct() {
         parent::__construct();
@@ -19,6 +20,7 @@ class Cli extends Frontend_Controller {
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Lab_detail_model', 'lab_line');
 		$this->load->model('Stock_model', 'stock');
+		$this->load->model('Stock_value_model', 'stock_value');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Logs_model', 'nlog');
@@ -51,6 +53,7 @@ class Cli extends Frontend_Controller {
 		$this->prune();
 		$this->auto_death();
 		$this->stock_clean();
+		$this->stock_value->record_value();
 	}
 
 	public function prune()
