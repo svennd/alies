@@ -506,7 +506,7 @@ class Events extends Vet_Controller
 		$info = $this->events->get($event_id);
 
 		# no bill was created yet
-		if ($info['payment'] == BILL_INVALID)
+		if ($info['payment'] == BILL_DRAFT)
 		{
 			$this->events->delete($event_id);
 			$this->logs->logger(INFO, "remove_event", "event_id: " . $event_id);
@@ -515,13 +515,13 @@ class Events extends Vet_Controller
 		elseif ($info['status'] != REPORT_FINAL)
 		{
 			# bills are soft-delete
-			$this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
+			$affected = $this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
 
 			# then delete the event
 			$this->events->delete($event_id);
 
 			# def log this
-			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment']);
+			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment'] . " | affected :" . $affected);
 		}
 
 		redirect('/owners/detail/' . $owner_id);
