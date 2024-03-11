@@ -146,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
 	var table = $("#dataTable").DataTable({
 		responsive: true,
+		pageLength: 150,
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
 			<?php if($this->ion_auth->in_group("admin")): ?>
