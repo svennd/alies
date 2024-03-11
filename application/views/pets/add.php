@@ -60,7 +60,7 @@
 							</div>
 							<div class="col-md-6">
 								<label for="breed2">x <?php echo $this->lang->line('breed'); ?></label>
-								<select name="breed2" class="form-control" id="breed2"></select>
+								<select name="breed2" class="form-control" id="second_breed"></select>
 							</div>
 						</div>
 					</div>
