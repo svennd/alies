@@ -22,7 +22,7 @@
 			  <tbody>
 				<?php foreach($vaccines as $vac): ?>
 				<tr>
-					<td><?php echo $vac['product']['name']; ?></td>
+					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: ''; ?></td>
 					<td data-sort="<?php echo strtotime($vac['created_at']); ?>"><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
 					<td data-sort="<?php echo strtotime($vac['redo']); ?>">
 					<?php if (!$vac['no_rappel']): ?>
