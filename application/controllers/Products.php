@@ -44,7 +44,7 @@ class Products extends Vet_Controller
 																		->with_products('fields: id, name, unit_sell')
 																		->order_by('eol', 'ASC')
 																		->count_rows(),
-						"locations" 			=> $this->location,
+						"locations" 			=> $this->locations,
 						"user_location"			=> $this->user->current_location,
 						"success" 				=> $success,
 						"clocation"				=> $clocation,
@@ -107,7 +107,7 @@ class Products extends Vet_Controller
 				'local_stock' 	=> $local_stock,
 				'local_limit' 	=> $local_limit,
 				'comment_update'=> $comment_update,
-				'locations'		=> $this->location,
+				'locations'		=> $this->locations,
 				'history_1m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_6m'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
 				'history_1y'	=> $this->eprod->select('SUM(volume) as sum_vol', false)->fields()->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->group_by('product_id')->get(),
@@ -631,5 +631,11 @@ class Products extends Vet_Controller
 										'product_id' 	=> $pid
 								));
 		}
+	}
+
+	public function get_monthly_usage(int $product, int $months = 12)
+	{
+		$usage = $this->eprod->get_monthly_usage($product, $months);
+		echo json_encode($usage);
 	}
 }

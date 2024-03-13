@@ -2,32 +2,24 @@
 
 class Auth extends CI_Controller
 {
+	public $data = array();
+
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->library('ion_auth');
 		$this->load->library('form_validation');
-		$this->load->helper('url');
-
-		$this->load->database();
 
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
 		$this->lang->load('auth');
 		$this->load->helper('language');
+		$this->load->helper('cookie');
 		$this->load->model('Users_model', 'users');
 		
-		$this->data = array();
 	}
 
-	public function index()
-	{
-		if (!$this->ion_auth->logged_in() && !$this->ion_auth->is_admin()) {
-			redirect('/', 'refresh');
-		}
-	}
-
-	//log the user in
+	// log the user in
 	public function login(int $location = -1)
 	{
 		$this->set_login_suggestion($location);
@@ -40,26 +32,21 @@ class Auth extends CI_Controller
 
 		if ($this->form_validation->run() == true) {
 			//check to see if the user is logging in
-			//check for "remember me"
-			$remember = (bool) $this->input->post('remember');
 
-			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
-				//if the login is successful
-				//redirect them back to the home page
+			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'))) {
+				// if the login is successful
+				// redirect them back to the home page
 
 				// reset location
 				$this->unset_location();
-
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
 				$this->logs->logger(DEBUG, "login_success", "user : " . $this->input->post('identity'));
+
 				redirect('/', 'refresh');
+
 			} else {
-				//if the login was un-successful
-				//redirect them back to the login page
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				
+				//if the login was un-successful				
 				$this->logs->logger(INFO, "login_failed", "user : " . $this->input->post('identity'));
-				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				redirect('auth/login', 'refresh');
 			}
 		} else {
 			//the user is not logging in so display the login page
@@ -80,19 +67,22 @@ class Auth extends CI_Controller
 		}
 	}
 
-	//log the user out
+	// log the user out
 	public function logout()
 	{
 		// reset location
 		$this->unset_location();
+
+		#get_user_id();
+		$this->logs->logger(DEBUG, "logout", "user : " . $this->ion_auth->get_ident());
 		
 		$this->data['title'] = "Logout";
 
-		//log the user out
+		// log the user out
 		$this->ion_auth->logout();
 
-		//redirect them to the login page
-		$this->session->set_flashdata('message', $this->ion_auth->messages());
+		// redirect them to the login page
+		// $this->session->set_flashdata('message', $this->ion_auth->messages());
 		redirect('auth/login', 'refresh');
 	}
 	
@@ -297,21 +287,29 @@ class Auth extends CI_Controller
 	}
 
 	# just used to give a suggestion
-	private function set_login_suggestion(int $location)
+	private function set_login_suggestion(int $location) : bool
 	{
 		if ($location == -1) { 
 			return false;
 		}
-
-		$this->load->helper('cookie');
 		set_cookie("alies_location", (int) $location, 300);
+
+		return true;
 	}
 
 	# unset location
 	private function unset_location()
 	{
-		$user = $this->ion_auth->user()->row();
-		$this->users->update(array("current_location" => 0, 'vsens' => 0), $user->id);
-		$this->logs->logger(DEBUG, "logout", "user : " . $this->input->post('identity'));
+		$user = $this->ion_auth->get_user_id();
+		$this->session->unset_userdata('location');
+		if ($user)
+		{
+			$this->users->update(array("current_location" => 0, 'vsens' => 0), $user);
+			$this->logs->logger(DEBUG, "unset_location", "user : " . $this->ion_auth->get_ident());
+		}
+		else
+		{
+			$this->logs->logger(ERROR, "unset_location failed", "user : " . $this->ion_auth->get_ident());
+		}
 	}
 }

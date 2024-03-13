@@ -26,11 +26,6 @@
   <link href="<?php echo base_url('node_modules/sweetalert2/dist/sweetalert2.min.css'); ?>" rel="stylesheet">
 	<?php echo (isset($extra_header)) ? $extra_header : ""; ?>
 
-
-  <?php if ($this->ion_auth->in_group("accounting")): ?>
-  <link href="<?php echo base_url(); ?>assets/css/fck_accounting.css" rel="stylesheet">
-  <?php endif; ?>
-
 	<link rel="icon" href="<?php echo base_url('assets/alies.ico'); ?>" type="image/x-icon" />
 </head>
 <body id="page-top">
@@ -80,7 +75,7 @@
           </button>
 
         <!-- Topbar Search -->
-					<?php echo (isset($location)) ? $location : ''; ?>
+					<?php echo $location_changer; ?>
 
           <!-- Topbar Navbar -->
 

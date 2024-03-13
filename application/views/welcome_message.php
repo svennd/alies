@@ -124,16 +124,6 @@
 	</div>
 </div>
 
-<?php if ($current_location == "none"): ?>
-<?php echo $this->lang->line('select_location_long'); ?><br/><br/>
-<div class="row">
-	<?php foreach($locations as $l) : ?>
-
-  <div class="col-sm-3"><a class="btn btn-warning" href="<?php echo base_url() . '/welcome/change_location/' . $l['id']; ?>"><?php echo $l['name'] ?></a></div>
-	<?php endforeach; ?>
-</div>
-<?php endif; ?>
-
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#home").addClass('active');

@@ -1950,6 +1950,7 @@ class Ion_auth_model extends CI_Model
 		    'email'                    => $user->email,
 		    'user_id'                  => $user->id, //everyone likes to overwrite id so we'll use user_id
 		    'old_last_login'           => $user->last_login,
+			'location'				   => 0, // default to nowhere
 		    'last_check'               => time(),
 		    'ion_auth_session_hash'    => $this->config->item('session_hash', 'ion_auth'),
 		];
@@ -1961,6 +1962,16 @@ class Ion_auth_model extends CI_Model
 		return TRUE;
 	}
 
+
+	/**
+	 * @return set user location
+	 **/
+	public function set_user_location(int $location) : void
+	{
+		$this->logs->logger(DEBUG, "set_user_location", "set_user_location : $location");
+		$this->session->set_userdata('location', $location);
+	}
+	
 	/**
 	 * Set a user to be remembered
 	 *

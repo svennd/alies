@@ -3,6 +3,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Vet_Controller extends MY_Controller
 {
+	public $user;
+	public $user_location;
+	public $locations;
+	public $page_data;
+	public $conf;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -41,18 +47,28 @@ class Vet_Controller extends MY_Controller
 			$this->conf = array();
 		}
 
-		$this->user = $this->ion_auth->user()->row();
-		$this->location = $this->stock_location->get_all();
-
-		$current_location = $this->_get_current_location();
-		$current_location_name = $current_location ? $current_location['name'] : "none";
+		$this->user = $this->ion_auth->user()->row(); // object
+		$this->user->password = ""; // remove password from object
 		
+		$user_location_id = $this->ion_auth->get_user_location(); // int
+		$alocations = $this->stock_location->fields('id, name, color')->get_all(); // array
+
+		// make sure that id => array()
+		$this->locations = array_combine(array_column($alocations, 'id'), $alocations);
+
+		# this should never happen 
+		# but in prod it does :(
+		if ((int) $this->user->current_location != (int) $user_location_id) {
+			$this->logs->logger(ERROR, "detected_diff_location", "db:" . $this->user->current_location . " session:" . $user_location_id);
+		}
+
 		# required on every page
 		$this->page_data = array(
 								"user" 						=> $this->user,
-								"location" 					=> $this->_get_compass_locations($current_location),
-								"current_location" 			=> $current_location_name,
-								"mondal" 					=> (!$current_location) ? $this->_get_mondal() : "",
+								"all_locations"				=> $this->locations,
+								"clocation" 				=> $user_location_id,
+								"location_changer" 			=> $this->_get_compass_locations($user_location_id, $this->locations),
+								"mondal" 					=> (!$user_location_id) ? $this->_get_mondal($this->locations) : "",
 								"cnt_sticky"				=> $this->sticky->count_rows(),
 								"report_count"				=> $this->events->get_open_reports($this->user->id),
 								"lab_count"					=> $this->lab->get_unassigned(),
@@ -71,30 +87,29 @@ class Vet_Controller extends MY_Controller
 		// foreach ($this->db->queries as $query) {
 		// 	echo $query . PHP_EOL;
 		// }
+		// var_dump($this->get_user_location());
 	}
 
-	public function _get_compass_locations($location) : string
+	public function _get_compass_locations(int $location, array $all_locations) : string
 	{
-		if (!$location)
-		{
-			return "";
-		}
-		
-		$compass = '
-		<div class="dropdown show">
-			<a class=" dropdown-toggle btn btn-outline-success btn-sm" style="color:#1cc88a;background-color:rgba(0,0,0,0);" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<i class="fa-solid fa-fw fa-location-dot" style="color:' . $location['color'] . '"></i> '. $location['name'] .'
-			</a>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-		';
-		foreach ($this->location as $location) {
-			$compass .= '<a class="dropdown-item" href="' . base_url('welcome/change_location/' . $location['id']). '">
-							<i class="fa-solid fa-fw fa-location-dot" style="color:' . $location['color'] . '"></i> '. $location['name'] .'
-				</a>';
-		}
-		$compass .= "</div></div>";
-		return $compass;
+		if (!$location) { return ""; }
+		return $this->load->view('blocks/location_changer', array(
+						"clocation" 	=> $location,
+						"all_locations" => $all_locations,
+		), true);
 	}
+
+	public function _get_mondal(array $all_locations) : string
+	{
+		# get login cookie
+		$this->load->helper('cookie');
+		
+		return $this->load->view('blocks/location', array(
+				"location"			 => $all_locations,
+				"suggest_location"	 => (get_cookie('alies_location')) ? get_cookie('alies_location') : -1,
+			), true);
+	}
+
 
 	public function _render_page($page, $data = array())
 	{
@@ -104,20 +119,4 @@ class Vet_Controller extends MY_Controller
 		$this->load->view('footer', $data);
 	}
 
-	public function _get_mondal()
-	{
-
-		# get login cookie
-		$this->load->helper('cookie');
-		
-		return $this->load->view('mondal/location', array(
-				"location"			 => $this->location,
-				"suggest_location"	 => (get_cookie('alies_location')) ? get_cookie('alies_location') : -1,
-			), true);
-	}
-
-	private function _get_current_location()
-	{
-		return ($this->user->current_location != 0) ? $this->stock_location->get($this->user->current_location) : false;
-	}
 }

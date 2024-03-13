@@ -12,14 +12,15 @@
 			<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 				<div class="btn-group mr-2" role="group" aria-label="First group">
 					<?php foreach($location as $l) : ?>
-					<a class="btn <?php echo ($suggest_location == -1 || $suggest_location == $l['id']) ? "btn-success": "btn-warning"; ?>" href="<?php echo base_url() . '/welcome/change_location/' . $l['id']; ?>"> 
-					<?php echo $l['name'] ?>
+					<a class="btn <?php echo ($suggest_location == -1 || $suggest_location == $l['id']) ? "btn-outline-success": "btn-outline-warning"; ?>" href="<?php echo base_url('/welcome/change_location/' . $l['id']); ?>"> 
+            <i class="fa-solid fa-fw fa-location-dot" style="color:<?php echo $l['color']; ?>"></i>
+					  <?php echo $l['name'] ?>
 					</a>
 					<?php endforeach; ?>
 				</div>
-			<div class="btn-group mr-2" role="group" aria-label="Second group">
+			<!-- <div class="btn-group mr-2" role="group" aria-label="Second group">
 				<button type="button" class="btn btn-danger" data-dismiss="modal">None</button>	
-			</div>
+			</div> -->
 		</div>
       </div>
     </div>

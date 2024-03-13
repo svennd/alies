@@ -141,19 +141,14 @@ class Ion_auth
 
 		$identity = $this->config->item('identity', 'ion_auth');
 
-		$this->session->unset_userdata([$identity, 'id', 'user_id']);
-
-		// delete the remember me cookies if they exist
-		delete_cookie($this->config->item('remember_cookie_name', 'ion_auth'));
+		$this->session->unset_userdata([$identity, 'id', 'user_id', 'location']);
 
 		// Clear all codes
 		$this->ion_auth_model->clear_forgotten_password_code($identity);
-		$this->ion_auth_model->clear_remember_code($identity);
 
 		// Destroy the session
 		$this->session->sess_destroy();
 
-		$this->set_message('logout_successful');
 		return TRUE;
 	}
 
@@ -167,12 +162,6 @@ class Ion_auth
 		$this->ion_auth_model->trigger_events('logged_in');
 
 		$recheck = $this->ion_auth_model->recheck_session();
-
-		// auto-login the user if they are remembered
-		if (!$recheck && get_cookie($this->config->item('remember_cookie_name', 'ion_auth')))
-		{
-			$recheck = $this->ion_auth_model->login_remembered_user();
-		}
 
 		return $recheck;
 	}
@@ -189,6 +178,32 @@ class Ion_auth
 			return $user_id;
 		}
 		return NULL;
+	}
+
+	/**
+	 * @return int|null The user's identification from the session user data or NULL if not found
+	 **/
+	public function get_ident()
+	{
+		$identity = $this->session->userdata('identity');
+		if (!empty($identity))
+		{
+			return $identity;
+		}
+		return NULL;
+	}
+
+	/**
+	 * @return int The user's location from the session user data or NULL if not found
+	 **/
+	public function get_user_location(): int
+	{
+		$location = $this->session->userdata('location');
+		if (!empty($location))
+		{
+			return (int) $location;
+		}
+		return 0;
 	}
 
 	/**
