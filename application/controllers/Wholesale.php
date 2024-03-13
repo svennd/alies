@@ -88,6 +88,7 @@ class Wholesale extends Admin_Controller {
 					);
 		$this->_render_page('wholesale/history', $data);
 	}
+
 	/*
 	 * used on product/profile/$id
 	 */
@@ -120,5 +121,11 @@ class Wholesale extends Admin_Controller {
 		}
 
 		echo json_encode(array("results" => $article_list));
+	}
+
+	public function ajax_get_history(int $id)
+	{
+		$data = $this->wholesale->with_deliveries('fields:delivery_date, bruto_price, netto_price, amount, lotnr, due_date')->get($id);
+		echo json_encode($data);
 	}
 }

@@ -84,4 +84,23 @@ class Events_products_model extends MY_Model
 		$return['total'] = $total;
 		return $return;
 	}
+
+	public function get_monthly_usage(int $product, int $month = 6)
+	{
+		$sql = "SELECT 
+					CONCAT(MONTH(created_at), '/', YEAR(created_at)) AS month_year,
+					SUM(volume) AS total_volume
+				FROM 
+					events_products
+				WHERE
+    				created_at >= DATE_SUB(NOW(), INTERVAL ". $month ." MONTH)
+				AND
+					product_id = " . $product . "
+				GROUP BY 
+					YEAR(created_at), MONTH(created_at)
+				ORDER BY 
+					YEAR(created_at), MONTH(created_at);
+				";
+		return $this->db->query($sql)->result_array();
+	}
 }

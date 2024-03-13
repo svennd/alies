@@ -411,6 +411,7 @@ class Events_model extends MY_Model
 			LIMIT 
 			9;
 		";
+
 		return ($this->db->query($sql)->result_array()[0]['count']);
 	}
 

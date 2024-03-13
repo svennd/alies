@@ -105,8 +105,13 @@ foreach ($locations as $l)
 		<div class="card shadow mb-4">
 			<div class="card-header border-bottom">
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Info</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="true">Stock</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false"><i class="fa-solid fa-circle-info"></i> Info</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link active" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="true"><i class="fa-solid fa-dolly"></i> Stock</a></li>
+
+				<?php if ($this->ion_auth->in_group("admin")): ?>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="import-tab" data-toggle="tab" href="#importtab" role="tab" aria-controls="importtab" aria-selected="true"><i class="fa-solid fa-file-import"></i> Import</a></li>
+			  <li class="nav-item" role="presentation"><a class="nav-link" id="export-tab" data-toggle="tab" href="#exporttab" role="tab" aria-controls="exporttab" aria-selected="true"><i class="fa-solid fa-file-export"></i> Export</a></li>
+			  	<?php endif; ?>
 			</ul>
 			</div>
 			<div class="card-body">
@@ -271,6 +276,12 @@ foreach ($locations as $l)
 						<?php else: ?>
 							<?php echo $this->lang->line('no_global_stock'); ?>
 						<?php endif; ?>
+					</div>
+					<div class="tab-pane fade" id="importtab" role="tabpanel" aria-labelledby="import-tab">
+						<?php include "block/import.php"; ?>
+					</div>
+					<div class="tab-pane fade" id="exporttab" role="tabpanel" aria-labelledby="export-tab">
+						<?php include "block/export.php"; ?>
 					</div>
 				</div>
 			</div>
