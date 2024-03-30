@@ -99,7 +99,7 @@ class Pets extends Vet_Controller
 											"nr_vac_book" 	=> $this->input->post('vacbook'),
 											"note" 			=> $this->input->post('msg'),
 											"owner" 		=> $this->input->post('owner'),
-											"location"		=> $this->user->current_location,
+											"location"		=> $this->_get_user_location(),
 											"init_vet"		=> $this->user->id
 										));
 			# if it failed
@@ -261,7 +261,6 @@ class Pets extends Vet_Controller
 								array(
 										"pet" 			=> $pet_id,
 										"no_history" 	=> 0,
-										"type !=" 		=> 1,
 										))->
 							order_by('created_at', 'DESC')->
 							get_all();
