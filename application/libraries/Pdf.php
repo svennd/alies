@@ -19,7 +19,7 @@ use Dompdf\Options;
 
 use \Clegginabox\PDFMerger\PDFMerger;
 
-class Pdf
+class Pdf extends CI_Model
 {
 	private $dompdf; 
 	private $pdfmerge;
@@ -31,12 +31,37 @@ class Pdf
 		$options->set('isRemoteEnabled', true);
 
 	    $this->dompdf = new Dompdf($options);
+		if (isset($this->conf['nameiban']['value']))
+		{
+			$this->dompdf->addInfo('Author', (string)base64_decode($this->conf['nameiban']['value']));
+		}
+		$this->dompdf->addInfo('Creator', 'github.com/svennd/alies');
 		$this->pdfmerge = new PDFMerger;
 
 	}
 
 	public function create($html, $filename, int $mode)
 	{
+
+		$file_exists = file_exists((string)$filename . '.pdf');
+
+		// check if it already exists on generation
+		if ($mode == PDF_FILE && $file_exists)
+		{
+			return $filename . ".pdf";
+		}
+
+		// if they want to open it also check pre-building
+		if ($mode == PDF_STREAM && $file_exists)
+		{
+			header('Content-type: application/pdf');
+			header('Content-Disposition: inline; filename="' . $filename . '.pdf' . '"');
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+			readfile($filename . '.pdf');
+			return;
+		}
+
 		$this->dompdf->loadHtml($html);
 
 		$this->dompdf->render();
@@ -58,12 +83,6 @@ class Pdf
 			return $filename . ".pdf";
 		}
 
-	}
-
-	// legacy wrapper
-	public function create_file($html, $filename)
-	{
-		$this->create($html, $filename, PDF_FILE);
 	}
 
 	public function merge_pdf(string $filename, array $list)
