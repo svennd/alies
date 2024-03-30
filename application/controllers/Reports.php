@@ -57,7 +57,7 @@ class Reports extends Admin_Controller
 		if (!$location)
 		{
 			$data = array(
-							"locations"		=> $this->location,
+							"locations"		=> $this->locations,
 						);
 
 			$this->_render_page('reports/stock_list_overview', $data);

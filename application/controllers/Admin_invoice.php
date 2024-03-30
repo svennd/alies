@@ -31,7 +31,7 @@ class Admin_invoice extends Admin_Controller
 		}
 
 		$data = array(
-                        "locations" => $this->location,
+                        "locations" => $this->locations,
                         "vets"  => $this->users->get_all(),
 						"bill" => $this->bills->with_owner('fields:last_name')->with_vet('fields:first_name')->with_location('fields:name')->get($bill_id)
 					);

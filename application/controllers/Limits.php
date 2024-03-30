@@ -21,7 +21,7 @@ class Limits extends Vet_Controller
 	{
 		$data = array(
 						"order"			=> 1,
-						"locations" 	=> $this->location,
+						"locations" 	=> $this->locations,
 						"in_backorder" 	=> $this->product->fields('id, name, unit_sell')->where(array("backorder" => 1))->with_wholesale()->get_all(),
 					);
 		$this->_render_page('limits/order', $data);
@@ -30,7 +30,7 @@ class Limits extends Vet_Controller
 	public function global()
 	{
 		$data = array(
-						"locations" 	=> $this->location,
+						"locations" 	=> $this->locations,
 						"global_stock" 	=> $this->stock_limit->global_shortage()
 					);
 		$this->_render_page('limits/global', $data);
@@ -42,7 +42,7 @@ class Limits extends Vet_Controller
 		$local_limit = $this->stock_limit->local_shortage($filter);
 		$data = array(
 						"filter"		=> $filter,
-						"locations" 	=> $this->location,
+						"locations" 	=> $this->locations,
 						"local_stock" 	=> $local_limit,
 					);
 		$this->_render_page('limits/local', $data);
