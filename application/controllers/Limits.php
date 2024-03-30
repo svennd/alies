@@ -38,7 +38,7 @@ class Limits extends Vet_Controller
 
 	public function local(int $location = 0)
 	{
-		$filter = ($location) ? $location : $this->user->current_location;
+		$filter = ($location) ? $location : $this->_get_user_location();
 		$local_limit = $this->stock_limit->local_shortage($filter);
 		$data = array(
 						"filter"		=> $filter,

@@ -55,7 +55,7 @@ class Tooth extends Vet_Controller
 		$this->toot_msg->insert(array(
 									"pet" 		=> $pet_id,
 									"vet" 		=> $this->user->id,
-									"location" 	=> $this->user->current_location,
+									"location" 	=> $this->_get_user_location(),
 									"msg" 		=> $this->input->post('message')
 								));
 		redirect('/tooth/fiche/' . $pet_id . '/update_text', 'refresh');

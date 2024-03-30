@@ -85,7 +85,7 @@ class Invoice extends Vet_Controller
 			$bill_id = $this->bills->insert(array(
 				"owner_id" 		=> $owner_id,
 				"vet" 			=> $this->user->id,
-				"location" 		=> $this->user->current_location,
+				"location" 		=> $this->_get_user_location(),
 				"status" 		=> $bill_status, // will be upgraded to BILL_PENDING when calculated
 			));
 
@@ -270,7 +270,7 @@ class Invoice extends Vet_Controller
 				# this can happen when there is no stock at all for this product
 				# and so stock_id is null, this means we don't know where it was and our best guess
 				# is the event_location, but current_location is most likely fine too
-				$this->stock->fallback_reduce($product['product_id'], $product['volume'], $this->user->current_location, 'NO_STOCK');
+				$this->stock->fallback_reduce($product['product_id'], $product['volume'], $this->_get_user_location(), 'NO_STOCK');
 			}
 			$product_count++;
 		}
@@ -334,7 +334,7 @@ class Invoice extends Vet_Controller
 			"transfer" 	=> $transfer_value,
 			"bill_id" 	=> $bill_id,
 			"vet" 		=> $this->user->id,
-			"location" 	=> $this->user->current_location
+			"location" 	=> $this->_get_user_location()
 		));
 	}
 

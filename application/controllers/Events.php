@@ -26,7 +26,7 @@ class Events extends Vet_Controller
 	public function new_event($pet)
 	{
 		# search for open events on this pet
-		$result = $this->events->where(array("pet" => $pet, "status" => STATUS_OPEN, "location" => $this->user->current_location))->get_all();
+		$result = $this->events->where(array("pet" => $pet, "status" => STATUS_OPEN, "location" => $this->_get_user_location()))->get_all();
 
 		# there is already an event for this animal
 		# update, otherwise create it and redirect
@@ -36,7 +36,7 @@ class Events extends Vet_Controller
 
 			$this->logs->logger(DEBUG, "update_restart_event", "event_id: " . $event_id);
 		} else {
-			$event_id = $this->events->insert(array('pet' => $pet, "location" => $this->user->current_location, "vet" => $this->user->id));
+			$event_id = $this->events->insert(array('pet' => $pet, "location" => $this->_get_user_location(), "vet" => $this->user->id));
 
 			$this->logs->logger(DEBUG, "new_event", "event_id: " . $event_id);
 		}
@@ -76,7 +76,7 @@ class Events extends Vet_Controller
 			"other_pets"		=> $other_pets,
 			"autotemplate"		=> base64_decode($this->conf['autotemplate']['value']),
 			"billing_info"		=> ($event_info['status'] != STATUS_CLOSED ) ? false: $this->bills->with_location()->get($event_info['payment']),
-			"u_location"		=> $this->user->current_location,
+			"u_location"		=> $this->_get_user_location(),
 			"procedures_d"		=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
 			"extra_header" 		=> inject_trumbowyg('header'),
 			"extra_footer" 		=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
@@ -242,7 +242,7 @@ class Events extends Vet_Controller
 									"pet"			=> $event_info['pet'],
 									"redo"			=> $date->format('Y-m-d'),
 									"no_rappel"		=> 0,
-									"location"		=> $this->user->current_location,
+									"location"		=> $this->_get_user_location(),
 									"vet"			=> $this->user->id
 								));
 	}

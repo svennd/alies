@@ -45,7 +45,7 @@ class Owners extends Vet_Controller
 										"contact" 			=> (is_null($this->input->post('contact'))) ? 0 : 1,
 										"msg" 				=> $this->input->post('msg'),
 										"initial_vet"		=> $this->user->id,
-										"initial_loc"		=> $this->user->current_location,
+										"initial_loc"		=> $this->_get_user_location(),
 									));
 									
 				$this->logs->logger(INFO, "add_client", "Added client " . $this->input->post('last_name') . " (". $new_id . ")");

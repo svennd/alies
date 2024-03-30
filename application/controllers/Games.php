@@ -28,7 +28,7 @@ class Games extends Vet_Controller
 		$result = $this->stock
 			->fields('id, product_id, verify, lotnr, eol, volume, barcode, volume')
 			->where(array(
-							"location" 		=> $this->user->current_location
+							"location" 		=> $this->_get_user_location()
 							))
 			->with_products('fields:name,unit_sell, short_name')
 			->limit(3)

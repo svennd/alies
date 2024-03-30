@@ -4,7 +4,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Vet_Controller extends MY_Controller
 {
 	public $user;
-	public $user_location;
 	public $locations;
 	public $page_data;
 	public $conf;
@@ -58,8 +57,8 @@ class Vet_Controller extends MY_Controller
 
 		# this should never happen 
 		# but in prod it does :(
-		if ((int) $this->user->current_location != (int) $user_location_id) {
-			$this->logs->logger(ERROR, "detected_diff_location", "db:" . $this->user->current_location . " session:" . $user_location_id);
+		if ((int) $this->_get_user_location() != (int) $user_location_id) {
+			$this->logs->logger(ERROR, "detected_diff_location", "db:" . $this->_get_user_location() . " session:" . $user_location_id);
 		}
 
 		# required on every page
@@ -110,13 +109,17 @@ class Vet_Controller extends MY_Controller
 			), true);
 	}
 
-
 	public function _render_page($page, $data = array())
 	{
 		$data = array_merge($data, $this->page_data);
 		$this->load->view('header', $data);
 		$this->load->view($page, $data);
 		$this->load->view('footer', $data);
+	}
+
+	public function _get_user_location(): int
+	{
+		return $this->ion_auth->get_user_location();
 	}
 
 }

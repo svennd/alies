@@ -142,7 +142,7 @@ class Files extends Vet_Controller
 					"size"	 			=> $this->input->post('file_size'),
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $mimetype,
-					"location"	 		=> $this->user->current_location,
+					"location"	 		=> $this->_get_user_location(),
 				));
 		echo json_encode(array('success' => true));
 	}
@@ -177,7 +177,7 @@ class Files extends Vet_Controller
 					"size"	 			=> $size,
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $type,
-					"location"	 		=> $this->user->current_location,
+					"location"	 		=> $this->_get_user_location(),
 			));
 		}
 		

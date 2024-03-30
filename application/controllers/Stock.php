@@ -175,7 +175,7 @@ class Stock extends Vet_Controller
 				$result = $this->stock->where(array(
 										"product_id" 	=> $this->input->post('pid'),
 										"eol" 			=> (empty($this->input->post('eol')) ? null : $this->input->post('eol')),
-										"location" 		=> $this->user->current_location,
+										"location" 		=> $this->_get_user_location(),
 										"lotnr" 		=> $this->input->post('lotnr'),
 										"in_price" 		=> $this->input->post('in_price'),
 										"state" 		=> STOCK_CHECK
@@ -203,7 +203,7 @@ class Stock extends Vet_Controller
 					$this->stock->insert(array(
 											"product_id" 		=> $this->input->post('pid'),
 											"eol" 				=> $this->input->post('eol'),
-											"location" 			=> $this->user->current_location,
+											"location" 			=> $this->_get_user_location(),
 											"in_price" 			=> $this->input->post('in_price'),
 											"lotnr" 			=> $this->input->post('lotnr'),
 											"supplier" 			=> (!empty($this->input->post('supplier'))) ? $this->input->post('supplier') : NULL,
@@ -258,7 +258,7 @@ class Stock extends Vet_Controller
 					"vet"		=> $this->user->id,
 					"note"		=> $this->input->post('delivery_slip'),
 					"regdate"	=> $this->input->post('regdate'),
-					"location" 	=> $this->user->current_location
+					"location" 	=> $this->_get_user_location()
 			));
 		
 		# registry_in

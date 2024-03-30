@@ -128,7 +128,7 @@
 						<td><?php echo $product['type']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>
 						<td>
-							<?php if($clocation != $this->user->current_location): ?>
+							<?php if($clocation != $user_location): ?>
 								<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
 											id="<?php echo $product['product_id']; ?>" 
 											data-id="<?php echo $product['product_id']; ?>"
@@ -173,8 +173,8 @@
 						</div>
 						<div class="col mb-3">
 							<label for="exampleFormControlInput1"><?php echo $this->lang->line('to_location'); ?></label>
-							<input type="text" id="disabledTextInput" class="form-control" placeholder="<?php foreach($locations as $location): ?><?php echo ($location['id'] == $this->user->current_location) ? $location['name'] : ''; ?><?php endforeach; ?>" readonly>
-							<input type="hidden" name="to_location" value="<?php echo $this->user->current_location; ?>" />
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="<?php foreach($locations as $location): ?><?php echo ($location['id'] == $user_location) ? $location['name'] : ''; ?><?php endforeach; ?>" readonly>
+							<input type="hidden" name="to_location" value="<?php echo $user_location; ?>" />
 						</div>
 					</div>
 					<input type="hidden" name="barcodes" id="barcodes" value="" />

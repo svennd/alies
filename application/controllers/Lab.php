@@ -58,7 +58,7 @@ class Lab extends Vet_Controller
 				"type"		=> LAB,
 				"status"	=> STATUS_CLOSED, # might require status_history
 				"payment" 	=> PAYMENT_PAID,
-				"location"	=> $this->user->current_location,
+				"location"	=> $this->_get_user_location(),
 				"vet"		=> $this->user->id,
 				"report"	=> REPORT_DONE
 		));

@@ -24,7 +24,7 @@ class Sticky extends Vet_Controller
 		{
 			$this->sticky->insert(array(
 				"note"		=> htmlspecialchars($this->input->post('content')),
-				"location"	=> $this->user->current_location,
+				"location"	=> $this->_get_user_location(),
 				"user_id"	=> $this->user->id, 
 				"private"	=> (int) $this->input->post('private'),
 			));

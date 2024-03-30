@@ -26,7 +26,7 @@ class Products extends Vet_Controller
 
 	public function index($location = false, $success = false)
 	{
-		$clocation = ($location) ? $location : $this->user->current_location;
+		$clocation = ($location) ? $location : $this->_get_user_location();
 		
 		$products = ($location == "all") ? 
 					$this->stock->get_all_products_count() 
@@ -40,12 +40,12 @@ class Products extends Vet_Controller
 																		->fields('eol, volume')
 																		->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 																		->where('eol > DATE_ADD(NOW(), INTERVAL -10 DAY)', null, null, false, false, true)
-																		->where(array('state' => STOCK_IN_USE, 'location' => $this->user->current_location))
+																		->where(array('state' => STOCK_IN_USE, 'location' => $this->_get_user_location()))
 																		->with_products('fields: id, name, unit_sell')
 																		->order_by('eol', 'ASC')
 																		->count_rows(),
 						"locations" 			=> $this->locations,
-						"user_location"			=> $this->user->current_location,
+						"user_location"			=> $this->_get_user_location(),
 						"success" 				=> $success,
 						"clocation"				=> $clocation,
 						"search_product"		=> $this->products->search_product($this->input->get('search_query')),
@@ -90,10 +90,10 @@ class Products extends Vet_Controller
 
 		# check the stocks
 		// local is not required anymore 
-		list($local_stock, $global_stock) = $this->stock->get_stock_levels($id, $this->user->current_location);
+		list($local_stock, $global_stock) = $this->stock->get_stock_levels($id, $this->_get_user_location());
 
 		# check if there is a local limit
-		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->user->current_location))->get();
+		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->_get_user_location()))->get();
 		$local_limit = ($local_limit_query) ? $local_limit_query['volume'] : 0;
 
 		$data = array(
@@ -225,7 +225,7 @@ class Products extends Vet_Controller
 								"wholesale"				=> $this->input->post('wholesale'),
 								"buy_price_date" 		=> $this->input->post('buy_price_date'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
-								"discontinued" 				=> (is_null($this->input->post('discontinued')) ? 0 : 1),
+								"discontinued" 			=> (is_null($this->input->post('discontinued')) ? 0 : 1),
 								"limit_stock" 			=> $this->input->post('limit_stock')
 							);
 
@@ -235,6 +235,10 @@ class Products extends Vet_Controller
 			$this->set_local_limits($this->input->post('limit'), $id);
 
 			# log this
+			# reduce log blob
+			foreach (array('short_name', 'wholesale_name', 'producer', 'supplier', 'posologie', 'toedieningsweg', 'type', 'buy_volume', 'sell_volume', 'unit_buy', 'unit_sell', 'delay') as $key) { unset($input[$key]); }
+			foreach ($input as $key => $value) { if (is_null($value)) { unset($input[$key]); } }
+			
 			$this->logs->logger(INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
 		}
 
@@ -413,7 +417,7 @@ class Products extends Vet_Controller
 		$return = array();
 
 		// lookup in database
-		$stck = $this->stock->gs1_lookup($gsl['GTIN'], $gsl['LOTNR'], gs1_get_due_date($gsl), $this->user->current_location);
+		$stck = $this->stock->gs1_lookup($gsl['GTIN'], $gsl['LOTNR'], gs1_get_due_date($gsl), $this->_get_user_location());
 
 		if (!$stck) { return $return; }
 
