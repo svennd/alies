@@ -3,6 +3,7 @@ const PRODUCT = 1;
 const PRODUCT_BARCODE = 2;
 
 var default_volume_procedures = 1;
+var lotnr_volumes = {}; // keep track of the volumes available so we can warn for overbooking
 
 function financial(x) {
 	return Number.parseFloat(x).toFixed(2);
@@ -39,10 +40,12 @@ function event_set_product(suggestion, current_location)
     $('#vaccin_freq').val(suggestion.vaccin_freq);
 
     // check if there is stock
+	lotnr_volumes = {}; // reset the volumes
     if (suggestion.stock != null && suggestion.stock)
     {
 		if (suggestion.stock.length == 1) {
 			$("#stock_select").append(new Option(suggestion.stock[0].lotnr, suggestion.stock[0].id, true, true));
+			lotnr_volumes[suggestion.stock[0].id] = suggestion.stock[0].volume;
 		}
 		else
 		{
@@ -65,7 +68,7 @@ function event_set_product(suggestion, current_location)
 			
 			stock.forEach(s => {
 				const option = new Option(`${s.lotnr} (${parseFloat(s.volume).toPrecision()}) ${s.eol}`, s.id);
-			
+				lotnr_volumes[s.id] = s.volume;
 				if (current_location === s.location) {
 					$("#stock_select").append(option);
 					no_valid_location = false;
@@ -293,6 +296,19 @@ document.addEventListener("DOMContentLoaded", function(){
 			add_line();
         }
     });
+
+	// check if the volume is not higher than the stock
+	$("#volume").on("blur", function() {
+		if (lotnr_volumes[$("#stock_select").val()] < $("#volume").val()) {
+			$("#volume").addClass("is-invalid");
+		} else {
+			$("#volume").removeClass("is-invalid");
+		}
+	});
+	// if lotnr is changed
+	$("#stock_select").on("change", function() {
+		$("#volume").removeClass("is-invalid");
+	});
 
 	// hide netto
 	// since clients see this value as "to pay" so we hide it
