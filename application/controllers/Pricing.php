@@ -16,10 +16,11 @@ class Pricing extends Accounting_Controller
 		$this->load->model('Booking_code_model', 'book');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Product_price_model', 'pprice');
+		$this->load->model('Price_log_model', 'price_log');
 		$this->load->model('Events_procedures_model', 'eproc');
 	}
 
-	public function prod($id = false)
+	public function prod(int $id = 0)
 	{
 		# show list with all products prices
 		# unless single product is selected
@@ -32,11 +33,31 @@ class Pricing extends Accounting_Controller
 		$modification = false;
 		if ($this->input->post('submit')) {
 
-			$modification = ($this->input->post('submit') == "edit") ?
-				$this->pprice->update_price((int) $id, $this->input->post('price_id'), $this->input->post('price'), $this->input->post('volume'))
-				:
-				$this->pprice->add_price((int) $id, $this->input->post('price'), $this->input->post('volume'))
-				;
+			$prices 	= $this->input->post('price');
+			$volumes 	= $this->input->post('volume');
+
+			// remove prices
+			$this->pprice->delete(array("product_id" => $id));
+
+			foreach ($volumes as $index => $volume) {
+				
+				$price = $prices[$index];
+				if ($volume == 0 || $price == 0 || $volume == "" || $price == "") {
+					continue;
+				}
+				
+				$this->pprice->insert(array(
+					"product_id" 	=> $id,
+					"volume" 		=> $volume,
+					"price" 		=> $price
+				));
+				$log[$volume] = $price;
+				
+			}
+			$this->price_log->insert(array(
+											"product_id" 	=> $id,
+											"log" 			=> json_encode($log)
+										));
 		}
 
 		$data = array(
@@ -45,14 +66,14 @@ class Pricing extends Accounting_Controller
 												->with_wholesale()
 												->fields('id, name, buy_volume, buy_price, buy_price_date, updated_at, unit_buy, unit_sell')
 												->get($id),
-
+						"log_price"		=> $this->price_log->where(array("product_id" => $id))->order_by('created_at', 'DESC')->limit(5)->get_all(),
 						"stock_price"	=> $this->stock
 												->where(array("product_id" => $id))
 												->fields('in_price, volume, created_at')
 												->order_by('created_at', 'DESC')
 												->limit(5)
 												->get_all(),
-						"updated"	=> $modification
+						"updated"		=> $modification
 					);
 					
 		$this->_render_page('pricing/prod', $data);

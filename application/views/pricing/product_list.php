@@ -9,20 +9,18 @@
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Name</th>
-					<th>Unit</th>
+					<th><?php echo $this->lang->line('name'); ?></th>
 					<th><?php echo $this->lang->line('catalog_price'); ?></th>
 					<th><?php echo $this->lang->line('price_alies'); ?></th>
-					<th>Sell Price</th>
-					<th>Margin</th>
-					<th>Modify</th>
+					<th><?php echo $this->lang->line('price_sale'); ?></th>
+					<th><?php echo $this->lang->line('margin'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($products as $product): ?>
 				<tr>
-					<td><?php echo $product['name']; ?></td>
-					<td><?php echo $product['prices']['0']['volume'] . " ". $product['unit_sell']; ?></td>
+					<td><a href="<?php echo base_url('pricing/prod/' . $product['id']); ?>"><?php echo $product['name']; ?></a></td>
+					<!-- <td><?php echo $product['prices']['0']['volume'] . " ". $product['unit_sell']; ?></td> -->
 					<td><?php echo (isset($product['wholesale']) && isset($product['wholesale']['bruto'])) ? $product['wholesale']['bruto']. " &euro;" : '---' ; ?></td>
 					<td><?php echo $product['buy_price']. " &euro;"; ?></td>
 					<td>
@@ -58,7 +56,7 @@
 							}
 							else
 							{
-								echo $product['prices']['0']['price'] . "&euro;";
+								echo $product['prices']['0']['price'] . " &euro;";
 							}
 						}
 					?>
@@ -99,9 +97,6 @@
 								}
 							}
 						?>
-					</td>
-					<td>
-						<a href="<?php echo base_url(); ?>pricing/prod/<?php echo $product['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>
