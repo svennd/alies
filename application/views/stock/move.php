@@ -17,14 +17,14 @@
 					<div class="col">				
 						<select name="from" class="form-control" id="type">
 								<option value="">---</option>
-							<?php foreach($stocks as $stock): if($stock['id'] == $this->_get_user_location()) { continue; } ?>
+							<?php foreach($stocks as $stock): if($stock['id'] == $user_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
 					<div class="col">		
 						<select name="notupe" disabled class="form-control">
-							<?php foreach($stocks as $stock): if($stock['id'] != $this->_get_user_location()) { continue; } ?>
+							<?php foreach($stocks as $stock): if($stock['id'] != $user_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
 							<?php endforeach; ?>
 						</select>

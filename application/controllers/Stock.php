@@ -54,7 +54,8 @@ class Stock extends Vet_Controller
 	{
 
 		$data = array(
-						"stocks" => $this->locations,
+						"stocks" 		=> $this->locations,
+						"user_location"	=> $this->_get_user_location(),
 						"extra_footer" 	=> '<script src="'. base_url('assets/js/jquery.autocomplete.min.js') .'"></script>'
 		);
 		$this->_render_page('stock/move', $data);
