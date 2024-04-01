@@ -69,7 +69,10 @@
 
   <?php if (date('m') == 4 && date('d') == 1): ?>
     <!-- april fish -->
-    <script src="<?php echo javascript('assets/js/april_fish.js'); ?>"></script>
+    <script>
+      const BASE_URL = '<?php echo base_url(); ?>';
+    </script>
+    <!-- <script src="<?php echo javascript('assets/js/april_fish.js'); ?>"></script> -->
     <div class="work-in-progress"><i class="fa-solid fa-fish fa-flip"></i></div> 
   <?php endif; ?>
 

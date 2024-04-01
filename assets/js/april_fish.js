@@ -36,7 +36,7 @@
       nekoEl.style.top = `${nekoPosY - 16}px`;
       nekoEl.style.zIndex = Number.MAX_VALUE;
   
-      let nekoFile = Math.random() < 0.5 ? "assets/img/april/cat.gif" : "assets/img/april/dog.gif"
+      let nekoFile = Math.random() < 0.5 ? BASE_URL + "assets/img/april/cat.gif" : BASE_URL + "assets/img/april/dog.gif"
       const curScript = document.currentScript
       if (curScript && curScript.dataset.cat) {
         nekoFile = curScript.dataset.cat
