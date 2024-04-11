@@ -105,56 +105,91 @@
 			</div>
 
 		</div>
-		
+
 		<div class="card shadow mb-4">
-			<div class="card-header">History</div>
-            <div class="card-body">
-				<?php if($log_price): ?>
-					<table class="table table-sm">
+			<a href="#stock" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="stock">
+				<h6 class="m-0 font-weight-bold text-primary">Stock</h6>
+			</a>
+			<!-- <div class="card-header"></div> -->
+			<div class="collapse" id="stock">
+				<div class="card-body">
+						<?php if($stock_price): ?>
+							<table class="table table-sm">
+								<tr>
+									<th><?php echo $this->lang->line('eol'); ?></td>
+									<th><?php echo $product['buy_volume']. " " . $product['unit_buy']; ?></td>
+									<th><?php echo "1 " . $product['unit_buy']; ?></td>
+								</tr>
+							<?php foreach($stock_price as $stock): ?>
 							<tr>
-								<th><?php echo $this->lang->line('date'); ?></th>
-								<th><?php echo $this->lang->line('volume'); ?></th>
+								<td><?php echo user_format_date($stock['eol'], $user->user_date); ?></td>
+								<td><?php echo $stock['in_price']; ?> &euro; </td>
+								<td><?php echo round($stock['in_price']/$product['buy_volume'] , 2) ; ?> &euro; </td>
 							</tr>
-						<tr>
-					<?php foreach($log_price as $log_record): ?>
-						<tr>
-							<?php $log = json_decode($log_record['log'], true); ?>
-							<?php $date = user_format_date($log_record['created_at'], $user->user_date); ?>
-							<td><?php echo $date; ?></td>
-							<td>
-								<table class="table table-sm">
-									<tr>
-										<?php foreach(array_keys($log) as $volume): ?>
-										<td><?php echo $volume; ?></td>
-										<?php endforeach; ?>
-									</tr>
-									<tr>
-										<?php foreach(array_values($log) as $price): ?>
-										<td><?php echo $price; ?></td>
-										<?php endforeach; ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					<?php endforeach; ?>
+							<?php endforeach; ?>
+						</table>
+						<?php else: ?>
+							no stock found.
+						<?php endif; ?> 
 					</table>
-				<?php endif; ?>
+				</div>
 			</div>
 		</div>
+		
+		<div class="card shadow mb-4">
+			<a href="#history" class="d-block card-header py-3 collapsed" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="history">
+				<h6 class="m-0 font-weight-bold text-primary">Price History</h6>
+			</a>
+			<!-- <div class="card-header"></div> -->
+			<div class="collapse" id="history">
+				<div class="card-body">
+					<?php if($log_price): ?>
+						<table class="table table-sm">
+								<tr>
+									<th width="100px;"><?php echo $this->lang->line('date'); ?></th>
+									<th><?php echo $this->lang->line('volume'); ?></th>
+								</tr>
+							<tr>
+						<?php foreach($log_price as $log_record): ?>
+							<tr>
+								<?php $log = json_decode($log_record['log'], true); ?>
+								<?php $date = user_format_date($log_record['created_at'], $user->user_date); ?>
+								<td><?php echo $date; ?></td>
+								<td>
+									<table class="table table-sm">
+										<tr>
+											<?php foreach(array_keys($log) as $volume): ?>
+											<td><?php echo $volume; ?></td>
+											<?php endforeach; ?>
+										</tr>
+										<tr>
+											<?php foreach(array_values($log) as $price): ?>
+											<td><?php echo $price; ?></td>
+											<?php endforeach; ?>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+						</table>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+
 	</div>
 	<div class="col-lg-5 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header"><?php echo $this->lang->line('ref_price'); ?></div>
             <div class="card-body">
 				<table class="table table-sm">
-				<?php if ($product['buy_volume'] != 1): ?>
 					<tr>
 						<th>&nbsp;</td>
 						<th><?php echo $product['buy_volume']. " " . $product['unit_buy']; ?></td>
 						<!-- <th>1 <?php echo $product['unit_buy']; ?></td> -->
 					</tr>
 					<tr>
-						<td><?php echo $this->lang->line('catalog_price'); ?></td>
+						<td><?php echo (isset($product['wholesale'])) ? "<a href='" . base_url('wholesale/get_history/' . $product['wholesale']['id']) . "'>" . $this->lang->line('catalog_price') . "</a>": $this->lang->line('catalog_price'); ?></td>
 						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] : '---'; ?> &euro;</td>
 						<!-- <td><?php echo (isset($product['wholesale'])) ? round($product['wholesale']['bruto']/$product['buy_volume'] , 2) : '---'; ?> &euro;</td> -->
 					</tr>
@@ -177,40 +212,7 @@
 						</td>
 						<!-- <td><?php echo round($product['buy_price']/$product['buy_volume'] , 2); ?> &euro;</td> -->
 					</tr>
-				<?php else: ?>
-					<tr>
-						<td><?php echo $this->lang->line('catalog_price'); ?></td>
-						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] : '---'; ?> &euro;</td>
-					</tr>
-					<tr>
-						<td><?php echo $this->lang->line('price_alies'); ?><br/>
-							<small><?php echo user_format_date($product['buy_price_date'], $user->user_date); ?></small>
-						</td>
-						<!-- <td><?php echo $product['buy_price']; ?> &euro;</td> -->
-					</tr>
-				<?php endif; ?>
 				</table>
-                
-				<?php if($stock_price): ?>
-                <i><?php echo $this->lang->line('day_prices'); ?> :</i>
-				<table class="table table-sm">
-					<tr>
-						<th><?php echo $this->lang->line('price_dayprice'); ?></td>
-						<th><?php echo $product['buy_volume']. " " . $product['unit_buy']; ?></td>
-						<!-- <th><?php echo "1 " . $product['unit_buy']; ?></td> -->
-					</tr>
-					<?php foreach($stock_price as $stock): ?>
-					<tr>
-						<td><?php echo user_format_date($stock['created_at'], $user->user_date); ?></td>
-						<td><?php echo $stock['in_price']; ?> &euro; </td>
-						<!-- <td><?php echo round($stock['in_price']/$product['buy_volume'] , 2) ; ?> &euro; </td> -->
-					</tr>
-					<?php endforeach; ?>
-				</table>
-				<?php else: ?>
-					no stock found.
-				<?php endif; ?>
-
 			</div>
 		</div>
 

@@ -68,9 +68,10 @@ class Pricing extends Accounting_Controller
 												->get($id),
 						"log_price"		=> $this->price_log->where(array("product_id" => $id))->order_by('created_at', 'DESC')->limit(5)->get_all(),
 						"stock_price"	=> $this->stock
-												->where(array("product_id" => $id))
-												->fields('in_price, volume, created_at')
-												->order_by('created_at', 'DESC')
+												->where(array("product_id" => $id, "state" => STOCK_IN_USE))
+												->fields('in_price, volume, eol')
+												->order_by('eol', 'DESC')
+												->group_by('in_price')
 												->limit(5)
 												->get_all(),
 						"updated"		=> $modification
