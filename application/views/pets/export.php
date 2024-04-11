@@ -9,7 +9,7 @@
 			</div>
             <div class="card-body">
 			<p>Please select the events to export.</p>
-			<form action="<?php echo base_url(); ?>pets/export/<?php echo $pet_info['id']; ?>" method="post" autocomplete="off">
+			<form action="<?php echo base_url('pets/export/' . $pet_info['id']); ?>" method="post" autocomplete="off">
       <?php if($pet_history): ?>
   		<table class="table table-sm">
 			  <thead class="thead-light">

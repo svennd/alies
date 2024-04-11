@@ -1,39 +1,3 @@
-<?php 
-function get_pet_type($type)
-{
-	switch($type)
-	{
-		case DOG:
-			return 'dog';
-		case CAT:
-			return 'cat';
-		case HORSE:
-			return 'horse';
-		case BIRD:
-			return 'bird';
-		case RABBIT:
-			return 'rabbit';
-		default:
-			return 'Other';
-	}						
-}
-function get_pet_gender($gender)
-{
-	switch($gender)
-	{
-		case MALE:
-			return 'Male';
-		case FEMALE:
-			return 'Male neutered';
-		case MALE_NEUTERED:
-			return 'Female';
-		case FEMALE_NEUTERED:
-			return 'Female neutered';
-		default:
-			return 'Other';
-	}						
-}
-?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -129,7 +93,7 @@ blockquote {
 </style>
 </head>
 <body>
-<?php include "custom/bill_header.php"; ?>
+<?php if(is_file("custom/bill_header.php")) { include "custom/bill_header.php"; } ?>
 <div class="wrapper">
 			
 	<table>
@@ -154,11 +118,11 @@ blockquote {
 			<table class="table">
 				<tr>
 					<td>Type</td>
-					<td><?php echo get_pet_type($pet_info['type']); ?></td>
+					<td><?php echo get_name($pet_info['type']); ?></td>
 				</tr>
 				<tr>
 					<td>Gender</td>
-					<td><?php echo get_pet_gender($pet_info['gender']); ?></td>
+					<td><?php echo get_gender($pet_info['gender']); ?></td>
 				</tr>
 				<tr>
 					<td>Name</td>
@@ -168,10 +132,12 @@ blockquote {
 					<td>Birth</td>
 					<td><?php echo $pet_info['birth']; ?></td>
 				</tr>
+				<?php if ($pet_info['breed']): ?>
 				<tr>
 					<td>Breed</td>
 					<td><?php echo $pet_info['breeds']['name']; ?></td>
 				</tr>
+				<?php endif; ?>
 				<tr>
 					<td>Last Weight</td>
 					<td><?php echo $pet_info['last_weight']; ?> kg</td>
