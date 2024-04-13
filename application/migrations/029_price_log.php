@@ -19,6 +19,10 @@ class Migration_price_log extends CI_Migration {
 		$sql[] = "ALTER TABLE `price_log` ADD PRIMARY KEY (`id`);";
 		$sql[] = "ALTER TABLE `price_log` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
 
+		# increase size for storing values
+		# it was 5,2 which is way too small
+		$sql[] = "ALTER TABLE `lab_detail` CHANGE `value` `value` DECIMAL(10,2) NOT NULL, CHANGE `upper_limit` `upper_limit` DECIMAL(10,2) NOT NULL, CHANGE `lower_limit` `lower_limit` DECIMAL(10,2) NOT NULL;";
+
 		foreach ($sql as $q)
 		{
 			$r = $this->db->query($q);
