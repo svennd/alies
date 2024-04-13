@@ -235,6 +235,7 @@ class Cli extends Frontend_Controller {
             "12361" => "SDMA",
             "16290" => "Creatinine (random)", // double w 16226
             "12805" => "Alkalische fosfatasen",
+            "12807" => "Alkalische fosfatasen 65",
 
             // serum indices
             "15000" => "Hemolyse",
