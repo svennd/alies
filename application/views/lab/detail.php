@@ -10,12 +10,13 @@
 			</div>
 			<div class="card-body">
 				<form action="<?php echo base_url('lab/detail/' . $lab_info['id']); ?>" method="post" autocomplete="off">
-				<table class="table">
+				<table class="table table-sm">
 					<tr>
 						<td><?php echo $this->lang->line('pet_info'); ?></td>
 						<td>
 							<?php if ($lab_info['pet']): ?>
 								<a href="<?php echo base_url('pets/fiche/' . $lab_info['pet']['id']); ?>"><?php echo $lab_info['pet']['name']; ?></a>
+								<a href="<?php echo base_url('lab/reset_lab_link/' . $lab_info['id']); ?>" class="btn btn-sm btn-outline-danger spinit ml-4"><i class="fa-solid fa-rotate-right"></i></a>
 								<input type="hidden" name="pet_id" value="<?php echo $lab_info['pet']['id']; ?>" />
 								<input type="hidden" name="no_event" value="1" />
 							<?php else: ?>
@@ -39,18 +40,18 @@
 					</tr>
 					<?php endif; ?>
 					<tr>
-						<td><?php echo $this->lang->line('comment'); ?></td>
+						<td><?php echo ucfirst($this->lang->line('comment')); ?></td>
 						<td>
 							<div class="form-group">
 								<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($lab_info['comment'])) ? $lab_info['comment']: '' ?></textarea>
 							</div>
-							<button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
+							<button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-outline-primary" ?>"><i class="fa-solid fa-floppy-disk"></i> <?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
 						</td>
 					</tr>
 				</table>
 				</form>
 
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 					<thead>
 						<tr>
 							<th><?php echo $this->lang->line('lab_code'); ?></th>
@@ -78,16 +79,18 @@
 </div>
 
 <script type="text/javascript">
+const URL_SELECT = "<?php echo base_url('pets/get_pet_name'); ?>";
+
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable({responsive: true});
 	$("#labo").addClass('active');
 
-	/* populate supporting vets */
+	/* get pet names */
 	$('#pet_id').select2({
 		theme: 'bootstrap4',
 		placeholder: 'Select Pet',
 	ajax: {
-		url: '<?php echo base_url(); ?>pets/get_pet_name',
+		url: URL_SELECT,
 		dataType: 'json'
 	},
 	});
