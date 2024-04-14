@@ -13,7 +13,8 @@
 				</div>
 				<!-- hide on small screens -->
 				<div class="dropdown no-arrow d-none d-sm-block">
-					<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
+					<a href="<?php echo base_url('owners/products/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('products'); ?></a>
+					<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm mr-3"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
 					<a href="<?php echo base_url('owners/edit/' . $owner['id']); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-user fa-fw"></i><?php echo $this->lang->line('edit_client'); ?></a>
 				</div>
 			</div>
@@ -37,7 +38,7 @@
 						}
 						if ($pet['death'])
 						{
-							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P4W')));
+							$isLongerThanTwoWeeksAgo = (new DateTime($pet['death_date']) < (new DateTime())->sub(new DateInterval('P2W')));
 							if($isLongerThanTwoWeeksAgo)
 							{
 								continue;
@@ -172,7 +173,7 @@
 		</div>
 	</div>
 	
-	<div class="col-md-6 col-lg-4 col-xl-2">
+	<div class="col-md-2">
 		<?php include "application/views/blocks/block_full_client.php"; ?>
 
 		<?php if($open_bill): ?>

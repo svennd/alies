@@ -122,15 +122,47 @@ class Owners extends Vet_Controller
 		return true;
 	}
 
+	/*
+	*  show all invoices for a certain owner
+	*/
 	public function invoices(int $id)
 	{
+		/* input */
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-12 months")) : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
+
+		$bills = $this->bills
+						->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+						->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+						->with_vet('fields:first_name')->with_location('fields:name')->where(array("owner_id" => $id))->order_by("id", "desc")->get_all();
+
 		$data = array(
-						"owner" 	=> $this->owners->get($id),
-						"bills"		=> $this->bills->with_vet('fields:first_name')->with_location('fields:name')->where(array("owner_id" => $id))->order_by("id", "desc")->get_all(),
+						"search_from" 	=> $search_from,
+						"search_to" 	=> $search_to,
+						"owner" 		=> $this->owners->get($id),
+						"bills"			=> $bills,
 			);
 		$this->_render_page('owners/invoices', $data);
 	}
 	
+	public function products(int $id)
+	{		
+		/* input */
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-12 months")) : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
+
+		$products = $this->events->get_products_owner($id, $search_from, $search_to);	
+
+		$data = array(
+			"search_from" 	=> $search_from,
+			"search_to" 	=> $search_to,
+			"owner" 		=> $this->owners->get($id),
+			"products"		=> $products,
+		);
+
+		$this->_render_page('owners/products', $data);
+	}
+
 	public function get_zip($zip)
 	{
 		$result = $this->zipcode->where(array('zip' => $zip))->get();

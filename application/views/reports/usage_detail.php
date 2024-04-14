@@ -29,7 +29,6 @@
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2">Search range</button>
 				</form>
 
-
 				<?php if($usage): ?>
 				<br>
 				<table class="table" id="dataTable">

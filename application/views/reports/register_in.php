@@ -6,7 +6,7 @@
 				<div><?php echo $this->lang->line('Reporting'); ?> / <?php echo $this->lang->line('Reg_in'); ?></div>
 			</div>
             <div class="card-body">
-				<form action="<?php echo base_url(); ?>reports/register_in/" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url('reports/register_in/'); ?>" method="post" autocomplete="off" class="form-inline">
 
 				  <div class="form-group mb-2 mr-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>
@@ -24,6 +24,7 @@
 				  </div>
 				  <button type="submit" name="submit" value="usage" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
+				
 				<?php if($register_in): ?>
 				<br>
 				<table class="table table-sm" id="dataTable">
