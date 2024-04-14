@@ -7,6 +7,7 @@
 				Help / Admin
 			</div>
             <div class="card-body">
+              <a href="<?php echo base_url('help/vet'); ?>" class="btn btn-sm btn-outline-success"><?php echo $this->lang->line('vet'); ?></a>
   <div class="accordion">
     <div class="accordion-item">
       <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat betekent xxx prijs ? (aankoop)</span><span class="icon" aria-hidden="true"></span></button>

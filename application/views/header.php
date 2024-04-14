@@ -54,7 +54,7 @@
       <?php include 'blocks/header_accounting.php'; ?>
     <?php endif; ?>
 
-    <?php if (!$this->ion_auth->in_group("accounting")): ?>
+    <?php if ($this->ion_auth->in_group("vet")): ?>
       <?php include 'blocks/header_vet.php'  ?>
     <?php endif; ?>
     </ul>

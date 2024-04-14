@@ -15,6 +15,7 @@ $lang['breed_updated']    = 'Ras aangepast'; # cat, dog, ...
 $lang['pricing']           = 'Prijzen';
 $lang['procedures']           = 'Procedures';
 $lang['products']           = 'Producten';
+$lang['registers']           = 'Registers';
 
 # merge
 $lang['breed_merge']      = 'Samenvoegen';

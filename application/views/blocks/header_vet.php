@@ -5,11 +5,6 @@
       <div class="sidebar-heading">
       <?php echo $this->lang->line('Veterinary'); ?>
       </div>
-      <!-- <li class="nav-item" id="clients">
-        <a class="nav-link" href="<?php echo base_url('search'); ?>">
-          <i class="fas fa-fw fa-user"></i>
-          <span><?php echo $this->lang->line('Clients'); ?></span></a>
-      </li> -->
       <li class="nav-item" id="reports">
         <a class="nav-link" href="<?php echo base_url(); ?>report">
         <i class="fa-solid fa-fw fa-book-medical"></i>
@@ -31,17 +26,37 @@
         </a>
       </li>
       <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-      
-	    <?php if ($this->ion_auth->in_group("admin")): ?><?php echo $this->lang->line('vet'); ?> <?php endif; ?><?php echo $this->lang->line('Administration'); ?>
-      </div>
+
+    <div class="sidebar-heading"><?php echo $this->lang->line('Stock'); ?></div>
+
+    <li class="nav-item" id="product_list">
+            <a class="nav-link" href="<?php echo base_url('products'); ?>">
+              <i class="fas fa-fw fa-dolly"></i>
+              <span><?php echo $this->lang->line('Products'); ?></span></a>
+          </li>
+
+    <li class="nav-item" id="add_stock">
+        <a class="nav-link" href="<?php echo base_url('stock/add_stock'); ?>">
+        <i class="fa-solid fa-cart-plus"></i>
+        <span><?php echo $this->lang->line('add'); ?></span></a>
+    </li>
+
+    <li class="nav-item" id="move_stock">
+        <a class="nav-link" href="<?php echo base_url('stock/move'); ?>">
+        <i class="fa-solid fa-truck-fast"></i>
+        <span><?php echo $this->lang->line('move'); ?></span></a>
+    </li>
+
+      <hr class="sidebar-divider">
+      <div class="sidebar-heading"><?php echo $this->lang->line('Administration'); ?></div>
       <li class="nav-item" id="invoice">
-        <a class="nav-link" href="<?php echo base_url(); ?>invoice">
+        <a class="nav-link" href="<?php echo base_url('invoice'); ?>">
           <i class="fas fa-fw fa-euro-sign"></i>
           <span><?php echo $this->lang->line('Invoice'); ?></span></a>
       </li>
+
       <li class="nav-item" id="vaccines">
-        <a class="nav-link" href="<?php echo base_url(); ?>vaccine">
+        <a class="nav-link" href="<?php echo base_url('vaccine'); ?>">
         <i class="fas fa-syringe fa-fw"></i>
           <span><?php echo $this->lang->line('Vaccins'); ?></span></a>
       </li>
@@ -53,11 +68,6 @@
             <span class="counter" style="background-color: #72a751cb;"><?php echo $lab_count; ?></span>
           <?php endif; ?>
         </a>
-      </li>
-      <li class="nav-item" id="product_list">
-        <a class="nav-link" href="<?php echo base_url('products'); ?>">
-          <i class="fas fa-fw fa-dolly"></i>
-          <span><?php echo $this->lang->line('Products'); ?></span></a>
       </li>
 
       <li class="nav-item" id="help">

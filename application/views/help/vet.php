@@ -92,7 +92,7 @@
             </tr>
             <tr>
                 <td><span class="badge" style="color:#fff;background-color:#a77628;">bruin</span></td>
-                <td>De klant is aangeduid als, klant met beperk/laag budget.</td>
+                <td>De klant is aangeduid als, klant met beperkt/laag budget.</td>
             </tr>
             <tr>
                 <td><s>Geschrapt</s></td>
