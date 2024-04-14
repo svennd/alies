@@ -15,7 +15,6 @@ foreach ($locations as $l)
 		</div>
 		<div class="dropdown no-arrow">
 			<?php if ($this->ion_auth->in_group("admin")): ?>
-				<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
 				<a href="<?php echo base_url('products/product/' . $product['id']); ?>"class="btn btn-outline-success btn-sm ml-3"><i class="far fa-edit"></i> Edit</a>
 				<a href="<?php echo base_url('pricing/prod/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-euro-sign"></i> Pricing</a>
 			<?php else: ?>
@@ -99,31 +98,34 @@ foreach ($locations as $l)
 </button>
 </div>
 <?php endif; ?>
-
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card shadow mb-4">
-			<div class="card-header border-bottom">
-			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false"><i class="fa-solid fa-circle-info"></i> Info</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link active" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="true"><i class="fa-solid fa-dolly"></i> Stock</a></li>
+			<div class="card-header d-flex flex-row align-items-center justify-content-between border-bottom">
+				<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
 
+				<li class="nav-item" role="presentation"><a class="nav-link active" id="stocktabs-tab" data-toggle="tab" href="#stocktabs" role="tab" aria-controls="stocktabs" aria-selected="true"><i class="fa-solid fa-dolly"></i> Stock</a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false"><i class="fa-solid fa-circle-info"></i> Info</a></li>
+
+					<?php if ($this->ion_auth->in_group("admin")): ?>
+				<li class="nav-item" role="presentation"><a class="nav-link <?php echo ($product['wholesale'] == 0) ? "disabled": ""; ?>" id="import-tab" data-toggle="tab" href="#importtab" role="tab" aria-controls="importtab" aria-selected="true"><i class="fa-solid fa-file-import"></i> Inkoop</a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link" id="export-tab" data-toggle="tab" href="#exporttab" role="tab" aria-controls="exporttab" aria-selected="true"><i class="fa-solid fa-file-export"></i> Verbruik</a></li>
+					<?php endif; ?>
+				</ul>
 				<?php if ($this->ion_auth->in_group("admin")): ?>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="import-tab" data-toggle="tab" href="#importtab" role="tab" aria-controls="importtab" aria-selected="true"><i class="fa-solid fa-file-import"></i> Import</a></li>
-			  <li class="nav-item" role="presentation"><a class="nav-link" id="export-tab" data-toggle="tab" href="#exporttab" role="tab" aria-controls="exporttab" aria-selected="true"><i class="fa-solid fa-file-export"></i> Export</a></li>
-			  	<?php endif; ?>
-			</ul>
+				<div>
+					<a href="<?php echo base_url('stock/stock_detail/' . $product['id']); ?>"class="btn btn-outline-primary btn-sm"><i class="fa fa-dolly"></i> Stock</a>
+					<a href="<?php echo base_url('logs/product/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> Transaction log</a>
+				</div>
+				<?php endif; ?>
 			</div>
 			<div class="card-body">
 				<div class="tab-content" id="myTabContent">
 					<div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
 						<div class="row mt-3">
 							<div class="col-sm-6">
-								<h5>
-								<?php if ($this->ion_auth->in_group("admin")): ?><a href="<?php echo base_url('reports/usage/' . $product['id']); ?>"><?php endif; ?>
-									<?php echo $this->lang->line('usage'); ?></h5>
-								<?php if ($this->ion_auth->in_group("admin")): ?></a><?php endif; ?>
-								<table class="table">
+								<h5><?php echo $this->lang->line('usage'); ?></h5>
+								<table class="table table-sm">
 								<tr>
 									<td><?php echo $this->lang->line('one_month'); ?></td>
 									<td><?php echo ($history_1m) ? floatval($history_1m['sum_vol']) : 0; ?> <?php echo (isset($product['unit_sell'])) ? $product['unit_sell']: '' ?></td>
@@ -143,7 +145,7 @@ foreach ($locations as $l)
 								  <div class="form-group">
 									<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
 								  </div>
-								  <button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
+								  <button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-outline-primary" ?>"><?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
 								</form>
 
 							</div>

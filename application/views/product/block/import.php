@@ -16,7 +16,7 @@
 </table>
 
 <script>
-const URL_WHOLESALE = '<?php echo base_url('wholesale/ajax_get_history/183'); ?>';
+const URL_WHOLESALE = '<?php echo base_url('wholesale/ajax_get_history/' . $product['wholesale']); ?>';
 document.addEventListener("DOMContentLoaded", function(){
     $.ajax({
         url: URL_WHOLESALE, // Your AJAX URL here

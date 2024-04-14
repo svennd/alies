@@ -47,7 +47,7 @@
 					<div class="form-row mb-3">
 						<div class="col">
 							<label for="sell"><?php echo $this->lang->line('sellable_volume'); ?></label>
-							<div class="input-group mb-3">
+							<div class="input-group">
 							  <input type="text" class="form-control" name="new_volume" id="sell" value="" required>
 							  <div class="input-group-append">
 								<span class="input-group-text" id="unit_sell"><?php echo ($preselected) ? $preselected['unit_buy']: 'fl' ?></span>
@@ -59,31 +59,26 @@
 				  
 					<div class="form-row mb-3">
 						<div class="col">
-							<label for="supplier"><?php echo $this->lang->line('supplier'); ?></label>
-							<div class="input-group mb-3">
-							  <input type="text" class="form-control" name="supplier" id="supplier" placeholder="" value="">
-							</div>
-						</div>
-					</div>
-					
-					<div class="form-row mb-3">
-						<div class="col">
 							<label for="current_buy_price"><?php echo $this->lang->line('price_dayprice'); ?></label>
-							<div class="input-group mb-3">
+							<div class="input-group">
 							  <input type="text" class="form-control" name="in_price" id="current_buy_price" value="">
 							  <div class="input-group-append">
 								<span class="input-group-text">&euro;</span>
 							  </div>
 							</div>
-							<small id="tip">Does not impact selling price!</small>
 						</div>
+					</div>
+
+					<div class="form-row mb-3">
 						<div class="col">
-							<label for="catalog_price"><?php echo $this->lang->line('price_alies'); ?></label>
-							<input type="text" class="form-control" name="catalog_price" disabled id="catalog_price" value="">
+							<label for="supplier"><?php echo ucfirst($this->lang->line('supplier')); ?></label>
+							<div class="input-group">
+							  <input type="text" class="form-control" name="supplier" id="supplier" placeholder="" value="">
+							</div>
 						</div>
 					</div>
 					
-				  <button type="submit" name="submit" value="1" class="btn btn-success"><?php echo $this->lang->line('add'); ?></button>
+				  <button type="submit" name="submit" value="1" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-cart-plus"></i> <?php echo $this->lang->line('add'); ?></button>
 				</form>
 			</div>
 		</div>
@@ -108,7 +103,7 @@
 			</div>
 			<?php endif; ?>
 			<?php if($products): ?>
-			<table class="table">
+			<table class="table table-sm">
 				<tr>
 					<td><?php echo $this->lang->line('name'); ?></td>
 					<td><?php echo $this->lang->line('lotnr'); ?></td>
@@ -118,33 +113,19 @@
 					<td><?php echo $this->lang->line('option'); ?></td>
 				</tr>
 			<?php foreach($products as $prod): ?>
-			<?php
-				$buy_price = (isset($prod['products']['buy_price'])) ? $prod['products']['buy_price'] : 1;
-				$change = (isset($prod['in_price'])) ? round((($prod['in_price']-$buy_price)/$buy_price)*100) : '';
-			?>
 				<tr>
 					<td><?php echo $prod['products']['name']; ?></td>
 					<td><?php echo $prod['lotnr']; ?></td>
-					<td><?php echo $prod['eol']; ?></td>
-					<td><?php echo $prod['in_price']; ?> &euro; (<?php echo ($change > 0) ? '<span style="color:red;">+' . $change : '<span style="color:green;">' . $change; ?>%</span>)</td>
+					<td><?php echo user_format_date($prod['eol'], $user->user_date); ?></td>
+					<td><?php echo $prod['in_price']; ?> &euro;</td>
 					<td><?php echo $prod['volume'] . ' ' . $prod['products']['unit_sell']; ?></td>
 					<td><a href="<?php echo base_url('stock/delete_stock/' . $prod['id']); ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a></td>
 				</tr>
 			<?php endforeach; ?>
 			</table>
-			
-			<form action="<?php echo base_url('stock/verify_stock'); ?>" method="post" autocomplete="off">
-				<hr>
-				<div class="form-group">
-					<label for="delivery_slip"><?php echo $this->lang->line('delivery_date'); ?></label>
-					<input type="date" name="regdate" class="form-control" id="date" value="<?php echo date('Y-m-d') ?>">
-				</div>
-				<div class="form-group">
-					<label for="delivery_slip"><?php echo $this->lang->line('comment'); ?></label>
-					<textarea class="form-control" name="delivery_slip" id="delivery_slip" rows="3"></textarea>
-				</div>
-				<button type="submit" name="submit" value="1" class="btn btn-sm btn-primary"><i class="fas fa-shipping-fast"></i> <?php echo $this->lang->line('verify_stock'); ?></button>
-			</form>
+			<div class="text-right">
+				<a href="<?php echo base_url('stock/verify_stock'); ?>" class="btn btn-sm btn-outline-primary mr-3"><i class="fas fa-shipping-fast"></i> <?php echo $this->lang->line('verify_stock'); ?></a>
+			</div>
 			<?php endif; ?>
 			</div>
 		</div>
@@ -190,8 +171,6 @@ function read_gs1(gs1) {
 function read_product(res)
 {
 	$("#pid").val(res.id);
-	$("#catalog_price").val(res.buy_price + " € / " + res.buy_volume + " " + res.unit_buy);
-	$("#current_buy_price").val(res.buy_price);
 
 	$("#unit_buy").html(res.unit_buy);
 	$("#unit_sell").html(res.unit_sell);
@@ -208,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	// if html autofocus fails
 	$("#autocomplete").focus();
 
-	$("#product_list").addClass('active');
+	$("#add_stock").addClass('active');
 	
 	$('#autocomplete').autocomplete({
 		
@@ -256,8 +235,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#sell").val("");
 		$("#buy").val("");
 		$("#supplier").attr("placeholder","");
-		$("#current_buy_price").val("");
-		$("#catalog_price").val("");
 		$("#unit_buy").html("");
 		$("#unit_sell").html("");
 		$("#tip").html("");

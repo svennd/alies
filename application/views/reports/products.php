@@ -1,5 +1,5 @@
 <div class="row">
-      <div class="col-lg-8 mb-4">
+      <div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
 	 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<div><a href="<?php echo base_url(); ?>reports">Reports</a> / Usage</div>

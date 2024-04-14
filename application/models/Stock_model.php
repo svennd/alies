@@ -330,7 +330,8 @@ class Stock_model extends MY_Model
 				WHERE
 					state = ". STOCK_IN_USE . "
 				group by
-					product_id;";
+					product_id
+					;";
 
 		return $this->db->query($sql)->result_array();
 	}
@@ -342,7 +343,9 @@ class Stock_model extends MY_Model
 						products.name as product_name,
 						products.id as product_id,
 						products.unit_sell,
-						products_type.name as type
+						products_type.name as type,
+						stock.updated_at as updated_at,
+						stock.created_at as created_at
 				from
 					stock
 				join
@@ -357,6 +360,8 @@ class Stock_model extends MY_Model
 					state = ". STOCK_IN_USE . "
 				AND
 					location = '" . $location ."'
+				order by
+					stock.updated_at DESC
 				;";
 
 		return $this->db->query($sql)->result_array();
@@ -429,28 +434,6 @@ class Stock_model extends MY_Model
 			}
 		}
 		return $result;
-	}
-
-	/*
-		used on stock/stock_detail to show the usage
-	*/
-	public function get_usage($product_id)
-	{
-		$sql = "select
-					month(created_at) as month,
-					year(created_at) as year,
-					product_id,
-					sum(volume) as volume
-				from
-					events_products
-				where
-					created_at >= (NOW() - INTERVAL 6 MONTH)
-				and
-					product_id = '" . (int) $product_id . "'
-				GROUP BY
-					month(created_at);
-			";
-		return ($this->db->query($sql)->result_array());
 	}
 
 	/*

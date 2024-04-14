@@ -87,20 +87,27 @@ class Events_products_model extends MY_Model
 
 	public function get_monthly_usage(int $product, int $month = 6)
 	{
-		$sql = "SELECT 
-					CONCAT(MONTH(created_at), '/', YEAR(created_at)) AS month_year,
-					SUM(volume) AS total_volume
+		
+		// chatGPT magic - a bit to dirty
+		$sql = "
+		SELECT 
+			CONCAT(MONTH(calendar_date), '/', YEAR(calendar_date)) AS month_year,
+			COALESCE(SUM(volume), 0) AS total_volume
+		FROM 
+			(
+				SELECT CURDATE() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS calendar_date
 				FROM 
-					events_products
-				WHERE
-    				created_at >= DATE_SUB(NOW(), INTERVAL ". $month ." MONTH)
-				AND
-					product_id = " . $product . "
-				GROUP BY 
-					YEAR(created_at), MONTH(created_at)
-				ORDER BY 
-					YEAR(created_at), MONTH(created_at);
-				";
+					(SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS a
+					CROSS JOIN (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS b
+					CROSS JOIN (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS c
+			) AS dates
+		LEFT JOIN 
+			events_products ON MONTH(calendar_date) = MONTH(created_at) AND YEAR(calendar_date) = YEAR(created_at) AND product_id = ". $product. "
+		WHERE 
+			calendar_date >= DATE_SUB(CURDATE(), INTERVAL ". $month ." MONTH)
+		GROUP BY 
+			YEAR(calendar_date), MONTH(calendar_date)
+		";
 		return $this->db->query($sql)->result_array();
 	}
 }

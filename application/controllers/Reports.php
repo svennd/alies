@@ -127,11 +127,11 @@ class Reports extends Admin_Controller
 	public function products()
 	{
 		/* input */
-		$search_from 	= $this->input->post('search_from');
-		$search_to 		= $this->input->post('search_to');
+		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-1 months")) : $this->input->post('search_from');
+		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
 
 		/* check usage */
-		$product = ($this->input->post('submit') == "usage" && $search_from && $search_to) ? $this->get_usage($search_from, $search_to) : false;
+		$product = ($search_from && $search_to) ? $this->get_usage($search_from, $search_to) : false;
 
 		$data = array(
 			"usage"					=> $product,

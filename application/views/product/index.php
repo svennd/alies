@@ -1,5 +1,5 @@
 <div class="row">
-      <div class="col-lg-9 mb-4">
+      <div class="col-lg-12 mb-4">
 
 		<div class="card shadow mb-4">
     <div class="card-header d-flex flex-row align-items-center justify-content-between">
@@ -41,7 +41,7 @@
 			<?php if ($search_product): ?>
 			<ul>
 				<?php foreach($search_product as $sear): ?>
-					<li><a href="<?php echo base_url(); ?>products/profile/<?php echo $sear['id']; ?>"><?php echo $sear['name']; ?></a></li>
+					<li><a href="<?php echo base_url('products/profile/' . $sear['id']); ?>"><?php echo $sear['name']; ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 			<?php endif; ?>
@@ -61,7 +61,7 @@
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div>Stock</div>
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url('limits/' . (is_numeric($clocation) ? 'local/' . $clocation: 'global')); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exclamation-triangle"></i> <?php echo $this->lang->line('shortage'); ?></a>
+					<a href="<?php echo base_url('limits/' . (is_numeric((int)$curlocation) ? 'local/' . $curlocation: 'global')); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-exclamation-triangle"></i> <?php echo $this->lang->line('shortage'); ?></a>
 					<a href="<?php echo base_url('stock/expired_stock'); ?>" class="btn btn-outline-danger btn-sm"> <i class="fas fa-prescription-bottle"></i> <?php echo $this->lang->line('expired'); ?> (<?php echo $expired; ?>)</a>
 				</div>
 			</div>
@@ -76,7 +76,7 @@
 				</div>
 			<?php endif; ?>
 			<?php if ($products): ?>
-				<?php if($clocation == "all"): ?>
+				<?php if($curlocation == "all"): ?>
 					<table class="table table-sm" id="full_stock">
 					<thead>
 					<tr>
@@ -107,7 +107,7 @@
 						<th><?php echo $this->lang->line('volume'); ?></th>
 						<th><?php echo $this->lang->line('type'); ?></th>
 						<th><?php echo $this->lang->line('barcode'); ?></th>
-						<th data-priority="2"><?php echo $this->lang->line('options'); ?></th>
+						<th><?php echo $this->lang->line('last_update'); ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -127,19 +127,9 @@
 						<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 						<td><?php echo $product['type']; ?></td>
 						<td><?php echo $product['barcode']; ?></td>
-						<td>
-							<?php if($clocation != $user_location): ?>
-								<button type="submit" name="submit" type="button" class="btn btn-success btn-sm move_product" 
-											id="<?php echo $product['product_id']; ?>" 
-											data-id="<?php echo $product['product_id']; ?>"
-											data-name="<?php echo $product['product_name']; ?>"
-											data-lotnr="<?php echo $product['lotnr']; ?>"
-											data-barcode="<?php echo $product['barcode']; ?>"
-								><?php echo $this->lang->line('move'); ?></button>
-							<?php else: ?>
-								&nbsp;
-							<?php endif; ?>
-						</td>
+						<td><?php echo user_format_date(
+							is_null($product['updated_at']) ? $product['created_at'] : $product['updated_at'], 
+							$user->user_date); ?></td>
 					</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -153,50 +143,16 @@
 
   <!-- END STOCK -->
   </div>
-
-      <div class="col-lg-3 mb-4">
-
-      <a href="<?php echo base_url(); ?>stock/add_stock" class="btn btn-success btn-lg"><i class="fas fa-shopping-cart"></i> <?php echo $this->lang->line('add_stock'); ?></a> <br/><br/>
-      <div class="card shadow mb-4 position-fixed" id="move_stock_tab" style="display:none;">
-			<form action="<?php echo base_url('stock/move_stock'); ?>" method="post" autocomplete="off">
-				<div class="card-header text-success">
-					<i class="fas fa-shipping-fast fa-bounce"></i> <?php echo $this->lang->line('move_stock'); ?>
-				</div>
-				<div class="card-body">
-					<table class="table table-sm" id="product_table">
-					</table>
-					
-					<div class="form-row">
-						<div class="col mb-3">
-							<label for="disabledTextInput"><?php echo $this->lang->line('from_location'); ?></label>
-							<input type="text" id="disabledTextInput" class="form-control" placeholder="<?php foreach($locations as $location): ?><?php echo ($location['id'] == $clocation) ? $location['name'] : ''; ?><?php endforeach; ?>" readonly>
-						</div>
-						<div class="col mb-3">
-							<label for="exampleFormControlInput1"><?php echo $this->lang->line('to_location'); ?></label>
-							<input type="text" id="disabledTextInput" class="form-control" placeholder="<?php foreach($locations as $location): ?><?php echo ($location['id'] == $user_location) ? $location['name'] : ''; ?><?php endforeach; ?>" readonly>
-							<input type="hidden" name="to_location" value="<?php echo $user_location; ?>" />
-						</div>
-					</div>
-					<input type="hidden" name="barcodes" id="barcodes" value="" />
-					<input type="hidden" name="from_location" id="from_location" value="<?php echo $clocation; ?>" />
-					<button type="submit" name="submit" value="barcode" class="btn btn-primary"><?php echo $this->lang->line('move'); ?></button>
-				</div>
-			</form>
-		</div>
-
-
-	</div>
-
 </div>
 
 <script type="text/javascript">
-const URL_REQ 	= '<?php echo base_url('products/a_pid_by_type/'); ?>';
+// const URL_REQ 	= '<?php echo base_url('products/a_pid_by_type/'); ?>';
 const URL_STOCK_LOCATION = '<?php echo base_url('products/index/'); ?>';
 const BUTTON_LOCATIONS = [
 			<?php foreach ($locations as $loc): ?>
             { 
 				text:'<?php if ($loc['id'] == $user_location): ?><i class="fa-solid fa-location-dot"></i> <?php endif; ?><?php echo $loc['name']; ?>', 
-				className:'btn <?php echo ($loc['id'] == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
+				className:'btn <?php echo ($loc['id'] == $curlocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
 				action: function ( e, dt, button, config ) {
 					window.location = URL_STOCK_LOCATION + '<?php echo $loc['id']; ?>';
 				}     
@@ -204,7 +160,7 @@ const BUTTON_LOCATIONS = [
 			<?php endforeach; ?>
             { 
 				text:'<?php echo $this->lang->line('search_all'); ?>', 
-				className:'btn <?php echo ("all" == $clocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
+				className:'btn <?php echo ("all" == $curlocation) ? 'btn-outline-success' : 'btn-outline-primary'; ?> btn-sm',
 				action: function ( e, dt, button, config ) {
 					window.location = URL_STOCK_LOCATION + 'all';
 				}     
@@ -213,11 +169,12 @@ const BUTTON_LOCATIONS = [
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
 
-	$('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-		var element_id = this.id.split("-")[1]; // info-id-tab
-		var requestUrl = URL_REQ + element_id;
-		table.ajax.url( requestUrl ).load();
-	});
+	// $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+	// 	console.log('fired');
+	// 	var element_id = this.id.split("-")[1]; // info-id-tab
+	// 	var requestUrl = URL_REQ + element_id;
+	// 	table.ajax.url( requestUrl ).load();
+	// });
 
 // main table
 $("#dataTable").DataTable({
@@ -230,7 +187,7 @@ $("#dataTable").DataTable({
 	"columnDefs": [
 		{ "visible": false, "targets": [5]}
 	],
-	"order": [[1, 'asc']]
+	order : [[6, 'asc']]
 });
 
 // if selected "ALL" -> less columns
@@ -241,31 +198,6 @@ $("#full_stock").DataTable({
     scroller:       true,
 	dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 	buttons: BUTTON_LOCATIONS
-});
-
-const move_products = [];
-$("#dataTable").on('click','.move_product', function() {
-  // show move screen
-  $("#move_stock_tab").show();
-
-  let product = {
-      id:$(this).data("id"), 
-      name:$(this).data("name"), 
-      barcode:$(this).data("barcode"), 
-      lotnr:$(this).data("lotnr"), 
-    };
-  move_products.push(product);
-
-  let html_product = '<tr><th>Name</th><th>LotNR</th></tr>';
-  let input = '';
-  for (s of move_products) {
-    html_product += '<tr><td>' + s.name + '(' + s.barcode  + ')</td><td>' + s.lotnr + '</td></tr>';
-    input += s.barcode + ','
-  }
-  $("#product_table").html(html_product);
-  $("#barcodes").val(input);
-
-  $(this).hide();
 });
 
 });

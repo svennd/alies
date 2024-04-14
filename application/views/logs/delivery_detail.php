@@ -39,7 +39,7 @@
 				<tbody>
 				<?php foreach ($products as $product): ?>
 				<tr>
-					<td><?php echo $product['product']['name']; ?></td>
+					<td><a href="<?php echo base_url('products/profile/' . $product['product']['id']); ?>"><?php echo $product['product']['name']; ?></a></td>
 					<td><?php echo $product['volume']; ?></td>
 					<td><?php echo user_format_date($product['eol'], $user->user_date); ?></td>
 					<td><?php echo $product['in_price']; ?></td>

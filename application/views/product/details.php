@@ -366,10 +366,10 @@
 			<label for="comment">comment</label>
 			<textarea class="form-control" name="comment" id="comment" rows="3"><?php echo (isset($product['comment'])) ? $product['comment']: '' ?></textarea>
 		</div>
-		<h5 class="pt-5">Danger</h5>
+		<!-- <h5 class="pt-5">Danger</h5>
 		<hr />
 	  		<a href="<?php echo base_url(); ?>products/delete_product/<?php echo $product['id']; ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i> Remove Product</a><br/>
-			<small>Note: product won't be removed from database, for accountancy reasons; But won't be available any longer.</small>
+			<small>Note: product won't be removed from database, for accountancy reasons; But won't be available any longer.</small> -->
 	  </div>		
     </div>
   </div>

@@ -125,7 +125,11 @@ class Wholesale extends Admin_Controller {
 
 	public function ajax_get_history(int $id)
 	{
-		$data = $this->wholesale->with_deliveries('fields:delivery_date, bruto_price, netto_price, amount, lotnr, due_date')->get($id);
-		echo json_encode($data);
+		if($this->input->is_ajax_request())
+		{
+			$data = $this->wholesale->with_deliveries('fields:delivery_date, bruto_price, netto_price, amount, lotnr, due_date')->get($id);
+			echo json_encode($data);
+		}
+		return false;
 	}
 }

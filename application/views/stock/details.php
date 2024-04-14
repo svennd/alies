@@ -1,7 +1,7 @@
 <div class="card shadow mb-4">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 		
-		<div><a href="<?php echo base_url('products'); ?>">products</a> / <?php echo $product['name']; ?> / detail</div>
+		<div><a href="<?php echo base_url('products'); ?>"><?php echo $this->lang->line('products'); ?></a> / <a href="<?php echo base_url('products/profile/' . $product['id']); ?>"><?php echo $product['name']; ?></a> / detail</div>
 		<div class="dropdown no-arrow">
 			<?php if ($this->ion_auth->in_group("admin")): ?>
 				<?php if($show_all): ?>
@@ -9,13 +9,12 @@
 				<?php else: ?>
 					<a href="<?php echo base_url('stock/stock_detail/' . $product['id'] . '/show_all'); ?>"class="btn btn-outline-info btn-sm">History</a>
 				<?php endif; ?>
-				<a href="<?php echo base_url('logs/product/' . $product['id']); ?>"class="btn btn-outline-danger btn-sm"><i class="fas fa-exchange-alt"></i> Transaction log</a>
 			<?php endif; ?>
 		</div>
 	</div>
 	<div class="card-body">
 	<?php if ($stock_detail): ?>
-		<table class="table" id="dataTable">
+		<table class="table table-sm" id="dataTable">
 		<thead>
 			<tr>
 				<th><?php echo $this->lang->line('volume'); ?></th>
@@ -63,41 +62,6 @@
 		</div>
 </div>
 
-<div class="card shadow mb-4">
-	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div><a href="<?php echo base_url('products'); ?>">products</a> / <?php echo $product['name']; ?> / usage last 6m</div>
-		<div class="dropdown no-arrow">
-			<?php if ($this->ion_auth->in_group("admin")): ?>
-			<a href="<?php echo base_url('reports/usage/' . $product['id']); ?>" class="btn btn-outline-info btn-sm">Details</a>
-			<?php endif; ?>
-		</div>
-	</div>
-	<div class="card-body">
-	<?php if ($stock_usage): ?>
-
-		<table class="table" id="dataTable">
-		<thead>
-		<tr>
-			<th>Volume</th>
-			<th>Month</th>
-			<th>Year</th>
-		</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($stock_usage as $usage): ?>
-		<tr>
-			<td><?php echo $usage['volume']; ?> <?php echo $product['unit_sell']; ?></td>
-			<td><?php echo $usage['month']; ?></td>
-			<td><?php echo $usage['year']; ?></td>
-		</tr>
-		<?php endforeach; ?>
-		</tbody>
-		</table>
-	<?php else: ?>
-		no usage known.
-	<?php endif; ?>
-		</div>
-</div>
 <script type="text/javascript">
 
 const UNIT_SELL = '<?php echo $product['unit_sell']; ?>';

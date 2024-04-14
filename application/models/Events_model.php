@@ -436,4 +436,46 @@ class Events_model extends MY_Model
 		return $this->db->query($sql)->result_array()[0]['event_count'];
 	}
 	
+
+	/*
+	* used in owners/invoices to show all products for a certain owner
+	*/
+	public function get_products_owner(int $owner_id, $search_from, $search_to)
+	{
+		$sql = "
+			SELECT 
+				product_id, products.name as product_name, products.unit_sell, events_products.volume, pets.id as pet_id, pets.name as pet_name
+			FROM
+				events_products
+			LEFT JOIN
+				events
+			ON
+				events.id = events_products.event_id
+			LEFT JOIN
+				products
+			ON
+				events_products.product_id = products.id
+			LEFT JOIN
+				pets
+			ON
+				pets.id = events.pet
+			WHERE
+				events.payment IN (
+					SELECT 
+						id 
+					FROM 
+						`bills` 
+					WHERE 
+						bills.owner_id = " . $owner_id . "
+					AND
+						bills.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+					AND
+						bills.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+				)
+			ORDER by
+					events_products.created_at DESC
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
 }

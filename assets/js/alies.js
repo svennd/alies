@@ -71,6 +71,14 @@
       $(this).find('i').removeClass('fa-bounce');
     }
   );
+  $('.spinit').hover(
+    function() {
+      $(this).find('i').addClass('fa-spin');
+    },
+    function() {
+      $(this).find('i').removeClass('fa-spin');
+    }
+  );
   
 // Sticky Note
 $('#sticky_messages').on('click', function () {

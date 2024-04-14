@@ -27,7 +27,6 @@ class Products extends Vet_Controller
 	public function index($location = false, $success = false)
 	{
 		$clocation = ($location) ? $location : $this->_get_user_location();
-		
 		$products = ($location == "all") ? 
 					$this->stock->get_all_products_count() 
 					: 
@@ -40,14 +39,14 @@ class Products extends Vet_Controller
 																		->fields('eol, volume')
 																		->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
 																		->where('eol > DATE_ADD(NOW(), INTERVAL -10 DAY)', null, null, false, false, true)
-																		->where(array('state' => STOCK_IN_USE, 'location' => $this->_get_user_location()))
+																		->where(array('state' => STOCK_IN_USE, 'location' => $clocation))
 																		->with_products('fields: id, name, unit_sell')
 																		->order_by('eol', 'ASC')
 																		->count_rows(),
 						"locations" 			=> $this->locations,
 						"user_location"			=> $this->_get_user_location(),
 						"success" 				=> $success,
-						"clocation"				=> $clocation,
+						"curlocation"			=> $clocation,
 						"search_product"		=> $this->products->search_product($this->input->get('search_query')),
 						"search_procedure"		=> $this->procedures->search_procedure($this->input->get('search_query')),
 						"products" 				=> $products,
@@ -542,7 +541,8 @@ class Products extends Vet_Controller
 	}
 
 	/*
-
+		this probaby isn't used anymore 
+		called from stock/index page
 	*/
 	public function a_pid_by_type( $id )
 	{
