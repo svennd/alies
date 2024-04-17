@@ -322,6 +322,7 @@ $lang['product_sheet']          = 'Product fiche';
 $lang['expired']                = 'Vervallen'; 
 $lang['add_stock']              = 'Stock toevoegen'; 
 $lang['move_stock']             = 'Stock Verplaatsen'; 
+$lang['available_lotnr']        = 'Beschikbare lotnrs:';
 $lang['move']                   = 'Verplaatsen'; 
 $lang['no_products_in_view']    = 'Geen producten zichtbaar.'; 
 $lang['from_location']          = 'Van'; 

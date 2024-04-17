@@ -13,65 +13,6 @@ class Booking_code_model extends MY_Model
 		$this->soft_deletes = true;
 		parent::__construct();
 	}
-
-	public function get_usage_sum(int $booking, string $search_from, string $search_to)
-	{
-		$sum = 0;
-		$sql = "
-			select 
-				SUM(ep.net_price) as sum
-			from 
-				events_products as ep
-			LEFT JOIN
-				events
-			ON
-				events.id = ep.event_id
-			where 
-				ep.booking = '" . $booking . "' 
-			AND
-				events.status = ". STATUS_CLOSED ."
-			AND
-				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
-			AND
-				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
-			group by
-				ep.booking
-		";
-		$x = $this->db->query($sql)->result_array();
-		if ($x)
-		{
-			$sum += ($x[0]['sum']);
-		}
-
-		$sql = "
-			select 
-				SUM(ep.net_price) as sum
-			from 
-				events_procedures as ep
-			LEFT JOIN
-				events
-			ON
-				events.id = ep.event_id
-			where 
-				ep.booking = '" . $booking . "' 
-			AND
-				events.status = ". STATUS_CLOSED ."
-			AND
-				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
-			AND
-				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
-			group by
-				ep.booking
-		";
-		$x = $this->db->query($sql)->result_array();
-		if ($x)
-		{
-			// var_dump($x[0]);
-			$sum += ($x[0]['sum']);
-		}
-		return $sum;
-	}
-
 	public function get_usage_detail( int $booking, string $search_from, string $search_to)
 	{
 		$sql = "

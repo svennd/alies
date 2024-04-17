@@ -44,7 +44,7 @@
 					<td>
 						<a href="#" id="<?php echo $loc['id']; ?>" class="edit btn btn-outline-success btn-sm"><i class="fas fa-edit"></i></a>
 						&nbsp;
-						<a href="<?php echo base_url(); ?>admin/delete_prod/<?php echo $loc['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+						<a href="<?php echo base_url('admin/product_types_rm/' . $loc['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>

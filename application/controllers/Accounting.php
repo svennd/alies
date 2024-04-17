@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Accounting extends Admin_Controller
 {
+	public $eproc, $eprod, $bills, $stock, $book, $events, $logs;
 
 	# constructor
 	public function __construct()
@@ -18,7 +19,8 @@ class Accounting extends Admin_Controller
 	}
 
 	/**
-	 *  generate a "report" like platform
+	 *  function: Dashboard
+	 *  
 	 * - monthly earnings
 	 * - yearly earnings
 	 * - client contacts per year / per month ?
@@ -64,38 +66,9 @@ class Accounting extends Admin_Controller
 		$this->_render_page('accounting/dashboard', $data);
 	}
 
-	// for details see reports/accounting
-	public function booking_code()
-	{
-		$dt = new DateTime();
-		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
-		
-		# set default lookback to 7 days for vets
-		$dt->modify('-7 day');
-		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
-
-		$books = $this->book->get_all();
-
-		foreach($books as $book)
-		{
-
-			$current_result = $this->book->get_usage_sum($book['id'], $search_from, $search_to);
-
-			if($current_result)
-			{
-				echo $book['code']."\n";
-				var_dump($current_result);
-
-			}
-			else
-			{
-				echo $book['code'] . " = 0 \n";
-			}
-		}
-	}
-
+	// function: get_prod_proc_distribution
 	// query both products & procedures
-	private function get_prod_proc_distribution(datetime $date)
+	private function get_prod_proc_distribution(datetime $date): array
 	{
 		$products = $this->eprod->get_monthly_earning($date);
 		$procedures = $this->eproc->get_monthly_earning($date);

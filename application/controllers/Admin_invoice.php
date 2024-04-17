@@ -4,6 +4,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Admin_invoice extends Admin_Controller
 {
 
+	// initialize
+	public $locations, $users, $bills;
+
+	// ci specific
+	public $input;
+	
 	# constructor
 	public function __construct()
 	{
@@ -14,6 +20,9 @@ class Admin_invoice extends Admin_Controller
 		$this->load->model('Users_model', 'users');
 	}
 
+
+	# function: edit_bill
+	# admin can edit the bill
     public function edit_bill(int $bill_id)
     {
         if ($this->input->post('submit')) {
@@ -39,6 +48,7 @@ class Admin_invoice extends Admin_Controller
 		$this->_render_page('admin_invoice/edit_bill', $data);
     }
 
+	# function: rm_bill
 	# this is very tricky
 	# A bill can only be deleted if there is no invoice_id assigned !!!
 	public function rm_bill(int $bill_id)

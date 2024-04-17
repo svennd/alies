@@ -10,6 +10,9 @@ class Help extends Vet_Controller
 		parent::__construct();
 	}
 	
+	/* function: admin
+	* show admin help page
+	*/
 	public function admin()
 	{
 		# only accessible by admin users
@@ -22,6 +25,10 @@ class Help extends Vet_Controller
 		$this->_render_page('help/admin');
 	}
 	
+	/*
+	* function: vet
+	* show vet help page
+	*/
 	public function vet()
 	{
 		# load the page

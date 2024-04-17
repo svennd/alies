@@ -315,6 +315,7 @@ $lang['product_sheet']          = 'Product sheet';
 $lang['expired']                = 'Expired'; 
 $lang['add_stock']              = 'Add stock'; 
 $lang['move_stock']             = 'Move stock'; 
+$lang['available_lotnr']        = 'Available lotnrs :'; 
 $lang['move']                   = 'Move'; 
 $lang['no_products_in_view']    = 'No products in this view.'; 
 $lang['from_location']          = 'From location'; 
