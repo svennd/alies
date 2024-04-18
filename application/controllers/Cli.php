@@ -1,12 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cli extends Frontend_Controller {
+// Class: Cli
+class Cli extends Frontend_Controller 
+{
+	// initialize
+	public $settings, $stock, $logs, $log_stock, $wholesale, $delivery, $lab, $lab_line, $pets, $stock_value, $events;
 
-    public $delivery;
-    public $wholesale;
+	// ci specific
+	public $input;
 	public $conf = array();
-	public $stock_value;
 
     public function __construct() {
         parent::__construct();
@@ -23,7 +26,6 @@ class Cli extends Frontend_Controller {
 		$this->load->model('Stock_value_model', 'stock_value');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Config_model', 'settings');
-		$this->load->model('Logs_model', 'nlog');
 		$this->load->model('Log_stock_model', 'log_stock');
 
         $conf = $this->settings->get_all();
@@ -34,6 +36,10 @@ class Cli extends Frontend_Controller {
 		}
     }
 
+	/*
+	* function: index
+	* show the available functions
+	*/
 	public function index()
 	{
 		echo "Welcome to alies, cli\n";
@@ -47,6 +53,10 @@ class Cli extends Frontend_Controller {
 		echo "  - auto_death : auto death pets\n";
 	}
 
+	/*
+	* function: daily
+	* daily cron job
+	*/
 	public function daily()
 	{
 		$this->autoclose();
@@ -56,6 +66,11 @@ class Cli extends Frontend_Controller {
 		$this->stock_value->record_value();
 	}
 
+	/*
+	* function: prune
+	* prune old logs
+	*/
+	
 	public function prune()
 	{
 		if (!$this->conf['pruning']){ return; }
@@ -98,6 +113,10 @@ class Cli extends Frontend_Controller {
 
 	}
 
+	/*
+	* function: auto_death
+	* auto death pets
+	*/
 	public function auto_death()
 	{
 		if (!$this->conf['autdeath']){ return; }
@@ -133,7 +152,8 @@ class Cli extends Frontend_Controller {
 	}
 
 	/*
-       cron function for samples from online.medilab.be
+	* function: medilab
+    * cron function for samples from online.medilab.be
     */
     public function medilab($redirect = false, int $days = 14)
     {
@@ -328,7 +348,10 @@ class Cli extends Frontend_Controller {
         }
     }
 
-	# import delivery from covetrus
+	/*
+	* function: delivery
+	* import delivery file from covetrus
+	*/
 	public function delivery($filename)
 	{
         $path = "data/stored/delivery/";
@@ -407,9 +430,11 @@ class Cli extends Frontend_Controller {
         echo "lines : " . $line . "\n";
 	}
 
-	# import pricelist from covetrus
-	# truncate wholesale_price; truncate wholesale_type;truncate wholesale;
-    public function pricelist($filename)
+	/*
+	* function: pricelist
+	* import pricelist file from covetrus
+	*/
+    public function pricelist(string $filename)
     {
         $path = "data/stored/pricelist/";
         $file = $path . $filename;
@@ -462,7 +487,10 @@ class Cli extends Frontend_Controller {
         echo "lines : " . $line . "\n";
     }
 
-	# try to fix stock issues
+	/*
+	* function: stock_clean
+	* attempt to fix stock issues
+	*/
 	public function stock_clean()
 	{
 		$r = $this->stock->where(array('state' => STOCK_IN_USE, 'volume' => '0.0'))->update(array("state" => STOCK_HISTORY));
@@ -474,7 +502,10 @@ class Cli extends Frontend_Controller {
 		}
 	}
 
-	# auto close events
+	/*
+	* function: autoclose
+	* auto close events
+	*/
 	public function autoclose() {
 		// var
 		if ($this->conf['autoclose'] == ""){ return; }
@@ -547,7 +578,10 @@ class Cli extends Frontend_Controller {
 		}
 	}
 
-	# simple move implementation	
+	/*
+	*	function: move_file
+	*	move a file from one location to another
+	*/
     private function move_file(string $path, string $to): bool {
         if(copy($path, $to)){
             unlink($path);
@@ -557,8 +591,11 @@ class Cli extends Frontend_Controller {
         }
     }
 	
-	// wrapper around some curl setup
-	// may require a specific php extension : php-curl
+	/*
+	*	function: req_curl_json
+	*	wrapper around some curl setup
+	* may require a specific php extension : php-curl
+	*/
 	private function req_curl_json(string $url): string
 	{
 		$curl = curl_init($url);

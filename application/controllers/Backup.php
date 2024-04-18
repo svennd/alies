@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Backup
 class Backup extends Admin_Controller
 {
 
@@ -14,7 +15,6 @@ class Backup extends Admin_Controller
 		$this->load->helper('download');
 	}
 	
-
 	public function index()
 	{
 		# load dbutils
@@ -39,6 +39,10 @@ class Backup extends Admin_Controller
 		$this->_render_page('admin/backup', $data);
 	}
 	
+	/*
+	* function: sql
+	* backup the database or a given table
+	*/
 	public function sql($table = false, $zip = false)
 	{
 		# load dbutils
@@ -65,7 +69,8 @@ class Backup extends Admin_Controller
 			$prefs['filename'] = $prefs['filename']. ".zip";
 		}
 		
-		$this->settings->update(array("value" => '1'), array("name" => "backup_count"));
+		$this->logs->logger(WARN, "backup", "Backup initiated for table: $table");
+
 		$backup = $this->dbutil->backup($prefs);
 		force_download($prefs['filename'], $backup);
 	}

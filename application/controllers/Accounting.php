@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Accounting
 class Accounting extends Admin_Controller
 {
 	public $eproc, $eprod, $bills, $stock, $book, $events, $logs;
@@ -19,7 +20,7 @@ class Accounting extends Admin_Controller
 	}
 
 	/**
-	 *  function: Dashboard
+	 *  function: dashboard
 	 *  
 	 * - monthly earnings
 	 * - yearly earnings

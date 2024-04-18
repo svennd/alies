@@ -1,8 +1,15 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Breeds
 class Breeds extends Vet_Controller
 {
+	// initialize
+	public $breeds, $pets, $logs, $ion_auth;
+
+	// ci specific
+	public $input;
+
     const FREQ_BREED_COUNT = 5;
     const UNKNOWN_BREED = 1;
     const NO_SELECTION = -1;
@@ -17,6 +24,10 @@ class Breeds extends Vet_Controller
 		$this->load->model('Pets_model', 'pets');
 	}
 
+    /*
+    * function: index
+    * list all breeds
+    */
     public function index($id = false)
 	{
 		if ($id) {
@@ -40,6 +51,10 @@ class Breeds extends Vet_Controller
 		}
 	}
 
+    /*
+    * function: add
+    * add a new breed
+    */
     public function add()
     {
         if ($this->input->post('submit')) 
@@ -65,7 +80,52 @@ class Breeds extends Vet_Controller
 
     }
 
-    # search for types
+    /*
+    * function: edit
+    * edit a breed
+    */
+    public function edit(int $id)
+    {
+		# only admins have access here
+		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+
+        $update = false;
+        if ($this->input->post('submit')) 
+        {
+            # log
+            $this->logs->logger(DEBUG, "edit_breed", $this->input->post('name'));
+
+            $update = $this->breeds->update(array(
+                                            "name" => $this->input->post('name'),
+                                            "type" => $this->input->post('type'),
+                                            // "freq" => $this->input->post('freq'),
+                                            "male_min_weight" => $this->input->post('male_min_weight'),
+                                            "male_max_weight" => $this->input->post('male_max_weight'),
+                                            "female_min_weight" => $this->input->post('female_min_weight'),
+                                            "female_max_weight" => $this->input->post('female_max_weight'),
+                                            ), $id);
+        }
+
+        $current_breed = $this->breeds
+                                    ->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')
+                                    ->get($id);
+        $data = array(
+                    'breed'     => $current_breed,
+                    'id'        => $id,
+                    'breeds'    => $this->get_breeds($current_breed['type'], true),
+                    'update'    => $update
+                );
+        
+
+        $this->_render_page('breeds/edit', $data);
+    }
+
+    /*
+    * function: search_breed
+    * search for breed type (ajax)
+    *
+    * see also : add_pet and edit_pet
+    */
     public function search_breed(string $query = "")
     {
         $where_type = (null !== ($this->input->get('type'))) ? array('type' => (int) $this->input->get('type') ) : array('1' => '1');
@@ -98,7 +158,10 @@ class Breeds extends Vet_Controller
         echo json_encode(array("results" => $return));
     }
 
-    # frequenty is used to sort breeds, this might change over years
+    /*
+    * function: rebuild_frequenty
+    * frequenty is used to sort breeds, this might change over years
+    */
     public function rebuild_frequenty()
     {
         $pets = $this->pets
@@ -114,6 +177,7 @@ class Breeds extends Vet_Controller
         {
             $type = $pet['type'];
             $breed_int = $pet['breed'];
+            if (!isset($pet['breeds'])) { continue; }
             $breed = $pet['breeds']['name'];
             if (isset($count[$type]) && isset($count[$type][$breed]))
             {
@@ -153,6 +217,10 @@ class Breeds extends Vet_Controller
 		$this->_render_page('breeds/rebuild_freq', $data);
     }
 
+    /*
+    * function: merge
+    * merge two breeds
+    */
     public function merge(int $old_breed)
     {
 		# only admins have access here
@@ -183,45 +251,11 @@ class Breeds extends Vet_Controller
         redirect('breeds');
     }
 
-    # edit breeds
-    public function edit(int $id)
-    {
-		# only admins have access here
-		if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
-
-        $update = false;
-        if ($this->input->post('submit')) 
-        {
-            # log
-            $this->logs->logger(DEBUG, "edit_breed", $this->input->post('name'));
-
-            $update = $this->breeds->update(array(
-                                            "name" => $this->input->post('name'),
-                                            "type" => $this->input->post('type'),
-                                            // "freq" => $this->input->post('freq'),
-                                            "male_min_weight" => $this->input->post('male_min_weight'),
-                                            "male_max_weight" => $this->input->post('male_max_weight'),
-                                            "female_min_weight" => $this->input->post('female_min_weight'),
-                                            "female_max_weight" => $this->input->post('female_max_weight'),
-                                            ), $id);
-        }
-
-        $current_breed = $this->breeds
-                                    ->with_pets('fields:*count*', 'where:`death`=\'0\' and `lost`=\'0\'')
-                                    ->get($id);
-        $data = array(
-                    'breed'     => $current_breed,
-                    'id'        => $id,
-                    'breeds'    => $this->get_breeds($current_breed['type'], true),
-                    'update'    => $update
-                );
-        
-
-        $this->_render_page('breeds/edit', $data);
-    }
-
-    # get breeds based on types (admin/breeds)
-    public function get_breeds(int $type = self::NO_SELECTION, bool $array = false)
+    /*
+    * function: get_breeds
+    * get breeds based on type, ajax
+    */
+    private function get_breeds(int $type = self::NO_SELECTION, bool $array = false)
     {
         # no type selected
         if ($type == self::NO_SELECTION) 
@@ -244,68 +278,5 @@ class Breeds extends Vet_Controller
             return $breeds;
         }
         echo json_encode(array('data' => $result));
-    }
-
-    # debug
-    # fix import error
-    public function run_re_import()
-    {
-		$this->load->model('Pets_model', 'pets');
-        $all_breeds = $this->breeds->get_all();
-        $name_array = array();
-        foreach ($all_breeds as $breed)
-        {
-            $name_array[strtolower($breed['name'])] = $breed['id'];
-        }
-
-        # loop through pets
-        $all_pets = $this->pets->fields('id, type, breed, note')->where('note', '!=', '')->get_all();
-
-        $name_type = array();
-        $not_found = array();
-        $count_found = 0;
-        foreach ($all_pets as $pet)
-        {
-            $breed_name = strtolower(trim(substr($pet['note'], 14)));
-            if(!isset($name_array[$breed_name])) { 
-                $not_found[$breed_name] = (isset($not_found[$breed_name])) ? $not_found[$breed_name]+1: 1;
-                continue; 
-            }
-
-            $this->pets->where(array('id' => $pet['id']))->update(array('breed' => $name_array[$breed_name], 'note' => ''));
-            $count_found++;
-            $name_type[$breed_name] = $pet['type'];
-        }
-
-        # roughly detect the type based on the last pet type
-        foreach ($name_type as $name => $type)
-        {
-            $this->breeds->where(array('name' => $name))->update(array('type' => $type));
-        }
-        echo "done found : " . $count_found;
- 
-        $this->logs->logger(WARN, "breed_re_import", "mapped : " . $count_found);
-    }
-
-    # debug 
-    # try to guess the type based on the database
-    public function run_guess_breed_type()
-    {
-        $breeds = $this->breeds->fields('id')->get_all();
-
-        $found = 0;
-        foreach ($breeds as $breed)
-        {
-            $pet = $this->pets->where(array('breed' => $breed['id']))->limit(1)->get();
-            # if there is a pet
-            if ($pet)
-            {
-               $this->breeds->where(array('id' => (int) $breed['id']))->update(array('type' => (int) $pet['type']));
-               $found++;
-            }
-        }
-        echo "guessed $found types of breeds, of the total ". count($breeds) . " in the database.";
-        
-        $this->logs->logger(WARN, "run_guess_breed_type", "mapped : " . $found . " total : " . count($breeds));
     }
 }

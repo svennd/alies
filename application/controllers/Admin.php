@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Admin
 class Admin extends Admin_Controller
 {
 	// initialize
@@ -9,7 +10,6 @@ class Admin extends Admin_Controller
 	// ci specific
 	public $input;
 
-	# constructor
 	public function __construct()
 	{
 		parent::__construct();
@@ -77,7 +77,7 @@ class Admin extends Admin_Controller
 		$this->_render_page('admin/configuration', $data);
 	}
 
-	// Group: location functions
+	// Group: location
 	// _____________________________________
 
 	/*
@@ -121,7 +121,7 @@ class Admin extends Admin_Controller
 		redirect('admin/locations', 'refresh');
 	}
 
-	// Group: booking code functions
+	// Group: booking code
 	// _____________________________________
 	/*
 	* function: booking
@@ -156,7 +156,7 @@ class Admin extends Admin_Controller
 	
 
 
-	// Group: product_types functions
+	// Group: product_types
 	// _____________________________________
 
 	/*

@@ -1,8 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Events
 class Events extends Vet_Controller
 {
+	// initialize
+	public $events, $pets, $owners, $products, $stock, $procedures, $events_upload, $eproc, $eprod, $booking, $vaccine, $bills, $logs, $prices;
+
+	// ci specific
+	public $input;
 
 	# constructor
 	public function __construct()
@@ -21,9 +27,17 @@ class Events extends Vet_Controller
 		$this->load->model('Booking_code_model', 'booking');
 		$this->load->model('Vaccine_model', 'vaccine');
 		$this->load->model('Bills_model', 'bills');
+		$this->load->model('Product_price_model', 'prices');
 	}
 
-	public function new_event($pet)
+	// Group: Event
+	// _____________________________________
+
+	/*
+	* function: new_event
+	* create a new event
+	*/
+	public function new_event(int $pet): void
 	{
 		# search for open events on this pet
 		$result = $this->events->where(array("pet" => $pet, "status" => STATUS_OPEN, "location" => $this->_get_user_location()))->get_all();
@@ -43,7 +57,11 @@ class Events extends Vet_Controller
 		redirect('/events/event/' . $event_id);
 	}
 
-	public function event($event_id, $update = false)
+	/*
+	* function: event
+	* show the event
+	*/
+	public function event(int $event_id, bool $update = false) : void
 	{
 		$event_info 		= $this->events
 										->with_vet('fields: first_name')
@@ -93,12 +111,57 @@ class Events extends Vet_Controller
 		}
 	}
 
+
+	/*
+	* function: del
+	* delete an event if possible
+	*/
+	public function del(int $event_id, int $owner_id)
+	{
+		$info = $this->events->get($event_id);
+
+		# no bill was created yet
+		if ($info['payment'] == BILL_DRAFT)
+		{
+			$this->events->delete($event_id);
+			$this->logs->logger(INFO, "remove_event", "event_id: " . $event_id);
+		}
+		# the bill was created but not a final report
+		elseif ($info['status'] != REPORT_FINAL)
+		{
+			# bills are soft-delete
+			$affected = $this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
+
+			# then delete the event
+			$this->events->delete($event_id);
+
+			# def log this
+			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment'] . " | affected :" . $affected);
+		}
+
+		redirect('/owners/detail/' . $owner_id);
+	}
+
+	/*
+	* function: lock
+	* lock the event
+	*/
+	public function lock(int $event_id)
+	{
+		$this->events->update(array("status" => STATUS_CLOSED), $event_id);
+		redirect('/events/event/' . $event_id);
+	}
+
+	// Group: add actions
+	// _____________________________________
+
 	/**
+	 * function: add_line
+	 * Add a line to the event
 	 * jquery push from events/block_add*
 	 *
-	 * @param int $event_id The ID of the event to add the line to.
-	 * @param int $type The type of the line to add.
-	 * @return void
+	 * - int $event_id The ID of the event to add the line to.
+	 * - int $type The type of the line to add.
 	 */
 	public function add_line(int $event_id, int $type)
 	{
@@ -128,7 +191,6 @@ class Events extends Vet_Controller
 		if ($type == PROCEDURE)
 		{
 			list($return_id, $net_price, $brut_price, $btw) = $this->add_procedure($line, $volume, $btw, $booking, $event_id);
-
 		}
 		// add line to events_products
 		elseif ($type == PRODUCT)
@@ -175,8 +237,11 @@ class Events extends Vet_Controller
 		);
 	}
 
-	// add line to procedures
-	private function add_procedure(int $proc, $volume, int $btw, int $booking, int $event)
+	/*
+	* function: add_procedure
+	* add a procedure to the event
+	*/
+	private function add_procedure(int $proc, $volume, int $btw, int $booking, int $event): array
 	{
 		// price calculation procedures
 		$proc_info 	= $this->procedures->fields('price')->get($proc);
@@ -200,8 +265,12 @@ class Events extends Vet_Controller
 		return array($id, $net_price, $brut_price, $btw);
 	}
 
-	// add line to product
-	private function add_product(int $prod, $volume, int $btw, int $booking, int $event, $stock)
+	/*
+	* function: add_product
+	* add a product to the event
+	* - $stock can be int or boolean (false) in case there isn't a stock
+	*/
+	private function add_product(int $prod, $volume, int $btw, int $booking, int $event, $stock) : array
 	{
 		// price calculation
 		list($net_price, $unit_price) = $this->calculate_price_product($prod, $volume);
@@ -222,8 +291,11 @@ class Events extends Vet_Controller
 		return array($id, $net_price, $brut_price, $btw);
 	}
 
-	// check if its a vaccine and add it to the vaccine table
-	private function add_vaccine(bool $is_vaccin, int $vaccin_freq, int $product_id, string $product_name, int $event, int $event_line)
+	/*
+	* function: add_vaccine
+	* check if its a vaccine and add it to the vaccine table
+	*/
+	private function add_vaccine(bool $is_vaccin, int $vaccin_freq, int $product_id, string $product_name, int $event, int $event_line) : bool
 	{
 		if (!$is_vaccin) { return true; }
 
@@ -247,23 +319,31 @@ class Events extends Vet_Controller
 								));
 	}
 
-	// check if the vet changed the booking code,
-	// possible lower or higher btw
-	private function check_booking(int $btw, int $booking, int $booking_default)
+
+	// Group: edit actions
+	// _____________________________________
+
+	/*
+	* function: edit_vaccin
+	* edit a vaccine in the event
+	*/
+	public function edit_vaccin(int $event_id, int $id)
 	{
-		if ($booking_default != $booking && $booking != 0) {
-			$result 	= $this->booking->fields('btw, id')->get($booking);
-			$booking 	= $result['id'];
-			$btw 		= $result['btw'];
+		if ($this->input->post('disable'))
+		{
+			$this->vaccine->update(array("no_rappel" => 1), $id);
 		}
 		else
 		{
-			$booking = $booking_default;
+			$this->vaccine->update(array("redo" => $this->input->post('redo'), "no_rappel" => 0), $id);
 		}
-		return array($btw, $booking);
+		redirect('events/event/' . $event_id);
 	}
-	
 
+	/*
+	* function: edit_unit_price
+	* edit the unit price of a product or procedure
+	*/
 	public function edit_unit_price(int $pid, int $event_id)
 	{
 		$unit_price = round($this->input->post('unit_price'), 2);
@@ -301,8 +381,10 @@ class Events extends Vet_Controller
 		redirect('/events/edit_price/' . $event_id);
 	}
 
-	# annoying but its allowed
-	# edit the price based on what the vet tells us
+	/*
+	* function: edit_price
+	* edit the price of a product or procedure (deprecated ?)
+	*/
 	public function edit_price($event_id)
 	{
 		$eprod 	= $this->eprod
@@ -327,7 +409,10 @@ class Events extends Vet_Controller
 		$this->_render_page('event/price_edit', $data);
 	}
 
-	# auto reduce all procedures & products based on $reduction
+	/*
+	* function: edit_event_price
+	* auto reduce all procedures & products based on $reduction
+	*/
 	public function edit_event_price($event_id, $reduction)
 	{
 		$eprod = $this->eprod->where(array("event_id" => $event_id))->get_all();
@@ -376,10 +461,117 @@ class Events extends Vet_Controller
 		redirect('events/edit_price/' . $event_id, 'refresh');
 	}
 
+		/*
+	* function: proc_edit
+	* edit a procedure in the event
+	*/
+	public function proc_edit($event_id)
+	{
+		if ($this->events->get_status($event_id) != STATUS_OPEN) {
+			echo "cannot change due to status";
+			return false;
+		}
+		echo "not implemented yet <a href='". base_url() ."/events/event/" . $event_id . "/consumables'>return</a>";
+	}
+
+	/*
+	* function: prod_edit
+	* edit a product in the event
+	*/
+	public function prod_edit(int $event_id)
+	{
+		if ($this->events->get_status($event_id) != STATUS_OPEN) {
+			echo "cannot change due to status";
+			return false;
+		}
+		
+		if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
+		
+		// net_price, $to_use_price
+		list($net_price, $unit_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'));
+		$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
+													"volume" 		=> $this->input->post('volume'),
+													"price_net"		=> $net_price,
+													"price_brut"	=> $net_price*(1+($this->input->post('btw')/100)),
+													"unit_price"	=> $unit_price,
+									));
+		redirect('/events/event/' . $event_id);
+	}
+
+	// Group: remove
+	// _____________________________________
+
+
+	/*
+	* function: proc_remove
+	* remove a procedure from the event
+	*/
+	public function proc_remove(int $event_id, int $ep_id)
+	{
+		if ($this->events->get_status($event_id) != STATUS_OPEN) {
+			echo "cannot change due to status";
+			return false;
+		}
+		# remove ep
+		$this->eproc->delete($ep_id);
+
+		# push an event update
+		$this->events->update(array(), $event_id);
+
+		# get back
+		redirect('/events/event/' . $event_id);
+	}
+	
+	/*
+	* function: prod_remove
+	* remove a product from the event
+	*/
+	public function prod_remove(int $event_id, int $product_id)
+	{
+		if ($this->events->get_status($event_id) != STATUS_OPEN) {
+			echo "cannot change due to status";
+			return false;
+		}
+		# remove ep
+		$this->eprod->delete($product_id);
+
+		# in case its an vaccine
+		$this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
+
+		# push an event update
+		$this->events->update(array(), $event_id);
+
+		# get back
+		redirect('/events/event/' . $event_id);
+	}
+
+	// Group: helpers
+	// _____________________________________
+
+	/*
+	* function: check_booking
+	* check if the booking code was changed
+	*/
+	private function check_booking(int $btw, int $booking, int $booking_default)
+	{
+		if ($booking_default != $booking && $booking != 0) {
+			$result 	= $this->booking->fields('btw, id')->get($booking);
+			$booking 	= $result['id'];
+			$btw 		= $result['btw'];
+		}
+		else
+		{
+			$booking = $booking_default;
+		}
+		return array($btw, $booking);
+	}
+	
+	/*
+	* function: calculate_price_product
+	* calculate the price of a product based on volume
+	*/
 	private function calculate_price_product(int $pid, float $volume)
 	{
-		$this->load->model('Product_price_model', 'prices');
-
 		# get all prices in a sortable array
 		$all_prices = $this->prices->fields('volume, price')->order_by("volume", "ASC")->where(array("product_id" => $pid))->get_all();
 		$prices = array();
@@ -411,126 +603,5 @@ class Events extends Vet_Controller
 		return array($net_price, $to_use_price);
 	}
 
-	public function edit_vaccin(int $event_id, int $id)
-	{
-		if ($this->input->post('disable'))
-		{
-			$this->vaccine->update(array("no_rappel" => 1), $id);
-		}
-		else
-		{
-			$this->vaccine->update(array("redo" => $this->input->post('redo'), "no_rappel" => 0), $id);
-		}
-		redirect('events/event/' . $event_id);
-	}
 
-	#
-	# Procedure CRUD
-	#
-
-	# adapt a procedure
-	public function proc_edit($event_id)
-	{
-		if ($this->events->get_status($event_id) != STATUS_OPEN) {
-			echo "cannot change due to status";
-			return false;
-		}
-		echo "not implemented yet <a href='". base_url() ."/events/event/" . $event_id . "/consumables'>return</a>";
-	}
-
-	# remove a procedure
-	public function proc_remove(int $event_id, int $ep_id)
-	{
-		if ($this->events->get_status($event_id) != STATUS_OPEN) {
-			echo "cannot change due to status";
-			return false;
-		}
-		# remove ep
-		$this->eproc->delete($ep_id);
-
-		# push an event update
-		$this->events->update(array(), $event_id);
-
-		# get back
-		redirect('/events/event/' . $event_id);
-	}
-
-	#
-	# Products CRUD
-	#
-
-	# adapt product
-	public function prod_edit(int $event_id)
-	{
-		if ($this->events->get_status($event_id) != STATUS_OPEN) {
-			echo "cannot change due to status";
-			return false;
-		}
-		
-		if (!is_numeric($this->input->post('volume'))) { echo "You entered a non-numeric value!"; return false; }
-		
-		// net_price, $to_use_price
-		list($net_price, $unit_price) = $this->calculate_price_product($this->input->post('pid'), $this->input->post('volume'));
-		$this->eprod->where(array("id" => $this->input->post('event_product_id'), "event_id" => $event_id))->update(array(
-													"volume" 		=> $this->input->post('volume'),
-													"price_net"		=> $net_price,
-													"price_brut"	=> $net_price*(1+($this->input->post('btw')/100)),
-													"unit_price"	=> $unit_price,
-									));
-		redirect('/events/event/' . $event_id);
-	}
-
-	# remove a product
-	public function prod_remove($event_id, $product_id)
-	{
-		if ($this->events->get_status($event_id) != STATUS_OPEN) {
-			echo "cannot change due to status";
-			return false;
-		}
-		# remove ep
-		$this->eprod->delete($product_id);
-
-		# in case its an vaccine
-		$this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
-
-		# push an event update
-		$this->events->update(array(), $event_id);
-
-		# get back
-		redirect('/events/event/' . $event_id);
-	}
-
-	# delete event
-	public function del(int $event_id, int $owner_id)
-	{
-		$info = $this->events->get($event_id);
-
-		# no bill was created yet
-		if ($info['payment'] == BILL_DRAFT)
-		{
-			$this->events->delete($event_id);
-			$this->logs->logger(INFO, "remove_event", "event_id: " . $event_id);
-		}
-		# the bill was created but not a final report
-		elseif ($info['status'] != REPORT_FINAL)
-		{
-			# bills are soft-delete
-			$affected = $this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
-
-			# then delete the event
-			$this->events->delete($event_id);
-
-			# def log this
-			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment'] . " | affected :" . $affected);
-		}
-
-		redirect('/owners/detail/' . $owner_id);
-	}
-
-	# lock event
-	public function lock($event_id)
-	{
-		$this->events->update(array("status" => STATUS_CLOSED), $event_id);
-		redirect('/events/event/' . $event_id);
-	}
 }

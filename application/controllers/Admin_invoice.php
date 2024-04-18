@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Admin_invoice
 class Admin_invoice extends Admin_Controller
 {
 

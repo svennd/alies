@@ -286,7 +286,10 @@ class Auth extends CI_Controller
 		}
 	}
 
-	# just used to give a suggestion
+	/*
+	 * function: set_login_suggestion
+	 * just used to give a suggestion
+	*/
 	private function set_login_suggestion(int $location) : bool
 	{
 		if ($location == -1) { 

@@ -1,9 +1,16 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Events_report
 class Events_report extends Vet_Controller
 {
 
+	// initialize
+	public $events, $pets, $owners, $products, $stock, $procedures, $events_upload, $eproc, $eprod, $booking, $vaccine, $bills, $logs, $ion_auth;
+
+	// ci specific
+	public $input;
+	
 	# constructor
 	public function __construct()
 	{
@@ -23,28 +30,42 @@ class Events_report extends Vet_Controller
 		$this->load->model('Bills_model', 'bills');
 	}
 
-	# in case its only medication pickup or food
-	# and this isn't relevant for medical history purpose
-	public function disable_history($event_id)
+	/*
+	* function: disable_history
+	* in case its only medication pickup or food
+	* and this isn't relevant for medical history purpose
+	*/
+	public function disable_history(int $event_id)
 	{
 		$this->events->update(array('no_history' => 1), $event_id);
 		redirect('events/event/' . $event_id);
 	}
 
-	# the reverse
-	public function enable_history($event_id)
+	/*
+	* function: enable_history
+	* enable history for this event
+	*/
+	public function enable_history(int $event_id)
 	{
 		$this->events->update(array('no_history' => 0), $event_id);
 		redirect('events/event/' . $event_id);
 	}
 
+	/*
+	* function: set_type
+	* set the type of the event
+	*/
 	public function set_type(int $event_id, int $type)
 	{
 		$this->events->update(array('type' => $type), $event_id);
 		redirect('events/event/' . $event_id);	
 	}
 
-	public function update_report($event_id)
+	/*
+	* function: update_report
+	* update the report
+	*/
+	public function update_report(int $event_id)
 	{
 		if ($this->events->get_status($event_id) == STATUS_HISTORY) {
 			echo "cannot change due to status : status_history";
@@ -86,8 +107,11 @@ class Events_report extends Vet_Controller
 
 	}
 
-	# auto save function
-	public function anamnese($event_id)
+	/*
+	* function: anamnese
+	* auto save the anamnese
+	*/
+	public function anamnese(int $event_id): int
 	{
 		$title = $this->input->post('title');
 		$anamnese = $this->input->post('anamnese');
