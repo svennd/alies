@@ -54,9 +54,13 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
   <table width="100%">
     <tr>
 		<td valign="top" width="60%">
-			<h3 class="enlarge"><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_header'); ?></h3>
-		</td>
-        <td align="left" valign="top" class="letterhead">
+			<span class="enlarge"><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_header'); ?></span>
+			<br/>
+			<br/>
+			<br/>
+			<?php echo $this->lang->line('client_id'); ?> : #<?php echo $owner['id']; ?>
+		</td> 
+        <td align="left" class="letterhead">
 			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br>
 			<?php echo $owner['street'] . ', ' . $owner['nr']; ?><br>
 			<?php echo $owner['zip'] . ' ' . $owner['city']; ?><br>
@@ -68,7 +72,7 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
 				<?php if ($owner['invoice_addr']) : ?><?php echo $owner['invoice_addr']; ?><br/><?php endif; ?>
 				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><?php endif; ?>
 			<?php endif; ?>
-			<?php echo $this->lang->line('client_id'); ?> : #<?php echo $owner['id']; ?>
+			<br/>
 		</td>
     </tr>
   </table>
@@ -256,7 +260,6 @@ foreach ($print as $pet_id => $event):
 	</table>
 </div>
 <?php endif; ?>
-<br/>
 <br/>
 
 <footer>
