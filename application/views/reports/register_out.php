@@ -4,10 +4,10 @@
       <div class="card shadow mb-4">
 	 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div><?php echo $this->lang->line('Reporting'); ?> / <?php echo $this->lang->line('Reg_out'); ?></div>
-				<a href="<?php base_url('reports/products'); ?>" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-arrow-up-right-from-square"></i> legacy product usage</a>
+				<a href="<?php echo base_url('reports/products'); ?>" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-arrow-up-right-from-square"></i> legacy product usage</a>
 			</div>
             <div class="card-body">
-				<form action="<?php echo base_url(); ?>reports/register_out/" method="post" autocomplete="off" class="form-inline">
+				<form action="<?php echo base_url('reports/register_out'); ?>" method="post" autocomplete="off" class="form-inline">
 
 				  <div class="form-group mb-2 mr-3">
 					<label for="staticEmail2" class="sr-only">search_from</label>

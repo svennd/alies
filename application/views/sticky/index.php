@@ -8,7 +8,7 @@
 			</div>
 			<div class="card-body">
 				<?php if($data): ?>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 					<thead>
 						<tr>
 							<th><?php echo $this->lang->line('sticky'); ?></th>

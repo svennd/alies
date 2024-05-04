@@ -95,7 +95,7 @@
 					<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
 					
 					<h1></h1>
-					<form action="<?php echo base_url(); ?>import/import_covetrus" method="post" autocomplete="off">
+					<form action="#" method="post" autocomplete="off">
 						<input type="hidden" id="file_upload" name="file" value="" />
 						<button type="submit" name="submit" value="1" class="btn btn-primary">Process data</button>
 					</form>
@@ -114,7 +114,7 @@
 					<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
 					
 					<h1></h1>
-					<form action="<?php echo base_url(); ?>import/import_covetrus" method="post" autocomplete="off">
+					<form action="#" method="post" autocomplete="off">
 						<input type="hidden" id="file_upload" name="file" value="" />
 						<button type="submit" name="submit" value="1" class="btn btn-primary">Process data</button>
 					</form>
