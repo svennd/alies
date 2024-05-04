@@ -186,10 +186,6 @@
 			</ul>
 		</div>
 		<?php endif; ?>
-		<!-- only for admin -->
-		<?php if ($this->ion_auth->in_group("admin")): ?>
-		<a class="btn btn-outline-danger d-none d-sm-block" href="<?php echo base_url() . 'debug/index/' . $owner['id']; ?>"><i class="fas fa-bug"></i> Debug</a>
-		<?php endif; ?>
 	</div>
 
 </div>
