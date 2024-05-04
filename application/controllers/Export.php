@@ -4,8 +4,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 # export xml based on Kluwers Expert/M :
 # 		https://123support.wolterskluwer.be/files/images/pdf/manual/xml_import_nl.pdf
 #
+// Class: Export
 class Export extends Admin_Controller
 {
+
+	// initialize
+	public $bills, $owners, $pets, $events, $booking;
+
+	// ci specific
+	public $input;
 
 	# probably needs to be a configuration or something
 	private string $invoice_storage_path = "data/stored/.invoices/";
@@ -27,6 +34,11 @@ class Export extends Admin_Controller
 	}
 
 
+	/*
+	* function: index
+	* list of income w/ export function
+	* (nowhere linked)
+	*/
 	public function index()
 	{
         
@@ -56,9 +68,10 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		generic export function for owners
-		following import_export_alies.docx guidelines
-	 */
+	* function: owners
+	* generic export function for owners
+	* following import_export_alies.docx guidelines
+	*/
 	public function owners($search_from, $search_to)
 	{
 		$clients = $this->get_owners($search_from, $search_to);
@@ -112,8 +125,9 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		export invoices into a single pdf
-	 */
+	* function: pdf
+	* export invoices into a single pdf
+	*/
 	public function pdf($search_from, $search_to)
 	{
 		$bill_overview = $this->bills
@@ -157,8 +171,9 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		export invoices into a single csv
-	 */
+	* function: csv
+	* export invoices into a single csv
+	*/
 	public function csv($search_from, $search_to)
 	{
 		$bill_overview = $this->bills
@@ -194,9 +209,10 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		generic export function for pets
-		following import_export_alies.docx guidelines
-	 */
+	* function: pets
+	* generic export function for pets
+	* following import_export_alies.docx guidelines
+	*/
 	public function pets($days = false)
 	{
 		$pets = $this->get_pets($days);
@@ -245,6 +261,9 @@ class Export extends Admin_Controller
 		echo $domtree->saveXML();
 	}
 	
+	/*
+	* function: clients
+	*/
 	private function clients($domtree, $xmlRoot, $search_from, $search_to)
 	{
 		# owners
@@ -286,6 +305,10 @@ class Export extends Admin_Controller
 		return $domtree;
 	}
 
+	/*
+	* function: facturen
+	* export invoices into a single xml tree
+	*/
 	private function facturen($domtree, $xmlRoot,$search_from, $search_to): DOMDocument
 	{
 		$bill_overview = $this->bills
@@ -418,6 +441,11 @@ class Export extends Admin_Controller
 		return $domtree;
 	}
 
+	/*
+	* function: kluwer
+	* export clients, incoices into a single xml file valid for Kluwers Expert/M
+	* booking codes could be added here btw
+	*/
 	public function kluwer($search_from, $search_to)
 	{
 		/* create a dom document with encoding utf8 */
@@ -435,7 +463,8 @@ class Export extends Admin_Controller
 	}
 	
 	/*
-		generate booking codes
+	* function: generate_booking_xml
+	* generate booking codes
 	*/
 	private function generate_booking_xml($domtree, $Details, int $bill_id)
 	{
@@ -486,7 +515,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		btw codes in Belgium
+	* function: get_btw_id
+	* btw codes in Belgium
 	*/
 	private function get_btw_id($btw)
 	{
@@ -504,7 +534,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		loop through the data and put it in childs
+	* function: append_child_element
+	* loop through the data and put it in childs
 	*/
 	private function append_child_element($father, $domtree, $data)
 	{
@@ -519,7 +550,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		change number formatting
+	* function: amount
+	* change number formatting
 	*/
 	private function amount($value)
 	{
@@ -527,7 +559,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		headers specific to Expert/M bookkeeping
+	* function: MPlus_headers
+	* headers specific to Expert/M bookkeeping
 	*/
 	private function MPlus_headers($domtree)
 	{
@@ -551,7 +584,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		something is wrong (false) so return a empty file
+	* function: empty_xml
+	* something is wrong (false) so return a empty file
 	*/
 	private function empty_xml($type = "")
 	{
@@ -560,7 +594,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		return a list of owners
+	* function: get_owners
+	* return a list of owners
 	*/
 	private function get_owners($search_from, $search_to)
 	{
@@ -577,7 +612,8 @@ class Export extends Admin_Controller
 	}
 
 	/*
-		return a list of pets
+	* function: get_pets
+	* return a list of pets
 	*/
 	private function get_pets($days = false)
 	{

@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-# nothing special needed for the front end controller
+// Class: Frontend_Controller
+// nothing special needed for the front end controller
 class Frontend_Controller extends MY_Controller
 {
 	public function __construct()

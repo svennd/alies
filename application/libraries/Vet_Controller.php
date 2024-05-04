@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Vet_Controller
 class Vet_Controller extends MY_Controller
 {
 	public $user;

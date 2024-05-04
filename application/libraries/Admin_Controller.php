@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Admin_Controller
 class Admin_Controller extends Vet_Controller
 {
 	public function __construct()

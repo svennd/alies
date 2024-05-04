@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Lab
 class Lab extends Vet_Controller
 {
 

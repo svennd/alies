@@ -1,8 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Help
 class Help extends Vet_Controller
 {
+	// initialize
+	public $ion_auth;
 	
 	# constructor
 	public function __construct()

@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Accounting
 class Accounting_Controller extends Vet_Controller
 {
 	public function __construct()

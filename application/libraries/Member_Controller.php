@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Member_Controller
 class Member_Controller extends MY_Controller
 {
 	public function __construct()

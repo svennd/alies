@@ -1,10 +1,17 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Files
 class Files extends Vet_Controller
 {
 	private $upload_dir = "./data/";
 	private $accepted_mime_type;
+
+	# input
+	public $input;
+
+	# init
+	public $events_upload, $events;
 
 	# constructor
 	public function __construct()
@@ -52,19 +59,20 @@ class Files extends Vet_Controller
 		}
 		$this->accepted_mime_type = array_unique($accepted_mime_type);
 	}
-
 	
 	/*
-		used in import
-	 */
+	* function: append
+	* used in import
+	*/
 	public function append(int $id)
 	{
 		return file_put_contents($this->upload_dir . "tmp_" . $id, file_get_contents($_FILES['data']['tmp_name']), FILE_APPEND | LOCK_EX);
 	}
 
 	/*
-		used in import
-	 */
+	* function: file_complete
+	* used in import
+	*/
 	public function file_complete(int $id)
 	{
 		$file_name			= $this->input->post('file_name');
@@ -95,9 +103,10 @@ class Files extends Vet_Controller
 	}
 
 	/*
-		store the temp file in our data structure by appending
-		I'm not 100% sure this won't break some file
-		as this is called async
+	* function: new_file_event
+	* store the temp file in our data structure by appending
+	* I'm not 100% sure this won't break some file
+	* as this is called async
 	*/
 	public function new_file_event($event_id)
 	{
@@ -107,8 +116,9 @@ class Files extends Vet_Controller
 
 
 	/*
-		This is definitly insecure need to verify input more securely
-		right now I check only mimetype
+	* function: new_file_event_complete
+	* This is definitly insecure need to verify input more securely
+	* right now I check only mimetype
 	*/
 	public function new_file_event_complete($event_id)
 	{
@@ -148,8 +158,9 @@ class Files extends Vet_Controller
 	}
 
 	/*
-		paint in event
-		filename : should not contain e_$event_id in db
+	* function: drawing
+	* paint in event
+	* filename : should not contain e_$event_id in db
 	*/
 	public function drawing(int $event_id, $final = false)
 	{
@@ -184,6 +195,10 @@ class Files extends Vet_Controller
 		echo json_encode(array('success' => true));
 	}
 
+	/*
+	* function: reset_draw
+	* reset the drawing
+	*/
 	public function reset_draw(int $event_id)
 	{
 		// in case its auto storing data, remove older drawings
@@ -193,7 +208,11 @@ class Files extends Vet_Controller
 		echo json_encode(array('success' => true));
 	}
 
-	public function get_file($id)
+	/*
+	* function: get_file
+	* download the file
+	*/
+	public function get_file(int $id)
 	{
 		$file_info = $this->events_upload->get($id);
 
@@ -204,7 +223,11 @@ class Files extends Vet_Controller
 		);
 	}
 
-	public function delete_file($id)
+	/*
+	* function: delete_file
+	* delete the file
+	*/
+	public function delete_file(int $id)
 	{
 		$event_info = $this->events_upload->get($id);
 
@@ -222,6 +245,10 @@ class Files extends Vet_Controller
 		$this->events_upload->where(array('user' => $this->user->id))->delete($id);
 	}
 
+	/*
+	* function: get_mime_type
+	* get the mime type of the file
+	*/
 	private function get_mime_type($file)
 	{
 		$finfo = new finfo(FILEINFO_MIME_TYPE);

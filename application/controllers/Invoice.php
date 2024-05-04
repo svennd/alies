@@ -1,10 +1,16 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Invoice
 class Invoice extends Vet_Controller
 {
 
-	private string $bill_storage_path = "data/stored/.bills/";
+	// initialize
+	public $pets, $owners, $stock, $bills, $payment, $events, $events_products, $logs;
+
+	// ci specific
+	public $input;
+
 	private string $invoice_storage_path = "data/stored/.invoices/";
 
 	# constructor
@@ -29,7 +35,10 @@ class Invoice extends Vet_Controller
 		$this->load->library('qr'); 
 	}
 
-	# show bills of last 30 days for admin and 7 days for vets;
+	/*
+	* function: index
+	* show bills of last 30 days for admin and 7 days for vets;
+	*/
 	public function index($search_from = null, $search_to = null)
 	{
 		$dt = new DateTime();
@@ -66,7 +75,10 @@ class Invoice extends Vet_Controller
 		$this->_render_page('bills/bill_overview', $data);
 	}
 
-	# generate a bill
+	/*
+	* function: bill
+	* create a new bill for the owner
+	*/
 	public function bill(int $owner_id)
 	{
 		// init
@@ -99,7 +111,10 @@ class Invoice extends Vet_Controller
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
-	# generate bill screen
+	/*
+	* function: get_bill
+	* generate the bill for the owner
+	*/
 	public function get_bill(int $bill_id, int $report = 0)
 	{
 		if ($bill_id == BILL_INVALID) {
@@ -174,6 +189,11 @@ class Invoice extends Vet_Controller
 			$this->_render_page('bills/report', $data);
 		}
 	}
+	
+	/*
+	* function: verify
+	* verify the transfer
+	*/
 	public function verify(int $bill_id)
 	{
 		$this->bills->update(array("transfer_verified" => 1, "status" => BILL_PAID), $bill_id);
@@ -182,8 +202,11 @@ class Invoice extends Vet_Controller
 		redirect('/invoice', 'refresh');
 	}
 
-	# remove products from stock
-	# set bill amount to payed part
+	/*
+	* function: bill_pay
+	* remove products from stock
+	* set bill amount to payed part
+	*/
 	public function bill_pay(int $bill_id)
 	{
 		$bill = $this->bills->get($bill_id);
@@ -246,15 +269,21 @@ class Invoice extends Vet_Controller
 		redirect('/invoice/get_bill/' . $bill_id, 'refresh');
 	}
 
-	# on bill_unpay we need to send this in the background
+	/*
+	* function: store_bill_msg
+	* on bill_unpay we need to send this in the background
+	*/
 	public function store_bill_msg(int $bill_id)
 	{
 		$this->bills->update(array("msg" => $this->input->post('msg'), "msg_invoice" => $this->input->post('msg_invoice')), $bill_id);
 	}
 
 
-	# select all events with payment = $bill_id
-	# reduce stock based on the items used in the events;
+	/*
+	* function: remove_from_stock
+	* select all events with payment = $bill_id
+	* reduce stock based on the items used in the events;
+	*/
 	private function remove_from_stock(int $bill_id)
 	{
 		$product_list = $this->events->all_bill_products($bill_id);
@@ -279,6 +308,10 @@ class Invoice extends Vet_Controller
 		return true;
 	}
 	
+	/*
+	* function: generate_pdf
+	* generate a pdf based on the data
+	*/
 	private function generate_pdf(array $data, int $mode = PDF_STREAM)
 	{
 		# generate template data
@@ -310,6 +343,10 @@ class Invoice extends Vet_Controller
 		return $this->pdf->create($template_data, $path . '/' . $filename, $mode);
 	}
 
+	/*
+	* function: mail_bill
+	* mail the bill to the owner
+	*/
 	private function mail_bill(array $data) 
 	{
 		$this->load->library('mail'); 
@@ -317,14 +354,16 @@ class Invoice extends Vet_Controller
 
 		$this->mail->attach_file($file);
 		// $this->mail->send($data['owner']['mail'], base64_decode($this->conf['emailtitle']['value']), base64_decode($this->conf['emailcontent']['value']), false);
-		$this->mail->send("svennson@gmail.com", base64_decode($this->conf['emailtitle']['value']), base64_decode($this->conf['emailcontent']['value']), false);
-
+	
 		$this->bills->update(array("mail" => 1), $bill_id);
 		
 		echo json_encode(array("result" => true));
 	}
 
-	# extra security, keep log of payment processing
+	/*
+	* function: process_payment
+	* extra security, keep log of payment processing
+	*/
 	private function process_payment(float $card_value, float $cash_value, float $transfer_value, int $bill_id)
 	{
 		# store the payment
