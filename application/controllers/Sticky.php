@@ -1,8 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Sticky
 class Sticky extends Vet_Controller
 {
+
+	// initialize
+	public $input, $ion_auth, $sticky;
 
 	# constructor
 	public function __construct()

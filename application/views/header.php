@@ -94,7 +94,7 @@
 
           <?php if(!$this->ion_auth->in_group("accounting")): ?>
             <li class="nav-item" id="sticky_messages">
-                <a class="nav-link " href="#">
+                <a class="nav-link" href="#">
                     <i style="color:#f6c23e;" class="far fa-sticky-note"></i>
                 </a>
             </li>

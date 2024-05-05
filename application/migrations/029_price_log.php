@@ -28,6 +28,9 @@ class Migration_price_log extends CI_Migration {
 		$sql[] = "ALTER TABLE `register_in` CHANGE `updated_at` `updated_at` DATETIME NULL DEFAULT NULL;";
 		$sql[] = "update register_in set updated_at = null;";
 
+		# add primary key to log_stock
+		$sql[] = "ALTER TABLE `log_stock` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);";
+
 		foreach ($sql as $q)
 		{
 			$r = $this->db->query($q);
