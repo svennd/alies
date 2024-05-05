@@ -109,6 +109,19 @@
       </div>
     </div>
 
+    <h5 class="pt-4">Rekeningen</h5>
+
+    <div class="accordion-item">
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Hoe verwijder ik een rekening ?</span><span class="icon" aria-hidden="true"></span></button>
+      <div class="accordion-content">
+        <p>Indien de rekening nog geen factuur is, kan dit door naar de <a href="#" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-circle-arrow-left"></i> Raadpleging</a> te gaan en ieder product en procedure te verwijderen.
+            Zodra er geen producten of procedures meer zijn, zal een knop verschijnen om de rekening te verwijderen. <a href="#" class="btn btn-secondary btn-sm control-btn" id="remove_event_button"><i class="fas fa-trash-alt"></i> Remove</a><br/>
+        </p>
+        <p>Indien de rekening reeds een factuur is, zal een creditnota moeten worden gemaakt.</p>
+      </div>
+    </div>
+
+
     <h5 class="pt-4">Varia</h5>
     <!-- item -->
     <div class="accordion-item">
