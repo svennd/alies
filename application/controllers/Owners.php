@@ -167,8 +167,14 @@ class Owners extends Vet_Controller
 		$this->_render_page('owners/products', $data);
 	}
 
-	public function get_zip($zip)
+	/*
+	* function: get_zip
+	*/
+	public function get_zip(string $zip)
 	{
+		// verify if its an ajax request
+		if(!$this->input->is_ajax_request()) { return array(); }
+
 		$result = $this->zipcode->where(array('zip' => $zip))->get();
 		echo ($result) ? json_encode($result) : json_encode(array());
 	}

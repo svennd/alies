@@ -161,7 +161,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		{
 			$.getJSON("<?php echo base_url('owners/get_zip/'); ?>" + zip , function(data, status)
 			{
-				$("#city").val(data.city);
+				// make caps only
+
+				$("#city").val(data.city.toUpperCase());
 				$("#maincity").val(data.main_city);
 				$("#province").val(data.province);
 			});

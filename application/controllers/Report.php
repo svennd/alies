@@ -1,8 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Report
 class Report extends Vet_Controller
 {
+
+	// initialize
+	public $events;
 
 	# constructor
 	public function __construct()
@@ -17,7 +21,7 @@ class Report extends Vet_Controller
 			"reports" => $this->events->get_current_events((bool)$this->ion_auth->in_group("admin"))
 		);
 
-		$this->_render_page('vet/report', $data);
+		$this->_render_page('reports/vet_overview', $data);
 	}
 
 }
