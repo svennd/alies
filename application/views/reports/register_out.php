@@ -40,6 +40,7 @@
 						<th><?php echo $this->lang->line('vhbcode'); ?></th>
 						<th><?php echo $this->lang->line('type'); ?></th>
 						<th><?php echo $this->lang->line('booking'); ?></th>
+						<th><?php echo $this->lang->line('btw_buy'); ?></th>
 						<th><?php echo $this->lang->line('btw_sell'); ?></th>
 						<th><?php echo $this->lang->line('vet'); ?></th>
 						<th><?php echo $this->lang->line('location'); ?></th>
@@ -62,6 +63,7 @@
 						<td><?php echo (empty($us['vhbcode'])) ? '-' : $us['vhbcode']; ?></td>
 						<td><?php echo $us['product_type']; ?></td>
 						<td><?php echo $us['code'] . ' (' . $us['category'] . ')'; ?></td>
+						<td><?php echo $us['btw_buy']; ?>%</td>
 						<td><?php echo $us['btw']; ?>%</td>
 						<td><?php echo $us['vet_name']; ?></td>
 						<td><?php echo $us['stock_name']; ?></td>

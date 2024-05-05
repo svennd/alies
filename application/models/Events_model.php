@@ -244,7 +244,7 @@ class Events_model extends MY_Model
 		$sql = "
 				SELECT
 					ep.volume as volume, ep.price_net as total_sell_price, ep.created_at as event_date,
-					prod.name as product_name, prod.unit_sell, prod.buy_price, prod.buy_volume as buy_volume, prod.vhbcode,
+					prod.name as product_name, prod.unit_sell, prod.buy_price, prod.buy_volume as buy_volume, prod.vhbcode, prod.btw_buy as btw_buy,
 					users.first_name as vet_name,
 					stck.name as stock_name,
 					type.name as product_type,
