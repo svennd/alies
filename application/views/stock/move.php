@@ -6,6 +6,7 @@
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 </style>
+
 <div class="row">
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">		
@@ -13,9 +14,13 @@
 				<a href="<?php echo base_url('products'); ?>">Stock</a> / <?php echo $this->lang->line('move'); ?>
 			</div>
 			<div class="card-body">
+				<?php if($move_complete): ?>
+					<div class="alert alert-success">Move complete !</div>
+				<?php endif; ?>
+				<h5>select location</h5>
 				<div class="row">
 					<div class="col">				
-						<select name="from" class="form-control" id="type">
+						<select name="from" class="form-control" id="location" autofocus>
 								<option value="">---</option>
 							<?php foreach($stocks as $stock): if($stock['id'] == $user_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
@@ -31,33 +36,30 @@
 					</div>
 				</div>
 				<br/>
-				<div class="row">
-					<div class="col">
-						<input type="text" name="product" class="form-control" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off" autofocus>
-					</div>
-					<div class="col"><div id="product-details"></div></div>
+				<hr />
+				<br/>
+				<div id="nextPartOfForm" style="display: none;">
+					<h5>Add products to move</h5>
+					<div class="row justify-content-between" >
+						<div class="col-md-4">
+							<input type="text" name="product" class="form-control" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off">
+							<br />
+							<hr />
+							<div id="product-details"></div>
+						</div>
 
-					<form action="" method="post" autocomplete="off">
-									<div class="form-row">
-										<div class="form-group col-md-4">
-											<label for="product1un9pm">Product</label>
-											<input type="text" readonly="" class="form-control-plaintext" id="product1un9pm" value="acular 10 ml">
-										</div>
-										<div class="form-group col-md-4">
-											<label for="move_volume1un9pm">Volume</label>
-											<div class="input-group">
-											  <input type="text" class="form-control" id="move_volume1un9pm" name="move_volume[1un9pm]" required="">
-											  <div class="input-group-append">
-												<span class="input-group-text">fl</span>
-												<span class="input-group-text">/ 2.00</span>
-											  </div>
-											</div>
-										</div>
-									</div>
-										<input type="hidden" name="from_location" value="1">
-										<button type="submit" name="submit" value="quantities" class="btn btn-success">Verplaatsen</button>
-										<a href="http://localhost/alies/products" class="btn btn-danger ml-3">Annuleer</a>
-									</form>
+						<div class="col-md-6">
+							<form action="<?php echo base_url('stock/move'); ?>" method="post" autocomplete="off" id="move_form" class="d-none">
+								<div id="move_lines">
+								</div>
+								<div class="float-right">
+									<input type="hidden" name="location_hidden" value="" id="location_hidden"/>
+									<button type="submit" name="submit" value="quantities" class="btn btn-sm btn-outline-success">Verplaatsen</button>
+									<a href="#" class="btn btn-sm btn-outline-danger ml-3">Annuleer</a>
+								</div>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -66,52 +68,114 @@
 
 <script>
 const URL_PRODUCTS_API = "<?php echo base_url('stock/get_product_stock'); ?>";
-
-document.addEventListener("DOMContentLoaded", function(){
-
+const LANG_AVAILABLE_STOCK = "<?php echo $this->lang->line('available_lotnr'); ?>";
 
 function renderProductDetails(details) {
 	const container = $("#product-details");
 
+	var list_start 	= LANG_AVAILABLE_STOCK + '<div class="list-group mt-2">';
+	var list_end	= '</div>';
+	var productRow 	= '';
+
 	details.id.forEach((id, index) => {
-		const productRow = $("<div>").addClass("product-row");
-		const productInfo = $("<div>").addClass("product-info");
+		productRow += `<a href="#" data-stock="${id}" data-unit="${details.unit}" data-name="${details.prod}" data-lotnr="${details.lotnr[index]}" data-eol="${details.eol[index]}" data-volume="${details.volume[index]}" class="list-group-item list-group-item-action stockitem" style="margin-bottom:0px;">
+						<div class="d-flex w-100 justify-content-between">
+							<h5 class="mb-1">${details.lotnr[index]}</h5>
+							<small>volume: ${details.eol[index]}</small>
+						</div>
+						<p class="mb-1">${details.volume[index]} ${details.unit}</p>					
+						</a>`;
+	});
 
-	// for (const key in details) {
-	// 	const label = $("<span>").addClass("label").text(key + ": ");
-	// 	const value = Array.isArray(details[key]) ? details[key][index] : details[key];
+	container.append(list_start + productRow + list_end);
+}
 
-	// 	productInfo.append(label, value + " ");
-	// }
-	var newRowHtml = `
+function create_move_list()
+{
+	const container = $("#move_lines");
 
+	// for some reason this doesn't work if I put it in DOMContentLoaded scope
+	// --> need to use event delegation, because the elements are created dynamically
+	$('.stockitem').on('click', function() {
+
+		const container = $("#move_lines");
+		let prod = $(this).data('name');
+		let stock = $(this).data('stock'); // id
+		let lotnr = $(this).data('lotnr');
+		let eol = $(this).data('eol');
+		let unit = $(this).data('unit');
+		let volume = $(this).data('volume');
+
+		move_line = `
+			<div class="form-row">
+				<div class="col">
+					<input type="text" readonly="" class="form-control-plaintext form-control-sm" value="${prod}">
+					<small>${lotnr} - ${eol}</small>
+				</div>
+				<div class="col">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control check_max" data-max-volume="${volume}" name="move_volume[${stock}]" required>
+						<div class="input-group-append">
+							<span class="input-group-text">${unit}</span>
+							<span class="input-group-text">/ ${volume}</span>
+						</div>
+					</div>
+				</div>
+			</div>
 		`;
-	productRow.append(productInfo);
-	container.append(productRow);
+		container.append(move_line);
+		$('#move_form').removeClass('d-none');
+		$("#product-details").empty();
+		$('#autocomplete').val('').autocomplete().clear();
 	});
 }
 
+document.addEventListener("DOMContentLoaded", function(){
+
+
+	$("#move_stock").addClass('active');
+
+	// init set
+	let vlocation = $("#location").find(":selected").val();
+
+	$('#location').on('change', function() {
+		vlocation = $(this).find(":selected").val();
+	});
+
+	// event delegation
+	$("#move_lines").on('focusout', '.check_max', function() {
+		let max = $(this).data('max-volume');
+		if($(this).val() > max) {
+			$(this).addClass('is-invalid')
+		}
+		else 
+		{
+			$(this).removeClass('is-invalid');
+		}
+	});
 
 $('#autocomplete').autocomplete({
+		onSearchStart: function (query) {
+			$("#product-details").empty();
+		},
 		serviceUrl: function (el){
-			return URL_PRODUCTS_API + '/' + $("#type").find(":selected").val() + '/';
+			return URL_PRODUCTS_API+ '/' + vlocation + '/';
 		},
 		onSelect: function (suggestion) {
-            var data = suggestion.data;
-			console.log(data);
-			renderProductDetails(data);
+			renderProductDetails(suggestion.data);
+			create_move_list();
 		},
-		// onSearchComplete: function (query, suggestion) { 
-		// 	// fire onselect if only 1 results
-		// 	if(suggestion.length == 1 && query.length > 10)
-		// 	{
-		// 		$(this).autocomplete().onSelect(0);
-		// 		// $("#volume").focus();
-		// 	}
-		// },
 		autoSelectFirst: true,
 		showNoSuggestionNotice: true,
 		minChars: '2'
+	});
+
+	// UI
+	$('#location').change(function() {
+		var selectedValue = $(this).val(); // Get the selected value
+		$('#location_hidden').val(selectedValue); // Store the selected value in a hidden input
+		$(this).prop('disabled', true); // Disable the dropdown
+		$('#nextPartOfForm').show(); // Show the next part of the form
 	});
 });
 </script>

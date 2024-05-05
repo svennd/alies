@@ -136,32 +136,21 @@ class Stock_model extends MY_Model
 	}
 
 	/*
-		reduce the stock with a given volume and a specified stock_id
+	* function: reduce
+	* reduce the stock with a given volume and a specified stock_id
+	* optional location(int), enable_dead_volume(bool)
+	* used in stock_model/move
 	*/
-	public function reduce(int $stock_id, int $product_id, float $volume, int $location = INVALID)
+	public function reduce(int $stock_id, int $product_id, float $volume, int $location = INVALID, bool $dead_volume = true)
 	{	
 		// if there is dead volume, add this to be removed from stock
-		$volume += $this->get_dead_volume($product_id);
+		$volume += ($dead_volume) ? $this->get_dead_volume($product_id) : 0;
 
 		# log this remove
 		$this->logs->stock(DEBUG, "stock/reduce", $product_id, -$volume, $location);
 				
 		# update the stock
-		$sql = "
-				UPDATE
-					stock
-				SET
-					state = CASE
-								WHEN (volume - " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
-								WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
-								ELSE '" . STOCK_IN_USE . "'
-							END,
-					volume = volume - " . $volume . "
-				WHERE
-					id = '" . $stock_id . "'
-				LIMIT 1;
-			";
-		return $this->db->query($sql);
+		return $this->min($stock_id, $volume);
 	}
 
 	/*
@@ -247,6 +236,42 @@ class Stock_model extends MY_Model
 		# check for issues
 		$sql = "UPDATE stock SET state = " . STOCK_ERROR . " WHERE product_id='" . $product_id . "' AND volume < '0' AND state != " . STOCK_ERROR . ";";
 		$this->db->query($sql);
+	}
+
+	/*
+	* function: move
+	* move a product from one location to another
+	* called in stock/move
+	*/
+	public function move(int $stock_id, int $from, int $to, float $volume, int $pid, string $info = NULL)
+	{
+		$this->logs->stock(DEBUG, "move_stock_from", $pid, -$volume, $from);
+		$this->logs->stock(DEBUG, "move_stock_to", $pid, $volume, $to);
+		
+		# reduce the stock
+		if (!$this->min($stock_id, $volume))
+		{
+			# shouldn't really happen
+			$this->logs->logger(ERROR, "move_stock", "failed to reduce stock, from " . $from . " to " . $to . " pid:" . $pid . " volume:" . $volume);
+			$this->insert(array(
+				"product_id" 	=> $pid,
+				"location" 		=> $from,
+				"volume" 		=> -$volume,
+				"state"			=> STOCK_ERROR,
+				"info"			=> $info 
+			));
+		}
+
+		# add to the new stock 
+		# 2 options here there is already stock (update) or not (insert)
+		if (!$this->move_add($stock_id, $volume, $to)) {
+
+			# we can't find any stock at $to 
+			# so create a new one based on the original one (irrelevant of the current state)
+			$original_stock = $this->get($stock_id);
+
+			$this->new($pid, $to, $volume, $original_stock['lotnr'], $original_stock['in_price'], $original_stock['eol'], $original_stock['supplier']);
+		}
 	}
 
 	/*
@@ -613,5 +638,100 @@ class Stock_model extends MY_Model
 	{
 		$sql = "SELECT dead_volume FROM products WHERE id = '" . $product_id . "' LIMIT 1;";
 		return $this->db->query($sql)->result_array()[0]['dead_volume'];
+	}
+
+
+	/*
+	* function: new
+	* add a new product to the stock
+	*/
+	private function new(int $pid, int $location, float $volume, string $lotnr, float $in_price, $eol = null, $supplier = null): bool
+	{
+		# insert the new stock
+		return $this->insert(array(
+					"product_id" 	=> $pid,
+					"eol" 			=> $eol,
+					"location" 		=> $location,
+					"in_price" 		=> $in_price,
+					"lotnr" 		=> $lotnr,
+					"volume" 		=> $volume,
+					"supplier"		=> $supplier,
+					"state"			=> STOCK_IN_USE
+				));
+	}
+
+	/*
+	* function: add
+	* add a product to the stock
+	*/
+	private function add(int $stock_id, float $volume): bool
+	{
+		$sql = "
+				UPDATE
+					stock
+				SET
+					state = CASE
+								WHEN (volume + " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+								WHEN (volume + " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
+								ELSE '" . STOCK_IN_USE . "'
+							END,
+					volume = volume + " . $volume . "
+				WHERE
+					id = '" . $stock_id . "'
+				LIMIT 1;
+			";
+
+		# run the query
+		$this->db->query($sql);
+
+		# should return 0 (no rows affected) or 1 (one row affected)
+		return (bool) $this->db->affected_rows();
+	}
+
+	/*
+	* function: min
+	* reduce the stock with a given volume and a specified stock_id
+	*/
+	private function min(int $stock_id, float $volume): bool
+	{
+		return $this->add($stock_id, -$volume);
+	}
+
+	/*
+	* function: move_add
+	* add a product to the stock, this function tries to add
+	* to an existing stock_id and returns if this was succefull or not
+	* used in stock_model/move
+	*/	
+	private function move_add(int $stock_id, float $volume, int $to): bool
+	{
+		$sql = "
+			UPDATE 
+				stock
+			SET
+				state = CASE
+							WHEN (volume + " . $volume . ") < 0 THEN '" . STOCK_ERROR . "'
+							WHEN (volume + " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
+							ELSE '" . STOCK_IN_USE . "'
+						END,
+				volume = volume + " . $volume . "
+			WHERE 
+				(lotnr, in_price, state) = (SELECT lotnr, in_price, state FROM stock WHERE id = " . $stock_id . ")
+			AND 
+				-- possible null values
+				 ((supplier IS NULL AND (SELECT supplier FROM stock WHERE id = " . $stock_id . ") IS NULL) OR supplier = (SELECT supplier FROM stock WHERE id = " . $stock_id . "))
+			AND
+				-- possible null values
+				 ((eol IS NULL AND (SELECT eol FROM stock WHERE id = " . $stock_id . ") IS NULL) OR eol = (SELECT eol FROM stock WHERE id = " . $stock_id . "))
+			AND
+				location = ". $to ."
+			LIMIT 1;
+			";
+
+		# run the query
+		$this->db->query($sql);
+
+		# should return 0 (no rows affected) or 1 (one row affected)
+		return (bool) $this->db->affected_rows();
 	}
 }

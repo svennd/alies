@@ -1,8 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Stock
 class Stock extends Vet_Controller
 {
+
+	# initialise
+	public $input, $stock, $product, $registry_in, $liquidate, $wholesale, $delivery, $logs, $slip;
 
 	# limit for adding stock
 	const LIMIT_ADD_VOLUME = 5000;
@@ -20,6 +24,8 @@ class Stock extends Vet_Controller
 		$this->load->model('Delivery_slip_model', 'slip');
 		$this->load->model('Register_in_model', 'registry_in');
 		$this->load->model('Liquidate_model', 'liquidate');
+		$this->load->model('Wholesale_model', 'wholesale');
+		$this->load->model('Delivery_model', 'delivery');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -44,21 +50,71 @@ class Stock extends Vet_Controller
 		$data = array(
 						"product"		=> $this->product->fields('id, name, unit_sell')->get($pid),
 						"stock_detail" 	=> $stock_detail,
-						"show_all"		=> $all,
-						"stock_usage" 	=> $this->stock->get_usage($pid)
+						"show_all"		=> $all
 						);
 		$this->_render_page('stock/details', $data);
 	}
 
-	public function move()
+	/*
+	 wip
+	*/
+	public function move(bool $move_complete = false)
 	{
+		if ($this->input->post("submit"))
+		{
+			$products 		= $this->input->post('move_volume');
+			$from_location 	= $this->input->post('location_hidden');
+			foreach ($products as $stock_id => $volume)
+			{
+				/*
+					get all info from stock
+				*/
+				$selection[$stock_id] = array (
+												$this->stock->fields('id, eol, lotnr, volume')->with_products('fields:id, name, unit_sell')->get((int) $stock_id), 
+												$volume
+											);
+			}
+			
+			$this->_render_page('stock/move_overview', array(
+										"stocks" 		=> $this->locations,
+										"selection" 	=> $selection,
+										"user_location"	=> $this->_get_user_location(),
+										"from_location" => $from_location,
+									));
+		}
+		else
+		{
+			$data = array(
+							"move_complete" => $move_complete,
+							"stocks" 		=> $this->locations,
+							"user_location"	=> $this->_get_user_location(),
+							"extra_footer" 	=> '<script src="'. base_url('assets/js/jquery.autocomplete.min.js') .'"></script>'
+			);
+			$this->_render_page('stock/move', $data);
+		}
+	}
 
-		$data = array(
-						"stocks" 		=> $this->locations,
-						"user_location"	=> $this->_get_user_location(),
-						"extra_footer" 	=> '<script src="'. base_url('assets/js/jquery.autocomplete.min.js') .'"></script>'
-		);
-		$this->_render_page('stock/move', $data);
+	/*
+	* 	function: move_verification
+	* 	the user was able to verify it and now we execute the move
+	*/
+	public function move_verification()
+	{
+		if ($this->input->post('submit'))
+		{
+			$volumes 		= $this->input->post('move_volume');
+			$max_volumes 	= $this->input->post('max_move');
+			$from_location 	= $this->input->post('from');
+			$products 		= $this->input->post('move_prod');
+			$to_location 	= $this->_get_user_location();
+			
+			foreach ($volumes as $stock_id => $volume)
+			{
+				$message = ($max_volumes[$stock_id] < $volume) ? "OVERDRAW_MOVE" : null;
+				$this->stock->move($stock_id, $from_location, $to_location, $volume, $products[$stock_id], $message);
+			}
+		}
+		redirect('/stock/move/1');
 	}
 
 	# need to improve this by using id instead of (deprecated) barcode
@@ -191,14 +247,10 @@ class Stock extends Vet_Controller
 				}
 				# create new verify stock
 				else {
-					# also generate a barcode here
-					// $this->load->library('barcode');
-
 					# generate barcode
 					# reduce time with 01/12/2019
 					# move to a base36 (to use letters)
 					$barcode = base_convert((time() - 1575158400), 10, 36);
-					// $this->barcode->generate($barcode);
 
 					$this->logs->stock(DEBUG, "add_stock", $this->input->post('pid'), $this->input->post('new_volume'));
 					$this->stock->insert(array(
@@ -253,37 +305,80 @@ class Stock extends Vet_Controller
 		redirect('stock/add_stock', 'refresh');
 	}
 
+	/*
+		show all stock that is in check state
+		also give the option to check the list
+		and prices if admin
+	*/
 	public function verify_stock()
 	{
-		$slip = $this->slip->insert(array(
-					"vet"		=> $this->user->id,
-					"note"		=> $this->input->post('delivery_slip'),
-					"regdate"	=> $this->input->post('regdate'),
-					"location" 	=> $this->_get_user_location()
-			));
-		
-		# registry_in
-		$stock = $this->stock->fields('product_id, eol, volume, in_price, supplier, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
-		foreach ($stock as $stoc)
-		{
-			$this->registry_in->insert(array(
-						"product" 	=> $stoc['product_id'],
-						"eol" 		=> $stoc['eol'],
-						"volume" 	=> $stoc['volume'],
-						"in_price" 	=> $stoc['in_price'],
-						"supplier" 	=> $stoc['supplier'],
-						"lotnr" 	=> $stoc['lotnr'],
-						"delivery_slip"	=> $slip
-			));
+		if ($this->input->post('submit')) {
+			// all stock is fine, insert now
+			$slip = $this->slip->insert(array(
+						"vet"		=> $this->user->id,
+						"note"		=> $this->input->post('delivery_slip'),
+						"regdate"	=> $this->input->post('regdate'),
+						"location" 	=> $this->_get_user_location()
+				));
+			
+			# registry_in
+			$stock = $this->stock->fields('product_id, eol, volume, in_price, supplier, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
+			foreach ($stock as $stoc)
+			{
+				$this->registry_in->insert(array(
+							"product" 	=> $stoc['product_id'],
+							"eol" 		=> $stoc['eol'],
+							"volume" 	=> $stoc['volume'],
+							"in_price" 	=> $stoc['in_price'],
+							"supplier" 	=> $stoc['supplier'],
+							"lotnr" 	=> $stoc['lotnr'],
+							"delivery_slip"	=> $slip
+				));
+			}
+
+			# all products currently in check state are now considered in use
+			$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
+
+			# verify the stock
+			$this->logs->logger(INFO, "stock_verify", "products verified: " . $total);
+
+			redirect('stock/add_stock', 'refresh');
 		}
+		// show all stock that is in check state
+		else
+		{
+			$products_in_check = $this->stock->with_products('fields: name, unit_sell, buy_price, wholesale')->where(array('state' => STOCK_CHECK))->get_all();
 
-		# all products currently in check state are now considered in use
-		$total = $this->stock->where(array("state" => STOCK_CHECK))->update(array("state" => STOCK_IN_USE));
+			$pricing = array();
+			
+			foreach ($products_in_check as $prod)
+			{
+				$prod_id = $prod['product_id'];
+				$pricing[$prod_id]['delivery'] = false;
+				$pricing[$prod_id]['wholesale'] = $prod['products']['wholesale'];
+				$pricing[$prod_id]['last_net_buy'] = false;
 
-		# verify the stock
-		$this->logs->logger(INFO, "stock_verify", "products verified: " . $total);
+				// we could try to get the last price based on 
+				// the automatic pulled prices
+				if ($prod['products']['wholesale'] != 0)
+				{
+					$pricing[$prod_id]['delivery'] = $this->delivery->fields('netto_price, delivery_date')->where(array('wholesale_id' => $prod['products']['wholesale']))->order_by('delivery_date', 'DESC')->get();
+				}
 
-		redirect('stock/add_stock', 'refresh');
+				// last net buy price
+				$last_net_buy = $this->registry_in->with_delivery_slip('fields: regdate|order_by:regdate, desc')->where(array("product" => $prod_id))->limit(1)->get();
+				if ($last_net_buy)
+				{
+					$pricing[$prod_id]['last_net_buy'] = $last_net_buy['in_price'];
+				}
+			}
+
+			$data = array(
+							"products" => $products_in_check,
+							"pricing"  => $pricing
+						);
+			$this->_render_page('stock/verify', $data);
+		}
 	}
 
 
@@ -446,64 +541,14 @@ class Stock extends Vet_Controller
 	}
 
 	/*
-	covetrus specific output
+	* function: get_product_stock
+	* used for autocomplete in move_stock
 	*/
-	public function quick_stock()
-	{
-		// not ready
-		exit;
-		$this->load->model('Delivery_model', 'delivery');
-
-		if ($this->input->post('submit')) 
-		{
-			$data = $this->input->post('text');
-			$lines = explode("\n", $data);
-			$data_lines = array();
-			$updated = array();
-
-			foreach($lines as $line)
-			{
-				if(empty($line)) { continue; }
-
-				# Besteldatum|Bestelbonnr|Mijn Referentie|Art. nr.|Omschrijving|CNK nummer|Leveringsdatum|Leveringsbon nummer|bruto prijs|netto prijs|verk.pr.  apoth.|BTW|aantal|Lotnummer|Vervaldatum|Facturatie
-				list($order_date, $order_nr, $my_ref, $art_nr, $description, $cnk, $delivery_date, $delivery_nr, $bruto, $netto, $suggetion_price, $btw, $amount, $lotnr, $due_date, $facturatie) = explode("|", $line);
-				
-				# skip header || footer
-				if ($order_date == "Besteldatum" || empty($order_date)) { continue; }
-				
-				// insert it into 
-				$intel = $this->delivery->record(array(
-					"order_date"	=> $order_date,
-					"order_nr" 		=> $order_nr,
-					"my_ref" 		=> $my_ref,
-					"wholesale_artnr" => $art_nr,
-					"delivery_date" => $delivery_date,
-					"delivery_nr" 	=> $delivery_nr,
-					"bruto_price" 	=> $bruto,
-					"netto_price" 	=> $netto,
-					"amount"		=> $amount,
-					"lotnr" 		=> $lotnr,
-					"due_date" 		=> $due_date,
-				));
-				$data_lines[] = $intel['id'];
-				$updated[$intel['id']] = $intel['updated_bruto_price'];
-			}
-
-			$delivery_data = $this->delivery->where("id", $data_lines)->with_wholesale()->with_product()->get_all();
-		}
-		$this->_render_page('stock/quick', array(
-				"delivery" => $delivery_data, 
-				"updated" => $updated, 
-				"lines" => count($lines), 
-				"extra_footer" 	=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>'
-	));		
-	}
-
 	public function get_product_stock(int $location)
 	{
 		// todo gs1 code
 		$term = $this->input->get('query');
-		
+
 		$stock = $this->stock->get_product_stock($term, $location);
 		$stock_list = array();
 
