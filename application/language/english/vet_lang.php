@@ -81,6 +81,11 @@ $lang['option']         = 'Option';
 $lang['search_client']  = 'Search Client';
 $lang['disable_client']  = 'Disable Client';
 $lang['edit_client']  = 'Edit Client';
+$lang['phone_backup']         = 'Phone Backup';
+$lang['phone_backup_name']    = 'Phone Backup (info)';
+$lang['phone_backup_help']    = 'Mon, brother, sister,...';
+$lang['owner_already_exists']  = 'Owner already exists';
+$lang['phone_number_exists']  = 'Phone number already exists';
 
 # change owner
 $lang['current_owner']   = 'Current owner';

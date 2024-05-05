@@ -1,8 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Class: Owners
 class Owners extends Vet_Controller
 {
+
+	// initialize
+	public $owners, $input, $output, $pets, $events, $bills, $zipcode;
 
 	# constructor
 	public function __construct()
@@ -111,7 +115,7 @@ class Owners extends Vet_Controller
 	}
 	
 	// set email at bill page
-	public function set_email(int $owner_id)
+	public function set_email(int $owner_id): bool
 	{
 		// ajax push
 		$this->owners->update(array("mail" => $this->input->post('email')), $owner_id);
@@ -170,12 +174,15 @@ class Owners extends Vet_Controller
 	}
 
 	/*
-		check for duplicate owners
+	* function: phone
+	* check for duplicate owners by phone number
 	*/
 	public function phone()
 	{
 		$phone = format_phone($this->input->post('phone'));
 		$return_info = array("exists" => false);
+
+		// valid phone format
 		if($phone)
 		{
 			$owners = $this->owners->search_by_phone_ex($phone, 1);
@@ -188,5 +195,35 @@ class Owners extends Vet_Controller
 			->set_content_type('application/json')
 			->set_status_header(200)
 			->set_output(json_encode($return_info));
+	}
+	
+	/*
+	* function: addr
+	* check for duplicate owners based on address
+	*/
+	public function addr()
+	{
+		// verify if its an ajax request
+		if(!$this->input->is_ajax_request()) { return array(); }
+
+		// get input
+		$street = $this->input->post('street');
+		$nr = $this->input->post('nr');
+		$zip = $this->input->post('zip');
+
+		// search for owners
+		$owners = $this->owners->search_by_addr($street, $nr, $zip);
+		
+		// return json
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode(
+				($owners) 
+					?
+					array("exists" => true, "owners" => $owners)
+					:
+					array("exists" => false)
+					));
 	}
 }

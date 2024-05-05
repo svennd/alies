@@ -14,7 +14,7 @@
 					  <div class="form-row">
 						<div class="form-group col-md-6">
 						  <label for="last_name"><b><?php echo $this->lang->line('last_name'); ?>*</b></label>
-						  <input type="text" class="form-control" id="last_name" name="last_name"  autocomplete="dezzd" required>
+						  <input type="text" class="form-control" id="last_name" name="last_name"  autocomplete="dezzd" required autofocus>
 						</div>
 						<div class="form-group col-md-6">
 						  <label for="first_name"><?php echo $this->lang->line('first_name'); ?></label>
@@ -143,6 +143,13 @@
 </div>
 
 <script type="text/javascript">
+
+const URL_PHONE_CHECK = '<?php echo base_url('owners/phone/'); ?>';
+const URL_ADDR_CHECK = '<?php echo base_url('owners/addr'); ?>';
+const URL_OWNER_DETAIL = '<?php echo base_url("/owners/detail/"); ?>';
+const LANG_OWNER_EXISTS = '<?php echo $this->lang->line('owner_already_exists'); ?>';
+const LANG_PHONE_EXISTS = '<?php echo $this->lang->line('phone_number_exists'); ?>';
+
 document.addEventListener("DOMContentLoaded", function(){
 	$("#owners").show();
 	$("#clients").addClass('active');
@@ -161,7 +168,39 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	});
 	
-
+	// check for duplicates based on street, nr and zip
+	$('#street, #nr, #inputZip').blur(function() {
+		var street = $("#street").val();
+		var nr = $("#nr").val();
+		var zip = $("#inputZip").val();
+		
+		if (street.length > 0 && nr.length > 0 && zip.length > 0)
+		{
+			$.ajax({
+				type: 'POST',
+				url: URL_ADDR_CHECK,
+				data: { 
+						street: street,
+						nr: nr,
+						zip: zip
+				 },
+				success: function(response) {
+				if (response.exists) {
+					// build the list of owners
+					message = '<div class="alert alert-warning alert-dismissible fade show" role="alert"><i class="fa-solid fa-triangle-exclamation"></i> ' +  LANG_OWNER_EXISTS + '<ul>';
+					$.each(response.owners, function(index, owner) {
+						message += '<li><a href="'+ URL_OWNER_DETAIL + owner.id + '">' + owner.last_name + '</a></li>';
+					});
+					message += "</ul></div>";
+					$('#error_messages').html(message).hide().fadeIn(1000);
+				}
+				},
+				error: function(error) {
+				console.error('Error:', error);
+				}
+			});
+		}
+	});
 
 	$('#phone, #mobile, #phone2').blur(function() {
       var fieldValue = $(this).val();
@@ -173,11 +212,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	  // check if it already exists
 	  $.ajax({
         type: 'POST',
-        url: '<?php echo base_url('owners/phone/'); ?>',
+        url: URL_PHONE_CHECK,
         data: { phone: fieldValue },
         success: function(response) {
           if (response.exists) {
-			$('#error_messages').html('<div class="alert alert-warning alert-dismissible fade show" role="alert"><i class="fa-solid fa-triangle-exclamation"></i>Telefoonnummer bestaat al bij <a href="<?php echo base_url("/owners/detail/"); ?>' + response.owner.id + '">' + response.owner.last_name + '</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>').hide().fadeIn(1000);
+			$('#error_messages').html('<div class="alert alert-warning alert-dismissible fade show" role="alert"><i class="fa-solid fa-triangle-exclamation"></i>' +  LANG_PHONE_EXISTS + ' <a href="'+ URL_OWNER_DETAIL + response.owner.id + '">' + response.owner.last_name + '</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>').hide().fadeIn(1000);
           }
         },
         error: function(error) {

@@ -3,6 +3,7 @@ if (! defined('BASEPATH')) {
 	exit('No direct script access allowed');
 }
 
+// Class: Owners_model
 class Owners_model extends MY_Model
 {
 	public $table = 'owners';
@@ -90,6 +91,11 @@ class Owners_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 	
+	/*
+	* function: search_by_phone_ex
+	* query for searching if phone, use limit to search for a full hit
+	* eg in duplicate check
+	*/
 	public function search_by_phone_ex($phone, int $limit = 250)
 	{
 		# in case its a false phone number
@@ -117,6 +123,33 @@ class Owners_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 	
+	/*
+	* function: search_by_addr
+	* query for searching if address is unique
+	* note there are some good reasons why this is possible
+	* so a hit doesn't mean block the user from adding
+	*/
+	public function search_by_addr(string $street, string $nr, string $zip, int $limit = 10)
+	{
+		$sql = "
+			SELECT 
+				*
+			FROM 
+				owners
+			WHERE
+				street = '" . $this->db->escape_like_str($street) . "'
+			AND
+				nr = '" . $this->db->escape_like_str($nr) . "'
+			AND
+				zip = '" . $this->db->escape_like_str($zip) . "'
+			ORDER BY
+				last_bill
+			DESC
+			LIMIT " . $limit;
+
+		return $this->db->query($sql)->result_array();
+	}
+
 	# needs improvement !!
 	# probably 1 query should suffice
 	public function search_by_name($name)

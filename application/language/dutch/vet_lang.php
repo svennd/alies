@@ -86,6 +86,8 @@ $lang['edit_client']  = 'Klant bewerken';
 $lang['phone_backup']         = 'Telefoon Backup';
 $lang['phone_backup_name']    = 'Telefoon Backup (info)';
 $lang['phone_backup_help']    = 'Moeder, broer, zus,...';
+$lang['owner_already_exists']  = 'Eigenaar bestaat mogelijk reeds';
+$lang['phone_number_exists']  = 'Telefoon reeds gekend';
 
 # change owner
 $lang['current_owner']   = 'Huidige eigenaar';
