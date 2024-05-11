@@ -56,7 +56,8 @@ class Stock extends Vet_Controller
 	}
 
 	/*
-	 wip
+	*	function: move
+	* 	move stock from one location to another
 	*/
 	public function move(bool $move_complete = false)
 	{
@@ -115,112 +116,6 @@ class Stock extends Vet_Controller
 			}
 		}
 		redirect('/stock/move/1');
-	}
-
-	# need to improve this by using id instead of (deprecated) barcode
-	public function move_stock()
-	{
-		if ($this->input->post('submit') == "barcode") {
-			$warnings = array();
-
-			$from_location 	= $this->input->post('from_location');
-			$new_location 	= $this->input->post('to_location');
-			$barcodes 	  	= (empty($this->input->post('barcodes'))) ? array() : explode(",", substr($this->input->post('barcodes'), 0, -1));
-
-			$stock_list	  = array();
-
-			if ($barcodes && count($barcodes) > 0) {
-				foreach ($barcodes as $barcode) {
-					// no support atm for this in the interface
-					// probably unlikely to be used atm
-					// gs1 code means we know the product/eol/... but not the location
-					// if (parse_gs1($barcode)) 
-					// {
-					// 	$x = parse_gs1($barcode);
-					// 	$stock_product = $this->stock->gs1_lookup($x['pid'], $x['lotnr'], $x['date'], $from_location)[0];
-					// 	if ($stock_product) {
-					// 		$stock_list[$stock_product['barcode']] = array(
-					// 								"name" 		=> $stock_product['pname'],
-					// 								"eol" 		=> $stock_product['eol'],
-					// 								"lotnr" 	=> $stock_product['lotnr'],
-					// 								"volume" 	=> $stock_product['volume'],
-					// 								"barcode" 	=> $stock_product['barcode'],
-					// 								"sell_unit" => $stock_product['unit_sell']
-					// 							);
-					// 	}
-					// 	# unknown barcode
-					// 	else {
-					// 		$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
-					// 		$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
-					// 	}
-					// }
-					// else 
-					// {
-
-					# a stock can be split so multiple results could be generated
-					$stock_product = $this->stock->with_products('fields:name, unit_sell')->where(array("barcode" => $barcode, "location" => $from_location, "state" => STOCK_IN_USE))->get();
-					# its a known stock product
-					if ($stock_product) {
-						
-						# index : safety check for doubles
-						$stock_list[$barcode] = array(
-												"name" 		=> $stock_product['products']['name'],
-												"eol" 		=> $stock_product['eol'],
-												"lotnr" 	=> $stock_product['lotnr'],
-												"volume" 	=> $stock_product['volume'],
-												"barcode"	=> $barcode,
-												"from_stock"=> $this->stock->get_stock_levels($stock_product['products']['id'], $from_location),
-												"to_stock" 	=> $this->stock->get_stock_levels($stock_product['products']['id'], $new_location),
-												"from_limit"=> $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $from_location))->get(),
-												"to_limit"  => $this->stock_limit->where(array("product_id" => $stock_product['products']['id'], "stock" => $new_location))->get(),
-												"sell_unit" => $stock_product['products']['unit_sell']
-											);
-					}
-					# unknown barcode
-					else {
-						$this->logs->logger(WARN, "unknown_stock_move", "did not recognize stock barcode : ". $barcode);
-						$warnings[] = "Did not recognize barcode : " . $barcode . " on this location";
-					}
-
-					// }
-
-				}
-			} else {
-				$warnings[] = "no barcodes provided.";
-			}
-
-			$data = array(
-							"locations" => $this->locations,
-							"warnings" 	=> $warnings,
-							"move_list" => $stock_list,
-							"from_location" => $from_location,
-							"new_location" => $new_location
-						);
-
-			$this->_render_page('stock/move_quantities', $data);
-
-		} elseif ($this->input->post('submit') == "quantities") {
-
-			$from 			= $this->input->post('from_location');
-			$to 			= $this->input->post('new_location');
-			$move_volumes 	= $this->input->post('move_volume');
-			$max_volume 	= $this->input->post('max_volume');
-
-			foreach ($move_volumes as $barcode => $value) {
-				$this->logs->logger(INFO, "move_stock", "barcode:". $barcode . " from:" . $from . "=>" . $to. " volume:" . $value);
-
-				if ($max_volume[$barcode] < $value)
-				{
-					$this->stock->reduce_product($barcode, $from, $value, "OVERDRAW_MOVE");
-				}
-				else
-				{
-					$this->stock->reduce_product($barcode, $from, $value);
-				}
-				$this->stock->add_product_to_stock($barcode, $from, $to, $value);
-			}
-			redirect('/products/index/' . 1);
-		}
 	}
 
 	public function add_stock($preselected = false)
@@ -306,9 +201,10 @@ class Stock extends Vet_Controller
 	}
 
 	/*
-		show all stock that is in check state
-		also give the option to check the list
-		and prices if admin
+	*	function: verify_stock
+	* 	show all stock that is in check state
+	*	also give the option to check the list
+	*	and prices if admin
 	*/
 	public function verify_stock()
 	{
@@ -383,7 +279,8 @@ class Stock extends Vet_Controller
 
 
 	/*
-		stock that is close to or has expired.
+	*	function: expired_stock
+	*	stock that is close to or has expired.
 	*/
 	public function expired_stock()
 	{
@@ -404,6 +301,10 @@ class Stock extends Vet_Controller
 	}
 
 
+	/*
+	*	function: write_off_full
+	*	write off the full stock
+	*/
 	public function write_off_full(int $stock)
 	{
 		// store in liquidate list
@@ -433,7 +334,8 @@ class Stock extends Vet_Controller
 	}
 
 	/*
-		write_off stock
+	*	function: write_off
+	*	write_off partial stock
 	*/
 	public function write_off(int $stock_id)
 	{
@@ -473,6 +375,10 @@ class Stock extends Vet_Controller
 		}
 	}
 
+	/*
+	*	function: edit
+	*	edit stock -only by admin-
+	*/
 	public function edit(int $stock_id)
 	{
 		if (!$this->ion_auth->in_group("admin")) { redirect('/'); }
@@ -505,7 +411,8 @@ class Stock extends Vet_Controller
 	}
 	
 	/*
-		for problems with stock
+	* function: stock_check
+	* for problems with stock
 	*/
 	public function stock_check()
 	{

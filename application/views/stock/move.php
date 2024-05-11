@@ -54,8 +54,8 @@
 								</div>
 								<div class="float-right">
 									<input type="hidden" name="location_hidden" value="" id="location_hidden"/>
-									<button type="submit" name="submit" value="quantities" class="btn btn-sm btn-outline-success">Verplaatsen</button>
-									<a href="#" class="btn btn-sm btn-outline-danger ml-3">Annuleer</a>
+									<a href="<?php echo base_url('stock/move'); ?>" class="btn btn-sm btn-outline-danger ml-3">Annuleer</a>
+									<button type="submit" name="submit" value="quantities" class="btn btn-outline-success">Verplaatsen</button>
 								</div>
 							</form>
 						</div>
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#move_lines").on('focusout', '.check_max', function() {
 		let max = parseFloat($(this).data('max-volume'));
 		if(parseFloat($(this).val()) > max) {
-			$(this).addClass('is-invalid')
+			$(this).addClass('is-invalid');
 		}
 		else 
 		{

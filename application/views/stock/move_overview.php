@@ -68,7 +68,7 @@
 
 				<!-- buttons -->
 				<div class="text-right pt-3">
-					<a href="#" class="btn btn-sm btn-outline-danger ml-3">Cancel</a>
+					<a href="<?php echo base_url('stock/move'); ?>" class="btn btn-sm btn-outline-danger ml-3">Cancel</a>
 					<button type="submit" name="submit" value="quantities" class="btn btn-outline-success">Move</button>
 				</div>
 				</form>
