@@ -144,8 +144,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	// event delegation
 	$("#move_lines").on('focusout', '.check_max', function() {
-		let max = $(this).data('max-volume');
-		if($(this).val() > max) {
+		let max = parseFloat($(this).data('max-volume'));
+		if(parseFloat($(this).val()) > max) {
 			$(this).addClass('is-invalid')
 		}
 		else 
