@@ -50,7 +50,7 @@
 					<td><small><?php echo $prod['lotnr']; ?></small></td>
 					<td><small><?php echo user_format_date($prod['eol'], $user->user_date); ?></small></td>
 					<td><?php echo $prod['in_price']; ?> &euro;</td>
-					<td><?php echo last_price($prod['in_price'], $pricing[$prod['product_id']]['last_net_buy'], $pricing[$prod['product_id']]['delivery'] ); ?> &euro;</td>
+					<td><?php echo last_price($prod['in_price'], $pricing[$prod['product_id']]['last_net_buy'], $pricing[$prod['product_id']]['delivery']['netto_price'] ); ?> &euro;</td>
 					<td><?php echo $prod['volume'] . ' ' . $prod['products']['unit_sell']; ?></td>
 					<td>
 						<a href="<?php echo base_url('stock/delete_stock/' . $prod['id']); ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
