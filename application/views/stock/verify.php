@@ -1,5 +1,6 @@
 <?php 
-	function last_price(float $inprice, $last_net_price, $last_delivery): 
+	function last_price(float $inprice, $last_net_price, $last_delivery)
+	{
 		if ($last_net_price)
 		{
 			return ($inprice < $last_net_price) ? $last_net_price : "<span class='text-danger'>" . $last_net_price . "</span>";
