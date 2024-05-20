@@ -16,7 +16,7 @@ foreach ($locations as $l)
 				<div class="tab-pane show active fade" id="local" role="tabpanel" aria-labelledby="local-tab">
 					<br/>
 					<?php if ($local_stock): ?>
-						<table class="table" id="dataTable2">
+						<table class="table table-sm" id="dataTable2">
 						<thead>
 						<tr>
 							<th>Product</th>
