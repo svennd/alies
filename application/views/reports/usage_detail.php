@@ -31,7 +31,7 @@
 
 				<?php if($usage): ?>
 				<br>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 					<thead>
 					<tr>
 						<th>Date</th>
