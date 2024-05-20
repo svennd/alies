@@ -49,6 +49,8 @@ class Stock_limit_model extends MY_Model
 			limit_stock > 0
 		AND
 			(backorder = 0 OR backorder IS NULL)
+		AND
+			products.deleted_at IS NULL
 		GROUP BY
 			products.id
 		HAVING
@@ -96,6 +98,8 @@ class Stock_limit_model extends MY_Model
 			products
 		ON
 			stock_limit.product_id = products.id
+		WHERE
+			products.deleted_at IS NULL
 		GROUP BY
 			stock.product_id,
 			stock.location

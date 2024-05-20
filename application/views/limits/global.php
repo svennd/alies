@@ -9,7 +9,7 @@
 				<br/>
 				<?php if ($global_stock): ?>
 				
-					<table class="table" id="dataTable">
+					<table class="table table-sm" id="dataTable">
 					<thead>
 					<tr>
 						<th>Product</th>

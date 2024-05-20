@@ -59,6 +59,9 @@ class Cli extends Frontend_Controller
 	*/
 	public function daily()
 	{
+		# todo: for removed products remove limits
+	
+		# run the cleanup crew
 		$this->autoclose();
 		$this->prune();
 		$this->auto_death();
