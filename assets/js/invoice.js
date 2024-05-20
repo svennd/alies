@@ -3,7 +3,7 @@ function store_msg()
 {
 	$.ajax({
 			method: 'POST',
-			url: 'URL_STORE_MESSAGE_API',
+			url: URL_STORE_MESSAGE_API,
 			data: {
 				msg: $("#msg").val(),
 				msg_invoice: $("#msg_invoice").val(),
