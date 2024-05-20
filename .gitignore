@@ -49,3 +49,5 @@ application/config/database.php
 /data/stored/*
 application/controllers/Import_private.php
 package-lock.json
+dosbox
+dosbox/*
