@@ -121,6 +121,10 @@ define('PAYMENT_PAID', 3);			// fully payed
 define('PAYMENT_NON_COLLECTABLE', 4); // can't be collected anymore
 define('PAYMENT_PROCESSING', 5);	// not yet verified
 
+# invoice
+define('INVOICE_PRINT', 1);	// not yet verified
+define('INVOICE_MAIL', 2);	// not yet verified
+
 # event w/o a bill
 # for imported ones
 define('EVENT_PAYMENT_IMPORT', -1);

@@ -6,7 +6,7 @@ class Invoice extends Vet_Controller
 {
 
 	// initialize
-	public $pets, $owners, $stock, $bills, $payment, $events, $events_products, $logs;
+	public $pets, $owners, $stock, $bills, $payment, $events, $events_products, $logs, $qr;
 
 	// ci specific
 	public $input;
@@ -164,18 +164,19 @@ class Invoice extends Vet_Controller
 		);
 
 
-		if ($report == 1) 
+		if ($report == INVOICE_PRINT) 
 		{
-			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id'], base64_decode($this->conf['struct_config']['value']));;
+			$struct = generate_struct_message($bill_info['owner_id'], $bill_info['id'], base64_decode($this->conf['struct_config']['value']));
 			$data['struct'] = $struct;
 			$data['qr'] = ($total_brut > 0.01) ? $this->qr->create($total_brut, $struct) : false;
 			$data['BIC'] = base64_decode($this->conf['bic']['value']);
 			$data['IBAN'] = base64_decode($this->conf['iban']['value']);
 			$data['name_owner'] = base64_decode($this->conf['nameiban']['value']);
-
-			$this->generate_pdf($data, PDF_STREAM);
+			
+			# force regenerate the pdf
+			$this->generate_pdf($data, PDF_STREAM, true);
 		}
-		elseif ($report == 2)
+		elseif ($report == INVOICE_MAIL)
 		{
 			$this->mail_bill($data);
 		}
@@ -312,7 +313,7 @@ class Invoice extends Vet_Controller
 	* function: generate_pdf
 	* generate a pdf based on the data
 	*/
-	private function generate_pdf(array $data, int $mode = PDF_STREAM)
+	private function generate_pdf(array $data, int $mode = PDF_STREAM, bool $force_remake = false)
 	{
 		# generate template data
 		$template_data = $this->load->view('bills/report_print', $data, true);
@@ -340,7 +341,7 @@ class Invoice extends Vet_Controller
 		}
 
 		# generate the pdf based
-		return $this->pdf->create($template_data, $path . '/' . $filename, $mode);
+		return $this->pdf->create($template_data, $path . '/' . $filename, $mode, $force_remake);
 	}
 
 	/*

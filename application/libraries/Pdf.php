@@ -40,19 +40,19 @@ class Pdf extends CI_Model
 
 	}
 
-	public function create($html, $filename, int $mode)
+	public function create($html, $filename, int $mode, bool $force_remake = false)
 	{
 
 		$file_exists = file_exists((string)$filename . '.pdf');
 
 		// check if it already exists on generation
-		if ($mode == PDF_FILE && $file_exists)
+		if ($mode == PDF_FILE && $file_exists && !$force_remake)
 		{
 			return $filename . ".pdf";
 		}
 
 		// if they want to open it also check pre-building
-		if ($mode == PDF_STREAM && $file_exists)
+		if ($mode == PDF_STREAM && $file_exists && !$force_remake)
 		{
 			header('Content-type: application/pdf');
 			header('Content-Disposition: inline; filename="' . $filename . '.pdf' . '"');

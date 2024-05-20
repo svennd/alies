@@ -15,7 +15,7 @@
 			</div>
 			<div class="dropdown no-arrow">
 
-				<a href="<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/1'); ?>" target="_blank" class="btn btn-outline-success btn-sm d-none d-xl-inline"><i class="fas fa-print"></i> print</a> 
+				<a href="<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/' . INVOICE_PRINT); ?>" target="_blank" class="btn btn-outline-success btn-sm d-none d-xl-inline"><i class="fas fa-print"></i> print</a> 
 
 				<?php if($bill['mail'] == 0): ?>
 					<a href="#" <?php if(!empty($owner['mail'])): ?>id="sendmail"<?php else: ?>id="get_mail"<?php endif; ?> class="btn <?php echo (!empty($owner['mail'])) ? "btn-outline-primary" : "btn-outline-secondary"; ?> btn-sm ml-1">
@@ -170,7 +170,7 @@
 
 <script>
 	const URL_STORE_MESSAGE_API = '<?php echo base_url('invoice/store_bill_msg/' . $bill['id']); ?>';
-	const URL_SENDMAIL_API = '<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/2'); ?>';
+	const URL_SENDMAIL_API = '<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/' . INVOICE_MAIL); ?>';
 	const URL_STORE_MAIL = '<?php echo base_url('owners/set_email/'. $bill['owner_id']); ?>';	
 </script>
 
