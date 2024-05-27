@@ -109,31 +109,50 @@ class Wholesale_model extends MY_Model
 				echo "ERROR : issue updating product\n";
 			}
 
+			// history of prices
 			// only if price is different
 			if ($bruto_format != $result['bruto'])
 			{
 				$this->wh_price->insert(array("art_nr" => $art_nr, "bruto" => $result['bruto']));
-				return array("art_nr" => $art_nr, "description" => $omschrijving,  "new" => $bruto_format, "old" => $result['bruto']);
+				// return array("art_nr" => $art_nr, "description" => $omschrijving,  "new" => $bruto_format, "old" => $result['bruto']);
 			}
 		}
-		# product not found, its new
-		else
+		else 
 		{
 			$this->insert(array(
-							"vendor_id" 		=> $art_nr,
-							"description" 		=> $omschrijving,
-							"bruto" 			=> $bruto_format,
-							"last_bruto"		=> $bruto_format, // since its new, the last bruto price is the same as the current
-							"last_bruto_date" 	=> date("Y-m-d"),
-							"btw" 				=> $btw,
-							"sell_price"		=> $verk_pr_apotheek,
-							"distributor" 		=> $verdeler,
-							"CNK" 				=> $CNK,
-							"VHB" 				=> $VHB,
-							"distributor_id"	=> $distr_id,
-							"type" 				=> $type_id
-						));
+						"vendor_id" 		=> $art_nr,
+						"description" 		=> $omschrijving,
+						"bruto" 			=> $bruto_format,
+						"last_bruto"		=> $bruto_format, // since its new, the last bruto price is the same as the current
+						"last_bruto_date" 	=> date("Y-m-d"),
+						"btw" 				=> $btw,
+						"sell_price"		=> $verk_pr_apotheek,
+						"distributor" 		=> $verdeler,
+						"CNK" 				=> $CNK,
+						"VHB" 				=> $VHB,
+						"distributor_id"	=> $distr_id,
+						"type" 				=> $type_id
+					));
 		}
-		return array();
+	}
+
+	/*
+	*	function: get_price_diff
+	* 	get the price difference between the last price and the current price
+	*/
+	public function get_price_diff(int $days = 30)
+	{
+		$sql = "
+			SELECT 
+				id, bruto, last_bruto, last_bruto_date
+			FROM
+				wholesale
+			WHERE
+				bruto != last_bruto
+			AND
+				last_bruto_date >= DATE_SUB(CURDATE(), INTERVAL " . $days . " DAY)
+		";
+
+		return $this->db->query($sql)->result_array();
 	}
 }

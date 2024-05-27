@@ -266,4 +266,15 @@ class Products_model extends MY_Model
 			;";
 		return $this->db->query($sql)->result_array();
 	}
+
+	/*
+	* function: get_product_id_by_wholesale
+	* get product id by wholesale id
+	*/
+	function get_id_by_wholesale(int $wholesale_id)
+	{
+		var_dump($this->fields('id')->where(array("wholesale" => $wholesale_id))->get());
+		$product_info = $this->fields('id')->where(array("wholesale" => $wholesale_id))->get();
+		return ($product_info) ? (int) $product_info['id'] : NULL;
+	}
 }

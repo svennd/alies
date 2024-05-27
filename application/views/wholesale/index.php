@@ -15,14 +15,14 @@
 
 </style>
 <div class="row">
-	<div class="col-lg-10 mb-4">
+	<div class="col-lg-9 mb-4">
 		<div class="card shadow mb-4">
 			<div class="card-header">
 				<a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('wholesale'); ?>
 			</div>
 			<div class="card-body">
 				<?php if ($products): ?>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 					<thead>
 						<tr>
 							<th>Description</th>
@@ -54,7 +54,7 @@
 							else { $procent = ""; }
 							?>
 						<tr>
-							<td><a href="<?php echo base_url('wholesale/get_history/'. $p['id']); ?>"><?php echo $p['description']; ?></a></td>
+							<td><a href="<?php echo base_url('wholesale/get_history/'. $p['id']); ?>"><?php echo (strlen($p['description']) > 20) ? substr($p['description'], 0, 20) . '...' : $p['description'];; ?></a></td>
 							<td><?php echo (isset($p['product'])) ? "<a href='" . base_url('products/profile/' . $p['product']['id']) . "'>". $p['product']['name'] ."</a>" : ""; ?></td>
 							<td><?php echo $p['bruto']; ?></td>
 							<td data-sort="<?php echo ($calculated_prct) ? $calculated_prct : "0"; ?>">
@@ -82,7 +82,36 @@
 		</div>
 	</div>
 
-	<div class="col-lg-2 mb-4">
+	<div class="col-lg-3 mb-4">
+			<!--- deliveries -->
+			<?php if ($deliveries): ?>
+			<div class="card shadow mb-4">		
+				<div class="card-header">
+					Last 5 deliveries
+				</div>
+				<div class="card-body">
+					<table class="table table-sm">
+						<thead>
+							<tr>
+								<th>Delivery</th>
+								<th>Products</th>
+								<th>Packages</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($deliveries as $delivery): ?>
+								<tr>
+									<td><a href="<?php echo base_url('wholesale/delivery/' . $delivery['delivery_date']); ?>"><?php echo $delivery['delivery_date'] ?></a></td>
+									<td><?php echo $delivery['products'] ?></td>
+									<td><?php echo $delivery['number'] ?></td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<?php endif; ?>
+
 			<!--- upload pricelist -->
 			<div class="card shadow mb-4">		
 				<div class="card-header">
@@ -120,35 +149,6 @@
 					</form>
 				</div>
 			</div>
-
-			<!--- deliveries -->
-			<?php if ($deliveries): ?>
-			<div class="card shadow mb-4">		
-				<div class="card-header">
-					Last 5 deliveries
-				</div>
-				<div class="card-body">
-					<table class="table table-sm">
-						<thead>
-							<tr>
-								<th>Delivery</th>
-								<th>Products</th>
-								<th>Packages</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach($deliveries as $delivery): ?>
-								<tr>
-									<td><a href="<?php echo base_url('wholesale/delivery/' . $delivery['delivery_date']); ?>"><?php echo $delivery['delivery_date'] ?></a></td>
-									<td><?php echo $delivery['products'] ?></td>
-									<td><?php echo $delivery['number'] ?></td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<?php endif; ?>
 	</div>
 </div>
 

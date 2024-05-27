@@ -20,6 +20,25 @@ class Pricing extends Accounting_Controller
 		$this->load->model('Events_procedures_model', 'eproc');
 	}
 
+
+	/*
+	* function: index
+	* show the overview page of all prices
+	*/
+	public function index()
+	{
+		// show products that are increasing in price
+		// show products that are decreasing in price
+		
+		// button of products 
+		// button of procedures
+
+
+		$data = array();
+		
+		$this->_render_page('pricing/overview', $data);
+	}
+	
 	public function prod(int $id = 0)
 	{
 		# show list with all products prices

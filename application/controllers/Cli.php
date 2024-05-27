@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Cli extends Frontend_Controller 
 {
 	// initialize
-	public $settings, $stock, $logs, $log_stock, $wholesale, $delivery, $lab, $lab_line, $pets, $stock_value, $events;
+	public $settings, $stock, $logs, $log_stock, $wholesale, $delivery, $lab, $lab_line, $pets, $stock_value, $events, $pricetrack;
 
 	// ci specific
 	public $input;
@@ -27,6 +27,8 @@ class Cli extends Frontend_Controller
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Log_stock_model', 'log_stock');
+		$this->load->model('Products_model', 'products');
+		$this->load->model('Price_track_model', 'pricetrack');
 
         $conf = $this->settings->get_all();
 		if ($conf) {
@@ -405,6 +407,14 @@ class Cli extends Frontend_Controller
 				
 				$netto_price_format = str_replace(',', '.', $netto_price);
 				$bruto_price_format = str_replace(',', '.', $bruto_price);
+				
+				# if this is a known product
+				# check for price changes
+				# note: bruto is checked daily by pricelist
+				if ($id)
+				{
+					$this->check_for_netto_price_change($netto_price_format, $id);
+				}
 
 				$this->delivery->insert(array(
 					"order_date" 			=> ($dt_order_date) ? $dt_order_date->format('Y-m-d') : "",
@@ -483,12 +493,38 @@ class Cli extends Frontend_Controller
                 $line++;
 		}
         fclose($handle);
-        if(!$this->move_file($file, $path . 'processed/' . $filename))
-        {
-            echo "ERROR : issue moving file\n";
-        }
+        // if(!$this->move_file($file, $path . 'processed/' . $filename))
+        // {
+        //     echo "ERROR : issue moving file\n";
+        // }
         echo "lines : " . $line . "\n";
     }
+
+	/*
+	* function: check_for_changes_in_price
+	* check for changes in wholesale bruto price
+	*/
+	public function check_for_changes_in_price()
+	{
+		$price_changes = $this->wholesale->get_price_diff();
+		foreach ($price_changes as $change)
+		{
+			// each price change from wholesale can trigger
+			// a price warning
+			$this->pricetrack->insert(array(
+					"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or null
+					"wholesale_id" 		=> $change['id'], // wholesaleid
+					"original_price" 	=> $change['last_bruto'],
+					"new_price" 		=> $change['bruto'],
+					"source" 			=> "wholesale_pricelist",
+			));
+			
+			// also "accept" this change since we warned the user
+			$this->wholesale->accept_price($change['id']);
+		}
+
+
+	}
 
 	/*
 	* function: stock_clean
@@ -578,6 +614,51 @@ class Cli extends Frontend_Controller
 		else
 		{
 			$this->logs->logger(DEBUG, "ran_autoclose", "no affected");
+		}
+	}
+
+	/*
+	* function: check_for_netto_price_change
+	*
+	*/
+	private function check_for_netto_price_change($netto_price_format, int $id)
+	{
+		// get the last netto price
+		$last_price = $this->delivery
+				->fields('netto_price')
+				->where(array("wholesale_id" => $id))
+				->order_by('id', 'DESC')
+				->get();
+			
+		// probably want to do this in one go
+		// and restrict based on config values
+		// so that 0.01% increase/decrease isn't a trigger
+		// but 1% is if the value of the product is larger (eg +0.03c on 3€ is not a trigger, but +0.03c on 0.3€ is a trigger)
+		if (abs($last_price['netto_price']-$netto_price_format) > 0.01)
+		{
+			// insert or update ?
+			$update = $this->pricetrack
+				->update(
+					array(
+						"product_id" 		=> $this->products->get_id_by_wholesale($id), // int or null
+						"new_price"			=> $netto_price_format,
+						"original_price" 	=> $last_price['netto_price'],
+						"source" 			=> "wholesale_delivery",
+						"ack_user"			=> 0,
+						"applied"			=> 0
+					),
+					array("wholesale_id" => $id)
+				);
+			if (!$updated)
+			{
+				$this->pricetrack->insert(array(
+					"product_id" 		=> $this->products->get_id_by_wholesale($id), // int or null
+					"wholesale_id" 		=> $id, // wholesaleid
+					"original_price" 	=> $last_price['netto_price'],
+					"new_price" 		=> $netto_price_format,
+					"source" 			=> 'wholesale_delivery',
+				));
+			}
 		}
 	}
 
