@@ -9,7 +9,7 @@
 			<p><?php echo $this->lang->line('expired_stock_expl'); ?>
         <span class="p-1 bg-danger text-white">Expiring soon (30d)</span>, <span class="p-1 bg-secondary text-white">Expired</span>.<br/></p>
 			<?php if ($stock_gone_bad): ?>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th><?php echo $this->lang->line('product'); ?></th>
@@ -59,7 +59,17 @@ document.addEventListener("DOMContentLoaded", function(){
 	const current_date = new Date();
 
 	$("#dataTable").DataTable({
+			pageLength: 150,
+			dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 			"order": [[ 1, "asc" ]],
+			buttons: [
+				{ extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm', 
+					exportOptions: {columns: [0, 1, 2, 3, 4]}
+				},
+				{ extend:'pdf', text:'<i class="fa-regular fa-file-pdf"></i> pdf', className:'btn btn-outline-success btn-sm', 
+					exportOptions: {columns: [0, 1, 2, 3, 4]}
+				}
+			],
 			"createdRow": function( row, data, dataIndex){
 				var product_date = new Date(data[1]["@data-sort"]*1000);
 				date_diff = (current_date - product_date);
