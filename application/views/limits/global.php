@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		<?php if ($this->ion_auth->in_group("admin")): ?>
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
-            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
-            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm', exportOptions: {columns: [0,1,2,5,6]}},
+            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm', exportOptions: {columns: [0,1,2,5,6]}}
         ],
 		"columnDefs": [
 			{ "visible": false, "targets": 5 },

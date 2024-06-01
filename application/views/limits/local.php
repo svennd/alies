@@ -75,25 +75,20 @@ foreach ($locations as $l)
 
 						<tr <?php echo ($prio > 1) ? 'class="table-warning"' : ''; ?>>
 							<td><a href="<?php echo base_url('products/profile/' . $product['product_detail']); ?>"><?php echo $product['name']; ?></a></td>
-							<td>
-								<span style="color:red;"><?php echo $local_available; ?> <?php echo $product['unit_sell']; ?></span> / 
-								<?php echo $product['required_volume']; ?> <?php echo $product['unit_sell']; ?>
-							</td>
+							<td><span style="color:red;"><?php echo (float)$local_available; ?> </span> / <?php echo $product['required_volume']; ?> <?php echo $product['unit_sell']; ?></td>
 							<td>
 								<a href="<?php echo base_url() . 'stock/stock_detail/' . $product['product_detail'];?>">
-								<span style="color:<?php echo ($global_available >= 0 && $product['global_limit'] > $product['all_volume']) ? 'red': 'green'; ?>">
-									<?php echo $global_available; ?> <?php echo $product['unit_sell']; ?></span>
+								<span style="color:<?php echo ($global_available >= 0 && $product['global_limit'] > $product['all_volume']) ? 'red': 'green'; ?>"><?php echo (float)$global_available; ?></span>
 								</a> / 
 								<?php echo $product['global_limit']; ?> <?php echo $product['unit_sell']; ?>
 							</td>
 							<td>
-								
 								<?php if ($this->ion_auth->in_group("admin")): ?><a href="<?php echo base_url('reports/usage/' . $product['product_detail']); ?>"><?php endif; ?>
-								<?php echo $local_use; ?> <?php echo $product['unit_sell']; ?> / 
-								<?php echo $global_use; ?> <?php echo $product['unit_sell']; ?>
-								<?php if ($this->ion_auth->in_group("admin")): ?></a><?php endif; ?>
+								<?php echo (float)$local_use; ?> / <?php echo (float)$global_use; ?> <?php echo $product['unit_sell']; ?>
+								<?php if ($this->ion_auth->in_group("admin")): ?></a>
+								<?php endif; ?>
 							</td>
-							<td>
+							<td data-order="<?php echo round($prio*10); ?>">
 								<?php echo round($prio, 2); ?>
 							</td>
 						</tr>
@@ -117,7 +112,14 @@ foreach ($locations as $l)
 document.addEventListener("DOMContentLoaded", function(){
 	
 	$("#product_list").addClass('active');
-	$("#dataTable2").DataTable({"order": [[ 4, "desc" ]]});
+	$("#dataTable2").DataTable({
+		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+		buttons: [
+            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+            { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
+        ],
+		"order": [[ 4, "desc" ]]
+		});
 });
 </script>
   
