@@ -6,7 +6,12 @@
 <li class="nav-item" id="admin">
 <a class="nav-link" href="<?php echo base_url('accounting/dashboard'); ?>">
     <i class="fas fa-fw fa-user-shield"></i>
-    <span>Admin</span></a>
+    <span>Admin</span>
+
+    <?php if ($cnt_stock_errors > 0): ?>
+        <span class="counter" style="background-color: #e7493bcb;"><?php echo $cnt_stock_errors; ?></span>
+    <?php endif; ?>
+    </a>
 </li>  
 
 <li class="nav-item" id="sticky">

@@ -30,6 +30,7 @@ class Vet_Controller extends MY_Controller
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Sticky_model', 'sticky');
 		$this->load->model('Lab_model', 'lab');
+		$this->load->model('Stock_model', 'stock');
 
 		$this->lang->load('vet', 'dutch');
 		$this->lang->load('admin', 'dutch');
@@ -70,6 +71,7 @@ class Vet_Controller extends MY_Controller
 								"location_changer" 			=> $this->_get_compass_locations($user_location_id, $this->locations),
 								"mondal" 					=> (!$user_location_id) ? $this->_get_mondal($this->locations) : "",
 								"cnt_sticky"				=> $this->sticky->count_rows(),
+								"cnt_stock_errors"			=> $this->stock->where(array("state" => STOCK_ERROR))->count_rows(),
 								"report_count"				=> $this->events->get_open_reports($this->user->id),
 								"lab_count"					=> $this->lab->get_unassigned(),
 						);
