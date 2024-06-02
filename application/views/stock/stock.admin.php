@@ -28,7 +28,7 @@
                         </p>
                     </td>
 					<td><?php echo ($stk['info']) ? $stk['info'] : "-"; ?></td>
-					<td data-sort="<?php echo ($stk['updated_at']) ? strtotime($stk['updated_at']) : 0; ?>"><?php echo ($stk['updated_at']) ?  date_format(date_create($stk['updated_at']), $user->user_date) : ""; ?></td>
+					<td data-sort="<?php echo ($stk['updated_at']) ? strtotime($stk['updated_at']) : 0; ?>"><?php echo ($stk['updated_at']) ? date_format(date_create($stk['updated_at']), $user->user_date) : date_format(date_create($stk['created_at']), $user->user_date); ?></td>
 					<td>
                         <a href="<?php echo base_url('stock/clear_error/'. $stk['id']); ?>" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-broom fa-fw"></i> Clear</a>
                         <a href="<?php echo base_url('logs/product/'. $stk['product_id']); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-receipt"></i> Transactions</a>
