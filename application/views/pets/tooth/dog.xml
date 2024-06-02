@@ -120,5 +120,9 @@
 <text x="1145.1251" y="542.92358" xml:space="preserve"><tspan x="1145.1251" y="542.92358">311</tspan></text>
 <text x="600.29187" y="542.92358" xml:space="preserve"><tspan x="600.29187" y="542.92358">302</tspan></text>
 
+<!-- left & right -->
+<text x="-100" y="250" xml:space="preserve"><tspan x="-120" y="250">R</tspan></text>
+<text x="1145.1251" y="250" xml:space="preserve"><tspan x="1145.1251" y="250">L</tspan></text>
+
 </g>
 </svg>
