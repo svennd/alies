@@ -12,7 +12,8 @@
 					<?php if ($owner['telephone']) : ?><?php echo print_phone($owner['telephone']); ?><br/><?php endif; ?>
 					<?php if ($owner['mobile']) : ?><?php echo print_phone($owner['mobile']); ?><br/><?php endif; ?>
 					<?php if ($owner['btw_nr']) : ?><br/><?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
-					<small><?php if ($owner['last_bill']) : ?><br/><?php echo $this->lang->line('last_visit'); ?>: <?php echo user_format_date($owner['last_bill'], $user->user_date); ?><br/><?php endif; ?></small>				
+					<small>#<?php echo $owner['id']; ?></small>			
+					<small><?php if ($owner['last_bill']) : ?><br/><?php echo $this->lang->line('last_visit'); ?>: <?php echo user_format_date($owner['last_bill'], $user->user_date); ?><br/><?php endif; ?></small>
 				</div>
 			</div>
 		</div>
