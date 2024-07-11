@@ -493,10 +493,10 @@ class Cli extends Frontend_Controller
                 $line++;
 		}
         fclose($handle);
-        // if(!$this->move_file($file, $path . 'processed/' . $filename))
-        // {
-        //     echo "ERROR : issue moving file\n";
-        // }
+        if(!$this->move_file($file, $path . 'processed/' . $filename))
+        {
+            echo "ERROR : issue moving file\n";
+        }
         echo "lines : " . $line . "\n";
     }
 
@@ -510,20 +510,34 @@ class Cli extends Frontend_Controller
 		foreach ($price_changes as $change)
 		{
 			// each price change from wholesale can trigger
-			// a price warning
-			$this->pricetrack->insert(array(
-					"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or null
-					"wholesale_id" 		=> $change['id'], // wholesaleid
-					"original_price" 	=> $change['last_bruto'],
-					"new_price" 		=> $change['bruto'],
-					"source" 			=> "wholesale_pricelist",
-			));
-			
+			// a price warning to the user
+			$updated = $this->pricetrack
+				->update(
+					array(
+						"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or nul
+						"original_price" 	=> $change['last_bruto'],
+						"new_price" 		=> $change['bruto'],
+						"source" 			=> "wholesale_pricelist",
+						"ack_user"			=> 0,
+						"applied"			=> 0
+					),
+					array("wholesale_id" => $change['id'])
+				);
+
+			if (!$updated)
+			{
+				$this->pricetrack->insert(array(
+						"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or null
+						"wholesale_id" 		=> $change['id'], // wholesaleid
+						"original_price" 	=> $change['last_bruto'],
+						"new_price" 		=> $change['bruto'],
+						"source" 			=> "wholesale_pricelist",
+				));
+			}
+
 			// also "accept" this change since we warned the user
 			$this->wholesale->accept_price($change['id']);
 		}
-
-
 	}
 
 	/*
@@ -637,7 +651,7 @@ class Cli extends Frontend_Controller
 		if (abs($last_price['netto_price']-$netto_price_format) > 0.01)
 		{
 			// insert or update ?
-			$update = $this->pricetrack
+			$updated = $this->pricetrack
 				->update(
 					array(
 						"product_id" 		=> $this->products->get_id_by_wholesale($id), // int or null

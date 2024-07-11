@@ -146,19 +146,11 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#invoice").addClass('active');
 	var table = $("#dataTable").DataTable({
 		responsive: true,
-		pageLength: 150,
+		pageLength: 250,
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
 			<?php if($this->ion_auth->in_group("admin")): ?>
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
-			{ text:'<i class="fa-solid fa-fw fa-money-bill-transfer"></i>', className:'btn btn-outline-danger btn-sm', 
-				action: function (e, dt, node, config) {
-					dt
-					.columns(7)
-					.search(10)
-					.draw();
-				}
-			},
 			<?php else: ?>
             { text:'<i class="fa-solid fa-fw fa-users"></i>', className:'btn btn-outline-success btn-sm', 
 				action: function (e, dt, node, config) { 
@@ -166,28 +158,8 @@ document.addEventListener("DOMContentLoaded", function(){
 					node[0].className = (node[0].className === 'btn btn-outline-success btn-sm' ? 'btn btn-outline-warning btn-sm' : 'btn btn-outline-success btn-sm');
 					toggleHiddenRows(VET_COLUMN, USER_ID);
 				}
-			},
-			<?php endif; ?>
-			{ text:'<i class="fa-regular fa-circle-xmark"></i>', className:'btn btn-outline-danger btn-sm', 
-				action: function (e, dt, node, config) {
-					dt.column(5, { search: 'applied' }).nodes().each(function(node, index) {
-						var dataSortValue = $(node).data('sort');
-						if (dataSortValue != 4) {
-							$(node).closest('tr').show();
-						} else {
-							$(node).closest('tr').hide();
-						}
-					});
-				}
-			},
-			{ text:'<i class="fa-solid fa-fw fa-rotate-right"></i>', className:'btn btn-outline-primary btn-sm', 
-				action: function (e, dt, node, config) {
-					dt
-					.columns(7)
-					.search("")
-					.draw();
-				}
 			}
+			<?php endif; ?>
         ],
 		"order": [[0, 'desc']]
 	});
