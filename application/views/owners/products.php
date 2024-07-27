@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", function(){
             "target": 'tr'
         }
   	  },
-	lengthChange: false
+	lengthChange: false,
+	order: [[ 0, "desc" ]]
 	});
 	$("#home").addClass('active');
 });
