@@ -17,7 +17,6 @@
 				<?php if($move_complete): ?>
 					<div class="alert alert-success">Move complete !</div>
 				<?php endif; ?>
-				<h5>select location</h5>
 				<div class="row">
 					<div class="col">				
 						<select name="from" class="form-control" id="location" autofocus>
