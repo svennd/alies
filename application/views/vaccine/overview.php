@@ -23,27 +23,23 @@
 				  <th><?php echo $this->lang->line('rappel_date'); ?></th>
 				  <th><?php echo $this->lang->line('vaccines'); ?></th>
 				  <th><?php echo $this->lang->line('pet_info'); ?></th>
-				  <th><?php echo $this->lang->line('email'); ?></th>
-				  <th><?php echo $this->lang->line('Veterinary'); ?></th>
 				  <th><?php echo $this->lang->line('location'); ?></th>
 				</tr>
 			  </thead>
 			  <tbody>
 				<?php foreach($expiring_vacs as $vac): ?>
 				<tr>
-					<td><a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
+					<td>
+					<span class="fa-stack">
+                        <i class="fas fa-envelope-open-text fa-stack-1x"></i>
+                        <?php echo ($vac['owner_mail']) ? '<i class="fas fa-check fa-stack-1x" style="color:Green"></i>' : '<i class="fas fa-slash fa-stack-1x" style="color:Tomato"></i>' ;?>
+                    </span>
+						<a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
 					<td><?php echo ($vac['last_bill']) ? time_ago($vac['last_bill']) : '-'; ?></td>
 					<td><?php echo user_format_date($vac['injection_date'],  $user->user_date); ?></td>
 					<td><?php echo user_format_date($vac['redo_date'],  $user->user_date); ?></td>
 					<td><?php echo $vac['product_name']; ?></td>
 					<td><?php echo $vac['pet_name']; ?></td>
-					<td>
-                    <span class="fa-stack">
-                        <i class="fas fa-envelope-open-text fa-stack-1x"></i>
-                        <?php echo ($vac['owner_mail']) ? '<i class="fas fa-check fa-stack-1x" style="color:Green"></i>' : '<i class="fas fa-slash fa-stack-1x" style="color:Tomato"></i>' ;?>
-                    </span>
-                  </td>
-				  <td><?php echo $vac['vet_name']; ?></td>
 				  <td><?php echo $vac['location']; ?></td>
 				</tr>
 				<?php endforeach; ?>
