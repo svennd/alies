@@ -146,7 +146,6 @@
 </div>
 
 <script type="text/javascript">
-// const URL_REQ 	= '<?php echo base_url('products/a_pid_by_type/'); ?>';
 const URL_STOCK_LOCATION = '<?php echo base_url('products/index/'); ?>';
 const BUTTON_LOCATIONS = [
 			<?php foreach ($locations as $loc): ?>
@@ -168,13 +167,6 @@ const BUTTON_LOCATIONS = [
 	];
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
-
-	// $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-	// 	console.log('fired');
-	// 	var element_id = this.id.split("-")[1]; // info-id-tab
-	// 	var requestUrl = URL_REQ + element_id;
-	// 	table.ajax.url( requestUrl ).load();
-	// });
 
 // main table
 $("#dataTable").DataTable({

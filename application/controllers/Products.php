@@ -540,38 +540,6 @@ class Products extends Vet_Controller
 		return $list;
 	}
 
-	/*
-		this probaby isn't used anymore 
-		called from stock/index page
-	*/
-	public function a_pid_by_type( $id )
-	{
-		$products = $this->products
-								->fields('id, name, unit_sell')
-								->with_stock('fields:volume')
-								->where('type', $id)
-								->get_all();
-
-			$return = array();
-			foreach ($products as $pod) {
-
-				# if there is volume, calculate howmuch
-				# a single query could improve this by doing
-				# a SUM operation
-				$stock = 0;
-				if (isset($pod['stock']))
-				{
-					foreach ($pod['stock'] as $st)
-					{
-						$stock += $st['volume'];
-					}
-				}
-
-				$return [] = array($pod['id'], $pod['name'], $pod['unit_sell'], $stock);
-			}
-		echo json_encode(array("data" => $return));
-	}
-
 	// enter the basic details of the product in the products table
 	private function new_product_step_1()
 	{
