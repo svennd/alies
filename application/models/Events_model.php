@@ -444,7 +444,8 @@ class Events_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				product_id, products.name as product_name, products.unit_sell, events_products.volume, pets.id as pet_id, pets.name as pet_name
+				product_id, products.name as product_name, products.unit_sell, events_products.volume, pets.id as pet_id, pets.name as pet_name,
+				events.created_at as event_date
 			FROM
 				events_products
 			LEFT JOIN

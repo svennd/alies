@@ -25,6 +25,7 @@
 	<table class="table table-sm" id="dataTable">
 	  <thead>
 		<tr>
+		  <th><?php echo $this->lang->line('date'); ?></th>
 		  <th><?php echo $this->lang->line('product'); ?></th>
 		  <th><?php echo $this->lang->line('volume'); ?></th>
 		  <th><?php echo $this->lang->line('pet_info'); ?></th>
@@ -33,6 +34,7 @@
 	  <tbody>
 		<?php foreach($products as $prod): ?>
 		<tr>
+		  <td data-sort="<?php echo strtotime($prod['event_date']) ?>"><?php echo user_format_date($prod['event_date'], $user->user_date); ?></td>
 		  <td><a href="<?php echo base_url('products/profile/' . $prod['product_id']); ?>"><?php echo $prod['product_name']; ?></a></td>
 		  <td><?php echo $prod['volume'] . ' ' . $prod['unit_sell']; ?></td>
 		  <td><a href="<?php echo base_url('pets/fiche/' . $prod['pet_id']); ?>"><?php echo $prod['pet_name']; ?></a></td>
