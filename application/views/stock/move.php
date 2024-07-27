@@ -39,10 +39,10 @@
 				<hr />
 				<br/>
 				<div id="nextPartOfForm" style="display: none;">
-					<h5>Add products to move</h5>
+					<h5><?php echo $this->lang->line('search_product'); ?></h5>
 					<div class="row justify-content-between" >
 						<div class="col-md-4">
-							<input type="text" name="product" class="form-control" style="width:250px;" tabindex="0" id="autocomplete" placeholder="search" autocomplete="off">
+							<input type="text" name="product" class="form-control" style="width:250px;" tabindex="0" id="autocomplete" placeholder="<?php echo $this->lang->line('search_product'); ?>" autocomplete="off">
 							<br />
 							<hr />
 							<div id="product-details"></div>
@@ -81,9 +81,9 @@ function renderProductDetails(details) {
 		productRow += `<a href="#" data-stock="${id}" data-unit="${details.unit}" data-name="${details.prod}" data-lotnr="${details.lotnr[index]}" data-eol="${details.eol[index]}" data-volume="${details.volume[index]}" class="list-group-item list-group-item-action stockitem" style="margin-bottom:0px;">
 						<div class="d-flex w-100 justify-content-between">
 							<h5 class="mb-1">${details.lotnr[index]}</h5>
-							<small>volume: ${details.eol[index]}</small>
+							<small>volume: ${details.volume[index]} ${details.unit}</small>
 						</div>
-						<p class="mb-1">${details.volume[index]} ${details.unit}</p>					
+						<p class="mb-1">${details.eol[index]}</p>					
 						</a>`;
 	});
 

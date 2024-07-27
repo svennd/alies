@@ -7,12 +7,12 @@
 			<div class="card-body">
 
 				<form action="<?php echo base_url('stock/move_verification'); ?>" method="post" autocomplete="off" id="move_form">
-				<table class="table">
+				<table class="table table-sm">
 					<thead>
 						<tr>
 							<th>Product</th>
 							<th>Info</th>
-							<th>Move</th>
+							<th><?php echo $this->lang->line('move'); ?></th>
 						</tr>
 					</thead>
 				<?php foreach($selection as $stock_id => $p): ?>
@@ -41,10 +41,9 @@
 				</table>
 				
 				<!-- location -->
-				<h5>Location</h5>
 				<div class="row pb-2">
 					<div class="col">
-						From: 				
+					<?php echo $this->lang->line('from_location'); ?>: 				
 						<select name="from" class="form-control" disabled>
 							<?php foreach($stocks as $stock): if($stock['id'] != $from_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
@@ -53,7 +52,7 @@
 						<input type="hidden" name="from" value="<?php echo $from_location; ?>">
 					</div>
 					<div class="col">		
-						To: 
+					<?php echo $this->lang->line('to_location'); ?>: 	
 						<select name="notupe" class="form-control" disabled>
 							<?php foreach($stocks as $stock): if($stock['id'] != $user_location) { continue; } ?>
 								<option value="<?php echo $stock['id']; ?>"><?php echo $stock['name']; ?></option>
