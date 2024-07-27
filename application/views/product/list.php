@@ -2,7 +2,7 @@
 		    <div class="card shadow mb-4">
 
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
-				<div><a href="<?php echo base_url(); ?>products">Products</a> / List</div>
+				<div><a href="<?php echo base_url(); ?>products"><?php echo $this->lang->line('products'); ?></a> / <?php echo $this->lang->line('list_products') ?></div>
 				<?php if ($this->ion_auth->in_group("admin")): ?>
 				<div class="dropdown no-arrow">
 					<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-success btn-sm"><i class="fas fa-fw fa-plus"></i> new product</a>
