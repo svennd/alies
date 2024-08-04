@@ -20,6 +20,7 @@ class Stats extends Admin_Controller
 		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-t") : $this->input->post('search_to');
 		$result 		= false;
 		$stat_info 		= false;
+		$sql 			= "";	
 
 		if ($this->input->post('query')) {
 			$stat_info = $this->stats->get((int) $this->input->post('query'));
