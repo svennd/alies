@@ -125,7 +125,7 @@ $lang['other_pets']  = 'Andere dieren';
 $lang['not_finished']  = 'Niet afgewerkt';
 
 ## history
-$lang['history']  = 'Historie';
+$lang['history']  = 'Geschiedenis';
 $lang['full_history']  = 'Volledige historiek';
 $lang['type']  = 'Type';
 $lang['title']  = 'Titel';

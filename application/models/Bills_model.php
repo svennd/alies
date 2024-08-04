@@ -227,47 +227,47 @@ class Bills_model extends MY_Model
 	}
 
 	// called from accounting
+	// todo : check for merging w/ get_yearly_earnings_by_date
 	public function get_yearly_earnings_by_month(datetime $date)
 	{
 		$selected_date = $date->format('Y-m-d');
 		$date->modify('-11 months');
 
 		$sql = "SELECT 
-					year(bills.created_at) as y, 
-					month(bills.created_at) as m, 
+					year(bills.invoice_date) as y, 
+					month(bills.invoice_date) as m, 
 					sum(total_net) as total,
 					sum(total_brut) as total_brut,
 					count(invoice_id) as invoices
 				FROM 
 					bills
 				WHERE 
-					(
-						status = '" . BILL_PAID . "' 
-						OR
-						status = '" . BILL_HISTORICAL . "'
-					)
-				AND
-					DATE(created_at) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
+					DATE(invoice_date) >= STR_TO_DATE('" . $date->format('Y-m-d') . "', '%Y-%m-%d')
 				AND	
-					DATE(created_at) < LAST_DAY(STR_TO_DATE('" . $selected_date . "', '%Y-%m-%d'))
+					DATE(invoice_date) < LAST_DAY(STR_TO_DATE('" . $selected_date . "', '%Y-%m-%d'))
+				AND
+					invoice_id IS NOT NULL
+				AND
+					deleted_at IS NULL
 				GROUP BY 
-					year(bills.created_at), 
-					month(bills.created_at)
+					year(bills.invoice_date), 
+					month(bills.invoice_date)
 				ORDER BY
-					bills.created_at ASC				
+					bills.invoice_date ASC				
 			";
 		
 		return ($this->db->query($sql)->result_array());
 
 	}
 
-	public function get_yearly_earnings_by_date($from, $to)
+	// used in export/index
+	// used in reports 
+	public function get_yearly_earnings_by_date($from, $to, $group = false)
 	{
 		// before we looked also at the status
 		// but since its a invoice we expect this to be paid
 		$sql = "SELECT 
-					year(bills.invoice_date) as y, 
-					month(bills.invoice_date) as m, 
+					" . (($group) ? "year(bills.invoice_date) as y, month(bills.invoice_date) as m," : "") . "
 					sum(total_net) as total,
 					sum(total_brut) as total_brut,
 					count(invoice_id) as invoices
@@ -279,11 +279,11 @@ class Bills_model extends MY_Model
 					bills.invoice_date < STR_TO_DATE('" . $to . " 23:59', '%Y-%m-%d %H:%i')
 				AND
 					invoice_id IS NOT NULL
-				GROUP BY 
-					year(bills.invoice_date), 
-					month(bills.invoice_date)
+				AND
+					deleted_at IS NULL
+				" . (($group) ? "GROUP BY year(bills.invoice_date), month(bills.invoice_date)" : "") . "
 				ORDER BY
-					bills.invoice_date ASC				
+					bills.invoice_date ASC
 			";
 
 		return ($this->db->query($sql)->result_array());

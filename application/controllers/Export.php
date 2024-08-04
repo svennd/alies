@@ -37,7 +37,7 @@ class Export extends Admin_Controller
 	/*
 	* function: index
 	* list of income w/ export function
-	* (nowhere linked)
+	* link from facturen
 	*/
 	public function index()
 	{
@@ -48,15 +48,15 @@ class Export extends Admin_Controller
 
 		# bills -> in pdf & kluwer xml
 		$bills = $this->bills->get_yearly_earnings_by_date($search_from, $search_to);
+		# check for bills that aren't invoiced
 		$checks = $this->bills
 			->where('invoice_id IS NULL', null, null, false, false, true)
-			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('DATE(created_at) >= STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d")', null, null, false, false, true)
+			->where('DATE(created_at) <= STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d")', null, null, false, false, true)
 			->count_rows();
 
 		# clients
 		# pets ?
-
 		$data = array(
 			"checks" 		=> $checks,
 			"bills" 		=> ($bills) ? $bills[0] : false,

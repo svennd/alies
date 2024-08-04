@@ -203,7 +203,9 @@ class Reports extends Admin_Controller
 		$search_to 		= (is_null($this->input->post('search_to'))) ? null : $this->input->post('search_to');
 
 		$date = new DateTime('first day of this month');
-		$revenue = ($this->input->post('submit')) ? $this->bills->get_yearly_earnings_by_date($search_from, $search_to) : $this->bills->get_yearly_earnings_by_month($date);
+		$revenue = ($this->input->post('submit')) ? 
+			$this->bills->get_yearly_earnings_by_date($search_from, $search_to, true) : 
+			$this->bills->get_yearly_earnings_by_month($date);
 
 		$this->_render_page('reports/revenue', array(
 			"revenue" 		=> $revenue,

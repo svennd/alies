@@ -26,6 +26,7 @@
 				</form>
 				<?php if($revenue): ?>
 				<br>
+
 				<table class="table" id="dataTable">
     			<thead>
 					<tr>
