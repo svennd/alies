@@ -24,16 +24,16 @@ class Stats extends Admin_Controller
 		if ($this->input->post('query')) {
 			$stat_info = $this->stats->get((int) $this->input->post('query'));
 			$sql = sprintf($stat_info['query'], $search_from, $search_to);
-			// var_dump($sql);
 			$result = $this->db->query($sql)->result_array();
 		}
 				
 		$data = array(
-						"search_from" => $search_from,
-						"search_to" => $search_to,
-						"result" => $result,
-						"stat_info" => $stat_info,
-						"stats" => $this->stats->get_all(),
+						"search_from" 	=> $search_from,
+						"search_to" 	=> $search_to,
+						"result" 		=> $result,
+						"stat_info" 	=> $stat_info,
+						"stats" 		=> $this->stats->get_all(),
+						"sql"			=> $sql
 					);
 
 		$this->_render_page('stats/index', $data);

@@ -57,10 +57,18 @@
                 <?php else: ?>
                     no results;
                 <?php endif; ?>
+                    <hr/>
+                    <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-code"></i> query</a>
+                    <div class="collapse" id="collapseExample"><pre><code class="language-sql"><?php echo $sql; ?></code></pre></div>
                 </div>
 		</div>
 	</div>
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
