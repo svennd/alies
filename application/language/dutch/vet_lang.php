@@ -144,6 +144,7 @@ $lang['rappel_date']  = 'Rappel';
 $lang['disable']  = 'Uit';
 $lang['enable']  = 'Aan';
 $lang['injection']  = 'Inspuiting';
+$lang['vaccine_not_from_stock']  = 'Vaccin gaat niet uit de stock gehaald worden.';
 
 ## menu
 $lang['new_consult']    = 'Raadpleging';

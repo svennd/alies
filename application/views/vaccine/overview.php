@@ -53,7 +53,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#vaccines").addClass('active');
+	
 
 	$("#dataTable").DataTable({
 			"order": [[ 2, "asc" ]],

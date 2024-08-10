@@ -1,9 +1,14 @@
 <div class="row">
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
-		<div class="card-header">
-			<a href="<?php echo base_url(); ?>owners/detail/<?php echo $pet_info['owners']['id']; ?>"><?php echo $pet_info['owners']['last_name'] ?></a> / 
-			<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / <?php echo $this->lang->line('title_vaccines'); ?>
+		<div class="card-header d-flex flex-row align-items-center justify-content-between">
+			<div>
+				<a href="<?php echo base_url(); ?>owners/detail/<?php echo $pet_info['owners']['id']; ?>"><?php echo $pet_info['owners']['last_name'] ?></a> / 
+				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / <?php echo $this->lang->line('title_vaccines'); ?>
+			</div>
+			<div class="dropdown no-arrow d-none d-sm-block">
+				<a href="<?php echo base_url('vaccine/add_martian_vaccine/' . $pet_info['id']); ?>" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> <?php echo $this->lang->line('add'); ?></a>
+			</div>
 		</div>
             <div class="card-body">
 			<?php if($vaccines): ?>
@@ -22,7 +27,7 @@
 			  <tbody>
 				<?php foreach($vaccines as $vac): ?>
 				<tr>
-					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: ''; ?></td>
+					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: $vac['product']; ?></td>
 					<td data-sort="<?php echo strtotime($vac['created_at']); ?>"><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
 					<td data-sort="<?php echo strtotime($vac['redo']); ?>">
 					<?php if (!$vac['no_rappel']): ?>
@@ -54,7 +59,6 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#clients").addClass('active');
 
 	const current_date = new Date();
 

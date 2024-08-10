@@ -142,6 +142,7 @@ $lang['rappel_date']  = 'Rappel Date';
 $lang['disable']  = 'Disable';
 $lang['enable']  = 'Enable';
 $lang['injection']  = 'Injection';
+$lang['vaccine_not_from_stock']  = 'Vaccine not from stock.';
 
 ## menu
 $lang['new_consult']    = 'New Consult';

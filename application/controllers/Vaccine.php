@@ -69,7 +69,6 @@ class Vaccine extends Vet_Controller
 		$this->_render_page('vaccine/pet_fiche', $data);
 	}
 
-
 	# show vaccine details
 	public function detail(int $vaccine_id)
 	{
@@ -102,5 +101,35 @@ class Vaccine extends Vet_Controller
 		$this->vacs->delete($vaccine_id);
 		$this->logs->logger(INFO, "remove_vaccine", "pet_id ". $pet_id . "vaccine_id ".  $vaccine_id);
 		redirect('vaccine/fiche/'. $pet_id);
+	}
+
+	/*
+	* function: add_martian_vaccine
+	* add documentation of a vaccine that was not done in our clinic
+	*/
+	public function add_martian_vaccine(int $pet_id)
+	{
+
+		if ($this->input->post('submit')) {
+			$this->vacs->martian(
+				$pet_id,
+				array(
+				"product"		=> $this->input->post('vaccine'),
+				"redo" 			=> $this->input->post('date_redo'),
+				"no_rappel" 	=> is_null($this->input->post('no_rappel')) ? 1 : 0,
+				"created_at" 	=> $this->input->post('created_at'),
+				"location" 		=> $this->_get_user_location(),
+			));
+
+			$this->logs->logger(INFO, "add_martian_vaccine", "pet_id ". $pet_id);
+			redirect('vaccine/fiche/'. $pet_id);
+		}
+
+		$data = array(
+			"pet_id" 	=> $pet_id,
+			"pet" 		=> $this->pets->fields('id, name')->get($pet_id),
+		);
+
+		$this->_render_page('vaccine/add', $data);
 	}
 }

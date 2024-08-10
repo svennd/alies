@@ -151,4 +151,26 @@ class Vaccine_model extends MY_Model
 		
 		return ($this->db->query($sql)->result_array());
 	}
+
+
+	/*
+	* function: martian
+	* add a vaccine that was not done in our clinic
+	*/
+	public function martian(int $pet_id, array $data)
+	{
+		// force created_at to be injection time
+		$this->timestamps = false;
+
+		$this->insert(array(
+			"pet" 			=> $pet_id,
+			"product"		=> $data['product'],
+			"redo" 			=> $data['redo'],
+			"no_rappel" 	=> $data['no_rappel'],
+			"created_at" 	=> $data['created_at'], // injection time
+			"event_id"		=> 0, // imported
+			"location" 		=> $data['location'],
+			"vet" 			=> $this->user->id,
+		));
+	}
 }

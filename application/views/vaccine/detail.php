@@ -10,7 +10,7 @@
 				<table class="table table-sm">
 					<tr>
 						<td><?php echo $this->lang->line('vaccines'); ?></td>
-						<td><?php echo $vac['product']['name']; ?></td>
+						<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name'] : $vac['product']; ?></td>
 					</tr>
 					<tr>
 						<td><?php echo $this->lang->line('injection'); ?></td>
@@ -50,6 +50,5 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#clients").addClass('active');
 });
 </script>
