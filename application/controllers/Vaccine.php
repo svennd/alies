@@ -51,7 +51,7 @@ class Vaccine extends Vet_Controller
 		}
 	}
 
-	public function fiche($pet_id)
+	public function fiche(int $pet_id)
 	{
 		$pet_info = $this->pets->with_owners('fields:first_name,last_name')->fields('id, type, name')->get($pet_id);
 
@@ -90,6 +90,17 @@ class Vaccine extends Vet_Controller
 
 		$this->logs->logger(DEBUG, "change_vaccine", "vaccine_id ".  $vaccine_id);
 	
+		redirect('vaccine/fiche/'. $pet_id);
+	}
+
+	/*
+	* function: remove
+	* remove a vaccine from a pet
+	*/
+	public function remove(int $vaccine_id, int $pet_id)
+	{
+		$this->vacs->delete($vaccine_id);
+		$this->logs->logger(INFO, "remove_vaccine", "pet_id ". $pet_id . "vaccine_id ".  $vaccine_id);
 		redirect('vaccine/fiche/'. $pet_id);
 	}
 }

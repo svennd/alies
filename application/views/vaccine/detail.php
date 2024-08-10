@@ -4,7 +4,7 @@
 		<div class="card-header">
 			<a href="<?php echo base_url('pets/fiche/' . $vac['pet']['id']); ?>"><?php echo $vac['pet']['name']; ?></a> / 
 			<a href="<?php echo base_url('vaccine/fiche/' . $vac['pet']['id']); ?>"><?php echo $this->lang->line('title_vaccines'); ?></a> /
-			Edit Vaccine</div>
+			<?php echo $this->lang->line('edit'); ?></div>
             <div class="card-body">
                 <form action="<?php echo base_url('vaccine/update/' . $vac['id']. '/' . $vac['pet']['id']); ?>" method="post" autocomplete="off">
 				<table class="table table-sm">
@@ -33,7 +33,12 @@
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
-						<td><button type="submit" name="submit" value="1" class="btn btn-primary btn-sm"><?php echo $this->lang->line('edit'); ?></button></td>
+						<td>
+							<div class="d-flex justify-content-between">
+								<button type="submit" name="submit" value="1" class="btn btn-primary btn-sm"><?php echo $this->lang->line('edit'); ?></button>
+								<a href="<?php echo base_url('vaccine/remove/'. $vac['id'] . '/' . $vac['pet']['id']); ?>" class="btn btn-danger btn-sm beatfade" ><i class="fa-solid fa-triangle-exclamation"></i> <?php echo $this->lang->line('remove'); ?></a>
+							</div>
+						</td>
 					</tr>
 				</table>
                 </form>
