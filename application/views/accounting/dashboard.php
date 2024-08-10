@@ -260,25 +260,36 @@
     <div class="col-lg-4 mb-4">
         <div class="card shadow mb-4 h-100">
                 <div class="card-header d-flex flex-row align-items-center justify-content-between">
-                    <div><?php echo $this->lang->line('logs'); ?> (warnings)</div>
-                    <div class="dropdown no-arrow">
-                        <a href="<?php echo base_url('logs/nlog'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-stream"></i> <?php echo $this->lang->line('global_logs'); ?></a>
-                        <a href="<?php echo base_url('logs'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-stream"></i> <?php echo $this->lang->line('other_logs'); ?></a>
-                    </div>
+                    <div><?php echo $this->lang->line('logs'); ?></div>
                 </div>
-                <div class="card-body overflow-auto" style="height:150px;">
-                    <?php if($logs): ?>
-                    <table class="table table-sm">
-                    <?php foreach($logs as $log): ?>
-                        <tr>
-                            <td><?php echo time_ago($log['created_at']); ?></td>
-                            <td><?php echo $log['event']; ?></td>
-                            <td><?php echo isset($log['location']['name']) ? $log['location']['name'] : '-'; ?></td>
-                            <td><?php echo isset($log['vet']['first_name']) ? $log['vet']['first_name'] : '-'; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </table>
-                    <?php endif; ?>
+                <div class="card-body">
+                        <a href="<?php echo base_url('logs/write_off'); ?>" class="btn btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                            <i class="fa-solid fa-fw fa-person-falling-burst"></i>
+                            </span>
+                            <span class="text"><?php echo $this->lang->line('write_off_log'); ?></span>
+                        </a>
+                        <div class="my-2"></div>
+                        <a href="<?php echo base_url('logs/delivery'); ?>" class="btn btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                            <i class="fa-solid fa-fw fa-cart-plus"></i>
+                            </span>
+                            <span class="text"><?php echo $this->lang->line('delivery_log'); ?></span>
+                        </a>
+                        <div class="my-2"></div>
+                        <a href="<?php echo base_url('logs/nlog'); ?>" class="btn btn-success btn-icon-split">
+                            <span class="icon text-white-50">
+                            <i class="fa-solid fa-fw fa-person-military-pointing"></i>
+                            </span>
+                            <span class="text"><?php echo $this->lang->line('logbook'); ?></span>
+                        </a>
+                        <div class="my-2"></div>
+                        <a href="<?php echo base_url('logs/software_version'); ?>" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                            <i class="fa-solid fa-fw fa-info"></i>
+                            </span>
+                            <span class="text"><?php echo $this->lang->line('syslog'); ?></span>
+                        </a>
                 </div>
             </div>
 	</div>

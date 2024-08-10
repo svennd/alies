@@ -56,6 +56,11 @@ $lang['global_logs']        = 'Volledige logs';
 $lang['stock_list']         = 'Stock lijst';
 $lang['settings']           = 'Configuratie';
 $lang['stock_error']        = "Stock fouten";
+$lang['write_off_log']      = "Afschrijvingen logboek";
+$lang['delivery_log']       = "Leverings logboek";
+$lang['logbook']            = "Algemeen logboek";
+$lang['syslog']             = "Software versie";
+
 
 
 # location

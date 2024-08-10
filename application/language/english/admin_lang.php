@@ -56,6 +56,11 @@ $lang['global_logs']        = 'Full logs';
 $lang['stock_list']         = 'Stock list';
 $lang['settings']           = 'Settings';
 $lang['stock_error']        = "Stock errors";
+$lang['write_off_log']      = "write off log";
+$lang['delivery_log']       = "delivery log";
+$lang['logbook']            = "common log";
+$lang['syslog']             = "Systeem log";
+
 
 # location
 $lang['add_location']        = 'Add location';

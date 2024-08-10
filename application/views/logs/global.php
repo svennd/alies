@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>logs">Logs</a> / Global
+				<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('logbook'); ?>
 			</div>
             <div class="card-body">
 				<form action="<?php echo base_url('logs/nlog') ?>" method="post" autocomplete="off" class="form-inline">

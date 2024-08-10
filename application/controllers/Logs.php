@@ -13,13 +13,11 @@ class Logs extends Admin_Controller
 		$this->load->model('Delivery_slip_model', 'delivery');
 		$this->load->model('Register_in_model', 'regin');
 	}
-
-	public function index()
-	{
-		$data = array();
-		$this->_render_page('logs/index', $data);
-	}
 	
+	/*
+	* function: write_off
+	* logbook for write offs
+	*/
 	public function write_off()
 	{
 		
@@ -33,6 +31,10 @@ class Logs extends Admin_Controller
 		$this->_render_page('logs/stock_write_off', $data);
 	}
 	
+	/*
+	* function: product
+	* detailed transaction log for a product
+	*/
 	public function product(int $product_id)
 	{
 		$data = array(
@@ -46,6 +48,10 @@ class Logs extends Admin_Controller
 		$this->_render_page('logs/product', $data);
 	}
 
+	/*
+	* function: nlog
+	* common logbook for all actions in alies
+	*/
 	public function nlog()
 	{
 		$dt = new DateTime();
@@ -64,6 +70,10 @@ class Logs extends Admin_Controller
 		$this->_render_page('logs/global', $data);
 	}
 	
+	/*
+	* function: delivery
+	* logbook for deliveries
+	*/
 	public function delivery(int $delivery = 0)
 	{
 		if($delivery)

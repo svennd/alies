@@ -3,24 +3,29 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>logs">Logs</a> / deliveries / detail
+				<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / 
+				<a href="<?php echo base_url('logs/delivery'); ?>"><?php echo $this->lang->line('delivery_log'); ?></a> / details
 			</div>
             <div class="card-body">
-				<table class="table">
+				<table class="table table-sm">
 					<tr>
-						<td>Vet</td>
+						<td><?php echo $this->lang->line('vet'); ?></td>
 						<td><?php echo $delivery['vet']['first_name']; ?></td>
 					</tr>
 					<tr>
-						<td>Note</td>
+						<td><?php echo $this->lang->line('message'); ?></td>
 						<td><?php echo $delivery['note']; ?></td>
 					</tr>
 					<tr>
-						<td>Regdate</td>
+						<td><?php echo $this->lang->line('delivery_date'); ?></td>
 						<td><?php echo user_format_date($delivery['regdate'], $user->user_date); ?></td>
 					</tr>
 					<tr>
-						<td>Location</td>
+						<td>entry date</td>
+						<td><?php echo user_format_date($delivery['created_at'], $user->user_date); ?></td>
+					</tr>
+					<tr>
+						<td><?php echo $this->lang->line('location'); ?></td>
 						<td><?php echo $delivery['location']['name']; ?></td>
 					</tr>
 				</table>
@@ -29,11 +34,11 @@
 				<table class="table" id="dataTable">
 				<thead>
 				<tr>
-					<th>Name</th>
-					<th>Volume</th>
-					<th>EOL</th>
-					<th>in_price</th>
-					<th>lotnr</th>
+					<th><?php echo $this->lang->line('product'); ?></th>
+					<th><?php echo $this->lang->line('volume'); ?></th>
+					<th><?php echo $this->lang->line('eol'); ?></th>
+					<th><?php echo $this->lang->line('price_dayprice'); ?></th>
+					<th><?php echo $this->lang->line('lotnr'); ?></th>
 				</tr>
 				</thead>
 				<tbody>

@@ -3,7 +3,7 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>logs">Logs</a> / software information
+				<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('syslog'); ?>
 			</div>
             <div class="card-body">
 				<h4>Database Version</h4>

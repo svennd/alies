@@ -309,8 +309,13 @@ class Stock extends Vet_Controller
 	{
 		// store in liquidate list
 		$info = $this->stock->get($stock);
+
+		// get product name
+		$name = $this->product->fields('name')->get($info['product_id'])['name'];
+		
 		$this->liquidate->insert(array(
 			"product_id"	=> $info['product_id'],
+			"product_name"	=> $name, // in case they remove it
 			"volume" 		=> $info['volume'],
 			"eol" 			=> $info['eol'],
 			"lotnr" 		=> $info['lotnr'],
@@ -319,7 +324,7 @@ class Stock extends Vet_Controller
 			"location" 		=> $info['location'],
 			"stock_id" 		=> $info['id'] // this could go away at some point
 		));
-
+		
 		// log write off action
 		$this->logs->logger(DEBUG, "write_off", "stock_id:" . $stock . " volume: " . $info['volume'] . " user:" . $this->user->id);
 
@@ -345,8 +350,12 @@ class Stock extends Vet_Controller
 			// store in liquidate list
 			$info = $this->stock->get($stock_id);
 
+			// get product name
+			$name = $this->product->fields('name')->get($info['product_id'])['name'];
+			
 			$this->liquidate->insert(array(
 				"product_id"	=> $info['product_id'],
+				"product_name"	=> $name, // in case they remove it
 				"volume" 		=> $this->input->post('volume'),
 				"eol" 			=> $info['eol'],
 				"lotnr" 		=> $info['lotnr'],

@@ -3,35 +3,35 @@
 
       <div class="card shadow mb-4">
 			<div class="card-header">
-				<a href="<?php echo base_url(); ?>logs">Logs</a> / writs off logs
+				<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('write_off_log'); ?>
 			</div>
             <div class="card-body">
 			<?php if ($logs): ?>
 			
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
-					<th>Product</th>
-					<th>EOL</th>
-					<th>Lotnr</th>
-					<th>Volume</th>
-					<th>Reason</th>
-					<th>Vet</th>
-					<th>Location</th>
+					<th><?php echo $this->lang->line('product'); ?></th>
+					<th><?php echo $this->lang->line('eol'); ?></th>
+					<th><?php echo $this->lang->line('lotnr'); ?></th>
+					<th><?php echo $this->lang->line('volume'); ?></th>
+					<th><?php echo $this->lang->line('reason'); ?></th>
+					<th><?php echo $this->lang->line('vet'); ?></th>
+					<th><?php echo $this->lang->line('location'); ?></th>
 					<th>Write off date</th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php foreach ($logs as $log): ?>
 				<tr>
-					<td><?php echo $log['products']['name']; ?></td>
-					<td><?php echo $log['eol']; ?></td>
+					<td><?php echo (isset($log['products']['name'])) ? $log['products']['name'] : $log['product_name']; ?></td>
+					<td><?php echo user_format_date($log['eol'], $user->user_date); ?></td>
 					<td><?php echo $log['lotnr']; ?></td>
-					<td><?php echo $log['volume']; ?> <?php echo $log['products']['unit_sell']; ?></td>
+					<td><?php echo $log['volume']; ?> <?php echo (isset($log['products']['unit_sell'])) ? $log['products']['unit_sell'] : ''; ?></td>
 					<td><?php echo $log['reason']; ?></td>
 					<td><?php echo (!isset($log['vet'])) ? "" : $log['vet']['first_name']; ?></td>
 					<td><?php echo $log['location']['name']; ?></td>
-					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo $log['created_at']; ?></td>
+					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
 				</tr>
 				<?php endforeach; ?>
 				</tbody>
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
             { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
         ],
-		"order": [[ 6, "desc" ]]
+		"order": [[ 7, "desc" ]]
 	});
 });
 </script>

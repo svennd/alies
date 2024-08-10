@@ -55,13 +55,6 @@ class Accounting extends Admin_Controller
 			"yearly_by_month"		 	=> $this->bills->get_yearly_earnings_by_month(clone $date),
 			"yearly_by_month_last_year"	=> $this->bills->get_yearly_earnings_by_month($last_year),
 			"stock_error_count"			=> $this->stock->where(array("state" => STOCK_ERROR))->count_rows(),
-			"logs" 						=> $this->logs
-												->with_vet('fields:first_name')
-												->with_location('fields:name')
-												->where("LEVEL", "<=", WARN)
-												->limit(25)
-												->order_by("created_at", "DESC")
-												->get_all(),
 		);
 		
 		$this->_render_page('accounting/dashboard', $data);
