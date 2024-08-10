@@ -24,15 +24,8 @@ class Tooth extends Vet_Controller
 						"pet_id" 	=> $pet_id,
 						"update_text" => $update_text,
 						"tooth_msg" => $messages,
-						"extra_header" =>
-							'<link href="'. base_url() .'assets/css/trumbowyg.min.css" rel="stylesheet">'
-							,
-						"extra_footer" =>
-							'<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
-							'<script src="'. base_url() .'assets/js/trumbowyg.min.js"></script>' .
-							'<script src="'. base_url() .'assets/js/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>' .
-							'<script src="'. base_url() .'assets/js/plugins/fontsize/trumbowyg.fontsize.min.js"></script>' .
-							'<script src="'. base_url() .'assets/js/plugins/template/trumbowyg.template.min.js"></script>'
+						"extra_header" => inject_trumbowyg('header'),
+						"extra_footer" => inject_trumbowyg()
 					);
 		
 		$this->_render_page('pets/tooth', $data);
