@@ -10,8 +10,12 @@ class Lab extends Vet_Controller
 	{
 		parent::__construct();
 
+		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Lab_model', 'lab');
 		$this->load->model('Lab_detail_model', 'lab_line');
+
+		// library
+		$this->load->library('pdf'); 
 	}
 
 	public function index()
@@ -20,7 +24,6 @@ class Lab extends Vet_Controller
 			"data" => $this->lab->with_pet('fields: name,id')->get_all(),
 		));
 	}
-
 
     public function detail(int $lab_id)
     {
@@ -47,6 +50,38 @@ class Lab extends Vet_Controller
 			"lab_details" 		=> $this->lab_line->where(array('lab_id' => $lab_id))->get_all(),
             "comment_update" 	=> $comment_update
 		));
+		
+    }
+	
+	/*
+	* function: print
+	* create a printable pdf from the lab results
+	*/
+	public function print(int $lab_id)
+    {
+		$lab_info = $this->lab->get($lab_id);
+		$pet_info = (isset($lab_info['pet'])) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
+		$lab_details = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
+		$data = array(
+			"lab_info" 			=> $lab_info,
+			"pet_info" 			=> $pet_info,
+			"lab_details" 		=> $lab_details,
+		);
+
+		if ($lab_info['source'] == "mslink - HEMATO")
+		{
+			list($wbc_plot, $rbc_plot, $thr_plot) = $this->get_static_plots($lab_details);
+			$data["wbc_plot"] = $wbc_plot;
+			$data["rbc_plot"] = $rbc_plot;
+			$data["thr_plot"] = $thr_plot;
+		}
+		
+		// test code
+		// $this->load->view('lab/print', $data);
+
+		// pdf code
+		$template_data = $this->load->view('lab/print', $data, true);
+		return $this->pdf->create($template_data, '-', PDF_STREAM, true);
 		
     }
 
@@ -84,16 +119,98 @@ class Lab extends Vet_Controller
 		}
 		$anamnese .= "\n";
 
-		$this->events->insert(array(
-				"title" 	=> "lab:" . $lab_id,
-				"pet"		=> $pet_id,
-				"type"		=> LAB,
-				"status"	=> STATUS_CLOSED, # might require status_history
-				"payment" 	=> PAYMENT_PAID,
-				"anamnese"	=> $anamnese,
-				"location"	=> $this->_get_user_location(),
-				"vet"		=> $this->user->id,
-				"report"	=> REPORT_DONE
-		));
+		$this->lab->add_event($lab_id, $pet_id, $anamnese);
 	}
+	
+	/*
+	* function: get_static_plots
+	* a bit of boiler plate code to generate the static plots
+	*/
+	private function get_static_plots(array $lab_details)
+	{
+
+		foreach($lab_details as $d):
+			if ($d["lab_code"] == "1")
+			{
+				$WBC = substr($d["comment"], 4);
+			}
+			if ($d["lab_code"] == "2")
+			{
+				$RBC = substr($d["comment"], 4);
+			}
+			if ($d["lab_code"] == "3")
+			{
+				$THR = substr($d["comment"], 4);
+			}
+		endforeach;
+
+		$wbc_plot = $this->generateBase64Chart($WBC, "WBC");
+		$rbc_plot = $this->generateBase64Chart($RBC, "RBC");
+		$thr_plot = $this->generateBase64Chart($THR, "THR");
+
+		return array($wbc_plot, $rbc_plot, $thr_plot);
+	}
+
+	private function generateBase64Chart($dataString, $title = "") {
+		// Convert the comma-separated string to an array of data points
+		$data = array_map('intval', explode(',', $dataString));
+	
+		// Create a blank image
+		$width = 150;
+		$height = 75;
+		$image = imagecreatetruecolor($width, $height);
+	
+		// Allocate colors
+		$bgColor = imagecolorallocate($image, 255, 255, 255); // White background
+		$fillColor = imagecolorallocatealpha($image, 0, 0, 0, 100); // fill with transparency
+		$textColor = imagecolorallocate($image, 0, 0, 0); // Black text
+
+		// Fill the background
+		imagefill($image, 0, 0, $bgColor);
+	
+		// Define chart parameters
+		$numPoints = count($data);
+		$pointWidth = $width / ($numPoints - 1);
+		$maxDataValue = max($data);
+	
+		// Draw the line
+		$prevX = 0;
+		$prevY = $height - ($data[0] * ($height / $maxDataValue));
+		$points = [];
+	
+		for ($i = 1; $i < $numPoints; $i++) {
+			$x = $i * $pointWidth;
+			$y = $height - ($data[$i] * ($height / $maxDataValue));
+			$points[] = $x;
+			$points[] = $y;
+			$prevX = $x;
+			$prevY = $y;
+		}
+	
+		// Fill below the line
+		$points[] = $width;
+		$points[] = $height;
+		imagefilledpolygon($image, $points, $fillColor);
+	    
+		if (!empty($title)) {
+			$fontSize = 3; // Built-in GD font size
+			$bbox = imagefontwidth($fontSize) * strlen($title);
+			$x = 10;
+			$y = 10; // Position from the top
+	
+			imagestring($image, $fontSize, $x, $y, $title, $textColor);
+		}
+
+		// Output the image as a Base64 string
+		ob_start();
+		imagepng($image);
+		$imageData = ob_get_contents();
+		ob_end_clean();
+	
+		imagedestroy($image);
+	
+		// Convert to Base64
+		return 'data:image/png;base64,' . base64_encode($imageData);
+	}
+	
 }

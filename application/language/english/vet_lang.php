@@ -364,6 +364,7 @@ $lang['abbreviation']           = 'abbreviation';
 
 # lab
 $lang['lab_id']                 = 'Lab id'; 
+$lang['lab_report']             = 'Lab report'; 
 $lang['lab_comment']            = 'Lab comment'; 
 $lang['lab_received']           = 'Lab received'; 
 $lang['lab_update']             = 'Last update'; 

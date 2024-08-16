@@ -368,6 +368,7 @@ $lang['price_total_sale']       = 'Totale verkoopsprijs';
 $lang['abbreviation']           = 'Alias'; 
 
 # lab
+$lang['lab_report']             = 'Labo Rapport'; 
 $lang['lab_id']                 = 'Labo id'; 
 $lang['lab_comment']            = 'Labo opmerking'; 
 $lang['lab_received']           = 'Labo ontvangen'; 
