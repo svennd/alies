@@ -4,11 +4,13 @@
 		<div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div><a href="<?php echo base_url('lab'); ?>"><?php echo $this->lang->line('Lab'); ?></a> / Lab results</div>
-				<?php if ($lab_info['source'] == "medilab"): ?>
+				
 				<div class="dropdown no-arrow">
-					<a href="https://online.medilab.be/dokter/staal/<?php echo $lab_info['lab_id']; ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fas fa-external-link-alt"></i> <?php echo $lab_info['source'] . ' ('. $lab_info['lab_id'] . ')';  ?></a>
+					<a href="<?php echo base_url('lab/print/' . $lab_info['id']); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
+					<?php if ($lab_info['source'] == "medilab"): ?>
+						<a href="https://online.medilab.be/dokter/staal/<?php echo $lab_info['lab_id']; ?>" class="btn btn-outline-primary btn-sm" target="blank"><i class="fas fa-external-link-alt"></i> <?php echo $lab_info['source'] . ' ('. $lab_info['lab_id'] . ')';  ?></a>
+					<?php endif; ?>
 				</div>
-				<?php endif; ?>
 			</div>
 			<div class="card-body">
 				<form action="<?php echo base_url('lab/detail/' . $lab_info['id']); ?>" method="post" autocomplete="off">
@@ -52,43 +54,45 @@
 					</tr>
 				</table>
 				</form>
-				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-				<?php
-				foreach($lab_details as $d):
-					if ($d["lab_code"] == "1")
-					{
-						$WBC = substr($d["comment"], 4);
-					}
-					if ($d["lab_code"] == "2")
-					{
-						$RBC = substr($d["comment"], 4);
-					}
-					if ($d["lab_code"] == "3")
-					{
-						$THR = substr($d["comment"], 4);
-					}
-				endforeach;
-				?>
-				<div class="row">
-					<div class="col-4" style="height:250px;">
-						<canvas id="my-wbc"></canvas>
+				<?php if($lab_info['source'] == "mslink - HEMATO"): ?>
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<?php
+					foreach($lab_details as $d):
+						if ($d["lab_code"] == "1")
+						{
+							$WBC = substr($d["comment"], 4);
+						}
+						if ($d["lab_code"] == "2")
+						{
+							$RBC = substr($d["comment"], 4);
+						}
+						if ($d["lab_code"] == "3")
+						{
+							$THR = substr($d["comment"], 4);
+						}
+					endforeach;
+					?>
+					<div class="row">
+						<div class="col-4" style="height:250px;">
+							<canvas id="my-wbc"></canvas>
+						</div>
+						<div class="col-4" style="height:250px;">
+							<canvas id="my-rbc"></canvas>
+						</div>
+						<div class="col-4" style="height:250px;">
+							<canvas id="my-plt"></canvas>
+						</div>
 					</div>
-					<div class="col-4" style="height:250px;">
-						<canvas id="my-rbc"></canvas>
-					</div>
-					<div class="col-4" style="height:250px;">
-						<canvas id="my-plt"></canvas>
-					</div>
-				</div>
+					<script>
+						// Your data
+						const wbc_data = [<?php echo $WBC; ?>];
+						const rbc_data = [<?php echo $RBC; ?>];
+						const plt_data = [<?php echo $THR; ?>];
+					</script>
 
-				<script>
-					// Your data
-					const wbc_data = [<?php echo $WBC; ?>];
-					const rbc_data = [<?php echo $RBC; ?>];
-					const plt_data = [<?php echo $THR; ?>];
-				</script>
+					<script src="<?php echo base_url('assets/js/lab.charts.js'); ?>"></script>
+				<?php endif; ?>
 
-				<script src="<?php echo base_url('assets/js/lab.charts.js'); ?>"></script>
 				<table class="table table-sm" id="dataTable">
 					<thead>
 						<tr>
