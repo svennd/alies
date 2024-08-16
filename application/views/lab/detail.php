@@ -99,8 +99,11 @@
 							<th><?php echo $this->lang->line('lab_code'); ?></th>
 							<th><?php echo $this->lang->line('value'); ?></th>
 							<th><?php echo $this->lang->line('limit'); ?></th>
+							
+							<?php if($lab_info['source'] == "medilab"): ?>
 								<th><?php echo $this->lang->line('comment'); ?></th>
 								<th><?php echo $this->lang->line('lab_update'); ?></th>
+							<?php endif;?>
 						</tr>
 					</thead>
 					<tbody>
@@ -115,8 +118,10 @@
 							<td><?php echo ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"]; ?> <?php echo $d["unit"]; ?></td>
 							<td><?php echo (strlen($d["string_value"]) <= 1) ? $d["lower_limit"] . ' - ' . $d['upper_limit'] : ''; ?></td>
 
+							<?php if($lab_info['source'] == "medilab"): ?>
 								<td><?php echo ($d["comment"] == $d["string_value"]) ? '' : $d["comment"]; ?></td>
 								<td><?php echo $d["lab_updated_at"]; ?></td>
+							<?php endif;?>
 
 						</tr>
 						<?php endforeach; ?>
