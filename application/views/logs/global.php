@@ -30,6 +30,7 @@
 				<thead>
 				<tr>
 					<th>Date</th>
+					<th>Time</th>
 					<th>Level</th>
 					<th>Vet</th>
 					<th>Location</th>
@@ -41,6 +42,7 @@
 				<?php foreach ($logs as $log): ?>
 				<tr>
 					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
+					<td><?php echo user_format_date($log['created_at'], "H:s"); ?></td>
 					<td><?php echo get_error_level($log['level'], 1); ?></td>
 					<td><?php echo (isset($log['vet']['first_name'])) ? $log['vet']['first_name'] : ''; ?></td>
 					<td><?php echo (isset($all_locations[$log['location']]['name'])) ? $all_locations[$log['location']]['name'] : ""; ?></td>
