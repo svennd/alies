@@ -14,7 +14,6 @@
 						<tr>
 							<th><?php echo $this->lang->line('lab_id'); ?></th>
 							<th><?php echo $this->lang->line('pet_info'); ?></th>
-							<!-- <th><?php echo $this->lang->line('lab_comment'); ?></th> -->
 							<th><?php echo $this->lang->line('lab_received'); ?></th>
 							<th><?php echo $this->lang->line('lab_update'); ?></th>
 							<th><?php echo $this->lang->line('source'); ?></th>
@@ -31,10 +30,8 @@
 									-
 								<?php endif; ?>
 							</td>
-							<!-- <td><?php echo $d["lab_comment"]; ?></td> -->
 							<td><?php echo $d["lab_date"]; ?></td>
-							<td>
-								<!-- <?php echo $d["lab_updated_at"]; ?><br/> -->
+							<td data-sort="<?php echo strtotime($d['updated_at']) ?>">
 								<small><?php echo time_ago($d["lab_updated_at"]);?></small>
 							</td>
 							<td><?php echo $d["source"]; ?></td>
@@ -52,7 +49,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({responsive: true, "order": [[ 0, "desc" ]]});
+	$("#dataTable").DataTable({responsive: true, "order": [[ 3, "desc" ]]});
 	$("#labo").addClass('active');
 });
 </script>

@@ -66,6 +66,35 @@ class Lab_model extends MY_Model
 		return ($this->db->query($sql)->result_array()[0]['count']);
 	}
 
+	/*
+	* function: add_mslink_sample
+	* adds a new sample to the database based on the lab_id
+	*/
+	public function add_mslink_sample(int $run_id, array $info, string $source, int $pet_id)
+	{
+		// make sure we don't duplicate enter
+		$check = $this->fields("lab_id")->where(array("lab_id" => $run_id))->get();
+		if ($check)
+		{
+			return false;
+		}
+
+		# make sure updated_at is configured as given
+		$this->timestamps = false;
+
+		return $this->insert(array(
+			"lab_id"		=> $run_id,
+			"lab_date"		=> $info['lab_date'],
+			"lab_patient_id"=> $pet_id,
+			"lab_updated_at"=> $info['lab_updated_at'],
+			"lab_created_at"=> $info['lab_created_at'],
+			"lab_comment"	=> $info['lab_comment'],
+			"source"		=> $source,
+			"pet"			=> $pet_id,
+			"updated_at"	=> $info['lab_updated_at'],
+			"created_at"	=> $info['lab_created_at']
+		));
+	}
 
 	/*
 	* function: add_event

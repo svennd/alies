@@ -374,135 +374,155 @@ class Cli extends Frontend_Controller
 		$path = "data/stored/lab/";
 		$files = glob($path . "*.txt");
 		
-		// static lab_code
-		$lab_code = array(
-				"WBC" => 1, 
-				"RBC" => 2, 
-				"THR" => 3
-			);
-
 		foreach($files as $file)
 		{
 			$line = 0;
+			$this->process_mslink_lab_file($file, $path);
+		}
+	}
 
-			$data = explode(";", file_get_contents($file));
+	/*
+	* function: process_mslink_lab_file
+	* process a single mslink lab file
+	*/
+	private function process_mslink_lab_file($file, $path)
+	{
+		// static lab_code
+		$lab_code = array(
+			"WBC" => 1, 
+			"RBC" => 2, 
+			"THR" => 3
+		);
 
-			// get the first line
-			list(
-				$pet_type, // dog, cat, Control, Dog, Cat, CHAT
-				$system, // BIOCH HEMATO IMMUNO
-				$start_analyse, 
-				$end_analyse, 
-				$client_name,  // name, id, phone
-				$device, // iKEMS, MS4S2, IMMSCAN
-				$pet_name, // name or id
-				$pet_id,  // name or id or client
-				$unk,
-				$unk2,
-				$empty,
-				$empty,
+		$data = explode(";", file_get_contents($file));
+
+		// get the first line
+		list(
+			$pet_type, // dog, cat, Control, Dog, Cat, CHAT
+			$system, // BIOCH HEMATO IMMUNO
+			$start_analyse, 
+			$end_analyse, 
+			$client_name,  // name, id, phone
+			$device, // iKEMS, MS4S2, IMMSCAN
+			$pet_name, // name or id
+			$pet_id,  // name or id or client
+			$unk,
+			$unk2,
+			$empty,
+			$empty,
+			$run_id,
+			) = $data;
+
+		// determine what is most likely the pet_id
+		$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : 0));
+		
+		$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $start_analyse)->format('Y-m-d H:i:s');
+		$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $end_analyse)->format('Y-m-d H:i:s');
+
+		
+		$internal_id = $this->lab->add_mslink_sample(
 				$run_id,
-				) = $data;
+				array(
+						"lab_date"          => $start,
+						"lab_updated_at"    => $start, 
+						"lab_created_at"    => $end, 
+						"lab_comment"       => $system . " - " . $device
+					),
+				"mslink - " . $system,
+				$pet_id
+		);
 
-			// determine what is most likely the pet_id
-			$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : 0));
-			
-			$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $start_analyse)->format('Y-m-d H:i:s');
-			$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $end_analyse)->format('Y-m-d H:i:s');
-
-			$internal_id = $this->lab->add_sample(
-                    $run_id,
-                    array(
-                            "lab_date"          => $start, 
-                            "lab_patient_id"    => $pet_id,
-                            "lab_updated_at"    => $start, 
-                            "lab_created_at"    => $end, 
-                            "lab_comment"       => $system . " - " . $device
-                        ),
-                    "mslink - " . $system,
-					$pet_id
-            );
-			if ($system == "HEMATO")
+		// check for duplicate
+		if ($internal_id == false)
+		{
+			echo "ERROR : ". $file . " duplicate detected\n";
+			// move the file
+			if(!$this->move_file($file, $path . 'failed/' . basename($file)))
 			{
-				// extract the plots
-				$hemato_plot = array_slice($data, 13, 3);
-				foreach ($hemato_plot as $plot)
-				{
-					$name = explode(",", $plot)[0];
-
-					$this->lab_line->insert(array(
-						"lab_id" 			=> $internal_id,
-						"sample_id" 		=> $internal_id,
-						"lab_code"		 	=> $lab_code[$name],
-						"lab_code_text" 	=> $name,
-						"comment"			=> $plot,
-						"updated_at" 		=> $start,
-						"created_at" 		=> $end
-					));
-				}
+				echo "ERROR : issue moving file\n";
 			}
+			return;
+		}
 
-			// extract the values
-			/*
-			*	the data is always in fields of 6
-			*/
-			$anamnese = "Lab results:\n";
-			// extract the values
-			for ($i = self::MSLINK_DATA_OFFSET; $i < count($data); $i++) {
-				list(
-						$lab_name, 		// test name
-						$value, 		// test value
-						$lab_unit, 		// unit 
-						$lab_result_symbol,  // > or < (sometimes)
-						$lab_result, 		//  + or - or 0
-						$low_high
-						) = array_slice($data, $i, 6);
-				
-				// if the name is not empty
-				if ($lab_name == "") { break; }
-				if ($lab_name == "Err1") { continue; }
-				if ($lab_name == "Err2") { continue; }
-				if ($lab_name == "Err3") { continue; }
-				$i += 5;
-
-				# data prep
-				if ($low_high != "")
-				{
-					$low = trim(explode("-", $low_high)[0]);
-					$high = trim(explode("-", $low_high)[1]);
-				} else {
-					$low = "";
-					$high = "";
-				}
+		if ($system == "HEMATO")
+		{
+			// extract the plots
+			$hemato_plot = array_slice($data, 13, 3);
+			foreach ($hemato_plot as $plot)
+			{
+				$name = explode(",", $plot)[0];
 
 				$this->lab_line->insert(array(
 					"lab_id" 			=> $internal_id,
 					"sample_id" 		=> $internal_id,
-					"value" 			=> trim($value),
-					"upper_limit" 		=> $high,
-					"lower_limit" 		=> $low,
-					"lab_code"		 	=> hexdec(substr(md5($lab_name), 0, 4)), // need some sort of an idea
-					"lab_code_text" 	=> $lab_name,
-					"unit"				=> $lab_unit,
+					"lab_code"		 	=> $lab_code[$name],
+					"lab_code_text" 	=> $name,
+					"comment"			=> $plot,
 					"updated_at" 		=> $start,
 					"created_at" 		=> $end
 				));
-				$anamnese .= $lab_name . " : " . $value . " " . $lab_unit . "\n";
-
-			}
-			
-			if ($pet_id && $pet_id != 0)
-			{
-				$this->lab->add_event($internal_id, $pet_id, $anamnese);
-			}
-			// move the file
-			if(!$this->move_file($file, $path . 'processed/' . basename($file)))
-			{
-				echo "ERROR : issue moving file\n";
 			}
 		}
-	}
 
+		// extract the values
+		/*
+		*	the data is always in fields of 6
+		*/
+		$anamnese = "Lab results:\n";
+		// extract the values
+		for ($i = self::MSLINK_DATA_OFFSET; $i < count($data); $i++) {
+			list(
+					$lab_name, 		// test name
+					$value, 		// test value
+					$lab_unit, 		// unit 
+					$lab_result_symbol,  // > or < (sometimes)
+					$lab_result, 		//  + or - or 0
+					$low_high
+					) = array_slice($data, $i, 6);
+			
+			// if the name is not empty
+			if ($lab_name == "") { break; }
+			if ($lab_name == "Err1") { continue; }
+			if ($lab_name == "Err2") { continue; }
+			if ($lab_name == "Err3") { continue; }
+			$i += 5;
+
+			# data prep
+			if ($low_high != "")
+			{
+				$low = trim(explode("-", $low_high)[0]);
+				$high = trim(explode("-", $low_high)[1]);
+			} else {
+				$low = "";
+				$high = "";
+			}
+
+			$this->lab_line->insert(array(
+				"lab_id" 			=> $internal_id,
+				"sample_id" 		=> $internal_id,
+				"value" 			=> trim($value),
+				"upper_limit" 		=> $high,
+				"lower_limit" 		=> $low,
+				"lab_code"		 	=> hexdec(substr(md5($lab_name), 0, 4)), // need some sort of an idea
+				"lab_code_text" 	=> $lab_name,
+				"unit"				=> $lab_unit,
+				"updated_at" 		=> $start,
+				"created_at" 		=> $end
+			));
+			$anamnese .= $lab_name . " : " . $value . " " . $lab_unit . "\n";
+
+		}
+		
+		if ($pet_id && $pet_id != 0)
+		{
+			$this->lab->add_event($internal_id, $pet_id, $anamnese);
+		}
+		// move the file
+		if(!$this->move_file($file, $path . 'processed/' . basename($file)))
+		{
+			echo "ERROR : issue moving file\n";
+		}
+	}
 
 	/*
 	* function: delivery
