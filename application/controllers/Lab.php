@@ -11,6 +11,7 @@ class Lab extends Vet_Controller
 		parent::__construct();
 
 		$this->load->model('Pets_model', 'pets');
+		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Lab_model', 'lab');
 		$this->load->model('Lab_detail_model', 'lab_line');
 
@@ -21,7 +22,7 @@ class Lab extends Vet_Controller
 	public function index()
     {
     	$this->_render_page('lab/index', array(
-			"data" => $this->lab->with_pet('fields: name,id')->get_all(),
+			"data" => $this->lab->get_labs(),
 		));
 	}
 
@@ -45,12 +46,22 @@ class Lab extends Vet_Controller
 			$this->add_lab_event($lab_id, (int) $this->input->post('pet_id'));
 		}
 
-    	$this->_render_page('lab/detail', array(
-			"lab_info" 			=> $this->lab->with_pet('fields: name, id')->get($lab_id),
-			"lab_details" 		=> $this->lab_line->where(array('lab_id' => $lab_id))->get_all(),
+
+		$lab_info = $this->lab->with_pet('fields: name, id')->get($lab_id);
+		$pet_info = (isset($lab_info['pet'])) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
+		$lab_details = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
+
+		$owner = ($pet_info) ? $this->owners->where(array('id' => $pet_info['owner']))->get() : false;
+
+		$data = array(
+			"lab_info" 			=> $lab_info,
+			"pet_info" 			=> $pet_info,
+			"lab_details" 		=> $lab_details,
+			"owner" 			=> $owner,
             "comment_update" 	=> $comment_update
-		));
+		);
 		
+		$this->_render_page('lab/detail', $data);
     }
 	
 	/*
@@ -62,10 +73,14 @@ class Lab extends Vet_Controller
 		$lab_info = $this->lab->get($lab_id);
 		$pet_info = (isset($lab_info['pet'])) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
 		$lab_details = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
+
+		$owner = ($pet_info) ? $this->owners->where(array('id' => $pet_info['owner']))->get() : false;
+
 		$data = array(
 			"lab_info" 			=> $lab_info,
 			"pet_info" 			=> $pet_info,
 			"lab_details" 		=> $lab_details,
+			"owner" 			=> $owner
 		);
 
 		if ($lab_info['source'] == "mslink - HEMATO")

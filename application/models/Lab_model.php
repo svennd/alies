@@ -22,6 +22,23 @@ class Lab_model extends MY_Model
 		parent::__construct();
 	}
 
+	/*
+	* function: get_labs
+	* get all lab results w/ pets & owners
+	*/
+	public function get_labs()
+	{
+		$this->db->select('
+							lab.*, 
+							pets.name as pet_name, pets.id as pet_id, pets.type as pet_type,
+							owners.last_name as last_name, owners.id as owners_id
+						');
+		$this->db->join('pets', 'pets.id = lab.pet', 'left');
+		$this->db->join('owners', 'owners.id = pets.owner', 'left');
+		$this->db->order_by('lab.id', 'desc');
+		return $this->db->get('lab')->result_array();
+	}
+
 	public function add_sample(int $lab_id, array $lab_info, string $source, int $pet_id = 0) 
 	{
 		$add_sample = "
@@ -70,7 +87,7 @@ class Lab_model extends MY_Model
 	* function: add_mslink_sample
 	* adds a new sample to the database based on the lab_id
 	*/
-	public function add_mslink_sample(int $run_id, array $info, string $source, int $pet_id)
+	public function add_mslink_sample(int $run_id, array $info, string $source, $pet_id)
 	{
 		// make sure we don't duplicate enter
 		$check = $this->fields("lab_id")->where(array("lab_id" => $run_id))->get();

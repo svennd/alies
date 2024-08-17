@@ -10,6 +10,7 @@
     }
     table{
         font-size: x-small;
+		border-collapse: collapse;
     }
     .enlarge {
         font-weight: bold;
@@ -37,6 +38,10 @@
 		padding: 7px;
 	}
 
+	.lined {
+		padding: 5px;
+	}
+
 	footer {
 		position: fixed; 
 		bottom: -70px; 
@@ -53,7 +58,7 @@
 <br/>
 <table width="100%">
     <tr>
-		<td valign="top" width="60%">
+		<td valign="top" width="30%">
 			<span class="enlarge"><?php echo $this->lang->line('lab_report'); ?></span>
 			<table>
 				<tr>
@@ -65,12 +70,21 @@
 				</tr>
 				<tr>
 					<td><?php echo $this->lang->line('date'); ?></td>
-					<td><?php echo $lab_info['lab_date'] ?></td>
+					<td><?php echo user_format_date($lab_info['lab_date'], "d-m-Y"); ?></td>
 				</tr>
 			</table>
 		</td> 
-        <td align="left" class="letterhead">
-			 <table width="100%">
+        <td align="left" valign="top" class="letterhead">
+			<?php if (isset($owner['id'])): ?>
+				<?php echo $owner['last_name']. "&nbsp;" . $owner['first_name']; ?><br/><br/>
+					<?php echo $owner['street'] . ' ' . $owner['nr']. '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
+					<?php if ($owner['telephone']) : ?><?php echo print_phone($owner['telephone']); ?><br/><?php endif; ?>
+					<?php if ($owner['mobile']) : ?><?php echo print_phone($owner['mobile']); ?><br/><?php endif; ?>
+			<?php endif; ?>
+		</td>
+        <td align="left" valign="top" class="letterhead">
+			<?php if (isset($pet_info['id'])): ?>
+			 <table width="100%" class="lined">
 			<tr>
 				<td>ID</td>
 				<td>: #<?php echo $pet_info['id']; ?></td>
@@ -91,10 +105,6 @@
 				<td>:<?php echo get_gender($pet_info['gender']); ?></td>
 			</tr>
 			<tr>
-				<td><?php echo $this->lang->line('weight'); ?></td>
-				<td>: <?php echo ($pet_info['last_weight'] == 0) ? "---" : $pet_info['last_weight'] . 'kg'; ?></td>
-			</tr>
-			<tr>
 				<td><?php echo $this->lang->line('birth'); ?></td>
 				<td>: <?php echo $pet_info['birth']; ?></td>
 			</tr>
@@ -102,13 +112,8 @@
 				<td><?php echo $this->lang->line('chip'); ?></td>
 				<td>: <?php echo (empty($pet_info['chip']) || !is_numeric($pet_info['chip'])) ? "?" : number_format((int)$pet_info['chip'], 0, '', '-'); ?></td>
 			</tr>
-			<?php if (!empty($pet_info['nr_vac_book'])): ?>
-			<tr>
-				<td><?php echo $this->lang->line('vacc_nr'); ?></td>
-				<td>: <?php echo empty($pet_info['nr_vac_book']) ? "?" : $pet_info['nr_vac_book']; ?></td>
-			</tr>
-			<?php endif; ?>
 			</table>
+			<?php endif; ?>
 		</td>
     </tr>
   </table>
@@ -130,6 +135,10 @@
 				<tbody>
 					<?php 
 					foreach($lab_details as $d):
+						if ($d["lab_code"] == "1") continue; // WBC
+						if ($d["lab_code"] == "2") continue; // RBC
+						if ($d["lab_code"] == "3") continue; // THR
+
 						$lower_limit = $d["lower_limit"];
 						$upper_limit = $d["upper_limit"];
 
@@ -155,10 +164,6 @@
 							$color = "black";
 						}
 
-
-						if ($d["lab_code"] == "1") continue; // WBC
-						if ($d["lab_code"] == "2") continue; // RBC
-						if ($d["lab_code"] == "3") continue; // THR
 					?>
 					<tr>
 						<td><?php echo $d["lab_code_text"]; ?></td>
@@ -190,10 +195,6 @@
 </table>
 <?php endif; ?>
 
-
-<footer>
-<?php if (file_exists(dirname(__FILE__) . "/../custom/bill_footer.php")) { include dirname(__FILE__) . "/../custom/bill_footer.php"; }  ?>  
-</footer>
 	</body>
 
 </html>

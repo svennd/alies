@@ -6,9 +6,10 @@
 				<div><a href="<?php echo base_url('lab'); ?>"><?php echo $this->lang->line('Lab'); ?></a> / Lab results</div>
 				
 				<div class="dropdown no-arrow">
-					<a href="<?php echo base_url('lab/print/' . $lab_info['id']); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
 					<?php if ($lab_info['source'] == "medilab"): ?>
 						<a href="https://online.medilab.be/dokter/staal/<?php echo $lab_info['lab_id']; ?>" class="btn btn-outline-primary btn-sm" target="blank"><i class="fas fa-external-link-alt"></i> <?php echo $lab_info['source'] . ' ('. $lab_info['lab_id'] . ')';  ?></a>
+					<?php else: ?>
+						<a href="<?php echo base_url('lab/print/' . $lab_info['id']); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -34,8 +35,38 @@
 						</td>
 					</tr>
 					<tr>
+						<td><?php echo $this->lang->line('client'); ?></td>
+						<td>
+							<?php if($owner): ?>
+								<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name']; ?></a>
+							<?php else: ?>
+								-
+							<?php endif; ?>
+						</td>
+					</tr>
+					<tr>
 						<td><?php echo $this->lang->line('lab_received'); ?></td>
 						<td><?php echo $lab_info['lab_date']; ?></td>
+					</tr>
+					<tr>
+						<td>lab_id</td>
+						<td><?php echo $lab_info['lab_id']; ?></td>
+					</tr>
+					<tr>
+						<td>lab_patient_id</td>
+						<td><?php echo $lab_info['lab_patient_id']; ?></td>
+					</tr>
+					<tr>
+						<td>lab_updated_at</td>
+						<td><?php echo $lab_info['lab_updated_at']; ?></td>
+					</tr>
+					<tr>
+						<td>lab_created_at</td>
+						<td><?php echo $lab_info['lab_created_at']; ?></td>
+					</tr>
+					<tr>
+						<td><?php echo $this->lang->line('source'); ?></td>
+						<td><?php echo $lab_info['source']; ?></td>
 					</tr>
 					<?php if(!empty($lab_info['lab_comment'])): ?>
 					<tr>
@@ -98,6 +129,7 @@
 						<tr>
 							<th><?php echo $this->lang->line('lab_code'); ?></th>
 							<th><?php echo $this->lang->line('value'); ?></th>
+							<th>#</th>
 							<th><?php echo $this->lang->line('limit'); ?></th>
 							
 							<?php if($lab_info['source'] == "medilab"): ?>
@@ -112,11 +144,39 @@
 							if ($d["lab_code"] == "1") continue; // WBC
 							if ($d["lab_code"] == "2") continue; // RBC
 							if ($d["lab_code"] == "3") continue; // THR
+
+							$lower_limit = $d["lower_limit"];
+							$upper_limit = $d["upper_limit"];
+	
+							if ($upper_limit == 0 && $lower_limit == 0) {
+								$lower_limit = false;
+								$upper_limit = false;
+							}
+	
+							$value = ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"];
+	
+							if (is_numeric($value) && $lower_limit !== false && $upper_limit !== false) {
+								if ($value < $lower_limit || $value > $upper_limit) {
+									$color = "red";
+									if ($value < $lower_limit) {
+										$sign = "L";
+									} else {
+										$sign = "H";
+									}
+								} else {
+									$color = "black";
+								}
+							} else {
+								$color = "black";
+							}
+
+							
 						?>
 						<tr class="<?php echo ($d["report"] || $lab_info["source"] != "medilab") ? "" : "table-secondary"; ?>">
 							<td data-sort="<?php echo $d['lab_code']; ?>"><?php echo $d["lab_code_text"]; ?> (<?php echo $d["lab_code"]; ?>)</td>
 							<td><?php echo ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"]; ?> <?php echo $d["unit"]; ?></td>
-							<td><?php echo (strlen($d["string_value"]) <= 1) ? $d["lower_limit"] . ' - ' . $d['upper_limit'] : ''; ?></td>
+							<td style="text-align:left"><small><?php echo ($color == "red") ? $sign : "&nbsp;&nbsp;"; ?></small></td>
+							<td><?php echo (strlen($d["string_value"]) <= 1  && $upper_limit) ? $d["lower_limit"] . ' - ' . $d['upper_limit'] : ''; ?></td>
 
 							<?php if($lab_info['source'] == "medilab"): ?>
 								<td><?php echo ($d["comment"] == $d["string_value"]) ? '' : $d["comment"]; ?></td>

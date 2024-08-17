@@ -414,7 +414,7 @@ class Cli extends Frontend_Controller
 			) = $data;
 
 		// determine what is most likely the pet_id
-		$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : 0));
+		$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : NULL));
 		
 		$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $start_analyse)->format('Y-m-d H:i:s');
 		$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $end_analyse)->format('Y-m-d H:i:s');

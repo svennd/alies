@@ -13,7 +13,7 @@
 					<thead>
 						<tr>
 							<th><?php echo $this->lang->line('lab_id'); ?></th>
-							<th><?php echo $this->lang->line('pet_info'); ?></th>
+							<th><?php echo $this->lang->line('client'); ?></th>
 							<th><?php echo $this->lang->line('lab_received'); ?></th>
 							<th><?php echo $this->lang->line('lab_update'); ?></th>
 							<th><?php echo $this->lang->line('source'); ?></th>
@@ -22,15 +22,20 @@
 					<tbody>
 						<?php foreach($data as $d): ?>
 						<tr>
-							<td><a href="<?php echo base_url('lab/detail/'. $d["id"]); ?>"><?php echo $d["lab_id"]; ?></a></td>
 							<td>
-								<?php if(!is_null($d['pet']) && isset($d['pet']['id'])): ?>
-								<a href="<?php echo base_url('pets/fiche/' . $d['pet']['id']); ?>"><?php echo $d['pet']['name']; ?></a>
+								<a href="<?php echo base_url('lab/detail/'. $d["id"]); ?>" <?php if(!isset($d['pet_id'])): ?>class="btn btn-sm btn-outline-danger"<?php else: ?>class="btn btn-sm btn-outline-primary"<?php endif; ?>>
+									<?php echo $d['id']; ?>
+								</a>
+								
+							</td>
+							<td>
+								<?php if(isset($d['pet_id'])): ?>
+									<a href="<?php echo base_url('owners/detail/' . $d['owners_id']); ?>"><?php echo $d['last_name']; ?></a> (<small><?php echo get_symbol($d['pet_type']) ; ?> <?php echo $d['pet_name']; ?></small>)
 								<?php else: ?>
-									-
+									---
 								<?php endif; ?>
 							</td>
-							<td><?php echo $d["lab_date"]; ?></td>
+							<td><?php echo user_format_date($d['lab_date'], $user->user_date); ?></td>
 							<td data-sort="<?php echo strtotime($d['updated_at']) ?>">
 								<small><?php echo time_ago($d["lab_updated_at"]);?></small>
 							</td>
@@ -49,7 +54,7 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({responsive: true, "order": [[ 3, "desc" ]]});
+	$("#dataTable").DataTable({responsive: true, "order": [[0, "desc" ]]});
 	$("#labo").addClass('active');
 });
 </script>
