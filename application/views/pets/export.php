@@ -30,8 +30,8 @@
 					<td>#<?php echo $i++; ?></td>
 					<td><?php echo $his['created_at']; ?></td>
 					<td><?php echo $his['title']; ?></td>
-					<td><?php echo $his['location']['name']; ?></td>
-					<td><?php echo $his['vet']['first_name']. ' ' . $his['vet']['last_name']; ?></td>
+					<td><?php echo ($his['location']) ? $his['location']['name'] : '-'; ?></td>
+					<td><?php echo ($his['vet']) ? $his['vet']['first_name']. ' ' . $his['vet']['last_name'] : '-'; ?></td>
 					<td>
 						<div class="input-group mb-2 mr-sm-2">
 							<div class="input-group-prepend">
