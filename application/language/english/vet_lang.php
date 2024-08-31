@@ -110,6 +110,7 @@ $lang['apply']              = 'Apply';
 
 # fiche
 $lang['edit_pet']   = 'Edit pet';
+$lang['rx']         = 'RX';
 $lang['pet_info']      = 'Pet';
 $lang['breed']      = 'Breed';
 $lang['gender']     = 'Gender';

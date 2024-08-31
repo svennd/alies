@@ -3,7 +3,6 @@
 		<div>
 			<a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>"><?php echo $owner['last_name'] ?></a> / 
 			<?php echo $pet['name'] ?> <small>(#<?php echo $pet['id']; ?>)</small>
-			
 		</div>
 		<div class="dropdown no-arrow d-none d-sm-block">
 			<a href="<?php echo base_url('pets/export/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm ml-5"><i class="fas fa-file-export"></i> <?php echo $this->lang->line('export'); ?></a>
@@ -74,7 +73,8 @@
 	<?php endif; ?>
 	<div class="text-center">
 		<a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-outline-primary"><i class="fas fa-fw fa-paw"></i> <?php echo $this->lang->line('edit_pet'); ?></a>
-		<a href="<?php echo base_url('tooth/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary ml-4"><i class="fas fa-fw fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>			
+		<a href="<?php echo base_url('tooth/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary ml-4"><i class="fas fa-fw fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>
+		<a href="<?php echo base_url('rx/list/'. $pet['id'] ); ?>" class="btn btn-outline-primary ml-4"><i class="fa-solid fa-radiation"></i> <?php echo $this->lang->line('rx'); ?> <?php echo ($pet['rx_count']) ? $pet['rx_count'] : ""; ?></a>
 	</div>
 
 	</div>

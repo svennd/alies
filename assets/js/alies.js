@@ -79,6 +79,14 @@
       $(this).find('i').removeClass('fa-spin');
     }
   );
+  $('.flipit').hover(
+    function() {
+      $(this).find('i').addClass('fa-flip');
+    },
+    function() {
+      $(this).find('i').removeClass('fa-flip');
+    }
+  );
   
 // Sticky Note
 $('#sticky_messages').on('click', function () {

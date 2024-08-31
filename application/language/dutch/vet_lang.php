@@ -112,6 +112,7 @@ $lang['apply']              = 'Toepassen';
 
 # fiche
 $lang['edit_pet']   = 'Dier aanpassen';
+$lang['rx']         = 'RX';
 $lang['pet_info']   = 'Dier';
 $lang['breed']      = 'Ras';
 $lang['gender']     = 'Geslacht';
