@@ -814,7 +814,13 @@ class Cli extends Frontend_Controller
 				->where(array("wholesale_id" => $id))
 				->order_by('id', 'DESC')
 				->get();
-			
+		
+		// no last price
+		if (!$last_price)
+		{
+			return;
+		}
+
 		// probably want to do this in one go
 		// and restrict based on config values
 		// so that 0.01% increase/decrease isn't a trigger
