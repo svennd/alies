@@ -28,16 +28,19 @@ class Stock_limit_model extends MY_Model
 
 	public function global_shortage()
 	{
+		# ifnull is required to find products with no stock (even used stock is fine)
+		# for example new products that are given a limit
+		# was INNER JOIN but then i miss these products so i changed to LEFT JOIN
 		$sql = "
 		SELECT
 				products.id, products.name, products.unit_sell, products.limit_stock, 
-				SUM(stock.volume) AS all_volume,
+    			IFNULL(SUM(stock.volume), 0) AS all_volume,
 				wholesale.description as wsname, wholesale.vendor_id as wsid,
 				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 30 DAY)) as global_use_30d,
 				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 90 DAY)) as global_use_90d
 		FROM
 			products
-		INNER JOIN
+		LEFT JOIN
    			stock 
 		ON 
 			stock.product_id = products.id
@@ -63,7 +66,7 @@ class Stock_limit_model extends MY_Model
 	{
 		$sql = "
 		SELECT
-			sum(stock.volume) as available_volume,
+			IFNULL(sum(stock.volume), 0) as available_volume,
 			stock_limit.stock,
 			stock_limit.volume as required_volume,
 			stock_limit.product_id as product_detail,
