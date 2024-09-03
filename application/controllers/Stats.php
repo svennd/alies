@@ -39,4 +39,23 @@ class Stats extends Admin_Controller
 
 		$this->_render_page('stats/index', $data);
 	}
+
+	/*
+	* function: update
+	* update the stats query
+	*/
+	public function update(int $id)
+	{
+		if ($this->input->post('submit')) {
+			$this->stats->update(array("query" => $this->input->post('query')), $id);
+			redirect('stats');
+		}
+
+		$stat = $this->stats->get($id);
+		$data = array(
+						"stat" => $stat
+					);
+
+		$this->_render_page('stats/update', $data);
+	}
 }

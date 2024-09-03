@@ -57,9 +57,13 @@
                 <?php else: ?>
                     no results;
                 <?php endif; ?>
+
+                <?php if($stat_info): ?>
                     <hr/>
-                    <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-code"></i> query</a>
+                    <a class="btn btn-outline-secondary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-code"></i> query</a>
+                    <a class="btn btn-outline-secondary btn-sm" href="<?php echo base_url("stats/update/" . $stat_info['id']); ?>" ><i class="fa-solid fa-gear"></i> modify</a>
                     <div class="collapse" id="collapseExample"><pre><code class="language-sql"><?php echo $sql; ?></code></pre></div>
+                <?php endif; ?>
                 </div>
 		</div>
 	</div>
