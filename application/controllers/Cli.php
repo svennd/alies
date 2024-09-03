@@ -300,6 +300,12 @@ class Cli extends Frontend_Controller
             // extra? 
             "18070" => "Bijkomende bepaling",
 
+			// antibiogram
+            "17203" => "Oorsprong",
+            "17210" => "Kultuur",
+            "17215" => "Anaerobe kultuur",
+            "17220" => "Antibiogram",
+
             // Vogels - but also dog/cat
             "13519" => "DGGR Lipase",
             
