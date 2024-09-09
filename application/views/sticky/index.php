@@ -1,3 +1,10 @@
+<?php
+function tagColor($tag) {
+    // Generate a color hash using the tag string
+    $hash = substr(md5($tag), 0, 6);
+    return '#' . $hash;
+}
+?>
 
 <div class="row">
 	<div class="col-lg-12 mb-4">
@@ -18,9 +25,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach($data as $d): ?>
+						<?php foreach($data as $d): 
+							// Replace hashtags in the text with colored spans
+							$formattedText = preg_replace_callback('/#(\w+)/', function($match) {
+								$color = tagColor($match[1]);
+								return "<span class='badge' style='color:white;background-color: $color;'>$match[0]</span>";
+							}, $d['note']);
+
+							?>
 						<tr>
-							<td><?php echo $d["note"]; ?></td>
+							<td><?php echo $formattedText; ?></td>
 							<td>
                                 <?php echo $d["vet"]["first_name"]; ?><br/>
                                 <small><?php echo $d["location"]["name"]; ?></small>

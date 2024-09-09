@@ -1,3 +1,73 @@
+/*
+search & index
+*/
+.card-waves .card-body, .card-angles .card-body {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+}
+.nav-borders .nav-link.active {
+  color: #0061f2;
+  border-bottom-color: #0061f2;
+}
+.nav-borders .nav-link:hover {
+  border-bottom-color: #aebdd4;
+}
+.nav-borders .nav-link {
+  color: #69707a;
+  border-bottom-width: 0.125rem;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.table-search tbody tr:hover {
+color: #858796;
+background-color: #EFFCFB !important;
+transition: background-color 0.4s ease;
+}
+
+.table-search tbody td:hover {
+background-color: #e1f5f0 !important;
+transition: background-color 0.2s ease;
+}
+
+.avatar {
+  display: inline-flex;
+  height: 4.5rem;
+  width: 4.5rem;
+  border-radius: 50%;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+} 
+
+.avatar-away::before, .avatar-offline::before, .avatar-online::before {
+  content: "";
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background-color: #ff6a5b;
+  border: 0.0625rem solid #fff;
+}
+.avatar-online::before {
+  background-color: #00ac69;
+}
+.avatar-offline::before {
+  background-color: #d4dae3;
+}
+/*
+* unknown
+*/
+
 .has-search .form-control {
     padding-left: 2.375rem;
 }
@@ -108,4 +178,31 @@ input[type='radio']:checked {
 .gender-select {
     border-color: #5194cf;
 	background-color: aliceblue;
+}
+
+/*
+  search owners/pets
+*/
+.search-owners-debts {
+  color: tomato !important;
+}
+.search-owners-low-budget {
+  color: #a77628;
+}
+
+
+/*
+  products
+*/
+.product-not-sellable {
+  color: #ff6a5b;
+}
+.product-not-sellable a {
+  color: #ff6a5b;
+}
+.product-not-sellable::after {
+  color: rgb(87, 87, 87);
+  content: " \e060"; /* Correct Unicode for fa-handshake-slash */
+  font-family: "Font Awesome 6 Free"; /* Ensure correct Font Awesome family */
+  font-weight: 600; /* For solid icons */
 }

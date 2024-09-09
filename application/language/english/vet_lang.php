@@ -248,6 +248,7 @@ $lang['gender']      = 'gender';
 $lang['birth']      = 'birth';
 $lang['pet_name']      = 'Name';
 $lang['weight']      = 'Weight';
+$lang['add_weight']      = 'Add weight';
 $lang['notes']      = 'notes';
 $lang['identification']      = 'Identification';
 $lang['properties']      = 'Properties';

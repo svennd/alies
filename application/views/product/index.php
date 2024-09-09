@@ -41,7 +41,7 @@
 			<?php if ($search_product): ?>
 			<ul>
 				<?php foreach($search_product as $sear): ?>
-					<li><a href="<?php echo base_url('products/profile/' . $sear['id']); ?>"><?php echo $sear['name']; ?></a></li>
+					<li class="<?php echo $sear['sellable'] ? '' : 'product-not-sellable' ?>"><a href="<?php echo base_url('products/profile/' . $sear['id']); ?>"><?php echo $sear['name']; ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 			<?php endif; ?>

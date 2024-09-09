@@ -13,9 +13,6 @@ class Search extends Vet_Controller
 		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Breeds_model', 'breeds');
-		$this->load->model('Events_model', 'events');
-		$this->load->model('Bills_model', 'bills');
-		$this->load->model('Zipcodes_model', 'zipcode');
 	}
 	
 	public function index()

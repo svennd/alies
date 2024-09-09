@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "sweetalert2": "^11.10.5",
-    "trumbowyg": "^2.27.3"
+    "sweetalert2": "^11",
+    "trumbowyg": "^2"
   }
 }

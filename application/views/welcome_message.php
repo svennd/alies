@@ -6,60 +6,6 @@
 .card-waves .card-body {
     background-image: url("<?php echo base_url('assets/img/bg-waves-2.svg'); ?>");
 	width: 100%;
-	animation: wave 3s linear infinite;
-}
-.card-waves .card-body, .card-angles .card-body {
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: center bottom;
-}
-.nav-borders .nav-link.active {
-    color: #0061f2;
-    border-bottom-color: #0061f2;
-}
-.nav-borders .nav-link:hover {
-    border-bottom-color: #aebdd4;
-}
-.nav-borders .nav-link {
-    color: #69707a;
-    border-bottom-width: 0.125rem;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-
-
-.avatar {
-		display: inline-flex;
-		height: 4.5rem;
-		width: 4.5rem;
-		border-radius: 50%;
-		position: relative;
-		align-items: center;
-		justify-content: center;
-	} 
-	
-.avatar-away::before, .avatar-offline::before, .avatar-online::before {
-    content: "";
-    position: absolute;
-    bottom: 5%;
-    right: 5%;
-    width: 20%;
-    height: 20%;
-    border-radius: 50%;
-    background-color: #ff6a5b;
-    border: 0.0625rem solid #fff;
-}
-.avatar-online::before {
-    background-color: #00ac69;
-}
-.avatar-offline::before {
-    background-color: #d4dae3;
 }
 </style>
 
@@ -68,7 +14,7 @@
 
 <div class="row">
 	<div class="col-lg-9">
-		<div class="card card-waves shadow">
+		<div class="card card-waves shadow h-100">
 			<div class="card-body">
 				<form action="<?php echo base_url('search'); ?>" method="get" autocomplete="off">
 				<div class="row align-items-center justify-content-between px-3">

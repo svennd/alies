@@ -11,6 +11,9 @@
 					<?php else: ?>
 						<a href="<?php echo base_url('lab/print/' . $lab_info['id']); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
 					<?php endif; ?>
+					<?php if($this->ion_auth->is_admin()): ?>
+						<a href="<?php echo base_url('lab/delete/'. $lab_info['id']); ?>" class="btn btn-outline-danger btn-sm ml-4"><i class="fa-solid fa-trash"></i></a>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="card-body">
