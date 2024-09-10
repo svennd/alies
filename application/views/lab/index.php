@@ -8,6 +8,27 @@
 				</div>
 			</div>
 			<div class="card-body">
+			<form action="<?php echo base_url('lab/index'); ?>" method="post" autocomplete="off" class="form-inline">
+
+			<div class="form-group mb-2 mr-3">
+			<label for="search_from" class="sr-only">search_from</label>
+			<input type="date" name="search_from" class="form-control form-control-sm" value="<?php echo $search_from; ?>" id="search_from">
+			</div>
+			<div class="form-group mb-2">
+			<span class="fa-stack" style="vertical-align: top;">
+				<i class="far fa-square fa-stack-2x"></i>
+				<i class="fas fa-arrow-right fa-stack-1x"></i>
+			</span>
+			</div>
+			<div class="form-group mb-2 mx-3">
+			<label for="search_to" class="sr-only">search_to</label>
+				<input type="date" name="search_to" class="form-control form-control-sm" value="<?php echo $search_to; ?>" max="<?php echo date_format(new DateTime(), 'Y-m-d'); ?>" id="search_to">
+			</div>
+			<button type="submit" class="btn btn-sm btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
+			</form>
+
+			<br/>
+
 				<?php if($data): ?>
 				<table class="table table-sm" id="dataTable">
 					<thead>

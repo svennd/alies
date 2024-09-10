@@ -21,8 +21,15 @@ class Lab extends Vet_Controller
 
 	public function index()
     {
+		$dt = new DateTime();
+		$search_to = (!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d');
+		$dt->modify('-2 month');
+		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
+
     	$this->_render_page('lab/index', array(
-			"data" => $this->lab->get_labs(),
+			"data" => $this->lab->get_labs($search_from, $search_to),
+			"search_from"	=> (isset($search_from)) ? $search_from : '',
+			"search_to"		=> (isset($search_to)) ? $search_to : '',
 		));
 	}
 
@@ -99,6 +106,18 @@ class Lab extends Vet_Controller
 		return $this->pdf->create($template_data, '-', PDF_STREAM, true);
 		
     }
+
+	/*
+	* function: list_lab
+	* list all lab results for a pet
+	*/
+	public function list_lab(int $pet_id)
+	{
+		$this->_render_page('lab/list_lab', array(
+			"pet_id" 		=> $pet_id,
+			"lab_results" 	=> $this->lab->where(array('pet' => $pet_id))->get_all()
+		));
+	}
 
 	# reset the lab link
 	# in case vet made a booboo
@@ -228,4 +247,14 @@ class Lab extends Vet_Controller
 		return 'data:image/png;base64,' . base64_encode($imageData);
 	}
 	
+	public function delete(int $lab_id)
+	{
+		# check if admin 
+		if (!$this->ion_auth->is_admin())
+		{
+			redirect('lab');
+		}
+		$this->lab->delete($lab_id);
+		redirect('lab');
+	}
 }
