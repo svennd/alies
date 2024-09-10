@@ -264,7 +264,11 @@ class Stock_model extends MY_Model
 
 		# add to the new stock 
 		# 2 options here there is already stock (update) or not (insert)
-		if (!$this->move_add($stock_id, $volume, $to)) {
+		if (!$this->move_add($stock_id, $volume, $to))
+		{
+			# since we had an error here once
+			# lets trace this
+			$this->logs->logger(DEBUG, "move_stock", "none_found for pid:" . $pid . " volume:" . $volume . " from:" . $from . " to:" . $to);
 
 			# we can't find any stock at $to 
 			# so create a new one based on the original one (irrelevant of the current state)
@@ -716,7 +720,7 @@ class Stock_model extends MY_Model
 						END,
 				volume = volume + " . $volume . "
 			WHERE 
-				(lotnr, in_price, state) = (SELECT lotnr, in_price, state FROM stock WHERE id = " . $stock_id . ")
+				(product_id, lotnr, in_price, state) = (SELECT product_id, lotnr, in_price, state FROM stock WHERE id = " . $stock_id . ")
 			AND 
 				-- possible null values
 				 ((supplier IS NULL AND (SELECT supplier FROM stock WHERE id = " . $stock_id . ") IS NULL) OR supplier = (SELECT supplier FROM stock WHERE id = " . $stock_id . "))
@@ -730,7 +734,7 @@ class Stock_model extends MY_Model
 
 		# run the query
 		$this->db->query($sql);
-
+		
 		# should return 0 (no rows affected) or 1 (one row affected)
 		return (bool) $this->db->affected_rows();
 	}
