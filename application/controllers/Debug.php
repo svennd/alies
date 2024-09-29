@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 // Class: Debug
-class Debug extends Vet_Controller
+class Debug extends Frontend_Controller
 {
 	// initialize
 	public $ion_auth;
@@ -39,7 +39,7 @@ class Debug extends Vet_Controller
 	*/
     public function upgrade() : void
 	{
-        if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
+        // if (!$this->ion_auth->in_group("admin")) { redirect( '/' ); }
 		$this->load->library('migration');
 
 		$version = $this->migration->latest();
