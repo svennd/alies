@@ -47,6 +47,6 @@ class Debug extends Frontend_Controller
 			show_error($this->migration->error_string());
 		}
         
-        echo "upgraded : " . implode($version);
+        echo "upgraded : " . var_dump($version);
 	}
 }
