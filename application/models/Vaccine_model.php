@@ -56,6 +56,10 @@ class Vaccine_model extends MY_Model
 		parent::__construct();
 	}
 	
+	/*
+	* function: view
+	* get a summary of the vaccines for the pets fiche
+	*/
 	public function view($pet_id)
 	{
 		$sql = "
@@ -73,6 +77,10 @@ class Vaccine_model extends MY_Model
 				products.id = vac.product_id
 			WHERE 
 				pet = " . (int) $pet_id . "
+			AND
+				vac.no_rappel = 0
+			AND
+				vac.redo >= vac.created_at
 			group by 
 				product_id
 			order by 
@@ -87,25 +95,31 @@ class Vaccine_model extends MY_Model
 	{
 		$sql = "
 			SELECT 
-				MIN(vac.created_at) as injection_date,
-				MIN(vac.redo) as redo_date,
-
-				GROUP_CONCAT(DISTINCT products.name) as product_name,
-				
-				GROUP_CONCAT(DISTINCT pets.name) as pet_name, 
 
 				owners.id as owner_id,
-				owners.first_name as first_name, 
-				owners.last_name as last_name, 
-				owners.street as owner_street, 
-				owners.nr as owner_nr, 
-				owners.city as owner_city, 
-				owners.mail as owner_mail, 
-				owners.last_bill as last_bill,
+				owners.first_name as first_name,
+				owners.last_name as last_name,
+				owners.street as owner_street,
+				owners.nr as owner_nr,
+				owners.city as owner_city,
+				owners.province as province,
+				owners.zip as zip,
 
-				stock.name as location,
+				products.name as product_name,
+				products.vaccin_disease as disease,
+
+				vac.created_at as injection_date,
+				vac.redo as redo_date,
+				
+				pets.name as pet_name, 
+				pets.type as pet_type, 
+
+				owners.mail as owner_mail,
+				owners.last_bill as last_bill,
+				owners.debts as debts,
 
 				users.first_name as vet_name
+				
 			FROM 
 			" . $this->table . " as vac
 			
@@ -113,11 +127,6 @@ class Vaccine_model extends MY_Model
 				products
 			ON
 				products.id = vac.product_id
-
-			JOIN
-				stock_location as stock
-			ON
-				stock.id = vac.location
 
 			JOIN
 				pets
@@ -143,9 +152,8 @@ class Vaccine_model extends MY_Model
 				pets.lost = 0
 			AND
 				vac.no_rappel = 0
-			GROUP BY
-				owners.id
-
+			AND
+				owners.disabled = 0 -- not disabled
 			ORDER BY vac.redo ASC
 		";
 		

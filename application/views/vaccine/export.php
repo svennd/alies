@@ -1,4 +1,48 @@
-redo_date,last_name,first_name,street,nr,city,pets,last_bill,location,vet,product_name
+<?php
+$header = array (
+        "owner_id",
+        "first_name",
+        "last_name",
+        "street",
+        "nr",
+        "city",
+        "province",
+        "zip",
+
+        "product_name",
+        "disease",
+
+        "injection_date",
+        "redo_date",
+        
+        "pet_name",
+        "pet_type",
+
+        "owner_mail",
+        "last_bill",
+        "debts",
+
+        "vet_name"
+    );
+
+    $pet_type_map = array(
+        DOG     => $this->lang->line('dog'),
+        CAT     => $this->lang->line('cat'),
+        HORSE   => $this->lang->line('horse'),
+        BIRD    => $this->lang->line('bird'),
+        OTHER   => $this->lang->line('other'),
+        RABBIT  => $this->lang->line('rabbit')
+    );
+
+?>
+<?php echo sprintf('"%s"', implode('","', $header)); ?>
+
 <?php foreach($expiring_vacs as $v): ?>
-<?php echo $v['redo_date']; ?>,<?php echo $v['last_name']; ?>,<?php echo $v['first_name']; ?>,<?php echo $v['owner_street']; ?>,<?php echo $v['owner_nr']; ?>,<?php echo $v['owner_city']; ?>,"<?php echo $v['pet_name']; ?>",<?php echo $v['last_bill']; ?>,<?php echo $v['location']; ?>,<?php echo $v['vet_name']; ?>,"<?php echo $v['product_name']; ?>"
+<?php
+if (isset($pet_type_map[$v['pet_type']])) {
+    $v['pet_type'] = $pet_type_map[$v['pet_type']];
+}
+?>
+<?php echo sprintf('"%s"', implode('","', $v)); ?>
+
 <?php endforeach; ?>

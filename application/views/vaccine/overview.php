@@ -14,7 +14,7 @@
 			<br/>
 			<br/>
 			<?php if($expiring_vacs): ?>
-			<table class="table" id="dataTable">
+			<table class="table table-sm" id="dataTable">
             <thead>
 				<tr>
 				  <th><?php echo $this->lang->line('client'); ?></th>
@@ -23,24 +23,22 @@
 				  <th><?php echo $this->lang->line('rappel_date'); ?></th>
 				  <th><?php echo $this->lang->line('vaccines'); ?></th>
 				  <th><?php echo $this->lang->line('pet_info'); ?></th>
-				  <th><?php echo $this->lang->line('location'); ?></th>
 				</tr>
 			  </thead>
 			  <tbody>
 				<?php foreach($expiring_vacs as $vac): ?>
 				<tr>
 					<td>
-					<span class="fa-stack">
-                        <i class="fas fa-envelope-open-text fa-stack-1x"></i>
-                        <?php echo ($vac['owner_mail']) ? '<i class="fas fa-check fa-stack-1x" style="color:Green"></i>' : '<i class="fas fa-slash fa-stack-1x" style="color:Tomato"></i>' ;?>
-                    </span>
+						<!-- <span class="fa-stack">
+							<i class="fas fa-envelope-open-text fa-stack-1x"></i>
+							<?php echo ($vac['owner_mail']) ? '<i class="fas fa-check fa-stack-1x" style="color:Green"></i>' : '<i class="fas fa-slash fa-stack-1x" style="color:Tomato"></i>' ;?>
+						</span> -->
 						<a href="<?php echo base_url('owners/detail/' . $vac['owner_id']); ?>"><?php echo $vac['last_name']; ?></a></td>
-					<td><?php echo ($vac['last_bill']) ? time_ago($vac['last_bill']) : '-'; ?></td>
+					<td><?php echo ($vac['last_bill']) ? user_format_date($vac['last_bill'],  $user->user_date): "-"; ?></td>
 					<td><?php echo user_format_date($vac['injection_date'],  $user->user_date); ?></td>
 					<td><?php echo user_format_date($vac['redo_date'],  $user->user_date); ?></td>
 					<td><?php echo $vac['product_name']; ?></td>
-					<td><?php echo $vac['pet_name']; ?></td>
-				  <td><?php echo $vac['location']; ?></td>
+					<td><?php echo get_symbol($vac['pet_type']); ?> <?php echo $vac['pet_name']; ?></td>
 				</tr>
 				<?php endforeach; ?>
 			  </tbody>

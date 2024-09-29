@@ -112,7 +112,7 @@
 		<hr />
 		<div class="form-row">
 			<div class="col">
-				<div class=" input-group mb-3">
+				<div class=" input-group">
 					<label for="vaccin">Vaccin (Rappel)</label>
 					<div class="input-group">
 						<div class="input-group-prepend">
@@ -126,13 +126,28 @@
 				</div>
 			</div>
 
-			<div class="col mb-3">
+			<div class="col">
 				<div class="form-group">
 					<label for="dead_volume"><?php echo $this->lang->line('dead_volume'); ?></label>
-					<input type="text" name="dead_volume" class="form-control" id="dead_volume" value="<?php echo (isset($product['dead_volume'])) ? $product['dead_volume']: '0' ?>">
+					<div class="input-group mb-3">
+						<input type="text" name="dead_volume" class="form-control" id="dead_volume" value="<?php echo (isset($product['dead_volume'])) ? $product['dead_volume']: '0' ?>">
+						<div class="input-group-append">
+							<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
+						</div>
+					</div>
 					<small id="dead_volumeHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
-				</div> 	
-			</div> 	
+				</div>
+			</div>
+		</div>
+
+		<div class="form-row">
+			<div class="col mb-5">
+				<label for="vaccin_disease">Vaccin vs (layperson)</label>
+				<input type="text" class="form-control" name="vaccin_disease" aria-label="Text input with checkbox" value="<?php echo (isset($product['vaccin_disease'])) ? $product['vaccin_disease']: null; ?>">
+				<small class="form-text text-muted">Can be used in vaccine letter/mail.</small>
+			</div>
+
+			<div class="col mb-5">&nbsp;</div>
 		</div> 	
 
 		<div class="form-row">

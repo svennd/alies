@@ -19,6 +19,10 @@ class Lab_model extends MY_Model
 							'foreign_key' => 'id',
 							'local_key' => 'pet'
 						);
+		/*
+			soft_deletes
+		*/
+		$this->soft_deletes = true;
 		parent::__construct();
 	}
 
@@ -26,7 +30,7 @@ class Lab_model extends MY_Model
 	* function: get_labs
 	* get all lab results w/ pets & owners
 	*/
-	public function get_labs()
+	public function get_labs($search_from = null, $search_to = null)
 	{
 		$this->db->select('
 							lab.*, 
@@ -35,6 +39,9 @@ class Lab_model extends MY_Model
 						');
 		$this->db->join('pets', 'pets.id = lab.pet', 'left');
 		$this->db->join('owners', 'owners.id = pets.owner', 'left');
+		$this->db->where("lab.created_at >=", $search_from);
+		$this->db->where("lab.created_at <=", $search_to);
+		$this->db->where('lab.deleted_at', NULL);
 		$this->db->order_by('lab.id', 'desc');
 		return $this->db->get('lab')->result_array();
 	}
@@ -78,6 +85,8 @@ class Lab_model extends MY_Model
 				lab
 			WHERE
 				pet is NULL
+			AND
+				deleted_at IS NULL
 			LIMIT 9
 		";
 		return ($this->db->query($sql)->result_array()[0]['count']);

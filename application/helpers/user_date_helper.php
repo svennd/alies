@@ -20,7 +20,7 @@ function time_ago(string $date = null)
   $current_timestamp = time();
   $input_timestamp = strtotime($date);
 
-  if ($current_timestamp > $input_timestamp){ return timespan($input_timestamp, $current_timestamp, 1) . " Ago"; }
+  if ($current_timestamp > $input_timestamp){ return timespan($input_timestamp, $current_timestamp, 1); }
 
   return "bad time";
 }

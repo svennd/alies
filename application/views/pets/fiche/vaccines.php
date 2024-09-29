@@ -19,7 +19,11 @@
 		<tr>
 			<td><?php echo $vac['name']; ?></td>
 			<td><?php echo user_format_date( $vac['max_injection'], $user->user_date); ?></td>
-			<td><?php echo (!$vac['min_no_rappel']) ? user_format_date( $vac['max_rappel'], $user->user_date) : '<i class="fa-regular fa-circle-xmark"></i>'; ?></td>
+			<td><?php echo ($vac['max_rappel'] <= (new DateTime())->modify('+3 month')) ?
+								'<span class="text-danger">' . user_format_date( $vac['max_rappel'], $user->user_date) . '</span>'
+								:
+								user_format_date( $vac['max_rappel'], $user->user_date)
+								; ?></td>
 		</tr>
 		<?php endforeach; ?>
 		</tbody>
