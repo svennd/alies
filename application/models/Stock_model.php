@@ -245,6 +245,11 @@ class Stock_model extends MY_Model
 	*/
 	public function move(int $stock_id, int $from, int $to, float $volume, int $pid, string $info = NULL)
 	{
+		if ($volume == 0) { 
+			$this->logs->logger(DEBUG, "move_stock", "detected 0 unit move " . $from . " to " . $to . " pid:" . $pid . " volume:" . $volume);
+			return false;
+		}
+
 		$this->logs->stock(DEBUG, "move_stock_from", $pid, -$volume, $from);
 		$this->logs->stock(DEBUG, "move_stock_to", $pid, $volume, $to);
 		
