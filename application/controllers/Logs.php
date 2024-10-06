@@ -3,6 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Logs extends Admin_Controller
 {
+
+	// define max volume of results to protect the server
+	// empericly set
+	const MAX_RESULTS = 5000;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -26,6 +31,7 @@ class Logs extends Admin_Controller
 												->with_products('fields:name, unit_sell')
 												->with_vet('fields:first_name')
 												->with_location('fields:name')
+											->limit(self::MAX_RESULTS)
 											->get_all(),
 		);
 		$this->_render_page('logs/stock_write_off', $data);
@@ -65,7 +71,9 @@ class Logs extends Admin_Controller
 						"logs" 			=> $this->logs
 											->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 											->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-											->with_vet('fields:first_name')->order_by(array('id', 'desc'))->get_all(),
+											->with_vet('fields:first_name')->order_by(array('id', 'desc'))
+											->limit(self::MAX_RESULTS)
+											->get_all(),
 		);
 		$this->_render_page('logs/global', $data);
 	}

@@ -34,6 +34,7 @@ class Vet_Controller extends MY_Controller
 
 		$this->lang->load('vet', 'dutch');
 		$this->lang->load('admin', 'dutch');
+		$this->lang->load('date', 'dutch');
 		
 		$conf = $this->settings->get_all();
 		if ($conf) {
