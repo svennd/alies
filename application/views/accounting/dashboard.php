@@ -16,101 +16,6 @@
     $p = (($predictie_omzet_dit_jaar - $omzet_vorig_jaar)/$predictie_omzet_dit_jaar)*100;
     $y = (($predictie_klanten_dit_jaar - $klanten_contacten_vorig_jaar)/$predictie_klanten_dit_jaar)*100;
 ?>
-
-
-<div class="row <?php echo ($user->vsens) ? '' : 'sensitive'; ?>">
-    <div class="col-lg-6 col-xl-3 mb-4">
-        <div class="card border-left-success text-black h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="me-3">
-                        <div class="text-black-50 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $str_monthly; ?>)</div>
-                        <div class="text-lg fw-bold"><a href="<?php echo base_url('reports/revenue'); ?>">&euro; <?php echo number_format($monthly_earnings, 0, ',', '.'); ?></a></div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign feather-xl text-black-50"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-xl-3 mb-4">
-        <div class="card border-left-primary text-black h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="me-3">
-                        <div class="text-black-75 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
-                        <div class="text-lg fw-bold">&euro; <?php echo number_format($yearly_earnings, 0, ',', '.'); ?></div>
-                        <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($omzet_vorig_jaar != 1 && $p >= 0.5): ?>
-                                <span class="text-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                            <polyline points="17 6 23 6 23 12"></polyline>
-                                    </svg>
-                                    <?php echo round($p,0); ?>% (<?php echo $this->lang->line('est'); ?>)
-                                </span>
-                            <?php elseif($omzet_vorig_jaar != 1 && $p <= -0.5): ?>
-                                <span class="text-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-                                        <polyline points="17 18 23 18 23 12"></polyline>
-                                    </svg>
-                                    <?php echo abs(round($p,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black-50"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-xl-3 mb-4">
-        <div class="card border-left-success text-black h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="me-3">
-                        <div class="text-black-50 small"><?php echo $this->lang->line('events'); ?> (<?php echo $str_monthly; ?>)</div>
-                        <div class="text-lg fw-bold"><?php echo $client_contacts; ?></div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square feather-xl text-black-50"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-xl-3 mb-4">
-        <div class="card border-left-primary text-black h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="me-3">
-                        <div class="text-black-75 small"><?php echo $this->lang->line('events'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
-                        <div class="text-lg fw-bold"><?php echo $client_contacts_year; ?></div>
-                        <div class="text-xs fw-bold d-inline-flex align-items-center">
-                            <?php if($klanten_contacten_vorig_jaar != 1 && $y > 0): ?>
-                                <span class="text-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                            <polyline points="17 6 23 6 23 12"></polyline>
-                                    </svg>
-                                    <?php echo round($y,0); ?>% (<?php echo $this->lang->line('est'); ?>)
-                                </span>
-                            <?php elseif($klanten_contacten_vorig_jaar != 1 && $y < 0): ?>
-                                <span class="text-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-                                        <polyline points="17 18 23 18 23 12"></polyline>
-                                    </svg>
-                                    <?php echo abs(round($y,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square feather-xl text-black-50"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row <?php echo ($user->vsens) ? '' : 'sensitive'; ?>">
     <div class="col-lg-8 mb-4">
         <div class="card shadow mb-4 h-100">
@@ -139,24 +44,101 @@
             </div>
 	</div>
     <div class="col-lg-4 mb-4">
-        <div class="card shadow mb-4 h-100">
-                <div class="card-header d-flex flex-row align-items-center justify-content-between">
-                    <div><?php echo $this->lang->line('revenue_source'); ?> (<?php echo $str_monthly; ?>)</div>
-                    <div class="dropdown no-arrow">
-                    </div>
-                </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card border-left-success text-black h-100">
                 <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <?php if($distribution_proc_prod['products']['total'] > 0 || $distribution_proc_prod['procedures'] > 0): ?>
-                        <canvas id="myPieChart"></canvas>
-                        <button type="button" class="btn btn-light btn-sm" style="color:#2596be;background-color:rgba(30,129,176,0.2);">6%</button>
-                        <button type="button" class="btn btn-light btn-sm" style="color:#e28743;background-color:rgba(226,135,67,0.2);">21%</button>
-                        <?php else: ?>
-                            <?php echo $this->lang->line('no_data'); ?>
-                        <?php endif; ?>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <div class="text-black-50 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $str_monthly; ?>)</div>
+                            <div class="text-lg fw-bold"><a href="<?php echo base_url('reports/revenue'); ?>">&euro; <?php echo number_format($monthly_earnings, 0, ',', '.'); ?></a></div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign feather-xl text-black-50"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card border-left-primary text-black h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <div class="text-black-75 small"><?php echo $this->lang->line('earnings'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
+                            <div class="text-lg fw-bold">&euro; <?php echo number_format($yearly_earnings, 0, ',', '.'); ?></div>
+                            <div class="text-xs fw-bold d-inline-flex align-items-center">
+                                <?php if($omzet_vorig_jaar != 1 && $p >= 0.5): ?>
+                                    <span class="text-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                                <polyline points="17 6 23 6 23 12"></polyline>
+                                        </svg>
+                                        <?php echo round($p,0); ?>% (<?php echo $this->lang->line('est'); ?>)
+                                    </span>
+                                <?php elseif($omzet_vorig_jaar != 1 && $p <= -0.5): ?>
+                                    <span class="text-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                                            <polyline points="17 18 23 18 23 12"></polyline>
+                                        </svg>
+                                        <?php echo abs(round($p,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black-50"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card border-left-success text-black h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <div class="text-black-50 small"><?php echo $this->lang->line('events'); ?> (<?php echo $str_monthly; ?>)</div>
+                            <div class="text-lg fw-bold"><?php echo $client_contacts['all']; ?></div>
+                            <span class="text-success"><i class="fa-solid fa-hand-holding-medical"></i> <?php echo $client_contacts['ope'] ?></span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square feather-xl text-black-50"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card border-left-primary text-black h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <div class="text-black-75 small"><?php echo $this->lang->line('events'); ?> (<?php echo $this->lang->line('annual'); ?>)</div>
+                            <div class="text-lg fw-bold"><?php echo $client_contacts_year; ?></div>
+                            <div class="text-xs fw-bold d-inline-flex align-items-center">
+                                <?php if($klanten_contacten_vorig_jaar != 1 && $y > 0): ?>
+                                    <span class="text-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                                <polyline points="17 6 23 6 23 12"></polyline>
+                                        </svg>
+                                        <?php echo round($y,0); ?>% (<?php echo $this->lang->line('est'); ?>)
+                                    </span>
+                                <?php elseif($klanten_contacten_vorig_jaar != 1 && $y < 0): ?>
+                                    <span class="text-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                                            <polyline points="17 18 23 18 23 12"></polyline>
+                                        </svg>
+                                        <?php echo abs(round($y,0)); ?>% (<?php echo $this->lang->line('est'); ?>)
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square feather-xl text-black-50"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 	</div>
 </div>
 
@@ -319,51 +301,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#adminmgm").show();
 	$("#admin").addClass('active');
 	$("#adminlocation").addClass('active');
-
-// speedometer chart
-
-<?php if($distribution_proc_prod['products'] > 0 || $distribution_proc_prod['procedures'] > 0): ?>
-var ctx = document.getElementById("myPieChart");
-
-
-const footer = (tooltipItems) => {
-  let procent = 0;
-  procent = Math.round(tooltipItems[0].parsed/<?php echo round($distribution_proc_prod['total'], 0); ?>*100);
-  return procent + ' %';
-};
-
-var myPieChart = new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: ["products", "procedures"],
-    datasets: [
-    {
-      data: [<?php echo round($distribution_proc_prod['products']['total'], 0); ?>, <?php echo round($distribution_proc_prod['procedures'], 0); ?>],
-      backgroundColor: ['#4e73df', '#1cc88a'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673'],
-      hoverBorderColor: "rgba(234, 236, 244, 1)",
-    },
-    {
-      data: [<?php echo ((isset($distribution_proc_prod['products']['6'])) ? $distribution_proc_prod['products']['6'] : 0) . "," . ((isset($distribution_proc_prod['products']['21'])) ? $distribution_proc_prod['products']['21'] : 0); ?>, <?php echo round($distribution_proc_prod['procedures'], 0); ?>],
-      backgroundColor: ['#2596be', '#e28743', '#fff'],
-      hoverBackgroundColor: ['#2596be', '#e28743', '#fff']
-    },
-    ],
-  },
-  options: {
-    maintainAspectRatio: false,
-    rotation: -90,
-    circumference: 180,
-    plugins: {
-        tooltip: {
-            callbacks: {
-            footer: footer,
-            }
-        }
-    }
-  },
-});
-<?php endif; ?>
 
 // line chart
 const data = {

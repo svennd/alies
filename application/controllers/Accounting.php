@@ -25,7 +25,6 @@ class Accounting extends Admin_Controller
 	 * - monthly earnings
 	 * - yearly earnings
 	 * - client contacts per year / per month ?
-	 * - distribution products/procedures (earnings)
 	 * - earnings overview per month (/vs last year?)
 	 */
 	public function dashboard(int $month = 0)
@@ -46,10 +45,8 @@ class Accounting extends Admin_Controller
 			"current_date"				=> clone $date,
 			"monthly_earnings"			=> $this->bills->get_monthly_earning(clone $date),
 			"client_contacts" 			=> $this->events->get_contacts(clone $date),
-			"client_contacts_lm" 		=> $this->events->get_contacts(clone $last_month),
 			"client_contacts_year"		=> $this->events->get_contacts_year(clone $date),
 			"client_contacts_year_ly" 	=> $this->events->get_contacts_year(clone $last_year),
-			"distribution_proc_prod" 	=> $this->get_prod_proc_distribution(clone $date),
 			"yearly_earnings" 		 	=> $this->bills->get_yearly_earnings(clone $date),
 			"yearly_earnings_ly" 		=> $this->bills->get_yearly_earnings(clone $last_year),
 			"yearly_by_month"		 	=> $this->bills->get_yearly_earnings_by_month(clone $date),
@@ -58,18 +55,5 @@ class Accounting extends Admin_Controller
 		);
 		
 		$this->_render_page('accounting/dashboard', $data);
-	}
-
-	// function: get_prod_proc_distribution
-	// query both products & procedures
-	private function get_prod_proc_distribution(datetime $date): array
-	{
-		$products = $this->eprod->get_monthly_earning($date);
-		$procedures = $this->eproc->get_monthly_earning($date);
-		return array( 
-			"products" 		=> $products,
-			"procedures" 	=> $procedures,
-			"total" 		=> round($products['total']+$procedures, 2) // the error here is unpaid/partially paid bills
-		);
 	}
 }
