@@ -182,8 +182,7 @@ class Products extends Vet_Controller
 		{
 			$aaData[] = array(
 				"<a href='". base_url('products/profile/' . $product['id']) ."'>" . $product['name'] . "</a>",
-				"<small>" . $product['short_name']
-				. ($product['wholesale_name']) ? "<br/>" .$product['wholesale_name'] : "". "</small>",
+				"<small>" . ($product['wholesale_name']) ? $product['wholesale_name'] : "". "</small>",
 
 				$product['type']['name']
 			);
@@ -194,23 +193,21 @@ class Products extends Vet_Controller
 	public function product(int $id)
 	{
 		$update = false;
-		if ($this->input->post('submit')) {
+
+		if ($this->input->post('submit') && $this->ion_auth->in_group("admin")) {
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
 
 			$input = array(
 								"name" 					=> $this->input->post('name'),
-								"short_name" 			=> $this->input->post('short_name'),
+								// "short_name" 			=> $this->input->post('short_name'), // is this ever used ?
 								"wholesale_name" 		=> $this->input->post('input_wh_name'),
 								"producer" 				=> $this->input->post('producer'),
 								"supplier" 				=> $this->input->post('supplier'),
-								"posologie" 			=> $this->input->post('posologie'),
-								"toedieningsweg" 		=> $this->input->post('toedieningsweg'),
 								"type" 					=> $this->input->post('type'),
 								"dead_volume"			=> $this->input->post('dead_volume'),
 								"vaccin_disease"		=> $this->input->post('vaccin_disease'),
 								"buy_volume" 			=> $this->input->post('buy_volume'),
 								"sell_volume" 			=> $this->input->post('sell_volume'),
-								"buy_price"				=> $this->input->post('buy_price'),
 								"unit_buy" 				=> $this->input->post('unit_buy'),
 								"unit_sell" 			=> $this->input->post('unit_sell'),
 								"input_barcode" 		=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
@@ -219,11 +216,9 @@ class Products extends Vet_Controller
 								"vaccin" 				=> (is_null($this->input->post('vaccin')) ? 0 : 1),
 								"vaccin_freq" 			=> $this->input->post('vaccin_freq'),
 								"booking_code" 			=> $this->input->post('booking_code'),
-								"delay" 				=> $this->input->post('delay'),
-								"comment" 				=> $this->input->post('comment'),
+								"comment_admin" 		=> $this->input->post('comment_admin'),
 								"vhbcode" 				=> $this->input->post('vhbcode'),
 								"wholesale"				=> $this->input->post('wholesale'),
-								"buy_price_date" 		=> $this->input->post('buy_price_date'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"discontinued" 			=> (is_null($this->input->post('discontinued')) ? 0 : 1),
 								"limit_stock" 			=> $this->input->post('limit_stock')
@@ -236,22 +231,19 @@ class Products extends Vet_Controller
 
 			# log this
 			# reduce log blob
-			foreach (array('short_name', 'wholesale_name', 'producer', 'supplier', 'posologie', 'toedieningsweg', 'type', 'buy_volume', 'sell_volume', 'unit_buy', 'unit_sell', 'delay') as $key) { unset($input[$key]); }
+			foreach (array('wholesale_name', 'producer', 'supplier', 'type', 'buy_volume', 'sell_volume', 'unit_buy', 'unit_sell') as $key) { unset($input[$key]); }
 			foreach ($input as $key => $value) { if (is_null($value)) { unset($input[$key]); } }
 			
 			$this->logs->logger(INFO, "update_product", " id : " . $id . " data:" . var_export($input, true));
 		}
 
 		$data = array(
-						'product' 			=> $this->products->with_prices('fields:id, volume, price|order_inside:volume asc')->get($id),
+						'product' 			=> $this->products->get($id),
 						'type' 				=> $this->prod_type->get_all(),
 						'update'			=> $update,
 						'llimit'			=> $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all(),
 						'stock_locations'	=> $this->stock_location->get_all(),
-						'booking'			=> $this->booking->get_all(),
-						'history_1m'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -30 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
-						'history_6m'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -180 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
-						'history_1y'		=> $this->eprod->fields('volume')->where('created_at > DATE_ADD(NOW(), INTERVAL -365 DAY)', null, null, false, false, true)->where(array("product_id" => $id))->get_all(),
+						'booking'			=> $this->booking->get_all()
 						);
 		$this->_render_page('product/details', $data);
 	}

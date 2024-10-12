@@ -280,7 +280,9 @@ $lang['show_history']             = 'toon';
 # limits
 $lang['local_stock']             = 'Lokale Stock'; 
 $lang['global_stock']             = 'Globale Stock'; 
-$lang['limit']             = 'Limiet'; 
+$lang['limit']                      = 'Limiet'; 
+$lang['global_limit']           = 'Limiet (globaal)'; 
+$lang['global_limit_explain']  = 'Minimale hoeveelheid producten over alle stock locaties.'; 
 $lang['global_use']             = 'Globaal verbruik'; 
 $lang['explain_month']      = 'Lokaal en globaal verbruik gedurende de laatste 30 dagen';
 
@@ -304,7 +306,7 @@ $lang['input_barcode']          = 'Invoer barcode';
 $lang['booking']                = 'Grootboekrekening'; 
 $lang['delay']                  = 'Vertraging'; 
 $lang['vaccin']                 = 'Vaccin'; 
-$lang['vaccin_freq']            = 'Vaccine Frequency'; 
+$lang['vaccin_freq']            = 'Vaccin frequentie'; 
 $lang['product_entered']        = 'Product toegevoegd'; 
 
 $lang['eol']                    = 'Vervaldatum'; 
@@ -412,3 +414,20 @@ $lang['expired_stock_expl']         = "Deze tabel toont producten (1)die vervall
 $lang['teeth']         = "Tanden fiche";
 $lang['paint_color']         = "Kleur";
 
+# config product page
+$lang['product_name_info']        = "Deze opties worden gebruikt om een product te identificeren.";
+$lang['product_name_base_name']   = "De gebruikelijke naam van het product";
+$lang['wholesale_link_info']      = "Link product naam met gekend groothandel product.";
+$lang['wholesale']                = "Groothandel";
+$lang['wholesale_info']           = "Deze waarden kunnen automatisch ingevuld worden bij het connecteren van de product met de groothandel.";
+$lang['producer']                 = 'Producent';
+$lang['vaccin_explain']           = '0 om geen rappel automatisch toe te voegen';
+$lang['vaccin_layterm']           = 'Vaccin preventie';
+$lang['vaccin_layterm_explain']   = 'gebruikt om klanten te informeren over de vaccinatie doelgroep';
+$lang['dead_volume_explain']      = 'Resterende vloeistof na injectie die niet wordt toegediend.';
+$lang['gs1_scan_explain']         = 'Scan een GS1 barcode en de product code zal geimporteerd worden.';
+$lang['buy']                      = 'Aankoop';
+$lang['buy_btw']                  = 'Aankoop BTW';
+$lang['sell_btw']                 = 'Verkoop BTW';
+$lang['sell']                     = 'Verkoop';
+$lang['admin_comment']            = 'Deze opmerkingen zijn enkel zichtbaar voor admin.';

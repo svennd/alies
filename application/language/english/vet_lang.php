@@ -278,6 +278,8 @@ $lang['local_stock']             = 'Local Stock';
 $lang['backorder']         = 'Back Order';
 $lang['global_stock']             = 'Global Stock'; 
 $lang['limit']             = 'Limit'; 
+$lang['global_limit']             = 'Global Limit'; 
+$lang['global_limit_explain']  = 'Total available amount over all stock locations'; 
 $lang['global_use']             = 'Global use'; 
 $lang['explain_month']      = 'local & global use over the last 30 days.';
 
@@ -374,7 +376,6 @@ $lang['source']                 = 'Source';
 
 $lang['lab_code']              = 'Lab code'; 
 $lang['value']                 = 'Value'; 
-$lang['limit']                 = 'Limit'; 
 
 # reports
 $lang['Reporting']             = 'Reports'; 
@@ -403,7 +404,24 @@ $lang['writeoff']                = "Writeoff";
 $lang['expired_stock']         = "Expired Stock";
 $lang['expired_stock_expl']         = "This table shows products that are expired (up to 360d) or are going to expire soon (90d).";
 
-
 # teeth
 $lang['teeth']         = "Teeth";
 $lang['paint_color']         = "Paint color";
+
+# config product page
+$lang['product_name_info']        = "These options are used to identify a product.";
+$lang['product_name_base_name']   = "The common name of the product";
+$lang['wholesale_link_info']      = "Link product name with known wholesale product.";
+$lang['wholesale']                = "Wholesale";
+$lang['wholesale_info']           = "These values can be automatically filled in when connecting the product with the wholesaler.";
+$lang['producer']                 = "Producer";
+$lang['vaccin_explain']           = "0 to not automatically add a booster.";
+$lang['vaccin_layterm']           = "Vaccine prevention";
+$lang['vaccin_layterm_explain']   = "used to inform customers about the target group for vaccination";
+$lang['dead_volume_explain']      = "Remaining fluid after injection that is not administered.";
+$lang['gs1_scan_explain']         = "Scan a GS1 barcode, and the product code will be imported.";
+$lang['buy']                      = "Purchase";
+$lang['buy_btw']                  = "Purchase VAT";
+$lang['sell_btw']                 = "Sales VAT";
+$lang['sell']                     = "Sale";
+$lang['admin_comment']            = "These comments are only visible to the admin.";

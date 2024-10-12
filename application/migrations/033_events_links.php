@@ -25,6 +25,7 @@ class Migration_events_links extends CI_Migration {
 		
 		# add vaccine disease name to products (for vaccine export)
 		$sql[] = "ALTER TABLE `products` ADD `vaccin_disease` VARCHAR(255) NOT NULL AFTER `vaccin_freq`;";
+		$sql[] = "ALTER TABLE `products` CHANGE `vaccin_disease` `vaccin_disease` VARCHAR(255) DEFAULT NULL;";
 		
 		foreach ($sql as $q)
 		{

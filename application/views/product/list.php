@@ -15,7 +15,7 @@
 				<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm btn-outline-primary"><?php echo $type['name']; ?></a>
 			<?php endforeach; ?>
 			<hr/>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th><?php echo $this->lang->line("name"); ?></th>
@@ -27,7 +27,7 @@
                 </div>
 		</div>
 	</p>
-
+	
 <script type="text/javascript">
 const URL_LIST_PROD 	= '<?php echo base_url('products/get/'. $query); ?>';
 document.addEventListener("DOMContentLoaded", function(){
