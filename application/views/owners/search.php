@@ -2,41 +2,6 @@
 .card-waves .card-body {
     background-image: url("<?php echo base_url('/assets/img/bg-waves.svg'); ?>");
 }
-.card-waves .card-body, .card-angles .card-body {
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: center bottom;
-}
-.nav-borders .nav-link.active {
-    color: #0061f2;
-    border-bottom-color: #0061f2;
-}
-.nav-borders .nav-link:hover {
-    border-bottom-color: #aebdd4;
-}
-.nav-borders .nav-link {
-    color: #69707a;
-    border-bottom-width: 0.125rem;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-
-.table-search tbody tr:hover {
-  color: #858796;
-  background-color: #EFFCFB !important;
-  transition: background-color 0.4s ease;
-}
-
-.table-search tbody td:hover {
-  background-color: #e1f5f0 !important;
-  transition: background-color 0.2s ease;
-}
 </style>
 
 <!-- normal button : on small screens -->
@@ -119,7 +84,7 @@
 		<div class="card shadow mb-4">
 			<!-- <div class="card-header"><?php echo $this->lang->line('search_client'); ?></div> -->
 			<div class="card-body">
-				<table class="table table-search display dt-responsive nowrap" width="100%" id="dataTable">
+				<table class="table table-sm table-search display dt-responsive nowrap" width="100%" id="dataTable">
 				<thead>
 				<tr>
 					<th><?php echo $this->lang->line('last_name'); ?></th>
@@ -148,22 +113,14 @@
 					<?php foreach ($current as $res):?>
 						<tr>
 							<td>								
-								<a href="<?php echo base_url('owners/detail/' . $res['id']); ?>" class="text-nowrap">
-										<?php if($res['debts']): ?>
-											<span style="color:tomato !important;">
-										<?php endif; ?>
-										<?php if($res['low_budget']): ?>
-											<span style="color:#a77628 !important;">
-										<?php endif; ?>
+								<a href="<?php echo base_url('owners/detail/' . $res['id']); ?>" class="text-nowrap 
+																					<?php echo ($res['debts']) ? "search-owners-debts" : ""; ?>											
+																					<?php echo ($res['low_budget']) ? "search-owners-low-budget" : ""; ?>											
+										">
+					
 										<?php if($res['disabled']): ?><s><?php endif; ?>
 											<?php echo $res['last_name']; ?>
 										<?php if($res['disabled']): ?></s><?php endif; ?>
-										<?php if($res['low_budget']): ?>
-											</span>
-										<?php endif; ?>
-										<?php if($res['debts']): ?>
-											</span>
-										<?php endif; ?>
 								</a> 
 								<?php if ($key == "pets"): ?>
 									<small>(<?php echo get_symbol($res['type']); ?><?php echo $res['name'] ?>)</small>
@@ -183,7 +140,7 @@
 								<?php echo (!empty($res['phone3'])) ? print_phone($res['phone3']) . '<br/>' : ''; ?>
 							</td>
 							<?php endif; ?>
-							<td data-filter="<?php echo $key; ?>" data-sort="<?php echo is_null($res['last_bill']) ? 0 : strtotime($res['last_bill']); ?>"><?php echo $res['last_bill']; ?></td>
+							<td data-filter="<?php echo $key; ?>" data-sort="<?php echo is_null($res['last_bill']) ? 0 : strtotime($res['last_bill']); ?>"><?php echo user_format_date($res['last_bill'], $user->user_date); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				<?php endforeach; ?>

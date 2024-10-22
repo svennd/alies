@@ -42,7 +42,7 @@
 						<strong class="mb-0"><?php echo $this->lang->line('product_name'); ?>*</strong>
 						<p class="text-muted mb-0"><?php echo $this->lang->line('product_name_base_name'); ?></p>
 					</div>
-					<div class="col-auto">
+					<div class="col">
 						<input type="text" class="form-control" id="product_name" name="name" placeholder="" value="<?php echo (isset($product['name'])) ? ($product['name']) : ''; ?>" required>
 					</div>
 				</div>
