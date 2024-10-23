@@ -64,7 +64,7 @@
                 <p class="text-muted mb-0">Structured messages</p>
             </div>
             <div class="col-auto">
-                <select class="custom-select" size="3">
+                <select name="conf_struct_config" class="custom-select" size="3">
                     <option value="<?php echo CLIENT; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT) ? 'selected' : ''; ?>>Client ID</option>
                     <option value="<?php echo CLIENT_BILL; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT_BILL) ? 'selected' : ''; ?>>Client ID + bill ID</option>
                     <option value="<?php echo CLIENT_3DIGIT_BILL; ?>" <?php echo (isset($config['struct_config']) && base64_decode($config['struct_config']) == CLIENT_3DIGIT_BILL) ? 'selected' : ''; ?>>Client ID + 3 last digits bill</option>
