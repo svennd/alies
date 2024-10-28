@@ -352,7 +352,7 @@ class Events_model extends MY_Model
 		JOIN owners ON owners.id = pets.owner
 		LEFT JOIN bills ON bills.id = events.payment
 		WHERE
-			events.created_at > DATE_ADD(NOW(), INTERVAL -7 DAY)
+			events.created_at > DATE_ADD(NOW(), INTERVAL -14 DAY)
 		AND
 			events.no_history = 0
 		". (($admin) ? "" : "AND ( events.vet = " . $this->user->id . " OR events.vet_support_1 = " . $this->user->id . " OR events.vet_support_2 = " . $this->user->id . ")") ."
@@ -368,10 +368,18 @@ class Events_model extends MY_Model
 	public function get_contacts(datetime $date)
 	{
 		return 
-				$this->events
+				array( "all" =>
+					$this->events
 						->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 						->where('created_at <= LAST_DAY(STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i"))', null, null, false, false, true)
-						->count_rows();
+						->count_rows(),
+						"ope" =>
+						$this->events
+							->where(array('type' => OPERATION))
+							->where('created_at >= STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+							->where('created_at <= LAST_DAY(STR_TO_DATE("' . $date->format('Y-m-d') . ' 23:59", "%Y-%m-%d %H:%i"))', null, null, false, false, true)
+							->count_rows(),
+					);
 	}
 
 	// accounting

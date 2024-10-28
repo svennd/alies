@@ -4,7 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // Class: Files
 class Files extends Vet_Controller
 {
-	private $upload_dir = "./data/";
+	private $upload_dir = "./data/upload/";
+	private $upload_dir_tmp = "./data/tmp/";
 	private $accepted_mime_type;
 
 	# input
@@ -111,7 +112,7 @@ class Files extends Vet_Controller
 	public function new_file_event($event_id)
 	{
 		$content = file_get_contents($_FILES['data']['tmp_name']);
-		return file_put_contents("./data/e" . $event_id . "_" . $this->input->post('file_name'), $content, FILE_APPEND | LOCK_EX);
+		return file_put_contents($this->upload_dir_tmp . "e" . $event_id . "_" . $this->input->post('file_name'), $content, FILE_APPEND | LOCK_EX);
 	}
 
 
@@ -123,7 +124,7 @@ class Files extends Vet_Controller
 	public function new_file_event_complete($event_id)
 	{
 		$file_name			= $this->input->post('file_name');
-		$current_file 		= $this->upload_dir . "/e" . $event_id . "_" . $file_name;
+		$current_file 		= $this->upload_dir_tmp . "/e" . $event_id . "_" . $file_name;
 		$mimetype			= $this->get_mime_type($current_file);
 
 		# sanity check
@@ -143,7 +144,7 @@ class Files extends Vet_Controller
 		// move it from staging to finished
 		rename(
 			$current_file,
-			$this->upload_dir . "/stored/e" . $event_id . "_" . $file_name
+			$this->upload_dir . "e" . $event_id . "_" . $file_name
 		);
 
 		$this->events_upload->insert(array(
@@ -171,10 +172,10 @@ class Files extends Vet_Controller
 		$timestamp = date('Hmsdmy');
 
 		// in case its auto storing data, remove older drawings
-		array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
+		array_map('unlink', glob($this->upload_dir . "e" . $event_id . "_*_draw.jpeg"));
 		
 		// store
-		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir . "stored/", "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
+		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir, "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
 
 		// if auto stored don't save it to database
 		if ($final) 
@@ -202,7 +203,7 @@ class Files extends Vet_Controller
 	public function reset_draw(int $event_id)
 	{
 		// in case its auto storing data, remove older drawings
-		array_map('unlink', glob($this->upload_dir . "stored/e" . $event_id . "_*_draw.jpeg"));
+		array_map('unlink', glob($this->upload_dir . "e" . $event_id . "_*_draw.jpeg"));
 
 		// respond
 		echo json_encode(array('success' => true));
@@ -218,7 +219,7 @@ class Files extends Vet_Controller
 
 		force_download(
 				$file_info['filename'],
-				file_get_contents($this->upload_dir . "stored/e" . $file_info['event'] . "_" . $file_info['filename']),
+				file_get_contents($this->upload_dir . "e" . $file_info['event'] . "_" . $file_info['filename']),
 				$file_info['mime']
 		);
 	}
@@ -231,9 +232,9 @@ class Files extends Vet_Controller
 	{
 		$event_info = $this->events_upload->get($id);
 
-		if($event_info && file_exists($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']))
+		if($event_info && file_exists($this->upload_dir . "e" . $event_info['event'] . "_" . $event_info['filename']))
 		{
-			unlink($this->upload_dir . "stored/e" . $event_info['event'] . "_" . $event_info['filename']);
+			unlink($this->upload_dir . "e" . $event_info['event'] . "_" . $event_info['filename']);
 		}
 		# report it
 		else

@@ -253,6 +253,7 @@ $lang['birth']      = 'Geboortedatum';
 $lang['pet_name']      = 'Naam';
 $lang['weight']      = 'Gewicht';
 $lang['add_weight']      = 'Gewicht toevoegen';
+$lang['weight_curve']      = 'Gewichtscurve';
 $lang['notes']      = 'Opmerkingen';
 $lang['identification']      = 'Identificatie';
 $lang['properties']      = 'Eigenschappen';

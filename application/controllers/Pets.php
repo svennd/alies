@@ -39,6 +39,25 @@ class Pets extends Vet_Controller
 		redirect('owners', 'refresh');
 	}
 
+	/*
+	* function: push_weight
+	* push a new weight value from owner page overview
+	*/
+	public function push_weight(int $pet_id)
+	{
+		if ($this->input->post("weight") > 0) {
+			$this->pets_weight->insert(array(
+												"pets" 		=> $pet_id,
+												"weight" 	=> $this->input->post("weight")
+											));
+			$this->pets->update(
+				array(
+										"last_weight" => $this->input->post("weight")),
+				$pet_id
+			);
+		}
+	}
+
 	# input new weight on weight page
 	public function add_weight(int $pet_id)
 	{
