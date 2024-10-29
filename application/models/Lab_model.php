@@ -39,8 +39,8 @@ class Lab_model extends MY_Model
 						');
 		$this->db->join('pets', 'pets.id = lab.pet', 'left');
 		$this->db->join('owners', 'owners.id = pets.owner', 'left');
-		$this->db->where("lab.created_at >=", $search_from);
-		$this->db->where("lab.created_at <=", $search_to);
+		$this->db->where("date(lab.created_at) >=", $search_from);
+		$this->db->where("date(lab.created_at) <=", $search_to);
 		$this->db->where('lab.deleted_at', NULL);
 		$this->db->order_by('lab.id', 'desc');
 		return $this->db->get('lab')->result_array();

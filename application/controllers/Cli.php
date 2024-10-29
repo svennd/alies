@@ -382,7 +382,7 @@ class Cli extends Frontend_Controller
 		
 		foreach($files as $file)
 		{
-			$line = 0;
+			echo "Processing : " . $file . "\n";
 			$this->process_mslink_lab_file($file, $path);
 		}
 	}
@@ -422,8 +422,8 @@ class Cli extends Frontend_Controller
 		// determine what is most likely the pet_id
 		$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : NULL));
 		
-		$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $start_analyse)->format('Y-m-d H:i:s');
-		$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', $end_analyse)->format('Y-m-d H:i:s');
+		$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', trim($start_analyse))->format('Y-m-d H:i:s');
+		$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', trim($end_analyse))->format('Y-m-d H:i:s');
 
 		
 		$internal_id = $this->lab->add_mslink_sample(
@@ -488,10 +488,14 @@ class Cli extends Frontend_Controller
 			
 			// if the name is not empty
 			if ($lab_name == "") { break; }
+
+			# increase the loop
+			$i += 5;
+
+			# these we don't know what they do, so we skip them
 			if ($lab_name == "Err1") { continue; }
 			if ($lab_name == "Err2") { continue; }
 			if ($lab_name == "Err3") { continue; }
-			$i += 5;
 
 			# data prep
 			if ($low_high != "")
