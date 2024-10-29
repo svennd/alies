@@ -426,3 +426,6 @@ $lang['buy_btw']                  = "Purchase VAT";
 $lang['sell_btw']                 = "Sales VAT";
 $lang['sell']                     = "Sale";
 $lang['admin_comment']            = "These comments are only visible to the admin.";
+
+# vaccine export
+$lang['exclude_explain']          = 'These columns are excluded from the export.';

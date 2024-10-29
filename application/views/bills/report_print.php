@@ -44,13 +44,14 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
 		right: 0px;
 		height: 130px; 
 	}
-
 </style>
 
 </head>
 <body>
 <?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>  
 	<br/>
+
+<div class="content">
   <table width="100%">
     <tr>
 		<td valign="top" width="60%">
@@ -58,25 +59,29 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
 			<br/>
 			<br/>
 			<br/>
-			<?php echo $this->lang->line('client_id'); ?> : #<?php echo $owner['id']; ?>
+			<?php echo $this->lang->line('client_id'); ?> : #<?php echo $owner['id']; ?><br/>
+			<?php if ($owner['btw_nr']) : ?><?php echo $this->lang->line('client')  . " ". $this->lang->line('VAT'); ?> : <?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
+			
 		</td> 
-        <td align="left" class="letterhead">
+        <td align="left" valign="bottom" class="letterhead">
+			<br/>
+			<br/>
 			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br>
 			<?php echo $owner['street'] . ', ' . $owner['nr']; ?><br>
 			<?php echo $owner['zip'] . ' ' . $owner['city']; ?><br>
 			<br>
-			<?php if ($owner['btw_nr']) : ?><?php echo $this->lang->line('VAT'); ?> : <?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
 			<?php if ($owner['invoice_addr']) : ?>
 				<strong><?php echo $this->lang->line('invoice_addr'); ?></strong>
 				<?php if ($owner['invoice_contact']) : ?><b><?php echo $owner['invoice_contact']; ?></b><br/><?php endif; ?>
 				<?php if ($owner['invoice_addr']) : ?><?php echo $owner['invoice_addr']; ?><br/><?php endif; ?>
 				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><?php endif; ?>
 			<?php endif; ?>
-			<br/>
 		</td>
     </tr>
   </table>
-  <hr style="min-height: 1px; border:0px; background: #DCDDE1;"/>
+
+<hr style="min-height: 1px; margin-top:50px; border:0px; background: #DCDDE1;"/>
+
 <table width="100%">
 	<tr>
 		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_id'); ?></th>
@@ -127,14 +132,14 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
   </tr>
 </table>
 
-<table width="100%">
+<table width="100%" style="border-left:solid #eeeeee 1px; border-right:solid #eeeeee 1px;">
     <thead class="gray">
       <tr>
         <th align="left"><?php echo $this->lang->line('description'); ?></th>
         <th align="right"><?php echo $this->lang->line('Quantity'); ?></th>
         <th align="right"><?php echo $this->lang->line('Unit_price'); ?></th>
         <th align="right"><?php echo $this->lang->line('VAT'); ?></th>
-        <th align="right"><?php echo $this->lang->line('Total'); ?></th>
+        <th align="right"><?php echo $this->lang->line('Total'); ?>&nbsp;</th>
       </tr>
     </thead>
     <tbody>
@@ -163,7 +168,7 @@ foreach ($print as $pet_id => $event):
 				<div style="display: inline-block;"><?php echo number_format($procedure['unit_price'], 2); ?></div>
 			</td>
 			<td align="right"><?php echo $procedure['btw']; ?> %</td>
-			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?></td>
+			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?>&nbsp;</td>
 		</tr>
 	<?php endforeach; ?>
 	<?php foreach ($prod as $product): ?>
@@ -177,7 +182,7 @@ foreach ($print as $pet_id => $event):
 				<div style="display: inline-block;"><?php echo number_format($product['unit_price'], 2); ?></div>
 			</td>
 			<td align="right"><?php echo $product['btw']; ?> %</td>
-			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?></td>
+			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?>&nbsp;</td>
 		</tr>
 	<?php endforeach; ?>
 <?php endforeach; ?>
@@ -187,8 +192,8 @@ foreach ($print as $pet_id => $event):
 </tr>
 </tbody>
 	</table>
-	<table width="100%">
-    <tfoot>
+	
+	<table width="100%" style="border-collapse: collapse;">
         <tr>
 			<td rowspan="4" valign="top">
 				<table width="65%" style="text-align:center;">
@@ -222,12 +227,10 @@ foreach ($print as $pet_id => $event):
 			<?php $sum_btw = 0.0; foreach($btw_details as $x => $y): $sum_btw += $y['calculated']; endforeach; echo number_format($sum_btw, 2); ?> &euro;</td>
 		</tr>
 		<tr>
-            <td align="right" class="enlarge"><?php echo $this->lang->line('Total'); ?></td>
-            <td align="right" class="enlarge"><span class="gray" style="padding:5px;"><?php echo number_format($bill['total_brut'], 2); ?> &euro;</span></td>
+            <td align="right" class="enlarge" style="border:dashed grey 1px;border-right:0px;padding:6px;"><?php echo $this->lang->line('Total'); ?></td>
+            <td align="right" class="enlarge" style="border:dashed grey 1px;border-left:0px;padding:6px;"><span class="gray" style="padding:5px;"><?php echo number_format($bill['total_brut'], 2); ?> &euro;</span></td>
         </tr>
-    </tfoot>
   </table>
-
 
 <br/>
 <br/>
@@ -261,7 +264,7 @@ foreach ($print as $pet_id => $event):
 </div>
 <?php endif; ?>
 <br/>
-
+</div>
 <footer>
 <?php if (file_exists(dirname(__FILE__) . "/../custom/bill_footer.php")) { include dirname(__FILE__) . "/../custom/bill_footer.php"; }  ?>  
 </footer>
