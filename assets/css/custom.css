@@ -206,3 +206,10 @@ input[type='radio']:checked {
   font-family: "Font Awesome 6 Free"; /* Ensure correct Font Awesome family */
   font-weight: 600; /* For solid icons */
 }
+
+/*
+  config list 
+*/
+.nobot {
+  margin-bottom: 0;
+}

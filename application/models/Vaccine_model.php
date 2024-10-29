@@ -91,17 +91,69 @@ class Vaccine_model extends MY_Model
 		return ($this->db->query($sql)->result_array());
 	}
 
-	public function get_expiring_vaccines($date)
+	// show only the vaccines product names
+	// for filtering purpose
+	public function get_expiring_vaccines_product_list($date)
 	{
+		$sql = "
+			SELECT 
+				products.id as product_id,
+				products.name as product_name
+
+				FROM 
+			" . $this->table . " as vac
+			
+			JOIN
+				products
+			ON
+				products.id = vac.product_id
+
+			JOIN
+				pets
+			ON
+				pets.id = vac.pet
+				
+			JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			JOIN
+				users
+			ON
+				users.id = vac.vet
+
+			WHERE
+				vac.redo <= LAST_DAY('" . $date . "') 
+			AND 
+				vac.redo >= DATE_FORMAT('" . $date . "', '%Y-%m-01')
+			AND
+				pets.death = 0
+			AND
+				pets.lost = 0
+			AND
+				vac.no_rappel = 0
+			AND
+				owners.disabled = 0 -- not disabled
+			GROUP BY products.name
+			ORDER BY vac.redo ASC
+		";
+		
+		return ($this->db->query($sql)->result_array());
+	}
+
+	public function get_expiring_vaccines($date, $excluded = array())
+	{
+		// note don't change these names
+		// they are used in export ( view/vaccine/export.php )
 		$sql = "
 			SELECT 
 
 				owners.id as owner_id,
 				owners.first_name as first_name,
 				owners.last_name as last_name,
-				owners.street as owner_street,
-				owners.nr as owner_nr,
-				owners.city as owner_city,
+				owners.street as street,
+				owners.nr as nr,
+				owners.city as city,
 				owners.province as province,
 				owners.zip as zip,
 
@@ -154,6 +206,8 @@ class Vaccine_model extends MY_Model
 				vac.no_rappel = 0
 			AND
 				owners.disabled = 0 -- not disabled
+			AND
+				products.id NOT IN ('" . implode("','", $excluded) . "')
 			ORDER BY vac.redo ASC
 		";
 		

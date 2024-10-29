@@ -15,20 +15,16 @@ class Vaccine extends Vet_Controller
 		$this->load->helper('file_download');
 	}
 	
-	public function index(int $month = 1, $export = false)
+	public function index(int $month = 1)
 	{
 		# safety check
 		if (abs($month) >= 3 && !$this->ion_auth->in_group("admin"))
 		{
-            $this->logs->logger(WARN, "attempt_download_vaccine_list", "month : " . $month);
+            $this->logs->logger(WARN, "boundary_vaccine_attack", "month : " . $month);
 			redirect('/');
 		}
 
-		# get first day of the month
-		$date = new DateTime('first day of this month');
-
-		# increase or decreate month by settings
-		$date->modify($month . 'month');
+		$date = $this->get_month($month);
 
 		$data = array(
 				"month" 		=> $date->format('F'),
@@ -36,9 +32,41 @@ class Vaccine extends Vet_Controller
 				"month_int"		=> $month,
 				"expiring_vacs" => $this->vacs->get_expiring_vaccines($date->format('Y-m-d H:i:s'))
 		);
-		if ($export)
+		
+		$this->_render_page('vaccine/overview', $data);
+	}
+
+	/*
+	* function: export
+	* export a filtered list if required
+	*/
+	public function export(int $month = 1)
+	{
+		# safety check
+		if (abs($month) >= 3 && !$this->ion_auth->in_group("admin"))
 		{
+			$this->logs->logger(WARN, "boundary_vaccine_download_attack", "month : " . $month);
+			redirect('/');
+		}
+		
+		$date = $this->get_month($month);
+
+		$data = array(
+						"month" 		=> $date->format('F'),
+						"year" 			=> $date->format('Y'),
+						"month_int"		=> $month,
+						"excluded_products" => $this->vacs->get_expiring_vaccines_product_list($date->format('Y-m-d H:i:s'))	
+		);
+
+		if ($this->input->post('submit'))
+		{
+			// do download
+			$exclusion = $this->input->post('excluded_products') ?? array();
+			$data['expiring_vacs'] = $this->vacs->get_expiring_vaccines($date->format('Y-m-d H:i:s'), $exclusion);
+			$data['date_format'] = $this->input->post('date_format');
+
 			$csv = $this->load->view('vaccine/export', $data, true);
+			
 			array_to_csv_download($csv, "vaccines_" . $date->format('M_Y') . ".csv");
 
 			// PII so, keep atleast a log
@@ -46,11 +74,10 @@ class Vaccine extends Vet_Controller
 		}
 		else
 		{
-            $this->logs->logger(DEBUG, "consult_vaccine_list", "month : " . $month);
-			$this->_render_page('vaccine/overview', $data);
+			$this->_render_page('vaccine/export_process', $data);
 		}
 	}
-
+	
 	public function fiche(int $pet_id)
 	{
 		$pet_info = $this->pets->with_owners('fields:first_name,last_name')->fields('id, type, name')->get($pet_id);
@@ -131,5 +158,21 @@ class Vaccine extends Vet_Controller
 		);
 
 		$this->_render_page('vaccine/add', $data);
+	}
+
+
+	/*
+	*	function: get_month
+	*	get the current month (small helper)
+	*/
+	private function get_month(int $month): DateTime
+	{
+		# get first day of the month
+		$date = new DateTime('first day of this month');
+
+		# increase or decreate month by settings
+		$date->modify($month . 'month');
+
+		return $date;
 	}
 }

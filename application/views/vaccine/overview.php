@@ -4,7 +4,7 @@
 		<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<div>Vaccines - <?php echo $month . ' ' . $year; ?> (<?php echo count($expiring_vacs); ?>)</div>
 			<div class="dropdown no-arrow">
-				<a href="<?php echo base_url('vaccine/index/' . $month_int. '/export'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-export"></i> export csv : <?php echo $month . ' ' . $year; ?> </a>
+				<a href="<?php echo base_url('vaccine/export/' . (int)$month_int); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-export"></i> export</a>
 			</div>
 		</div>
             <div class="card-body">
@@ -51,8 +51,6 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-	
-
 	$("#dataTable").DataTable({
 			"order": [[ 2, "asc" ]],
 			"responsive": true

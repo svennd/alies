@@ -39,7 +39,7 @@ $lang['profile_picture_warning']  = 'Large images, might not upload; Consider of
 $lang['default_search']       = 'Standaard zoek resultaat';
 $lang['search_pet_name']      = 'Diernaam';
 $lang['search_all']           = 'Alles';
-$lang['default_date_format']  = 'Standaard datumnotatie';
+$lang['default_date_format']  = 'Datumnotatie';
 $lang['event_count']          = 'Aantal events';
 $lang['event_count_explain']  = 'De laatste 365 dagen';
 
@@ -432,3 +432,6 @@ $lang['buy_btw']                  = 'Aankoop BTW';
 $lang['sell_btw']                 = 'Verkoop BTW';
 $lang['sell']                     = 'Verkoop';
 $lang['admin_comment']            = 'Deze opmerkingen zijn enkel zichtbaar voor admin.';
+
+# vaccine export
+$lang['exclude_explain']          = 'Deze vaccins zullen <b>niet</b> geëxporteerd worden.';
