@@ -1,3 +1,43 @@
+<style>
+.noarrow.dropdown-toggle::after {
+    content: none; /* Removes the arrow */
+    border: none;	
+}
+.noarrow {
+	border-color: rgb(209, 211, 226);
+}
+.checkbox-menu li label {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin:0;
+    transition: background-color .4s ease;
+}
+.checkbox-menu li input {
+    margin: 0px 5px;
+    top: 2px;
+    position: relative;
+}
+
+.checkbox-menu li.active label {
+    background-color: #cbcbff;
+    font-weight:bold;
+}
+
+.checkbox-menu li label:hover,
+.checkbox-menu li label:focus {
+    background-color: #f5f5f5;
+}
+
+.checkbox-menu li.active label:hover,
+.checkbox-menu li.active label:focus {
+    background-color: #b8b8ff;
+}
+</style>
 <div class="row">
       <div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
@@ -12,21 +52,32 @@
             <div class="card-body">
 				<form action="<?php echo base_url('invoice/index'); ?>" method="post" autocomplete="off" class="form-inline">
 
-				  <div class="form-group mb-2 mx-3">
+				  <div class="form-group mr-2">
 					<label for="search_from" class="sr-only">search_from</label>
 					<input type="date" name="search_from" class="form-control" value="<?php echo $search_from; ?>" min="<?php echo $max_search_from; ?>" id="search_from">
 				</div>
-				  <div class="form-group mb-2">
+				  <div class="form-group">
 					<span class="fa-stack" style="vertical-align: top;">
 					  <i class="far fa-square fa-stack-2x"></i>
 					  <i class="fas fa-arrow-right fa-stack-1x"></i>
 					</span>
 				  </div>
-				  <div class="form-group mb-2 mx-3">
+				  <div class="form-group mx-2">
 					<label for="search_to" class="sr-only">search_to</label>
 					<input type="date" name="search_to" class="form-control" value="<?php echo $search_to; ?>" max="<?php echo date_format(new DateTime(), 'Y-m-d'); ?>" id="search_to">
 				  </div>
-				  <button type="submit" class="btn btn-success mb-2"><?php echo $this->lang->line('search_range'); ?></button>
+				  <div class="form-group mr-4">
+					  <div class="dropdown">
+						<button class="btn btn-outline-secondary dropdown-toggle noarrow" id="filter" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-sliders"></i></button>
+						<ul class="dropdown-menu checkbox-menu allow-focus">
+							<li><label><input type="checkbox" name="unpaid"> <?php echo $this->lang->line("unpaid"); ?></label></li>
+							<?php if($this->ion_auth->in_group("admin")): ?>
+							<li><label><input type="checkbox" name="modified"> <?php echo $this->lang->line("modified"); ?></label></li>
+							<?php endif; ?>
+						</ul>
+						</div>
+					</div>
+				  	<button type="submit" class="btn btn-success"><?php echo $this->lang->line('search_range'); ?></button>
 				</form>
 
 				<br/>
@@ -150,7 +201,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 		buttons: [
 			<?php if($this->ion_auth->in_group("admin")): ?>
-            { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+            /*
+			{ extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
+			 */
 			<?php else: ?>
             { text:'<i class="fa-solid fa-fw fa-users"></i>', className:'btn btn-outline-success btn-sm', 
 				action: function (e, dt, node, config) { 
@@ -188,5 +241,11 @@ document.addEventListener("DOMContentLoaded", function(){
       }
 
 	$('[data-toggle="tooltip"]').tooltip();
+
+	// filter dropdown menu
+	$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+	   $("#filter").css("color", "green");
+	   $(this).closest("li").toggleClass("active", this.checked);
+	});
 });
 </script>

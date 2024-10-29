@@ -44,7 +44,6 @@ class Invoice extends Vet_Controller
 		$dt = new DateTime();
 		$search_to = (!is_null($search_to)) ? date("Y-m-d", $search_to) : ((!is_null($this->input->post('search_to'))) ? $this->input->post('search_to') : $dt->format('Y-m-d'));
 		
-		
 		# restrict normal vets to 250 or config value
 		$search_limit = (int) base64_decode($this->conf['RestrictBills']['value']) ? (int) base64_decode($this->conf['RestrictBills']['value']) : 250;
 		# set default lookback to 7 days for vets
@@ -52,7 +51,10 @@ class Invoice extends Vet_Controller
 
 		$search_from = (!is_null($search_from)) ? date("Y-m-d", $search_from) : ((!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d'));
 
-		$bill_overview = $this->bills
+		$is_unpaid = (!is_null($this->input->post('unpaid'))) ? true : false ;
+		$is_modified = ($this->input->post('modified')) ? true : false;
+
+		$bill_query = $this->bills
 			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->with_location('fields:name')
@@ -60,8 +62,17 @@ class Invoice extends Vet_Controller
 			->with_owner('fields:last_name,id as user_id,low_budget,debts,btw_nr')
 			->limit($search_limit)
 			->order_by('created_at', 'desc')
-			->get_all();
+			;
+			
+		if ($is_unpaid) {
+			$bill_query->where(array('status' => BILL_INCOMPLETE));
+		}
 
+		if ($is_modified) {
+			$bill_query->where(array('modified' => 1));
+		}
+
+		$bill_overview = $bill_query->get_all();
 		# max search for vets ; 30 days
 		$dt->modify('-23 day');
 		
