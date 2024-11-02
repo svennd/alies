@@ -22,6 +22,13 @@ class Auth extends CI_Controller
 	// log the user in
 	public function login(int $location = -1)
 	{
+		$this->data['debug'] = false;
+
+		# check if there is a file called DEBUG_MODE
+		if (file_exists('DEBUG_MODE')) {
+			$this->data['debug'] = true;
+		}
+		
 		$this->set_login_suggestion($location);
 
 		$this->data['title'] = "Login";

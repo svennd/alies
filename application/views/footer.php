@@ -75,9 +75,14 @@
     <script src="<?php echo javascript('assets/js/april_fish.js'); ?>"></script>
     <div class="work-in-progress"><i class="fa-solid fa-fish fa-flip"></i></div> 
   <?php endif; ?>
-  
 	<?php echo (isset($extra_footer)) ? $extra_footer : ""; ?>
 
+  <?php if($debug_mode): ?>
+    <div class="work-in-progress">
+        <i class="fa-solid fa-hippo fa-bounce"></i>
+        <?php echo $debug_text; ?>
+    </div> 
+  <?php endif; ?>
 <script>
   const URL_ADD_STICKY 	= '<?php echo base_url('sticky/add'); ?>';
   const LANG_PLACEHOLDER = '<?php echo $this->lang->line('type_your_sticky'); ?>';

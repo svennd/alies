@@ -54,7 +54,14 @@
             </div>
           </div>
         </div>
-
+          <?php if ($debug): ?>
+            <div class="alert alert-danger" role="alert">
+            <strong>Debug mode!</strong>
+            <p>
+                Debug mode is enabled, this means that the system is in a testing phase. Please store your data in a safe place.
+            </p>
+            </div>
+          <?php endif; ?>
       </div>
 
     </div>

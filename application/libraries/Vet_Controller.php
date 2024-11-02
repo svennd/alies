@@ -8,6 +8,7 @@ class Vet_Controller extends MY_Controller
 	public $locations;
 	public $page_data;
 	public $conf;
+	public $debug_mode = false;
 
 	public function __construct()
 	{
@@ -64,8 +65,17 @@ class Vet_Controller extends MY_Controller
 			$this->logs->logger(ERROR, "detected_diff_location", "db:" . $this->_get_user_location() . " session:" . $user_location_id);
 		}
 
+		# check if there is a file called DEBUG_MODE
+		if (file_exists('DEBUG_MODE')) {
+			$this->debug_mode = true;
+			# get the timestamp of the file
+			$debug_text = "UPDATED " . date("d/m/Y", filemtime('DEBUG_MODE'));
+		}
+
 		# required on every page
 		$this->page_data = array(
+								"debug_mode" 				=> $this->debug_mode,
+								"debug_text" 				=> (isset($debug_text)) ? $debug_text : "",
 								"user" 						=> $this->user,
 								"all_locations"				=> $this->locations,
 								"clocation" 				=> $user_location_id,
