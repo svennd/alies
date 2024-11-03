@@ -520,7 +520,8 @@ class Stock_model extends MY_Model
 					GROUP_CONCAT(lotnr SEPARATOR '; ') as lotnr,
 					GROUP_CONCAT(DATE_FORMAT(s.created_at, '%H:%i %d/%c/%y') SEPARATOR '; ') as created_at,
 					p.name,
-					p.unit_buy
+					p.unit_buy,
+					p.btw_buy as btw_buy
 				FROM
 					stock as s
 				JOIN products as p ON
