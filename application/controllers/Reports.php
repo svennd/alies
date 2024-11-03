@@ -80,21 +80,36 @@ class Reports extends Admin_Controller
 		/* input */
 		$search_from 	= $this->input->post('search_from');
 		$search_to 		= $this->input->post('search_to');
+		$summary 		= ($this->input->post('summary')) ? true : false ;
 
-		# check usage
-		# if non given show from -3m to today
-		$usage = ($this->input->post('submit') == "usage" && $search_from && $search_to) ? 
-			$this->products->usage_detail($product_id, $search_from, $search_to) 
-				: 
-			$this->products->usage_detail($product_id, date("Y-m-d", strtotime("-3 months")), date("Y-m-d"));
-		
-		$data = array(
-			"prod_info"			=> $this->products->get($product_id),
-			"usage" 			=> $usage,
-			"search_from"		=> is_null($search_from) ? date("Y-m-d", strtotime("-3 months")) : $search_from,
-			"search_to"			=> is_null($search_to) ? date("Y-m-d") : $search_to,
-		);
-		$this->_render_page('reports/usage_detail', $data);
+		if (!$summary)
+		{
+			# check usage
+			# if non given show from -3m to today
+			$usage = ($this->input->post('submit') == "usage" && $search_from && $search_to) ? 
+				$this->products->usage_detail($product_id, $search_from, $search_to) 
+					: 
+				$this->products->usage_detail($product_id, date("Y-m-d", strtotime("-3 months")), date("Y-m-d"));
+			
+			$data = array(
+				"prod_info"			=> $this->products->get($product_id),
+				"usage" 			=> $usage,
+				"search_from"		=> is_null($search_from) ? date("Y-m-d", strtotime("-3 months")) : $search_from,
+				"search_to"			=> is_null($search_to) ? date("Y-m-d") : $search_to,
+			);
+			$this->_render_page('reports/usage_detail', $data);
+		}
+		else
+		{
+			$usage = $this->eprod->usage_summary($product_id, $search_from, $search_to);
+			$data = array(
+				"prod_info"			=> $this->products->get($product_id),
+				"usage" 			=> $usage,
+				"search_from"		=> is_null($search_from) ? date("Y-m-d", strtotime("-3 months")) : $search_from,
+				"search_to"			=> is_null($search_to) ? date("Y-m-d") : $search_to,
+			);
+			$this->_render_page('reports/usage_summary', $data);
+		}
 	}
 
 	public function usage_csv(int $product_id, $search_from, $search_to)
@@ -114,7 +129,7 @@ class Reports extends Admin_Controller
 									$p['id'],
 									$p['lotnr'],
 									$p['eol'],
-									$p['created_at'],
+									$p['event_created_at'],
 									);
 		}
 		array_to_csv($csv_lines);

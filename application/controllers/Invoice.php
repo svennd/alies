@@ -51,7 +51,7 @@ class Invoice extends Vet_Controller
 
 		$search_from = (!is_null($search_from)) ? date("Y-m-d", $search_from) : ((!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d'));
 
-		$is_unpaid = (!is_null($this->input->post('unpaid'))) ? true : false ;
+		$is_unpaid = ($this->input->post('unpaid')) ? true : false ;
 		$is_modified = ($this->input->post('modified')) ? true : false;
 
 		$bill_query = $this->bills
@@ -64,12 +64,12 @@ class Invoice extends Vet_Controller
 			->order_by('created_at', 'desc')
 			;
 			
-		if ($is_unpaid) {
-			$bill_query->where(array('status' => BILL_INCOMPLETE));
-		}
-
 		if ($is_modified) {
 			$bill_query->where(array('modified' => 1));
+		}
+		if ($is_unpaid) {
+			$bill_query->where('status', BILL_INCOMPLETE)
+         			   ->or_where('status', BILL_ONHOLD);
 		}
 
 		$bill_overview = $bill_query->get_all();

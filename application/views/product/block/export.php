@@ -24,28 +24,8 @@ document.addEventListener("DOMContentLoaded", function(){
             $('#monthlyUsageTable').DataTable({
                 data: response, 
                 columns: [
-                    { 
-                        data: 'month_year',
-                        render: function(data, type, row) {
-                            // Split the string into month and year components
-                            var components = data.split('/');
-                            if (components.length !== 2) return data; // return the original data if format is invalid
-
-                            // Parse month and year
-                            var month = parseInt(components[0]);
-                            var year = parseInt(components[1]);
-
-                            // Validate month and year
-                            if (isNaN(month) || isNaN(year)) return data; // return the original data if format is invalid
-
-                            // Create a new Date object with the parsed components
-                            var date = new Date(year, month - 1); // month is zero-based
-
-                            // Format the date as "Month Year"
-                            return date.toLocaleString('en-us', { month: 'long', year: 'numeric' });
-                        }
-                    },
-                    { data: 'total_volume' }
+                    { data: 'month_year', title: 'Month/Year' },
+                    { data: 'total_volume', title: 'Total Volume' }
                 ]
             });
         },
