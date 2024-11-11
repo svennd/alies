@@ -14,6 +14,9 @@ class Cli extends Frontend_Controller
 	// data import constants
 	const MSLINK_DATA_OFFSET = 18;
 
+	// data paths - should be in config somewhere
+	private const RX_DIR = "data/stored/rx/";
+
     public function __construct() {
         parent::__construct();
 
@@ -32,6 +35,7 @@ class Cli extends Frontend_Controller
 		$this->load->model('Log_stock_model', 'log_stock');
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Price_track_model', 'pricetrack');
+		$this->load->model('Rx_model', 'rx');
 
         $conf = $this->settings->get_all();
 		if ($conf) {
@@ -56,6 +60,7 @@ class Cli extends Frontend_Controller
 		echo "  - autoclose : auto close events\n";
 		echo "  - prune : prune old logs\n";
 		echo "  - auto_death : auto death pets\n";
+		echo "  - import_rx : scan files for new rx images\n";
 	}
 
 	/*
@@ -809,6 +814,82 @@ class Cli extends Frontend_Controller
 		else
 		{
 			$this->logs->logger(DEBUG, "ran_autoclose", "no affected");
+		}
+	}
+
+	/*
+	* function: import_rx
+	* scan files for new rx images
+	*/
+	public function import_rx($do_full_scan = false) {
+	
+		if ($do_full_scan)
+		{
+
+			$dirs = glob(SELF::RX_DIR . "/*", GLOB_ONLYDIR);
+		}
+		else
+		{
+			# only scan for last and this month (multiple dates still possible)
+			$pattern = SELF::RX_DIR . "{" . date("Y-m", strtotime("-1 month")) . "," . date("Y-m") . "}*";
+			$dirs = glob($pattern, GLOB_ONLYDIR|GLOB_BRACE);
+			
+		}
+
+		foreach ($dirs as $dir)
+		{
+			# iterate over files
+			$files = glob($dir . "/*.jpg");
+			foreach ($files as $file)
+			{
+				# get the file info
+				list($path, $basename, $ext, $name) = array_values(pathinfo($file));
+				
+				# check if file is already in the db
+				$exists = $this->rx->where(array("path" => basename($path) . '/' . $name))->get();
+				if ($exists) { continue; }
+
+				# get the meta data
+				if (is_file($path . '/' . $name. '.txt')) {
+					
+					$meta_content = trim(file_get_contents($path . '/' . $name . '.txt'));
+					foreach (explode("\n", $meta_content) as $line)
+					{
+						list($key, $value) = explode(":", $line);
+						if ($key == "PatientName")
+						{
+							$patient_pet = explode("^", $value);
+							$meta['client'] = trim($patient_pet[0]);
+							$meta['petname'] = trim($patient_pet[1]);
+						}
+						elseif ($key == "PatientSex")
+						{
+							$meta['gender'] = (trim($value) == "F") ? FEMALE : MALE;
+						}
+						else
+						{
+							$meta[$key] = trim($value);
+						}
+					}
+
+					# insert into database
+					$this->rx->insert(array(
+											"path" 			=> basename($path) . '/' . $name,
+											"pet_id"		=> $meta['PatientID'],
+
+											"studydate"		=> $meta['StudyDate'],
+											"description"	=> $meta['SeriesDescription'],
+											"bodypart"		=> $meta['BodyPartExamined'],
+											"client"		=> $meta['client'],
+											"petname" 		=> $meta['petname'],
+											"gender" 		=> $meta['gender'],
+											"petbirthdate" 	=> $meta['PatientBirthDate'],
+											"studydescription"	=> $meta['StudyDescription'],
+											"series"		=> $meta['SeriesNumber']
+					));
+
+				}
+			}
 		}
 	}
 

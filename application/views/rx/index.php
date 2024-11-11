@@ -1,10 +1,13 @@
 <style>
   #sidebar {
     max-width: 300px;
+    width: 15vh;
     height: 100vh;
     overflow-y: auto;
     background-color: #f8f9fa;
-    margin-right: 40px;
+    margin-right: 10px;
+    margin-left: -20px;
+    padding: 10px;
   }
 
   #image-viewer {
@@ -12,7 +15,8 @@
     justify-content: center;
     align-items: center;
     background-color: #e9ecef;
-    height: 80vh;
+    height: 85vh;
+    width: 100%;
     position: relative;
   }
 
@@ -21,6 +25,7 @@
     max-width: 100%;
     max-height: 100%;
     border: 2px solid #343a40;
+    object-fit: contain;
   }
 </style>
 <div class="row">
@@ -43,26 +48,33 @@
             
             <!-- Sidebar -->
             <div id="sidebar" class="bg-light border-right">
-              <div class="list-group list-group-flush">
 
                 <!-- Directory structure -->
-                <div class="list-group-item">
-                  <!-- <strong>22/08/2024</strong> -->
-                  <ul class="list-unstyled ml-3">
-                  <?php foreach ($data as $image): ?>
-                    <?php $x =  base_url() . htmlspecialchars($image, ENT_QUOTES, 'UTF-8'); ?>
-                    <li><a href="#" class="image-link" data-image="<?php echo $x; ?>" alt="Image" class="img-fluid"><?php echo basename($x); ?></a></li>
-                  <?php endforeach; ?>
+                <?php $first = null; ?>
+                <?php foreach ($data as $info): ?>
+                  <strong><?php echo $info['study_date']; ?></strong>
+                  <ul class="list-unstyled ml-1">
+                    <?php
+                      $studydescription = explode(',', $info['study_description']);
+                      $description = explode(',', $info['description']);
+                    ?>
+                    <?php foreach(explode(',', $info['images']) as $index => $image): ?>
+                      <?php 
+                        $x = base_url() . $RX_DIR . $image. '.jpg'; 
+                        $first = (is_null($first)) ? $x : $first;
+                      ?>
+                      <li><a href="#" class="image-link" data-image="<?php echo $x; ?>" alt="Image" class="img-fluid"><?php echo $description[$index]; ?></a></li>
+                    <?php endforeach; ?>
+
                   </ul>
-                </div>
+                <?php endforeach; ?>
                 <!-- end loop -->
 
-              </div>
             </div> <!-- end sidebar -->
 
             <!-- Image Viewer -->
             <div id="image-viewer" class="image-viewer">
-              <img src="<?php echo $x; ?>" id="image" alt="Image" >
+              <img src="<?php echo $first; ?>" id="image" alt="Image" >
             </div>
           </div>
         <?php else: ?>
