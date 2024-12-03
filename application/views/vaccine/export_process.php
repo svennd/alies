@@ -41,8 +41,8 @@
                             </div>
                             <div class="col">
                                 <select name="date_format" class="custom-select">
-                                    <option value="%d %B %Y" selected><?php echo strftime('%j %B %Y'); ?></option>
-                                    <option value="%d %B"><?php echo date('j F'); ?></option>
+                                    <option value="%e %B %Y" selected><?php echo strftime('%e %B %Y'); ?></option>
+                                    <option value="%e %B"><?php echo date('j F'); ?></option>
                                     <option value="%d-%m-%Y"><?php echo strftime('%d-%m-%Y'); ?></option>
                                     <option value="%Y-%m-%d"><?php echo strftime('%Y-%m-%d'); ?></option>
                                     <option value="%d/%m"><?php echo strftime('%d/%m'); ?></option>
