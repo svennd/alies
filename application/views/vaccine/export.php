@@ -52,7 +52,7 @@ foreach($expiring_vacs as $v):
     
 // change id to pet_name
 if (isset($pet_type_map[$v['pet_type']])) {
-    $v['pet_type'] = $pet_type_map[$v['pet_type']];
+    $v['pet_type'] = strtolower($pet_type_map[$v['pet_type']]);
 }
 
 // transform dates
