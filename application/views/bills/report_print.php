@@ -1,5 +1,10 @@
 <?php
 $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 || $bill['transfer'] == 0);
+
+# design push
+define("PUSH_QR", 20);
+define("PUSH_TOTAL", 26);
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -37,21 +42,13 @@ $transfer_complete = ($bill['transfer'] != 0 && $bill['transfer_verified'] == 1 
         background-color: #eeeeee;
 		border-radius: 4px;
     }
-	footer {
-		position: fixed; 
-		bottom: -70px; 
-		left: 0px; 
-		right: 0px;
-		height: 130px; 
-	}
 </style>
 
 </head>
 <body>
-<?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>  
-	<br/>
-
+<?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>
 <div class="content">
+
   <table width="100%">
     <tr>
 		<td valign="top" width="60%">
@@ -155,6 +152,9 @@ foreach ($print as $pet_id => $event):
 	# skip if no products or procedures
 	# in the event
 	if (count($prod) + count($proc) == 0) continue;
+	
+	# note that if multiple pets have multiple bills it could become tricky
+	$bill_lines = count($prod) + count($proc);
 
 	?>
 	<?php foreach ($proc as $procedure): ?>
@@ -171,6 +171,7 @@ foreach ($print as $pet_id => $event):
 			<td align="right"><?php echo number_format($procedure['price_net'],2); $total_net += $procedure['price_net']; ?>&nbsp;</td>
 		</tr>
 	<?php endforeach; ?>
+	
 	<?php foreach ($prod as $product): ?>
 		<tr>
 			<td align="left"><?php echo $product['name']; ?></td>
@@ -192,7 +193,7 @@ foreach ($print as $pet_id => $event):
 </tr>
 </tbody>
 	</table>
-	
+	<?php if($bill_lines > PUSH_TOTAL): ?><div style="page-break-before: always;"></div><hr><?php endif; ?>
 	<table width="100%" style="border-collapse: collapse;">
         <tr>
 			<td rowspan="4" valign="top">
@@ -235,6 +236,7 @@ foreach ($print as $pet_id => $event):
 <br/>
 <br/>
 <?php if(($bill['status'] != BILL_PAID || !$transfer_complete) && isset($IBAN)): ?>
+<?php if($bill_lines > PUSH_QR && $bill_lines < PUSH_TOTAL): ?><div style="page-break-before: always;"></div><?php endif; ?>
 <div style="border:1px solid #B9B9B9; border-radius:15px; padding:5px; min-height:100px;">
 <table width="100%">
 	<tr>
@@ -265,9 +267,6 @@ foreach ($print as $pet_id => $event):
 <?php endif; ?>
 <br/>
 </div>
-<footer>
-<?php if (file_exists(dirname(__FILE__) . "/../custom/bill_footer.php")) { include dirname(__FILE__) . "/../custom/bill_footer.php"; }  ?>  
-</footer>
 	</body>
 
 </html>

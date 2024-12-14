@@ -31,6 +31,8 @@ class Pdf extends CI_Model
 		$options->set('isRemoteEnabled', true);
 
 	    $this->dompdf = new Dompdf($options);
+		$this->dompdf->setPaper('A4', 'portrait');
+
 		if (isset($this->conf['nameiban']['value']))
 		{
 			$this->dompdf->addInfo('Author', (string)base64_decode($this->conf['nameiban']['value']));
@@ -65,6 +67,17 @@ class Pdf extends CI_Model
 		$this->dompdf->loadHtml($html);
 
 		$this->dompdf->render();
+
+		// add pagination
+		$canvas = $this->dompdf->getCanvas(); // get the canvas
+		// add the page number and total number of pages
+		$canvas->page_script('
+			if($PAGE_COUNT > 1) {
+			$text = "$PAGE_NUM / $PAGE_COUNT";
+    		$pdf->text(535, 791.89, $text, \'Helvetica\', 10, array(0,0,0));
+			}
+		');
+
 		if ($mode == PDF_DOWNLOAD)
 		{
 			$this->dompdf->stream($filename.'.pdf', array("Attachment" => true));
