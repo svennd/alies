@@ -71,6 +71,13 @@ class Reports extends Admin_Controller
 		}
 	}
 
+	public function stock_list_all($procent = 0)
+	{
+		$stock = $this->stock->get_full_stock_list($procent);
+
+		$csv = $this->load->view('reports/stock_list_all', array("stock_list" => $stock), true);
+		array_to_csv_download($csv, 'stocklist_all.csv');
+	}
 	/*
 		give a simple list of the usage
 		--> HEAVY JOIN QUERY

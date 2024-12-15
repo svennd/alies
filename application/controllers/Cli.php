@@ -859,8 +859,16 @@ class Cli extends Frontend_Controller
 						if ($key == "PatientName")
 						{
 							$patient_pet = explode("^", $value);
-							$meta['client'] = trim($patient_pet[0]);
-							$meta['petname'] = trim($patient_pet[1]);
+							if (count($patient_pet) != 2)
+							{
+								$meta['client'] = trim($value);
+								$meta['petname'] = "";
+							}
+							else
+							{
+								$meta['client'] = trim($patient_pet[0]);
+								$meta['petname'] = trim($patient_pet[1]);
+							}
 						}
 						elseif ($key == "PatientSex")
 						{

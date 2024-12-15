@@ -74,7 +74,8 @@ class Pdf extends CI_Model
 		$canvas->page_script('
 			if($PAGE_COUNT > 1) {
 			$text = "$PAGE_NUM / $PAGE_COUNT";
-    		$pdf->text(535, 791.89, $text, \'Helvetica\', 10, array(0,0,0));
+			$pdf->rectangle(540, 725, 29, 17, array(0,0,0), 1);
+    		$pdf->text(545, 728, $text, \'Helvetica\', 10, array(0,0,0));
 			}
 		');
 

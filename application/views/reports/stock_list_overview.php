@@ -25,6 +25,15 @@
 					<td><a href="<?php echo base_url(); ?>reports/stock_list/<?php echo $loc['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a></td>
 				</tr>
 				<?php endforeach; ?>
+				<!-- all -->
+				<tr>
+					<td>All</td>
+					<td>
+						<a href="<?php echo base_url('reports/stock_list_all'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a><br/><br/>
+						<a href="<?php echo base_url('reports/stock_list_all/6'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 6%</a>
+						<a href="<?php echo base_url('reports/stock_list_all/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 21%</a>
+					</td>
+				</tr>
 				</tbody>
 				</table>
 			<?php endif; ?>

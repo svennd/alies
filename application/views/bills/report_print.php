@@ -243,7 +243,7 @@ foreach ($print as $pet_id => $event):
 		<td>
 		<table width="100%">
 			<tr>
-				<td><?php echo $this->lang->line('to_pay'); ?></td>>
+				<td><?php echo $this->lang->line('to_pay'); ?></td>
 				<td><?php echo number_format($bill['total_brut']-($bill['card'] + $bill['cash'] + (($bill['transfer'] && $transfer_complete) ? $bill['transfer'] : 0)), 2); ?> &euro;</td>
 			</tr>
 			<tr>
