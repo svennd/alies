@@ -78,7 +78,7 @@
     </div>
 
     <div class="accordion-item">
-      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat betekenen de kleuren bij kant opzoekingen ?</span><span class="icon" aria-hidden="true"></span></button>
+      <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat betekenen de kleuren bij klant opzoekingen ?</span><span class="icon" aria-hidden="true"></span></button>
       <div class="accordion-content">
         <p>Er zijn 4 mogelijke statussen voor klanten. Deze worden weergegeven met een kleur. <br/>
             <table class="table table-sm">
@@ -109,6 +109,15 @@
       </div>
     </div>
 
+<div class="accordion-item">
+  <button id="accordion-button-1" aria-expanded="false"><span class="accordion-title">Wat betekent "begeleider" ?</span><span class="icon" aria-hidden="true"></span></button>
+  <div class="accordion-content">
+    <p>Een begeleider kan gedefineerd worden per dier, voor klanten die een BTW nummer hebben maar waarvan de dagdagelijkse eigenaar van het dier een andere persoon is dan de wettelijke eigenaar. (Zoals bijvoorbeeld bij politiezones, dieren in opleiding, ...)</p>
+    <p>De begeleider dient een bestaande klant te zijn, in het veld dient een numerieke klantnummer te worden gebruikt ter referentie. Bij Vaccinatiebrieven zal standaard de begeleider worden geïnformeerd.</p>
+  </div>
+</div>
+
+
     <h5 class="pt-4">Rekeningen</h5>
 
     <div class="accordion-item">
@@ -120,7 +129,6 @@
         <p>Indien de rekening reeds een factuur is, zal een creditnota moeten worden gemaakt.</p>
       </div>
     </div>
-
 
     <h5 class="pt-4">Varia</h5>
     <!-- item -->

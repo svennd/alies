@@ -259,6 +259,8 @@ $lang['weight_curve']      = 'Gewichtscurve';
 $lang['notes']      = 'Opmerkingen';
 $lang['identification']      = 'Identificatie';
 $lang['properties']      = 'Eigenschappen';
+$lang['companion']      = 'Begeleider';
+$lang['companion_explain']      = 'Klant ID van de begeleider (voor vaccinatie brieven)';
 
 # events
 $lang['name']       = 'Naam';
@@ -373,6 +375,9 @@ $lang['day_prices']             = 'Vorige dagprijzen';
 $lang['price_practice']         = 'Praktijk prijs'; 
 $lang['price_total_sale']       = 'Totale verkoopsprijs'; 
 $lang['abbreviation']           = 'Alias'; 
+$lang['increase_wh_explain']    = 'Verhogingen in de cataloog prijs gebaseerd op de groothandel import. Maximaal 100 records.'; 
+$lang['increase']               = 'Verhoging';
+$lang['accept_wh_new_price']    = 'Ik heb de nieuwe groothandel prijs gezien.';
 
 # lab
 $lang['lab_report']             = 'Labo verslag'; 

@@ -32,8 +32,9 @@
 </a>
 <div id="pricingmg" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
     <div class="bg-white py-2 collapse-inner rounded">
-    <a class="collapse-item" href="<?php echo base_url(); ?>pricing/proc" id="adminproc"><?php echo $this->lang->line('procedures'); ?></a>
-    <a class="collapse-item" href="<?php echo base_url(); ?>pricing/prod" id="prod_list"><?php echo $this->lang->line('products'); ?></a>
+    <a class="collapse-item" href="<?php echo base_url('pricing/proc'); ?>" id="adminproc"><?php echo $this->lang->line('procedures'); ?></a>
+    <a class="collapse-item" href="<?php echo base_url('pricing/prod'); ?>" id="prod_list"><?php echo $this->lang->line('products'); ?></a>
+    <a class="collapse-item" href="<?php echo base_url('wholesale/pricing'); ?>" id="prod_list"><?php echo $this->lang->line('increase'); ?></a>
     </div>
 </div>
 </li>

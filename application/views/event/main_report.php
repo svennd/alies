@@ -59,9 +59,9 @@
 	<?php $uploaded_files = ($event_uploads) ? '&nbsp;<span class="badge badge-info">' . count($event_uploads) . '</span>' : ''; ?>
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			<ul class="nav nav-tabs card-header-tabs" id="mynavtab" role="tablist">
-			<li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
-			<li class="nav-item" role="presentation"><a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
-			<li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false"><?php echo $this->lang->line('files'); ?> <?php echo $uploaded_files; ?></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Report</a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Media</a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false"><?php echo $this->lang->line('files'); ?> <?php echo $uploaded_files; ?></a></li>
 			</ul>
 			<?php include 'event/block_header_types.php' ?>
 	</div>

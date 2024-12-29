@@ -31,7 +31,9 @@
 					<td>
 						<a href="<?php echo base_url('reports/stock_list_all'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a><br/><br/>
 						<a href="<?php echo base_url('reports/stock_list_all/6'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 6%</a>
-						<a href="<?php echo base_url('reports/stock_list_all/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 21%</a>
+						<a href="<?php echo base_url('reports/stock_list_all/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 21%</a><br/><br/>
+						<!-- required for end-of-year book keeping -->
+						<a href="<?php echo base_url('reports/clients_list'); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('Clients'); ?></a>
 					</td>
 				</tr>
 				</tbody>

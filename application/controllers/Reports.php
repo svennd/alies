@@ -78,6 +78,14 @@ class Reports extends Admin_Controller
 		$csv = $this->load->view('reports/stock_list_all', array("stock_list" => $stock), true);
 		array_to_csv_download($csv, 'stocklist_all.csv');
 	}
+
+	public function clients_list()
+	{
+		$clients = $this->owners->fields('id, first_name, last_name, street, nr, city, zip, last_bill')->get_all();
+
+		$csv = $this->load->view('reports/client_list', array("clients" => $clients), true);
+		array_to_csv_download($csv, 'clientlist_all.csv');
+	}
 	/*
 		give a simple list of the usage
 		--> HEAVY JOIN QUERY

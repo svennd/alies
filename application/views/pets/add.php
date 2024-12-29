@@ -107,7 +107,15 @@
 						<label for="hairtype"><?php echo $this->lang->line('hairtype'); ?></label>
 						<input type="text" name="hairtype" class="form-control" id="hairtype" value="">
 					</div>
-					<div class="col">&nbsp;</div>
+					<div class="col">
+						<?php if ($owner['btw_nr']): ?>
+							<label for="companion"><?php echo $this->lang->line('companion'); ?></label>
+							<input type="number" name="companion" class="form-control" id="companion" value='<?php echo (isset($pet['companion'])) ? $pet['companion']: ''; ?>' />
+							<i><small class="form-text text-muted ml-2"><?php echo $this->lang->line('companion_explain'); ?></small></i>
+						<?php else: ?>
+							&nbsp;
+						<?php endif; ?>
+					</div>
 				</div>
 
 				<div class="form-group">

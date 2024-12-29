@@ -41,7 +41,6 @@ class Export extends Admin_Controller
 	*/
 	public function index()
 	{
-        
 		/* input */
 		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-01") : $this->input->post('search_from');
 		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-t") : $this->input->post('search_to');

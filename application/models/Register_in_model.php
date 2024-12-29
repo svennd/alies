@@ -26,7 +26,33 @@ class Register_in_model extends MY_Model
 					
 		parent::__construct();
 	}
-	
+
+	/*
+	 * Get all register_in records
+	*/
+	public function get_delivery($delivery_date)
+	{
+		$sql = "
+				select 
+					ri.volume, ri.eol, ri.in_price, ri.lotnr,
+					products.name,
+					deliv.regdate
+				from 
+					register_in as ri
+				JOIN
+					products 
+				ON
+					products.id = ri.product
+				JOIN
+					delivery_slip as deliv
+				ON
+					deliv.id = ri.delivery_slip
+				WHERE
+					deliv.regdate = '" . $delivery_date . "'
+			";
+		return $this->db->query($sql)->result_array();
+	}
+
 	public function date_lookup($search_from, $search_to)
 	{
 		$sql = "

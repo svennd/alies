@@ -18,25 +18,7 @@ class Pricing extends Accounting_Controller
 		$this->load->model('Product_price_model', 'pprice');
 		$this->load->model('Price_log_model', 'price_log');
 		$this->load->model('Events_procedures_model', 'eproc');
-	}
-
-
-	/*
-	* function: index
-	* show the overview page of all prices
-	*/
-	public function index()
-	{
-		// show products that are increasing in price
-		// show products that are decreasing in price
-		
-		// button of products 
-		// button of procedures
-
-
-		$data = array();
-		
-		$this->_render_page('pricing/overview', $data);
+		$this->load->model('Wholesale_model', 'wholesale');
 	}
 	
 	public function prod(int $id = 0)
@@ -51,6 +33,10 @@ class Pricing extends Accounting_Controller
 		# modification
 		$modification = false;
 		if ($this->input->post('submit')) {
+
+			if ($this->input->post('accept_wholesale')) {
+				$this->wholesale->accept_price((int) $this->input->post('wholesale'));
+			}
 
 			$prices 	= $this->input->post('price');
 			$volumes 	= $this->input->post('volume');

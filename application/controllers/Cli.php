@@ -16,7 +16,9 @@ class Cli extends Frontend_Controller
 
 	// data paths - should be in config somewhere
 	private const RX_DIR = "data/stored/rx/";
-
+	private const PRICELIST_DIR = "data/stored/pricelist/";
+	private const DELIVERY_DIR = "data/stored/delivery/";
+	
     public function __construct() {
         parent::__construct();
 
@@ -545,8 +547,7 @@ class Cli extends Frontend_Controller
 	*/
 	public function delivery($filename)
 	{
-        $path = "data/stored/delivery/";
-        $file = $path . $filename;
+        $file = SELF::DELIVERY_DIR . $filename;
 
 		# check if the file exists
 		if(!is_readable($file) && !is_file($file))
@@ -594,21 +595,13 @@ class Cli extends Frontend_Controller
 				$netto_price_format = str_replace(',', '.', $netto_price);
 				$bruto_price_format = str_replace(',', '.', $bruto_price);
 				
-				# if this is a known product
-				# check for price changes
-				# note: bruto is checked daily by pricelist
-				if ($id)
-				{
-					$this->check_for_netto_price_change($netto_price_format, $id);
-				}
-
 				$this->delivery->insert(array(
 					"order_date" 			=> ($dt_order_date) ? $dt_order_date->format('Y-m-d') : "",
 					"order_nr" 				=> $order_nr,
 					"my_ref" 				=> $my_ref,
 					"wholesale_artnr" 		=> $wholesale_artnr,
 					"wholesale_id"			=> $id,
-					"CNK"        			=> $CNK_nummer,
+					"CNK"					=> $CNK_nummer,
 					"delivery_date" 		=> ($dt_delivery_date) ? $dt_delivery_date->format('Y-m-d') : "",
 					"delivery_nr" 			=> $delivery_nr,
 					"bruto_price" 			=> $bruto_price_format,
@@ -619,14 +612,17 @@ class Cli extends Frontend_Controller
 					"btw" 					=> $btw,
 					"billing"				=> $billing
 				));
+
                 $line++;
 		}
         fclose($handle);
-        if(!$this->move_file($file, $path . 'processed/' . $filename))
+        if(!$this->move_file($file, SELF::DELIVERY_DIR . 'processed/' . $filename))
         {
             echo "ERROR : issue moving file\n";
         }
-        echo "lines : " . $line . "\n";
+        echo "in ". $filename . " lines : " . $line . "\n";
+
+		$this->logs->logger(INFO, "import_delivery", "file: " . $filename . " lines: " . $line);
 	}
 
 	/*
@@ -635,8 +631,7 @@ class Cli extends Frontend_Controller
 	*/
     public function pricelist(string $filename)
     {
-        $path = "data/stored/pricelist/";
-        $file = $path . $filename;
+        $file = SELF::PRICELIST_DIR . $filename;
 
 		# check if the file exists
 		if(!is_readable($file) && !is_file($file))
@@ -649,18 +644,14 @@ class Cli extends Frontend_Controller
 		$handle = fopen($file, 'r');
 		$line = 0;
 
-		# check if expected header
-		if (fgetcsv($handle, 0, "|") != "art. nr|omschrijving|bruto prijs|BTW|verk.pr.  apoth.|verdeler|CNK nummer|Registratienummer (VHB-nummer)|Artikelnr. verdeler|Hoofdgroep|Creatiedatum") 
-		{
-			// echo "Bad header\n";
-			// return;
-		}
+		# pop header
+		fgetcsv($handle, 0, "|");
 		
 		while (($row = fgetcsv($handle, 0, "|")) !== FALSE) 
 		{
 			# get the data
 			list(
-                $art_nr,
+                $wholesale_artnr,
                 $omschrijving,
                 $bruto_prijs,
                 $btw,
@@ -673,58 +664,30 @@ class Cli extends Frontend_Controller
 				$created // ignored
 				) = $row;
                 
-                $this->wholesale->update_record($art_nr, $omschrijving, $bruto_prijs, $btw, $verk_pr_apotheek, $verdeler, $CNK_nummer, $VHB, $distr_id, $group);
+                $this->wholesale->update_record(
+					$wholesale_artnr, 
+					$omschrijving, 
+					$bruto_prijs, 
+					$btw, 
+					$verk_pr_apotheek, 
+					$verdeler, 
+					$CNK_nummer, 
+					$VHB, 
+					$distr_id, 
+					$group
+				);
 
 				if($line % 100 == 0) { echo $line . "\n"; usleep(500000); }
                 $line++;
 		}
         fclose($handle);
-        if(!$this->move_file($file, $path . 'processed/' . $filename))
+        if(!$this->move_file($file, SELF::PRICELIST_DIR . 'processed/' . $filename))
         {
-            echo "ERROR : issue moving file\n";
+			$this->logs->logger(ERROR, "import_pricelist", "issue moving file");
         }
         echo "lines : " . $line . "\n";
+		$this->logs->logger(INFO, "import_pricelist", "lines: " . $line);
     }
-
-	/*
-	* function: check_for_changes_in_price
-	* check for changes in wholesale bruto price
-	*/
-	public function check_for_changes_in_price()
-	{
-		$price_changes = $this->wholesale->get_price_diff();
-		foreach ($price_changes as $change)
-		{
-			// each price change from wholesale can trigger
-			// a price warning to the user
-			$updated = $this->pricetrack
-				->update(
-					array(
-						"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or nul
-						"original_price" 	=> $change['last_bruto'],
-						"new_price" 		=> $change['bruto'],
-						"source" 			=> "wholesale_pricelist",
-						"ack_user"			=> 0,
-						"applied"			=> 0
-					),
-					array("wholesale_id" => $change['id'])
-				);
-
-			if (!$updated)
-			{
-				$this->pricetrack->insert(array(
-						"product_id" 		=> $this->products->get_id_by_wholesale($change['id']), // int or null
-						"wholesale_id" 		=> $change['id'], // wholesaleid
-						"original_price" 	=> $change['last_bruto'],
-						"new_price" 		=> $change['bruto'],
-						"source" 			=> "wholesale_pricelist",
-				));
-			}
-
-			// also "accept" this change since we warned the user
-			$this->wholesale->accept_price($change['id']);
-		}
-	}
 
 	/*
 	* function: stock_clean
@@ -897,57 +860,6 @@ class Cli extends Frontend_Controller
 					));
 
 				}
-			}
-		}
-	}
-
-	/*
-	* function: check_for_netto_price_change
-	*
-	*/
-	private function check_for_netto_price_change($netto_price_format, int $id)
-	{
-		// get the last netto price
-		$last_price = $this->delivery
-				->fields('netto_price')
-				->where(array("wholesale_id" => $id))
-				->order_by('id', 'DESC')
-				->get();
-		
-		// no last price
-		if (!$last_price)
-		{
-			return;
-		}
-
-		// probably want to do this in one go
-		// and restrict based on config values
-		// so that 0.01% increase/decrease isn't a trigger
-		// but 1% is if the value of the product is larger (eg +0.03c on 3€ is not a trigger, but +0.03c on 0.3€ is a trigger)
-		if (abs($last_price['netto_price']-$netto_price_format) > 0.01)
-		{
-			// insert or update ?
-			$updated = $this->pricetrack
-				->update(
-					array(
-						"product_id" 		=> $this->products->get_id_by_wholesale($id), // int or null
-						"new_price"			=> $netto_price_format,
-						"original_price" 	=> $last_price['netto_price'],
-						"source" 			=> "wholesale_delivery",
-						"ack_user"			=> 0,
-						"applied"			=> 0
-					),
-					array("wholesale_id" => $id)
-				);
-			if (!$updated)
-			{
-				$this->pricetrack->insert(array(
-					"product_id" 		=> $this->products->get_id_by_wholesale($id), // int or null
-					"wholesale_id" 		=> $id, // wholesaleid
-					"original_price" 	=> $last_price['netto_price'],
-					"new_price" 		=> $netto_price_format,
-					"source" 			=> 'wholesale_delivery',
-				));
 			}
 		}
 	}

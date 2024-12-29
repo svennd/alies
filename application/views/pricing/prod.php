@@ -3,6 +3,13 @@
 .input4 { width: 120px !important; }
 </style>
 
+
+<?php 
+	$diff = ($product['wholesale']) ? (round((($product['wholesale']['bruto'] / $product['wholesale']['last_bruto']) * 100) - 100)) : 0;
+	$procent_diff = ($diff > 0) ? "<span class='text-danger'>+" . $diff . "%</span>" : "";
+	$date_diff = ($diff > 0) ? "<small><br/>" . user_format_date($product['wholesale']['last_bruto_date'], $user->user_date) . "</small>" : "";
+?>
+
 <div class="row">
 
       <div class="col-lg-7 mb-4">
@@ -23,17 +30,11 @@
 						<tr>
 							<th><?php echo $this->lang->line('volume'); ?></th>
 							<th><?php echo $this->lang->line('price_sale'); ?></th>
-							<!-- <th><?php echo $this->lang->line('margin'); ?></th> -->
 							<th><?php echo $this->lang->line('options'); ?></th>
 						</tr>
-				<?php 
-					
-					// $unit_price = ($product['buy_price']/$product['buy_volume']);
 
-					foreach($product['prices'] as $price):
-						
-					// $change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
-				?>
+				<?php foreach($product['prices'] as $price): ?>
+				<?php // loop all prices per volume ?>
 				<tr id="line_<?php echo $price['id'] ?>">
 					<td class="input4">
 						<div class="input-group input-group-sm">
@@ -56,6 +57,7 @@
 					</td>
 				</tr>
 				<?php endforeach; ?>
+				<?php // add new one ?>
 				<tr>
 					<td class="input4">
 						<form method="post" id="form_new" action="<?php echo base_url('pricing/prod/' . $product['id']); ?>">
@@ -80,23 +82,33 @@
 					</td>
 				</tr>
 				</table>
-					<button type="submit" name="submit" value="store" class="btn btn-outline-success btn-sm">Store</button>
+				<?php if ($diff > 0): ?>
+					<div class="alert alert-info" style="width:450px;height:50px;" role="alert">
+						<div class="form-group form-check">
+							<input type="checkbox" class="form-check-input" id="accept_wholesale" name="accept_wholesale" value="1" checked>
+							<input type="hidden" name="wholesale" value="<?php echo (int) $product['wholesale']['id'] ?>">
+							<label class="form-check-label" for="accept_wholesale"><?php echo $this->lang->line('accept_wh_new_price'); ?></label>
+						</div>
+					</div>
+				<?php endif; ?>
+					<button type="submit" name="submit" value="store" class="btn btn-outline-success btn-sm"><?php echo $this->lang->line("store"); ?></button>
 				</form>
 				
 				<?php else: ?>
+					<?php // add initial ?>
 					No price assigned yet ! <br/>
 
 					<form method="post" action="<?php echo base_url('pricing/prod/' . $product['id']); ?>" class="form-inline">
 
 					<label class="sr-only" for="price">price</label>
 					<div class="input-group mb-2 mr-sm-2">
-						<!-- <input type="text" class="form-control" id="price" name="price" placeholder=""> -->
+						<input type="text" class="form-control" id="price" name="price[]" placeholder="">
 						<div class="input-group-append">
 							<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
 						</div>
 					</div>
-						<input type="hidden" name="volume" value="1" />
-						<button type="submit" name="submit" value="store" class="btn btn-primary mb-2">Store</button>
+						<input type="hidden" name="volume[]" value="1" />
+						<button type="submit" name="submit" value="store" class="btn btn-primary mb-2"><?php echo $this->lang->line("store"); ?></button>
 					</form>
 				<?php endif; ?>
 				<?php else : ?>
@@ -157,6 +169,7 @@
 								<td><?php echo $date; ?></td>
 								<td>
 									<table class="table table-sm">
+										<?php if ($log): ?>
 										<tr>
 											<?php foreach(array_keys($log) as $volume): ?>
 											<td><?php echo $volume; ?></td>
@@ -167,6 +180,7 @@
 											<td><?php echo $price; ?></td>
 											<?php endforeach; ?>
 										</tr>
+										<?php endif; ?>
 									</table>
 								</td>
 							</tr>
@@ -186,12 +200,10 @@
 					<tr>
 						<th>&nbsp;</td>
 						<th><?php echo $product['buy_volume']. " " . $product['unit_buy']; ?></td>
-						<!-- <th>1 <?php echo $product['unit_buy']; ?></td> -->
 					</tr>
 					<tr>
-						<td><?php echo (isset($product['wholesale'])) ? "<a href='" . base_url('wholesale/get_history/' . $product['wholesale']['id']) . "'>" . $this->lang->line('catalog_price') . "</a>": $this->lang->line('catalog_price'); ?></td>
-						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] : '---'; ?> &euro;</td>
-						<!-- <td><?php echo (isset($product['wholesale'])) ? round($product['wholesale']['bruto']/$product['buy_volume'] , 2) : '---'; ?> &euro;</td> -->
+						<td><?php echo (isset($product['wholesale'])) ? "<a href='" . base_url('wholesale/get_history/' . $product['wholesale']['id']) . "'>" . $this->lang->line('catalog_price') . "</a>" . $date_diff: $this->lang->line('catalog_price'); ?></td>
+						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] . "&euro; " . $procent_diff : '---'; ?></td>
 					</tr>
 					<tr>
 						<td>
@@ -210,7 +222,6 @@
 								</form>
 							</div>
 						</td>
-						<!-- <td><?php echo round($product['buy_price']/$product['buy_volume'] , 2); ?> &euro;</td> -->
 					</tr>
 				</table>
 			</div>

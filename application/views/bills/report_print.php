@@ -63,15 +63,16 @@ define("PUSH_TOTAL", 26);
         <td align="left" valign="bottom" class="letterhead">
 			<br/>
 			<br/>
-			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br>
+
+			<?php if (!$owner['invoice_addr']) : ?>
+			<?php echo $owner['last_name'] . "&nbsp;" . $owner['first_name']; ?><br/>
 			<?php echo $owner['street'] . ', ' . $owner['nr']; ?><br>
 			<?php echo $owner['zip'] . ' ' . $owner['city']; ?><br>
+			<?php endif; ?>
 			<br>
 			<?php if ($owner['invoice_addr']) : ?>
-				<strong><?php echo $this->lang->line('invoice_addr'); ?></strong>
-				<?php if ($owner['invoice_contact']) : ?><b><?php echo $owner['invoice_contact']; ?></b><br/><?php endif; ?>
-				<?php if ($owner['invoice_addr']) : ?><?php echo $owner['invoice_addr']; ?><br/><?php endif; ?>
-				<?php if ($owner['invoice_tel']) : ?><abbr title="Phone">P:</abbr> <?php echo $owner['invoice_tel']; ?><?php endif; ?>
+				<?php if ($owner['invoice_contact']) : ?><?php echo $owner['invoice_contact']; ?><br/><?php endif; ?>
+				<?php if ($owner['invoice_addr']) : ?><?php echo nl2br($owner['invoice_addr']); ?><br/><?php endif; ?>
 			<?php endif; ?>
 		</td>
     </tr>

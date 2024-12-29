@@ -255,6 +255,8 @@ $lang['weight_curve']      = 'Weight curve';
 $lang['notes']      = 'notes';
 $lang['identification']      = 'Identification';
 $lang['properties']      = 'Properties';
+$lang['companion']      = 'Companion';
+$lang['companion_explain']      = 'Client ID of the companion (for vaccination letters)';
 
 # events
 $lang['name']       = 'Name';
@@ -368,6 +370,9 @@ $lang['day_prices']             = 'Prev. day prices';
 $lang['price_practice']         = 'Practice price'; 
 $lang['price_total_sale']       = 'Total sale price'; 
 $lang['abbreviation']           = 'abbreviation'; 
+$lang['increase_wh_explain']    = 'The following products have an increased price compared to the last price. Maximum 100 products are shown.';
+$lang['increase']               = 'increase';
+$lang['accept_wh_new_price']    = 'I have seen the new wholesale price.';
 
 # lab
 $lang['lab_id']                 = 'Lab id'; 

@@ -167,6 +167,12 @@
                     'text' => $this->lang->line('wholesale'),
                 ),
                 array(
+                    'img' => 'delivery.png',
+                    'alt' => 'delivery',
+                    'link' => 'wholesale/delivery_overview',
+                    'text' => $this->lang->line('delivery'),
+                ),
+                array(
                     'img' => 'settings.png',
                     'alt' => 'settings',
                     'link' => 'admin/settings',

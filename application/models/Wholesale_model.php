@@ -35,6 +35,36 @@ class Wholesale_model extends MY_Model
 		);
 	}
 
+	public function get_bruto_increase(int $limit = 100)
+	{
+		$sql = "
+				SELECT 
+					products.id,
+					products.name,
+					bruto,
+					last_bruto, 
+					ROUND(((bruto - last_bruto) / last_bruto) * 100) AS percentage_change
+				FROM
+					wholesale
+				JOIN
+					products
+				ON
+					products.wholesale = wholesale.id
+				WHERE 
+					last_bruto IS NOT NULL
+					AND 
+					(bruto - last_bruto) / last_bruto > 0
+					AND
+					products.name IS NOT NULL
+				ORDER BY
+					percentage_change DESC
+				limit ". $limit . "
+				;
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
+
 	public function accept_price(int $id)
 	{
 		$accept_price = "

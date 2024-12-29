@@ -34,7 +34,7 @@
 			<br/>
 			</div>
 			<?php if ($proc): ?>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th>Name</th>
@@ -50,7 +50,7 @@
 					<td><?php echo $pro['price']; ?> &euro;</td>
 					<td>
 						<?php if(isset($pro['booking_code']['code'])): ?>
-						<?php echo $pro['booking_code']['code']; ?><br>
+						<?php echo $pro['booking_code']['code']; ?> - 
 						<small><?php echo $pro['booking_code']['category']; ?> <?php echo $pro['booking_code']['btw']; ?>%</small>
 						<?php endif; ?>
 					</td>

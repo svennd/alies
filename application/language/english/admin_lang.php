@@ -60,6 +60,7 @@ $lang['write_off_log']      = "write off log";
 $lang['delivery_log']       = "delivery log";
 $lang['logbook']            = "common log";
 $lang['syslog']             = "Systeem log";
+$lang['delivery']           = "Delivery";
 
 
 # location

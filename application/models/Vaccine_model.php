@@ -116,7 +116,10 @@ class Vaccine_model extends MY_Model
 			JOIN
 				owners
 			ON
-				owners.id = pets.owner
+				owners.id = CASE 
+					WHEN pets.companion IS NOT NULL THEN pets.companion
+					ELSE pets.owner
+				END
 			JOIN
 				users
 			ON
@@ -188,7 +191,10 @@ class Vaccine_model extends MY_Model
 			JOIN
 				owners
 			ON
-				owners.id = pets.owner
+				owners.id = CASE 
+					WHEN pets.companion IS NOT NULL THEN pets.companion
+					ELSE pets.owner
+				END
 			JOIN
 				users
 			ON
