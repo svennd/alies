@@ -55,8 +55,8 @@ class Invoice extends Vet_Controller
 		$is_modified = ($this->input->post('modified')) ? true : false;
 
 		$bill_query = $this->bills
-			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true)
-			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
+			->where('created_at > STR_TO_DATE("' . $search_from . '", "%Y-%m-%d")', null, null, false, false, true)
+			->where('created_at < STR_TO_DATE("' . $search_to . '", "%Y-%m-%d")', null, null, false, false, true)
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
 			->with_owner('fields:last_name,id as user_id,low_budget,debts,btw_nr')
@@ -68,8 +68,11 @@ class Invoice extends Vet_Controller
 			$bill_query->where(array('modified' => 1));
 		}
 		if ($is_unpaid) {
-			$bill_query->where('status', BILL_INCOMPLETE)
-         			   ->or_where('status', BILL_ONHOLD);
+			$bill_query
+						->group_start()
+							->where('status', BILL_INCOMPLETE)
+							->or_where('status', BILL_ONHOLD)
+						->group_end();
 		}
 
 		$bill_overview = $bill_query->get_all();
