@@ -27,6 +27,9 @@ class Stock_model extends MY_Model
 		parent::__construct();
 	}
 
+	/*
+	* show errors in stock
+	*/
 	public function get_problems()
 	{
 		$sql = "SELECT
@@ -68,7 +71,8 @@ class Stock_model extends MY_Model
 							WHEN (volume - " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
 							ELSE '" . STOCK_IN_USE . "'
 						END,
-					volume = volume - " . $volume . "
+					volume = volume - " . $volume . ",
+    				updated_at = NOW()
 				WHERE
 					id = '" . $stock_id . "'
 				LIMIT 1;
@@ -96,7 +100,8 @@ class Stock_model extends MY_Model
 		$sql = "UPDATE 
 					stock 
 				SET 
-					volume=volume+" . $volume. " 
+					volume=volume+" . $volume. ",
+    				updated_at = NOW()
 				WHERE 
 					product_id = '". $product_id ."'
 					and
@@ -116,7 +121,7 @@ class Stock_model extends MY_Model
 			// so we search for one and 're-activate' this one
 			// alternativly we create a new one, but this would definitly lack some info
 			// add to the largest volume (in hope we don't pull out of STOCK_ERROR)
-			$sql = "UPDATE stock SET volume=volume+" . $volume. ", state = '" . STOCK_IN_USE . "' WHERE barcode = '" . $barcode . "' and location = '" . $location . "' ORDER BY volume LIMIT 1;";
+			$sql = "UPDATE stock SET volume=volume+" . $volume. ", state = '" . STOCK_IN_USE . "', updated_at = NOW() WHERE barcode = '" . $barcode . "' and location = '" . $location . "' ORDER BY volume LIMIT 1;";
 			$this->db->query($sql);
 
 			# this is bad :( so just insert a new line
@@ -230,11 +235,11 @@ class Stock_model extends MY_Model
 	private function maintain_stock_state($product_id)
 	{
 		# check for empty bottles
-		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . " WHERE product_id='" . $product_id . "' AND state = " . STOCK_IN_USE . " AND volume = '0';";
+		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . ", updated_at = NOW() WHERE product_id='" . $product_id . "' AND state = " . STOCK_IN_USE . " AND volume = '0';";
 		$this->db->query($sql);
 
 		# check for issues
-		$sql = "UPDATE stock SET state = " . STOCK_ERROR . " WHERE product_id='" . $product_id . "' AND volume < '0' AND state != " . STOCK_ERROR . ";";
+		$sql = "UPDATE stock SET state = " . STOCK_ERROR . ", updated_at = NOW() WHERE product_id='" . $product_id . "' AND volume < '0' AND state != " . STOCK_ERROR . ";";
 		$this->db->query($sql);
 	}
 
@@ -302,6 +307,7 @@ class Stock_model extends MY_Model
 									WHEN (volume - " . $value . ") = 0 THEN '" . STOCK_HISTORY . "'
 									ELSE '" . STOCK_IN_USE . "'
 								END,
+								updated_at = NOW(),
 								volume = volume-" . $value. "
 								". (($info) ? ', info = "' . $info .'" ': '') ."
 							WHERE 
@@ -670,6 +676,35 @@ class Stock_model extends MY_Model
 
 
 	/*
+	*	called in cli/stock_clean
+	*	When a product is removed, but there remains stock in the system
+	*	this stock is removed
+	*/
+	public function remove_dead_products_from_stock()
+	{
+		$sql = "SELECT 
+					stock.id, 
+					products.name,
+					stock.volume
+                FROM products
+                JOIN stock 
+				ON products.id = stock.product_id 
+                WHERE 
+					products.deleted_at IS NOT NULL 
+				AND 
+				stock.volume > 0
+				";
+		$products = $this->db->query($sql)->result_array();
+		foreach ($products as $product)
+		{
+			$this->logs->logger(WARN, "rm_dead_products", "removed: " . $product['name'] . " volume: " . $product['volume']);
+		}
+		
+		$this->db->query("UPDATE stock JOIN products ON products.id = stock.product_id SET stock.state = " . STOCK_HISTORY . " WHERE products.deleted_at IS NOT NULL AND stock.volume > 0;");
+		return $this->db->affected_rows();
+	}
+
+	/*
 		PRIVATE functions
 	*/
 	# get product offset
@@ -716,6 +751,7 @@ class Stock_model extends MY_Model
 								WHEN (volume + " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
 								ELSE '" . STOCK_IN_USE . "'
 							END,
+					updated_at = NOW(),
 					volume = volume + " . $volume . "
 				WHERE
 					id = '" . $stock_id . "'
@@ -755,6 +791,7 @@ class Stock_model extends MY_Model
 							WHEN (volume + " . $volume . ") = 0 THEN '" . STOCK_HISTORY . "'
 							ELSE '" . STOCK_IN_USE . "'
 						END,
+				updated_at = NOW(),
 				volume = volume + " . $volume . "
 			WHERE 
 				(product_id, lotnr, in_price, state) = (SELECT product_id, lotnr, in_price, state FROM stock WHERE id = " . $stock_id . ")

@@ -36,7 +36,6 @@ class Cli extends Frontend_Controller
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Log_stock_model', 'log_stock');
 		$this->load->model('Products_model', 'products');
-		$this->load->model('Price_track_model', 'pricetrack');
 		$this->load->model('Rx_model', 'rx');
 
         $conf = $this->settings->get_all();
@@ -701,6 +700,19 @@ class Cli extends Frontend_Controller
 		if ($r >= 1)
 		{
 			$this->logs->logger(WARN, "stock_clean", "archived: " . $r);
+		}
+
+		/*
+		* will clean up products that have been removed, but still have stock
+		* this would result in errors
+		*/
+		$removed_products = $this->stock->remove_dead_products_from_stock();
+		
+		# remove_dead_products_from_stock already logs this
+		# but this gives back the amount of removed products
+		if ($removed_products >= 1)
+		{
+			$this->logs->logger(WARN, "remove_dead_products_from_stock", "archived: " . $removed_products);
 		}
 	}
 
