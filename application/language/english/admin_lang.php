@@ -81,6 +81,9 @@ $lang['wholesale']          = 'Wholesale';
 $lang['title_export_clients']     = 'Export clients. (admin-only)';
 $lang['export_clients']     = 'Export modified clients.';
 $lang['export_client_all']        = 'All clients';
+
+$lang['active_clients']           = 'Active klanten';
+$lang['active_clients_explain']   = 'Active clients are clients that have been billed in the last 3 years.';
 $lang['export_client_90d']        = '90 days';
 
 # config screen

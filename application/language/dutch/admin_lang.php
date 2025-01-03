@@ -80,6 +80,8 @@ $lang['wholesale']          = 'Groothandel';
 $lang['title_export_clients']     = 'Exporteer klanten. (admin-only)';
 $lang['export_clients']           = 'Exporteer gewijzigde klanten.';
 $lang['export_client_all']        = 'Alle klanten';
+$lang['active_clients']           = 'Actieve klanten';
+$lang['active_clients_explain']   = 'Actieve klanten zijn klanten die in de laatste 3 jaar een factuur hebben gehad.';
 $lang['export_client_90d']        = '90 dagen';
 
 # config screen

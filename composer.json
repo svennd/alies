@@ -11,6 +11,7 @@
         "smhg/sepa-qr-data": "^2.0",
         "chillerlan/php-qrcode": "^5.0",
         "robinherbots/jquery.inputmask": "^5.0",
-        "clegginabox/pdf-merger": "dev-master"
+        "clegginabox/pdf-merger": "dev-master",
+        "phpoffice/phpspreadsheet": "^3.7"
     }
 }

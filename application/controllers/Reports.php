@@ -24,6 +24,9 @@ class Reports extends Admin_Controller
 		# helpers
 		$this->load->helper('file_download');
 
+		# libraries
+		$this->load->library('ExcelExporter');
+
 	}
 
 	public function accounting(string $search_from = "", string $search_to = "", int $booking_id = 0, bool $csv = false)
@@ -52,9 +55,9 @@ class Reports extends Admin_Controller
 
 	}
 
-	public function stock_list($location = false)
+	public function stock_list(bool $get = false, int $location = 0, int $procent = 0)
 	{
-		if (!$location)
+		if (!$get)
 		{
 			$data = array(
 							"locations"		=> $this->locations,
@@ -64,27 +67,25 @@ class Reports extends Admin_Controller
 		}
 		else
 		{
-			$stock = $this->stock->get_stock_list($location);
+			$stock = $this->stock->get_list($location, $procent);
 
 			$csv = $this->load->view('reports/stock_list', array("stock_list" => $stock), true);
-			array_to_csv_download($csv, 'stocklist_' . (int) $location . '.csv');
+			$this->excelexporter->exportToExcel($stock, 'stock_list.xlsx');
 		}
 	}
-
-	public function stock_list_all($procent = 0)
+	
+	public function clients_list(bool $active = false)
 	{
-		$stock = $this->stock->get_full_stock_list($procent);
+		$clients = $this->owners->fields('id, first_name, last_name, street, nr, city, zip, last_bill');
 
-		$csv = $this->load->view('reports/stock_list_all', array("stock_list" => $stock), true);
-		array_to_csv_download($csv, 'stocklist_all.csv');
-	}
+		if ($active)
+		{
+			$clients->where('last_bill > DATE_SUB(NOW(), INTERVAL 3 YEAR)', null, null, false, false, true);
+		}
+		$client_data = $clients->get_all();
 
-	public function clients_list()
-	{
-		$clients = $this->owners->fields('id, first_name, last_name, street, nr, city, zip, last_bill')->get_all();
-
-		$csv = $this->load->view('reports/client_list', array("clients" => $clients), true);
-		array_to_csv_download($csv, 'clientlist_all.csv');
+		$this->excelexporter->exportToExcel($client_data, 'client_data.xlsx');
+		// $this->excelexporter->exportToExcelAI($clients, 'user_data.xlsx');
 	}
 	/*
 		give a simple list of the usage

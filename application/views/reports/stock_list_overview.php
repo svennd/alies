@@ -22,18 +22,25 @@
 				<?php foreach ($locations as $loc): ?>
 				<tr>
 					<td><?php echo $loc['name']; ?></td>
-					<td><a href="<?php echo base_url(); ?>reports/stock_list/<?php echo $loc['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a></td>
+					<td><a href="<?php echo base_url(); ?>reports/stock_list/1/<?php echo $loc['id']; ?>" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-file-excel"></i> <?php echo $this->lang->line('export'); ?></a></td>
 				</tr>
 				<?php endforeach; ?>
 				<!-- all -->
 				<tr>
 					<td>All</td>
 					<td>
-						<a href="<?php echo base_url('reports/stock_list_all'); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('export'); ?></a><br/><br/>
-						<a href="<?php echo base_url('reports/stock_list_all/6'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 6%</a>
-						<a href="<?php echo base_url('reports/stock_list_all/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-file-csv"></i> 21%</a><br/><br/>
+						<a href="<?php echo base_url('reports/stock_list/1'); ?>" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-file-excel"></i> <?php echo $this->lang->line('export'); ?></a><br/><br/>
+						<a href="<?php echo base_url('reports/stock_list/1/0/6'); ?>" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-file-excel"></i> 6%</a>
+						<a href="<?php echo base_url('reports/stock_list/1/0/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-file-excel"></i> 21%</a><br/>
+					</td>
+				</tr>
+				<tr>
+					<td><?php echo $this->lang->line('Clients'); ?></td>
+					<td>
 						<!-- required for end-of-year book keeping -->
-						<a href="<?php echo base_url('reports/clients_list'); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-file-csv"></i> <?php echo $this->lang->line('Clients'); ?></a>
+						<a href="<?php echo base_url('reports/clients_list/1'); ?>" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-file-excel"></i> <?php echo $this->lang->line('active_clients'); ?></a><br/>
+						<small><i><?php echo $this->lang->line('active_clients_explain'); ?></i><br/></small><br/>
+						<a href="<?php echo base_url('reports/clients_list'); ?>" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-file-excel"></i> <?php echo $this->lang->line('export_client_all'); ?></a>
 					</td>
 				</tr>
 				</tbody>

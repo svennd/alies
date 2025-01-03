@@ -376,6 +376,40 @@ class Stock_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 
+	/*
+	* called in reports/stock_list
+	*/
+	public function get_list(int $location = 0, int $procent = 0) 
+	{
+		$sql = "
+				SELECT
+					products.name,
+					SUM(volume) as volume,
+					products.unit_buy,
+					lotnr,
+					eol,
+					products.btw_buy,
+					ROUND( in_price / ( buy_volume / SUM(volume) ), 2) as value,
+					in_price
+				FROM 
+					stock
+				JOIN
+					products
+				ON
+					products.id = stock.product_id
+				WHERE
+					state = ". STOCK_IN_USE . "
+					". (($procent != 0) ? 'AND btw_buy = '. $procent : '')  ."
+					". (($location != 0) ? 'AND location = '. $location : '')  ."
+				GROUP BY
+					lotnr, in_price
+				ORDER BY
+					products.name ASC
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
+
 	public function get_all_products(int $location)
 	{
 		$sql = "select
@@ -512,67 +546,6 @@ class Stock_model extends MY_Model
 		}
 
 		return array($local_volume, $total_volume);
-	}
-
-	/*
-		reports/stock_list
-	*/
-	public function get_stock_list($location)
-	{
-		$sql = "SELECT
-					SUM(volume) as volume,
-					GROUP_CONCAT(volume SEPARATOR '; ') as concat_volume,
-					GROUP_CONCAT(eol SEPARATOR '; ') as eol,
-					GROUP_CONCAT(lotnr SEPARATOR '; ') as lotnr,
-					GROUP_CONCAT(DATE_FORMAT(s.created_at, '%H:%i %d/%c/%y') SEPARATOR '; ') as created_at,
-					p.name,
-					p.unit_buy,
-					p.btw_buy as btw_buy,
-					GROUP_CONCAT(in_price SEPARATOR '; ') as in_price,
-					AVG(in_price) as avg_in_price
-				FROM
-					stock as s
-				JOIN products as p ON
-					p.id = product_id
-				WHERE
-					location = '" . $location . "'
-				AND
-					state = ". STOCK_IN_USE ."
-				GROUP BY
-					product_id
-				ORDER BY
-					p.name ASC;
-			";
-		return ($this->db->query($sql)->result_array());
-	}
-
-	/*
-		reports/stock_list
-	*/
-	public function get_full_stock_list(int $procent)
-	{
-		$sql = "SELECT
-					p.name,
-					ROUND(SUM(volume), 2) as volume,
-					p.unit_buy,
-					ROUND(SUM(in_price / (p.buy_volume / volume) ), 2) as total_in_price,
-					GROUP_CONCAT(volume SEPARATOR '; ') as concat_volume,
-					CONCAT(p.buy_volume) as buy_volume,
-					GROUP_CONCAT(in_price SEPARATOR '; ') as in_price,
-					p.btw_buy as btw_buy
-				FROM
-					stock as s
-				JOIN products as p ON
-					p.id = product_id
-				AND
-					state = ". STOCK_IN_USE ."
-				". (($procent > 0) ? 'AND btw_buy = '. $procent : '') ."
-				GROUP BY
-					product_id
-				ORDER BY
-					p.name ASC;
-			";
-		return ($this->db->query($sql)->result_array());
 	}
 	
 	/*
