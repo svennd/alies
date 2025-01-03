@@ -63,8 +63,8 @@
 						<td><?php echo (empty($us['vhbcode'])) ? '-' : $us['vhbcode']; ?></td>
 						<td><?php echo $us['product_type']; ?></td>
 						<td><?php echo $us['code'] . ' (' . $us['category'] . ')'; ?></td>
-						<td><?php echo $us['btw_buy']; ?>%</td>
-						<td><?php echo $us['btw']; ?>%</td>
+						<td><?php echo $us['btw_buy']; ?></td>
+						<td><?php echo $us['btw']; ?></td>
 						<td><?php echo $us['vet_name']; ?></td>
 						<td><?php echo $us['stock_name']; ?></td>
 						<td><a href="<?php echo base_url('pets/fiche/' . $us['pet_id']); ?>"><?php echo $us['pet_id']; ?></a></td>
