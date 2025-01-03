@@ -37,8 +37,9 @@
 						<th><?php echo $this->lang->line('lotnr'); ?></th>
 						<th><?php echo $this->lang->line('vhbcode'); ?></th>
 						<th><?php echo $this->lang->line('price_dayprice'); ?></th>
-						<th><?php echo $this->lang->line('price_alies'); ?></th>
+						<!-- <th><?php echo $this->lang->line('price_alies'); ?></th> mistake ? -->
 						<th><?php echo $this->lang->line('catalog_price'); ?></th>
+						<th><?php echo $this->lang->line('supplier'); ?></th>
 						<th><?php echo $this->lang->line('btw_buy'); ?></th>
 						<th><?php echo $this->lang->line('btw_sell'); ?></th>
 					</tr>
@@ -53,8 +54,9 @@
 						<td><?php echo $us['lotnr']; ?></td>
 						<td><?php echo (!empty($us['vhbcode'])) ? $us['vhbcode']: '-'; ?></td>
 						<td><?php echo $us['in_price']; ?></td>
-						<td><?php echo $us['in_price']; ?></td>
+						<!-- <td><?php echo $us['in_price']; ?></td> -->
 						<td><?php echo (!empty($us['bruto'])) ? $us['bruto']: '-'; ?></td>
+						<td><?php echo (!empty($us['supplier'])) ? $us['supplier']: 'covetrus'; ?></td>
 						<td><?php echo $us['btw_buy']; ?></td>
 						<td><?php echo $us['btw_sell']; ?></td>
 					</tr>
