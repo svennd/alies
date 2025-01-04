@@ -10,11 +10,27 @@ define("PUSH_TOTAL", 26);
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header'); ?> #<?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></title>
+<title><?php echo $str_invoice_or_bill . ' #' . $fact_invoice_or_bill; ?></title>
 
 <style type="text/css">
-    * {
-        font-family: Verdana, Arial, sans-serif;
+
+	@page { 
+		margin: 310px 35px 150px 35px;
+	} 
+
+	body {
+		font-family: Verdana, Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+  	}
+	.header {
+      position: fixed;
+      top: -270px;
+      left: 0;
+      right: 0;
+      /* height: 250px; */
+      padding: 10px;
+	  /* background-color:red; */
     }
     table{
         font-size: x-small;
@@ -46,8 +62,9 @@ define("PUSH_TOTAL", 26);
 
 </head>
 <body>
+
+<div class="header">
 <?php if (file_exists(dirname(__FILE__) . "/../custom/bill_header.php")) { include dirname(__FILE__) . "/../custom/bill_header.php"; }  ?>
-<div class="content">
 
   <table width="100%">
     <tr>
@@ -60,7 +77,7 @@ define("PUSH_TOTAL", 26);
 			<?php if ($owner['btw_nr']) : ?><?php echo $this->lang->line('client')  . " ". $this->lang->line('VAT'); ?> : <?php echo $owner['btw_nr']; ?><br/><?php endif; ?>
 			
 		</td> 
-        <td align="left" valign="bottom" class="letterhead">
+		<td align="left" valign="bottom" class="letterhead">
 			<br/>
 			<br/>
 
@@ -77,35 +94,35 @@ define("PUSH_TOTAL", 26);
 		</td>
     </tr>
   </table>
+	<hr style="min-height: 1px; margin-top:50px; border:0px; background: #DCDDE1;"/>
 
-<hr style="min-height: 1px; margin-top:50px; border:0px; background: #DCDDE1;"/>
-
-<table width="100%">
-	<tr>
-		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_id'); ?></th>
-		<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
-		<th><?php echo $this->lang->line('bill_due_date'); ?></th>
-		<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != BILL_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
-	</tr>
-	<tr>
-		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></td>
-		<td align="center"><?php echo (is_null($bill['invoice_id'])) ? date_format(date_create($bill['created_at']), "d-m-Y") : date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
-		<td align="center">
-			<?php if ($bill['status'] != BILL_PAID || !$transfer_complete): ?>
-				<?php echo date('d-m-Y', strtotime($bill['invoice_date']. ' +'. $due_date_days .' days')); ?>
-			<?php else: ?>
-				<i><?php echo ($bill['status'] == BILL_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
-			<?php endif; ?>
-		</td>
-		<td align="center">
-			<?php if($bill['card'] > 0 || $bill['cash'] > 0 || $bill['transfer'] > 0): ?>
-				<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
-				<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><br/><?php endif; ?>
-				<?php if ($bill['transfer'] != 0.00 && $transfer_complete) : ?><?php echo $this->lang->line('transfer'); ?>: &euro; <?php echo $bill['transfer']; ?><?php endif; ?>
-			<?php endif; ?>
-		</td>
-	</tr>
-</table>
+	<table width="100%">
+		<tr>
+			<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('nota') : $this->lang->line('bill_id'); ?></th>
+			<th><?php echo (is_null($bill['invoice_id'])) ? $this->lang->line('date') : $this->lang->line('bill_date'); ?></th>
+			<th><?php echo $this->lang->line('bill_due_date'); ?></th>
+			<th><?php echo (is_null($bill['invoice_id']) || $bill['status'] != BILL_PAID) ? "&nbsp;" : $this->lang->line('payment_detail'); ?></th>
+		</tr>
+		<tr>
+			<td align="center"><?php echo (is_null($bill['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']); ?></td>
+			<td align="center"><?php echo (is_null($bill['invoice_id'])) ? date_format(date_create($bill['created_at']), "d-m-Y") : date_format(date_create($bill['invoice_date']), "d-m-Y"); ?></td>
+			<td align="center">
+				<?php if ($bill['status'] != BILL_PAID || !$transfer_complete): ?>
+					<?php echo date('d-m-Y', strtotime($bill['invoice_date']. ' +'. $due_date_days .' days')); ?>
+				<?php else: ?>
+					<i><?php echo ($bill['status'] == BILL_PAID) ? $this->lang->line('payment_complete') : ''; ?></i>
+				<?php endif; ?>
+			</td>
+			<td align="center">
+				<?php if($bill['card'] > 0 || $bill['cash'] > 0 || $bill['transfer'] > 0): ?>
+					<?php if ($bill['card'] != 0.00) : ?><?php echo $this->lang->line('card'); ?>: &euro; <?php echo $bill['card']; ?><br/><?php endif; ?>
+					<?php if ($bill['cash'] != 0.00) : ?><?php echo $this->lang->line('cash'); ?>: &euro; <?php echo $bill['cash']; ?><br/><?php endif; ?>
+					<?php if ($bill['transfer'] != 0.00 && $transfer_complete) : ?><?php echo $this->lang->line('transfer'); ?>: &euro; <?php echo $bill['transfer']; ?><?php endif; ?>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
+</div>
 <?php if($bill['msg_invoice']): ?>
 <br/>
 <div style="font-weight: normal;padding:5px;" class="gray letterhead">
@@ -126,7 +143,7 @@ define("PUSH_TOTAL", 26);
 	  <td>
 		  <?php echo $this->lang->line('pet_info'); ?> : <?php echo $pets_list; ?><br/>
 	  </td>
-	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php  echo $bill['location']['name']; ?></td>
+	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php echo $bill['location']['name']; ?></td>
   </tr>
 </table>
 
@@ -187,6 +204,7 @@ foreach ($print as $pet_id => $event):
 			<td align="right"><?php echo number_format($product['price_net'],2); $total_net += $product['price_net']; ?>&nbsp;</td>
 		</tr>
 	<?php endforeach; ?>
+
 <?php endforeach; ?>
 
 <tr>
@@ -266,8 +284,5 @@ foreach ($print as $pet_id => $event):
 	</table>
 </div>
 <?php endif; ?>
-<br/>
-</div>
-	</body>
-
+</body>
 </html>
