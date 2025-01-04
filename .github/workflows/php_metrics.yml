@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - development
-      
+
 name: metrics
 jobs:
   phpmetrics-action:
@@ -10,13 +10,15 @@ jobs:
     name: PhpMetrics Action
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to the latest version
+
       - name: PhpMetrics Scan
         uses: umutphp/phpmetrics-action@v1
         with:
           folder: application
+
       - name: Upload HTML Report
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3  # Updated to the latest version
         with:
           name: HTML Report
           path: phpmetrics.html
