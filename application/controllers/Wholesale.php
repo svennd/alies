@@ -19,8 +19,8 @@ class Wholesale extends Admin_Controller {
 	{
 		$data = array(
 			"products" 				=> $this->wholesale->get_bruto_increase(100),
-			"search_product"		=> $this->products->search_product($this->input->get('search_query')),
-			"search_procedure"		=> $this->procedures->search_procedure($this->input->get('search_query')),
+			// "search_product"		=> $this->products->search_product($this->input->get('search_query')),
+			// "search_procedure"		=> $this->procedures->search_procedure($this->input->get('search_query')),
 		);
 		$this->_render_page('wholesale/pricing', $data);
 	}

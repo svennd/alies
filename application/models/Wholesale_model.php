@@ -42,7 +42,8 @@ class Wholesale_model extends MY_Model
 					products.id,
 					products.name,
 					bruto,
-					last_bruto, 
+					last_bruto,
+					wholesale.id as wh_id,
 					ROUND(((bruto - last_bruto) / last_bruto) * 100) AS percentage_change
 				FROM
 					wholesale
