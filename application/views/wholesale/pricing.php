@@ -4,6 +4,8 @@
         <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 			    <div class="text-danger"><?php echo $this->lang->line('increase'); ?></div>
+
+				<a href="<?php echo base_url('wholesale/accept_all'); ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-triangle-exclamation"></i> Accept all</a>
 			</div>
             <div class="card-body">
                 

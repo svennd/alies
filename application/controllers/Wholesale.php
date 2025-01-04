@@ -79,6 +79,15 @@ class Wholesale extends Admin_Controller {
 	}
 
 	/*
+		accept all the new price
+	*/
+	public function accept_all()
+	{
+		$this->wholesale->accept_all();
+		redirect('wholesale/pricing');
+	}
+
+	/*
 		ignore the new price
 	*/
 	public function ignore(int $id, string $from = 'index')

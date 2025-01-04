@@ -65,6 +65,14 @@ class Wholesale_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 
+	public function accept_all()
+	{
+		$accept_price = "
+				UPDATE `wholesale` SET `last_bruto` = bruto, `last_bruto_date` = '" . date("Y-m-d") . "';	
+			";
+		return $this->db->query($accept_price);
+	}
+	
 	public function accept_price(int $id)
 	{
 		$accept_price = "

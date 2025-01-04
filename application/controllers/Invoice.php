@@ -187,6 +187,10 @@ class Invoice extends Vet_Controller
 			$data['IBAN'] = base64_decode($this->conf['iban']['value']);
 			$data['name_owner'] = base64_decode($this->conf['nameiban']['value']);
 			
+			// template data
+			$data['str_invoice_or_bill'] = (is_null($bill_info['invoice_id'])) ? $this->lang->line('check') : $this->lang->line('bill_header');
+			$data['fact_invoice_or_bill'] = (is_null($bill_info['invoice_id'])) ? get_bill_id($bill['id']) : get_invoice_id($bill['invoice_id'], $bill['invoice_date'], $this->conf['invoice_prefix']['value']);
+
 			# force regenerate the pdf
 			$this->generate_pdf($data, PDF_STREAM, true);
 		}
