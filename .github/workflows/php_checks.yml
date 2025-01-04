@@ -1,5 +1,8 @@
 # https://github.com/umutphp/php-docker-images-for-ci
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - development
 name: Main
 jobs:
   php-check:

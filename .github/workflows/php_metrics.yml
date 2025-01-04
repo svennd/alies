@@ -1,4 +1,8 @@
-on: pull_request
+on:
+  push:
+    branches:
+      - development
+      
 name: metrics
 jobs:
   phpmetrics-action:
