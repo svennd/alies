@@ -24,7 +24,7 @@
                     <tr>
                         <td><a href="<?php echo base_url('pricing/prod/' . $prod['id']); ?>"><?php echo $prod['name']; ?></a></td>
                         <td><?php echo $prod['bruto']; ?> &euro;</td>
-                        <td class="text-danger"><a href="<?php echo base_url('wholesale/get_history/' . $prod['wh_id']); ?>">+<?php echo $prod['percentage_change']; ?> %</a></td>
+                        <td><a href="<?php echo base_url('wholesale/get_history/' . $prod['wh_id']); ?>" class="text-danger">+<?php echo $prod['percentage_change']; ?> %</a></td>
                     </tr>
                     <?php endforeach; ?>
 				</tbody>
