@@ -194,3 +194,9 @@ define('GS1_CODE', 26);
 define('CLIENT_BILL', 0); # default attempts to add CLIENT_ID + BILL_ID 
 define('CLIENT', 1); # client id only
 define('CLIENT_3DIGIT_BILL', 2); # client id (up to 7) + 3 digit bill id
+
+# events_link types
+define('EVENTS_LINK_INTERNAL_LAB', 0);
+define('EVENTS_LINK_EXTERNAL_LAB', 1);
+define('EVENTS_LINK_RX', 2);
+define('EVENTS_LINK_UPLOAD', 3);

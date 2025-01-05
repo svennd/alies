@@ -45,21 +45,15 @@
 							}
 						}
 					?>
-					<?php $age = timespan(strtotime($pet['birth']), time(), 1); ?>
 						<li class="list-group-item">
 							<div class="row">
-								<div class="col-lg-12 col-sm-12 col-xl-2">
+								<div class="col-lg-12 col-sm-12 col-xl-3">
 									<?php if($pet['death']): ?><i class="fa-solid fa-cross text-danger"></i><?php endif; ?>
 									<a href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>">
 										<?php echo get_symbol($pet['type']); ?>
 										<?php echo $pet['name']; ?>
-									</a>
-									<?php echo ($age < 30) ? '(' . $age . ')' : ''; ?>
+									</a><small>(#<?php echo $pet['id']; ?>)</small>
 									<hr class="mt-2 mb-3 d-xl-none" style="border-top: 1px solid rgba(0, 0, 0, 0.1);"/>
-								</div>
-
-								<div class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-1">
-									#<?php echo $pet['id']; ?>
 								</div>
 
 								<div class="col-6 col-sm-6 col-md-3 col-lg-4 col-xl-2">
@@ -77,17 +71,17 @@
 
 								<?php if ($pet['last_weight']): ?>
 									<div class="d-none d-sm-block col-md-2 col-lg-2 col-xl-1">
-										<?php echo ($pet['last_weight'] != 0) ? '<a href="' . base_url() . 'pets/history_weight/' . $pet['id'] . '">' . $pet['last_weight'] . ' kg</a>' : ''; ?>
+										<i class="fa-solid fa-weight-scale fa-fw"></i> <a href="#" data-pet-id="<?php echo $pet['id']; ?>" class="add_weight" id="weight_<?php echo $pet['id']; ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/>
 									</div>
 								<?php endif; ?>
 
 								<div class="col-lg-12 col-xl-4 d-none d-sm-block">
-									<a class="btn btn-outline-success" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>
-									<a class="btn btn-outline-info" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
+									<a class="btn btn-outline-success" href="<?php echo base_url('events/new_event/' . $pet['id']); ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>
+									<a class="btn btn-outline-info" href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>"><i class="fas fa-info-circle"></i> Fiche</a>
 								</div>
 								<div class="col-12 d-block d-sm-none d-md-none">
-									<a class="btn btn-outline-success my-3" href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id'] ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>									
-									<a class="btn btn-outline-info ml-5" href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><i class="fas fa-info-circle"></i> Fiche</a>
+									<a class="btn btn-outline-success my-3" href="<?php echo base_url('events/new_event/' . $pet['id']); ?>"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('new_consult'); ?></a>									
+									<a class="btn btn-outline-info ml-5" href="<?php echo base_url('pets/fiche/' . $pet['id']); ?>"><i class="fas fa-info-circle"></i> Fiche</a>
 								</div>
 							</div>
 						</li>
@@ -190,10 +184,10 @@
 
 </div>
 
-
 <script type="text/javascript">
-document.addEventListener("DOMContentLoaded", function(){
-	$("#owners").show();
-	$("#clients").addClass('active');
-});
+const URL_PUSH_WEIGHT 	= '<?php echo base_url('pets/push_weight'); ?>';
+const LANG_WEIGHT		= '<?php echo $this->lang->line('weight'); ?>';
+const LANG_ADD_WEIGHT	= '<?php echo $this->lang->line('add_weight'); ?>';
 </script>
+
+<script src="<?php echo base_url('assets/js/owner_detail.js'); ?>"></script>

@@ -87,21 +87,55 @@ class Events_products_model extends MY_Model
 
 	public function get_monthly_usage(int $product, int $month = 6)
 	{
-		
 		$sql = "SELECT 
-					CONCAT(MONTH(created_at), '/', YEAR(created_at)) AS month_year,
-					SUM(volume) AS total_volume
-				FROM 
-					events_products
-				WHERE
-    				created_at >= DATE_SUB(NOW(), INTERVAL ". $month ." MONTH)
-				AND
-					product_id = " . $product . "
-				GROUP BY 
-					YEAR(created_at), MONTH(created_at)
-				ORDER BY 
-					YEAR(created_at), MONTH(created_at);
-				";
+            DATE_FORMAT(created_at, '%Y-%m') AS month_year,
+            SUM(volume) AS total_volume
+        FROM 
+            events_products
+        WHERE
+            created_at >= DATE_SUB(NOW(), INTERVAL ". $month ." MONTH)
+        AND
+            product_id = " . $product . "
+        GROUP BY 
+            YEAR(created_at), MONTH(created_at)
+        ORDER BY 
+            YEAR(created_at), MONTH(created_at);
+        ";
+		return $this->db->query($sql)->result_array();
+	}
+
+	public function usage_summary($product_id, $search_from, $search_to)
+	{
+		# WITH rollup = add "total" as a location
+		$sql = "
+		SELECT 
+			IFNULL(stock_location.name, 'total') AS location,
+			SUM(volume) AS total_volume,
+			SUM(price_net) AS total_netto_price,
+			SUM(price_brut) AS total_bruto_price, -- perhaps can be dropped
+			COUNT(ep.id) AS total_transactions,
+			COUNT(CASE WHEN reduction_reason = 'TIER_REDUCTION' THEN 1 END) AS tier_reduction_count,
+			COUNT(CASE WHEN reduction_reason = 'AUTO_REDUCTION' THEN 1 END) AS auto_reduction_count,
+			COUNT(CASE WHEN reduction_reason = 'MANUAL' THEN 1 END) AS manual_reduction_count
+		FROM
+			events_products AS ep
+		LEFT JOIN
+			events
+		ON
+			events.id = ep.event_id
+		LEFT JOIN 
+			stock_location
+		ON
+			events.location = stock_location.id
+		WHERE
+			ep.product_id = " . $product_id . "
+		AND
+			ep.created_at >= STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+		AND
+			ep.created_at <= STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+		GROUP BY 
+			stock_location.name WITH ROLLUP
+	";
 		return $this->db->query($sql)->result_array();
 	}
 }
