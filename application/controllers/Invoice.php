@@ -55,15 +55,15 @@ class Invoice extends Vet_Controller
 		$is_modified = ($this->input->post('modified')) ? true : false;
 
 		$bill_query = $this->bills
-			->where('created_at > STR_TO_DATE("' . $search_from . '", "%Y-%m-%d")', null, null, false, false, true)
-			->where('created_at < STR_TO_DATE("' . $search_to . '", "%Y-%m-%d")', null, null, false, false, true)
+			->where('created_at > STR_TO_DATE("' . $search_from . ' 00:00", "%Y-%m-%d %H:%i")', null, null, false, false, true) # required to specify time
+			->where('created_at < STR_TO_DATE("' . $search_to . ' 23:59", "%Y-%m-%d %H:%i")', null, null, false, false, true)
 			->with_location('fields:name')
 			->with_vet('fields:first_name')
 			->with_owner('fields:last_name,id as user_id,low_budget,debts,btw_nr')
 			->limit($search_limit)
 			->order_by('created_at', 'desc')
 			;
-			
+
 		if ($is_modified) {
 			$bill_query->where(array('modified' => 1));
 		}
@@ -76,6 +76,7 @@ class Invoice extends Vet_Controller
 		}
 
 		$bill_overview = $bill_query->get_all();
+	
 		# max search for vets ; 30 days
 		$dt->modify('-23 day');
 		
