@@ -11,6 +11,10 @@
                         <label for="query">Query</label>
                         <textarea class="form-control" id="query" name="query" rows="20"><?php echo $stat['query']; ?></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="help">help</label>
+                        <textarea class="form-control" id="help" name="help" rows="3"><?php echo $stat['help']; ?></textarea>
+                    </div>
                     <button type="submit" name="submit" value="usage" class="btn btn-outline-primary">Update</button>
                     <a href="<?php echo base_url("stats"); ?>" class="btn btn-outline-danger">Return</a>
 				</form>

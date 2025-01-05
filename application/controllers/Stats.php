@@ -47,15 +47,15 @@ class Stats extends Admin_Controller
 	public function update(int $id)
 	{
 		if ($this->input->post('submit')) {
-			$this->stats->update(array("query" => $this->input->post('query')), $id);
+			$this->stats->update(array(
+					"query" => $this->input->post('query'),
+					"help" => $this->input->post('help'),
+				), $id);
 			redirect('stats');
 		}
 
-		$stat = $this->stats->get($id);
-		$data = array(
-						"stat" => $stat
-					);
-
-		$this->_render_page('stats/update', $data);
+		$this->_render_page('stats/update', array(
+													"stat" => $this->stats->get($id)
+											));
 	}
 }
