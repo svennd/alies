@@ -102,7 +102,9 @@ class Products_model extends MY_Model
 			stock.lotnr, stock.eol, stock.in_price,
 			pets.name as petname, pets.id as pet_id,
 			owners.id, owners.last_name,
-			stock_location.name as stockname
+			event.name as event_location_name,
+			st.name as stock_location_name
+
 		from 
 			events_products as ep
 		LEFT JOIN
@@ -114,15 +116,19 @@ class Products_model extends MY_Model
 		ON
 			vet = users.id
 		LEFT JOIN 
-			stock_location
+			stock_location as event
 		ON
-			events.location = stock_location.id
+			events.location = event.id
 		LEFT JOIN
 			stock
 		ON
 			ep.stock_id = stock.id
-		AND
-			events.location = stock.location
+
+		LEFT JOIN 
+			stock_location as st
+		ON
+			stock.location = st.id
+
 		LEFT JOIN
 			pets
 		ON

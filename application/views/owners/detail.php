@@ -71,7 +71,7 @@
 
 								<?php if ($pet['last_weight']): ?>
 									<div class="d-none d-sm-block col-md-2 col-lg-2 col-xl-1">
-										<i class="fa-solid fa-weight-scale fa-fw"></i> <a href="#" data-pet-id="<?php echo $pet['id']; ?>" class="add_weight" id="weight_<?php echo $pet['id']; ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/>
+										<a href="#" data-pet-id="<?php echo $pet['id']; ?>" class="add_weight" id="weight_<?php echo $pet['id']; ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/>
 									</div>
 								<?php endif; ?>
 
