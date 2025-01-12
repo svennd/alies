@@ -48,7 +48,7 @@
 					<?php foreach ($register_in as $us): ?>
 					<tr>
 						<td><?php echo $us['name']; ?></td>
-						<td><?php echo $us['volume']; ?></td>
+						<td><?php echo ($us['volume']) . ' ' . $us['unit_buy']; ?></td>
 						<td><?php echo $us['regdate']; ?></td>
 						<td><?php echo $us['eol']; ?></td>
 						<td><?php echo $us['lotnr']; ?></td>
@@ -56,7 +56,7 @@
 						<td><?php echo $us['in_price']; ?></td>
 						<!-- <td><?php echo $us['in_price']; ?></td> -->
 						<td><?php echo (!empty($us['bruto'])) ? $us['bruto']: '-'; ?></td>
-						<td><?php echo (!empty($us['supplier'])) ? $us['supplier']: 'covetrus'; ?></td>
+						<td><?php echo (!empty($us['supplier'])) ? $us['supplier']: $us['null_supplier']; ?></td>
 						<td><?php echo $us['btw_buy']; ?></td>
 						<td><?php echo $us['btw_sell']; ?></td>
 					</tr>
