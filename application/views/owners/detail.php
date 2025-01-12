@@ -71,7 +71,9 @@
 
 								<?php if ($pet['last_weight']): ?>
 									<div class="d-none d-sm-block col-md-2 col-lg-2 col-xl-1">
-										<a href="#" data-pet-id="<?php echo $pet['id']; ?>" class="add_weight" id="weight_<?php echo $pet['id']; ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/>
+										<!-- they didn't like this -->
+										<!-- <a href="#" data-pet-id="<?php echo $pet['id']; ?>" class="add_weight" id="weight_<?php echo $pet['id']; ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/> -->
+										<a href="<?php echo base_url('pets/history_weight/' . $pet['id']) ?>"><?php echo ($pet['last_weight'] && $pet['last_weight'] != 0) ? $pet['last_weight'] . ' kg' : '---'; ?></a><br/>
 									</div>
 								<?php endif; ?>
 
@@ -190,4 +192,4 @@ const LANG_WEIGHT		= '<?php echo $this->lang->line('weight'); ?>';
 const LANG_ADD_WEIGHT	= '<?php echo $this->lang->line('add_weight'); ?>';
 </script>
 
-<script src="<?php echo base_url('assets/js/owner_detail.js'); ?>"></script>
+<!-- <script src="<?php echo base_url('assets/js/owner_detail.js'); ?>"></script> -->
