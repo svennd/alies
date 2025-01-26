@@ -92,3 +92,9 @@ $lang['settings_screen']        = 'Configuratie';
 # stocklist
 $lang['stock_list']         = 'Stock list';
 $lang['stock_list_explain'] = 'This generates a list with all products in the stock. (that are active, state=2)';
+
+# pricing page
+$lang['old_cat_price']      = 'Old cataloge price';
+$lang['since']              = 'Since';
+$lang['untill']              = 'untill';
+$lang['current']              = 'current';

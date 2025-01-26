@@ -1,18 +1,12 @@
 <div class="row">
-      <div class="col-lg-10 mb-4">
+      <div class="col-lg-6 mb-4">
 
       <div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div>
 					<a href="<?php echo base_url('accounting/dashboard'); ?>"><?php echo $this->lang->line('admin'); ?></a> / 
 					<a href="<?php echo base_url('wholesale/index'); ?>"><?php echo $this->lang->line('wholesale'); ?></a> / 
-					<?php echo (isset($data['product'])) ? $data['product']['name'] : $data['vendor_id']; ?>
-				</div>
-
-				<div>
-					<?php if(isset($data['product'])): ?>
-						<a href="<?php echo base_url('pricing/prod/' . $data['product']['id']); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-fw fa-euro-sign"></i></a>
-					<?php endif; ?>
+					<?php echo (isset($data['product'])) ? $data['product']['name'] : $data['vendor_id']; ?> <small>(#<?php echo $data['vendor_id']; ?>)</small>
 				</div>
 
 			</div>
@@ -38,46 +32,47 @@
 					else { $procent = ""; }
 					?>
 				<table class="table table-sm">
-					<tr>
-						<td>Artikel nr</td>
-						<td><?php echo $data['vendor_id']; ?></td>
-					</tr>
 					<?php if(isset($data['product'])): ?>
 					<tr>
 						<td><?php echo $this->lang->line('name'); ?></td>
-						<td><a href="<?php echo base_url('products/profile/'. $data['product']['id']); ?>"><?php echo $data['product']['name']; ?></a></td>
+						<td>
+							<a href="<?php echo base_url('products/profile/'. $data['product']['id']); ?>"><?php echo $data['product']['name']; ?></a><br/>
+							<small><?php echo $data['description']; ?></small>
+						</td>
 					</tr>
-					<?php endif; ?>
+					<?php else: ?>
 					<tr>
 						<td><?php echo $this->lang->line('description'); ?></td>
 						<td><?php echo $data['description']; ?></td>
 					</tr>
+					<?php endif; ?>
 					<tr>
-						<td><?php echo $this->lang->line('price_wholesale'); ?></td>
+						<td><?php echo $this->lang->line('catalog_price'); ?></td>
 						<td>
 							<?php if($data['last_bruto'] == $data['bruto']): ?>
 								<?php echo $data['bruto']; ?>
 							<?php else: ?>
 								<?php echo $data['last_bruto']; ?> --> <?php echo $data['bruto']; ?> <span style="color:tomato">(<?php echo $procent; ?>)</span> 
-								<a href="<?php echo base_url('wholesale/accept/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-rotate-right fa-fw"></i></a>
+								<!-- <a href="<?php echo base_url('wholesale/accept/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-rotate-right fa-fw"></i></a> -->
 							<?php endif; ?>
 							<?php if($data['ignore_change'] == 1): ?>
-								<a href="<?php echo base_url('wholesale/unignore/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-regular fa-eye fa-fw"></i></a>
+								<!-- <a href="<?php echo base_url('wholesale/unignore/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-regular fa-eye fa-fw"></i></a> -->
 							<?php else: ?>
-								<a href="<?php echo base_url('wholesale/ignore/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-regular fa-eye-slash fa-fw"></i></a>
+								<!-- <a href="<?php echo base_url('wholesale/ignore/' . $data['id'] . '/history'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-regular fa-eye-slash fa-fw"></i></a> -->
 							<?php endif; ?>
+							<?php if(isset($data['product'])): ?><a href="<?php echo base_url('pricing/prod/' . $data['product']['id']); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-fw fa-euro-sign"></i></a><?php endif; ?>
 						</td>
 					</tr>
 					<tr>
 						<td><?php echo $this->lang->line('VAT'); ?></td>
-						<td><?php echo $data['btw']; ?></td>
+						<td><?php echo $data['btw']; ?> %</td>
 					</tr>
 					<tr>
 						<td><?php echo $this->lang->line('price_wholesale_sell'); ?></td>
-						<td><?php echo $data['sell_price']; ?></td>
+						<td><?php echo $data['sell_price']; ?> &euro;</td>
 					</tr>
 					<tr>
-						<td>distributor</td>
+						<td>Distributor</td>
 						<td><?php echo $data['distributor']; ?></td>
 					</tr>
 					<tr>
@@ -92,7 +87,7 @@
 					<?php endif; ?>
 					<tr>
 						<td><?php echo $this->lang->line('lab_update'); ?></td>
-						<td><?php echo date_format(date_create($data['updated_at']), $user->user_date); ?><br/><small><?php echo time_ago($data['updated_at']);?></small></td>
+						<td><?php echo date_format(date_create($data['updated_at']), $user->user_date); ?></td>
 					</tr>
 				</table>
 			<?php endif; ?>
@@ -101,7 +96,7 @@
 		</div>
 	</div>
 
-	<div class="col-lg-2 mb-4">
+	<div class="col-lg-6 mb-4">
 	<div class="card shadow mb-4">
 		<div class="card-header d-flex flex-row align-items-center justify-content-between">Price changes</div>
             <div class="card-body">
@@ -109,8 +104,8 @@
 				<table class="table table-sm">
 				<thead>
 				<tr>
-					<th><?php echo $this->lang->line('created_at'); ?></th>
-					<th><?php echo $this->lang->line('price_wholesale'); ?></th>
+					<th><?php echo $this->lang->line('untill'); ?></th>
+					<th><?php echo $this->lang->line('catalog_price'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -120,6 +115,10 @@
 					<td><?php echo $d['bruto']; ?> &euro;</td>
 				</tr>
 				<?php endforeach; ?>
+				<tr>
+					<td><?php echo $this->lang->line('current'); ?></td>
+					<td><?php echo $data['bruto']; ?> &euro;</td>
+				</tr>
 				</tbody>
 				</table>
 			<?php endif; ?>

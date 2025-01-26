@@ -90,3 +90,10 @@ $lang['settings_screen']        = 'Configuratie';
 # stocklist
 $lang['stock_list']         = 'Stock lijst';
 $lang['stock_list_explain'] = 'Dit creëert een lijst met alle producten per locatie.';
+
+
+# pricing page
+$lang['old_cat_price']      = 'Oude catalogusprijs';
+$lang['since']              = 'Sinds';
+$lang['untill']             = 'tot';
+$lang['current']            = 'huidig';

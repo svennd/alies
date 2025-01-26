@@ -6,8 +6,8 @@
 
 <?php 
 	$diff = ($product['wholesale']) ? (round((($product['wholesale']['bruto'] / $product['wholesale']['last_bruto']) * 100) - 100)) : 0;
-	$procent_diff = ($diff > 0) ? "<span class='text-danger'>+" . $diff . "%</span>" : "";
-	$date_diff = ($diff > 0) ? "<small><br/>" . user_format_date($product['wholesale']['last_bruto_date'], $user->user_date) . "</small>" : "";
+	$procent_diff = ($diff > 0) ? "<span class='text-danger'>+" . $diff . "%</span><br><small>(<span style='color:indianred;'>". $product['wholesale']['last_bruto'] . "</span> &euro;)</small>" : "";
+	$date_diff = ($diff > 0) ? "<small><br/>" . $this->lang->line('since') . " ". user_format_date($product['wholesale']['last_bruto_date'], $user->user_date) . "</small>" : "";
 ?>
 
 <div class="row">
@@ -203,7 +203,7 @@
 					</tr>
 					<tr>
 						<td><?php echo (isset($product['wholesale'])) ? "<a href='" . base_url('wholesale/get_history/' . $product['wholesale']['id']) . "'>" . $this->lang->line('catalog_price') . "</a>" . $date_diff: $this->lang->line('catalog_price'); ?></td>
-						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] . "&euro; " . $procent_diff : '---'; ?></td>
+						<td><?php echo (isset($product['wholesale'])) ? $product['wholesale']['bruto'] . " &euro; " . $procent_diff : '---'; ?></td>
 					</tr>
 					<tr>
 						<td>

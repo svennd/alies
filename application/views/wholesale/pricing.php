@@ -15,7 +15,9 @@
 				<thead>
                     <tr>
 						<th><?php echo $this->lang->line('product'); ?></th>
+                        <th><?php echo $this->lang->line('old_cat_price'); ?></th>
                         <th><?php echo $this->lang->line('catalog_price'); ?></th>
+                        <th><?php echo $this->lang->line('since'); ?></th>
                         <th><?php echo $this->lang->line('increase'); ?></th>
                     </tr>
 				</thead>
@@ -23,7 +25,9 @@
                     <?php foreach ($products as $prod): ?>
                     <tr>
                         <td><a href="<?php echo base_url('pricing/prod/' . $prod['id']); ?>"><?php echo $prod['name']; ?></a></td>
+                        <td style="color:indianred;"><?php echo $prod['last_bruto']; ?> &euro; </td>
                         <td><?php echo $prod['bruto']; ?> &euro;</td>
+                        <td><?php echo user_format_date($prod['up'], $user->user_date); ?></td>
                         <td><a href="<?php echo base_url('wholesale/get_history/' . $prod['wh_id']); ?>" class="text-danger">+<?php echo $prod['percentage_change']; ?> %</a></td>
                     </tr>
                     <?php endforeach; ?>
@@ -43,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$("#pricing").addClass('active');
 	$("#dataTable").DataTable(
         {
-            "order": [[ 2, "desc" ]],
+            "order": [[ 4, "desc" ]],
 			scrollY:        '60vh',
 			deferRender:    true,
 			scroller:       true,
