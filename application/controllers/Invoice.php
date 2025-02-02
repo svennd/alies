@@ -235,9 +235,6 @@ class Invoice extends Vet_Controller
 		# if not yet payed or payment is open
 		if ($this->input->post('submit') == 1 && (in_array($bill['status'], array(BILL_PENDING, BILL_UNPAID, BILL_INCOMPLETE)))) {
 			
-			# default
-			$is_modified = false;
-
 			# do this first if something below fails.
 			# set all the events linked to this bill to closed so we can't add anything anymore
 			$this->events->where(array('payment' => $bill_id))->update(array("status" => STATUS_CLOSED));
@@ -254,10 +251,6 @@ class Invoice extends Vet_Controller
 			$total_payed = ($cash_value + $card_value + $transfer_value) - (float)$bill['total_brut'];
 			$status = ($total_payed < 0.001 && $total_payed > -0.001) ? (($transfer_value != 0) ? BILL_ONHOLD : BILL_PAID) : BILL_INCOMPLETE;
 
-			# check if bill was modified
-			# only run once since its "expensive"
-			if ($status == BILL_PAID || $status == BILL_ONHOLD) { $is_modified = $this->bills->is_bill_modified($bill_id); }
-
 			$this->bills->update(array(
 								"status" 	=> $status, 
 								"card" 		=> $card_value, 
@@ -265,7 +258,7 @@ class Invoice extends Vet_Controller
 								"transfer" 	=> $transfer_value, 
 								"msg" 		=> $this->input->post('msg'), 
 								"msg_invoice" => $this->input->post('msg_invoice'),
-								"modified" 	=> $is_modified
+								"modified" 	=> $this->bills->is_bill_modified($bill_id)
 							), $bill_id);
 
 			# generate an invoice id, these HAVE to be +1 everytime. 
