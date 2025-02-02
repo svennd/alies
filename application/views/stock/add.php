@@ -56,9 +56,9 @@
 							<small id="tip">&nbsp;</small>
 						</div>
 					</div>
-				  
+
 					<div class="form-row mb-3">
-						<div class="col">
+					  <div class="col">
 							<label for="current_buy_price"><?php echo $this->lang->line('price_dayprice'); ?></label>
 							<div class="input-group">
 							  <input type="text" class="form-control" name="in_price" id="current_buy_price" value="">
@@ -66,7 +66,17 @@
 								<span class="input-group-text">&euro;</span>
 							  </div>
 							</div>
-						</div>
+							<small id="price_info">&nbsp;</small>
+					  </div>
+					  <div class="col">
+							<label for="current_cat_price"><?php echo $this->lang->line('catalog_price'); ?></label>
+							<div class="input-group">
+							  <input type="text" class="form-control" name="cat_price" id="current_cat_price" value="">
+							  <div class="input-group-append">
+								<span class="input-group-text">&euro;</span>
+							  </div>
+							</div>
+					  </div>
 					</div>
 
 					<div class="form-row mb-3">
@@ -175,6 +185,12 @@ function read_product(res)
 	$("#unit_buy").html(res.unit_buy);
 	$("#unit_sell").html(res.unit_sell);
 	$("#supplier").attr("placeholder", res.supplier);
+	$("#current_buy_price").val(res.last_net);
+	if (res.last_brut !== 0) {
+		$("#current_cat_price").val(res.last_brut);
+	}
+	$("#price_info").html(res.last_date);
+	
 	$("#tip").html("Min buy volume, " + res.buy_volume + " " + res.unit_buy + " => sell volume, " + res.sell_volume + " " + res.unit_sell);
 	$("#lotnr").focus();
 }
@@ -194,6 +210,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		serviceUrl: PRODUCT_LOOKUP,
 		onSelect: function (suggestion) {
 			var res = suggestion.data;
+			console.log(res);
 			read_product(res);
 			if (res.gs1) {
 				read_gs1(res.gs1);
@@ -238,6 +255,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		$("#unit_buy").html("");
 		$("#unit_sell").html("");
 		$("#tip").html("");
+		$("#price_info").val("");
+		$("#current_cat_price").val("");
+		$("#current_buy_price").val("");
 		$("#reset_button").hide();
 		$("#product_tip").html("");
 		$("#new_barcode_input").val(0);

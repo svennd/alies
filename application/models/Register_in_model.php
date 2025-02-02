@@ -82,4 +82,31 @@ class Register_in_model extends MY_Model
 			";
 		return $this->db->query($sql)->result_array();
 	}
+
+	public function get_last_net_brut(int $product_id)
+	{
+		$sql = "
+				select 
+					in_price, cat_price, regdate
+				from 
+					register_in
+				JOIN
+					delivery_slip
+				ON
+					delivery_slip.id = register_in.delivery_slip
+				WHERE
+					product = " . $product_id . "
+				ORDER BY
+					regdate DESC
+				LIMIT 1
+			";
+		$data = $this->db->query($sql)->row_array();
+
+		
+		return ($data) ? array(
+			((!is_null($data['in_price'])) ? $data['in_price'] : 0),
+			((!is_null($data['cat_price'])) ? $data['cat_price'] : 0),
+			((!is_null($data['regdate'])) ? user_format_date($data['regdate'], "d-m-Y") : 0)
+		) : array(0, 0, 0);
+	}
 }

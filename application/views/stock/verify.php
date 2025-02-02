@@ -1,20 +1,3 @@
-<?php 
-	function last_price(float $inprice, $last_net_price, $last_delivery)
-	{
-		if ($last_net_price)
-		{
-			return ($inprice < $last_net_price) ? $last_net_price : "<span class='text-danger'>" . $last_net_price . "</span>";
-		}
-		elseif ($last_delivery)
-		{
-			return ($inprice < $last_delivery) ? $last_delivery : "<span class='text-danger'>" . $last_delivery . "</span>";
-		}
-		else
-		{
-			return '-';
-		}
-	}
-?>
 <div class="row">
 	<div class="col-lg-12 mb-4">
 		<div class="card shadow mb-4">		
@@ -39,8 +22,8 @@
 					<td><?php echo $this->lang->line('name'); ?></td>
 					<td><?php echo $this->lang->line('lotnr'); ?></td>
 					<td><?php echo $this->lang->line('eol'); ?></td>
-					<td><?php echo $this->lang->line('price_dayprice'); ?> (input)</td>
-					<td>last <?php echo $this->lang->line('price_dayprice'); ?></td>
+					<td><?php echo $this->lang->line('price_dayprice'); ?></td>
+					<td><?php echo $this->lang->line('catalog_price'); ?></td>
 					<td><?php echo $this->lang->line('volume'); ?></td>
 					<td><?php echo $this->lang->line('option'); ?></td>
 				</tr>
@@ -50,7 +33,7 @@
 					<td><small><?php echo $prod['lotnr']; ?></small></td>
 					<td><small><?php echo user_format_date($prod['eol'], $user->user_date); ?></small></td>
 					<td><?php echo $prod['in_price']; ?> &euro;</td>
-					<td><?php echo last_price($prod['in_price'], $pricing[$prod['product_id']]['last_net_buy'], $pricing[$prod['product_id']]['delivery']['netto_price'] ); ?> &euro;</td>
+					<td><?php echo $prod['cat_price']; ?> &euro;</td>
 					<td><?php echo $prod['volume'] . ' ' . $prod['products']['unit_sell']; ?></td>
 					<td>
 						<a href="<?php echo base_url('stock/delete_stock/' . $prod['id']); ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>

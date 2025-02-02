@@ -153,6 +153,7 @@ class Stock extends Vet_Controller
 											"eol" 				=> $this->input->post('eol'),
 											"location" 			=> $this->_get_user_location(),
 											"in_price" 			=> $this->input->post('in_price'),
+											"cat_price" 		=> $this->input->post('cat_price'),
 											"lotnr" 			=> $this->input->post('lotnr'),
 											"supplier" 			=> (!empty($this->input->post('supplier'))) ? $this->input->post('supplier') : NULL,
 											"barcode"			=> $barcode,
@@ -218,7 +219,7 @@ class Stock extends Vet_Controller
 				));
 			
 			# registry_in
-			$stock = $this->stock->fields('product_id, eol, volume, in_price, supplier, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
+			$stock = $this->stock->fields('product_id, eol, volume, in_price, cat_price, supplier, lotnr')->where(array("state" => STOCK_CHECK))->get_all();
 			foreach ($stock as $stoc)
 			{
 				$this->registry_in->insert(array(
@@ -226,6 +227,7 @@ class Stock extends Vet_Controller
 							"eol" 		=> $stoc['eol'],
 							"volume" 	=> $stoc['volume'],
 							"in_price" 	=> $stoc['in_price'],
+							"cat_price" => $stoc['cat_price'],
 							"supplier" 	=> $stoc['supplier'],
 							"lotnr" 	=> $stoc['lotnr'],
 							"delivery_slip"	=> $slip
@@ -243,35 +245,11 @@ class Stock extends Vet_Controller
 		// show all stock that is in check state
 		else
 		{
-			$products_in_check = $this->stock->with_products('fields: name, unit_sell, buy_price, wholesale')->where(array('state' => STOCK_CHECK))->get_all();
-
-			$pricing = array();
-			
-			foreach ($products_in_check as $prod)
-			{
-				$prod_id = $prod['product_id'];
-				$pricing[$prod_id]['delivery'] = false;
-				$pricing[$prod_id]['wholesale'] = $prod['products']['wholesale'];
-				$pricing[$prod_id]['last_net_buy'] = false;
-
-				// we could try to get the last price based on 
-				// the automatic pulled prices
-				if ($prod['products']['wholesale'] != 0)
-				{
-					$pricing[$prod_id]['delivery'] = $this->delivery->fields('netto_price, delivery_date')->where(array('wholesale_id' => $prod['products']['wholesale']))->order_by('delivery_date', 'DESC')->get();
-				}
-
-				// last net buy price
-				$last_net_buy = $this->registry_in->with_delivery_slip('fields: regdate|order_by:regdate, desc')->where(array("product" => $prod_id))->limit(1)->get();
-				if ($last_net_buy)
-				{
-					$pricing[$prod_id]['last_net_buy'] = $last_net_buy['in_price'];
-				}
-			}
+			$products_in_check = $this->stock->with_products('fields: name, unit_sell, buy_price')->where(array('state' => STOCK_CHECK))->get_all();
 
 			$data = array(
 							"products" => $products_in_check,
-							"pricing"  => $pricing
+							// "pricing"  => $pricing
 						);
 			$this->_render_page('stock/verify', $data);
 		}

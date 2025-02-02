@@ -19,6 +19,7 @@ class Products extends Vet_Controller
 		$this->load->model('Events_products_model', 'eprod');
 		$this->load->model('Stock_limit_model', 'stock_limit');
 		$this->load->model('Wholesale_model', 'wholesale');
+		$this->load->model('Register_in_model', 'registry_in');
 
 		# helpers
 		$this->load->helper('gs1');
@@ -355,6 +356,7 @@ class Products extends Vet_Controller
 
 			$return = array();
 			foreach ($result as $r) {
+				list($last_net, $last_brut, $last_date) = $this->registry_in->get_last_net_brut($r['id']);
 				$return[] = array(
 							"value" => $r['name'],
 							"data" 	=> array(
@@ -365,6 +367,9 @@ class Products extends Vet_Controller
 												"sell_volume"		=> $r['sell_volume'],
 												"unit_sell"			=> $r['unit_sell'],
 												"buy_price"			=> $r['buy_price'],
+												"last_net"			=> $last_net,
+												"last_brut"			=> $last_brut,
+												"last_date"			=> $last_date,
 											)
 							);
 			}
