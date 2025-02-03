@@ -45,7 +45,7 @@ class Wholesale_model extends MY_Model
 					last_bruto,
 					wholesale.id as wh_id,
 					ROUND(((bruto - last_bruto) / last_bruto) * 100, 1) AS percentage_change,
-					wholesale.updated_at as up
+					wholesale.last_bruto_date as up
 				FROM
 					wholesale
 				JOIN
