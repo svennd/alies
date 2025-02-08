@@ -13,7 +13,7 @@
 					<th><?php echo $this->lang->line('catalog_price'); ?></th>
 					<th><?php echo $this->lang->line('price_alies'); ?></th>
 					<th><?php echo $this->lang->line('price_sale'); ?></th>
-					<th><?php echo $this->lang->line('margin'); ?></th>
+					<!-- <th><?php echo $this->lang->line('margin'); ?></th> -->
 				</tr>
 				</thead>
 				<tbody>
@@ -63,41 +63,41 @@
 					</td>
 
 
-					<td>
+					<!-- <td> -->
 						<?php
-							if (!isset($product['prices']))
-							{
-								echo "<span style='color:red;'><b>no price</b></span>";
-							}
-							elseif(!$product['sellable'])
-							{
-								echo "---";
-							}
-							else
-							{
-								if (count($product['prices']) > 1)
-								{
-									$unit_price = ($product['buy_price']/$product['buy_volume']);
-									$first_change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
-									$last_change = round((($unit_price-$product['prices'][sizeof($product['prices']) - 1]['price'])/$unit_price)*100*-1);
-									echo (($first_change > 0) ? '<span style="color:green;">+' . $first_change : '<span style="color:red;">' . $first_change) . ' ~ ' . (($last_change > 0) ? '<span style="color:green;">+' . $last_change : '<span style="color:red;">' . $last_change) . '%';
-								}
-								else
-								{
-									if ($product['prices']['0']['price'] == 0 || $product['buy_price'] == 0)
-									{
-										echo "---";
-									}
-									else
-									{
-										$unit_price = ($product['buy_price']/$product['buy_volume']);
-										$change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
-										echo  (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) . "%";
-									}
-								}
-							}
+							// if (!isset($product['prices']))
+							// {
+							// 	echo "<span style='color:red;'><b>no price</b></span>";
+							// }
+							// elseif(!$product['sellable'])
+							// {
+							// 	echo "---";
+							// }
+							// else
+							// {
+							// 	if (count($product['prices']) > 1)
+							// 	{
+							// 		$unit_price = ($product['buy_price']/$product['buy_volume']);
+							// 		$first_change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
+							// 		$last_change = round((($unit_price-$product['prices'][sizeof($product['prices']) - 1]['price'])/$unit_price)*100*-1);
+							// 		echo (($first_change > 0) ? '<span style="color:green;">+' . $first_change : '<span style="color:red;">' . $first_change) . ' ~ ' . (($last_change > 0) ? '<span style="color:green;">+' . $last_change : '<span style="color:red;">' . $last_change) . '%';
+							// 	}
+							// 	else
+							// 	{
+							// 		if ($product['prices']['0']['price'] == 0 || $product['buy_price'] == 0)
+							// 		{
+							// 			echo "---";
+							// 		}
+							// 		else
+							// 		{
+							// 			$unit_price = ($product['buy_price']/$product['buy_volume']);
+							// 			$change = round((($unit_price-$product['prices'][0]['price'])/$unit_price)*100*-1);
+							// 			echo  (($change > 0) ? '<span style="color:green;">+' . $change : '<span style="color:red;">' . $change) . "%";
+							// 		}
+							// 	}
+							// }
 						?>
-					</td>
+					<!-- </td> -->
 				</tr>
 				<?php endforeach; ?>
 				</tbody>

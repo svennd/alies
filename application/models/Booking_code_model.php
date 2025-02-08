@@ -11,6 +11,25 @@ class Booking_code_model extends MY_Model
 	public function __construct()
 	{
 		$this->soft_deletes = true;
+
+
+		/*
+			has_many
+		*/
+		$this->has_many['products'] = array(
+			'foreign_model' => 'Products_model',
+			'foreign_table' => 'products',
+			'foreign_key' => 'booking_code',
+			'local_key' => 'id'
+		);
+
+		$this->has_many['procedures'] = array(
+			'foreign_model' => 'Procedures_model',
+			'foreign_table' => 'procedures',
+			'foreign_key' => 'booking_code',
+			'local_key' => 'id'
+		);
+
 		parent::__construct();
 	}
 	public function get_usage_detail( int $booking, string $search_from, string $search_to)

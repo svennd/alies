@@ -138,7 +138,10 @@ class Admin extends Admin_Controller
 		}
 				
 		$data = array(
-						"booking" => $this->book->get_all()
+						"booking" => $this->book
+											->with_products('fields:*count*')
+											->with_procedures('fields:*count*')
+											->get_all()
 					);
 					
 		$this->_render_page('admin/booking_codes', $data);

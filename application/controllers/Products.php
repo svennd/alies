@@ -377,6 +377,18 @@ class Products extends Vet_Controller
 		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 
+	# search by booking code to products and procedures
+	public function search_by_booking(int $booking_id)
+	{
+		$data = array(
+						"booking"		=> $this->booking->get($booking_id),
+						"products"		=> $this->products->where('booking_code', $booking_id)->get_all(),
+						"procedures"	=> $this->procedures->where('booking_code', $booking_id)->get_all(),
+					);
+
+		$this->_render_page('product/list_by_booking', $data);
+	}
+
 	# return an ajax readable object of possible results
 	public function get_product_or_procedure()
 	{

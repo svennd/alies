@@ -27,7 +27,7 @@
 			<br/>
 			</div>
 			<?php if ($booking): ?>
-				<table class="table" id="dataTable">
+				<table class="table table-sm" id="dataTable">
 				<thead>
 				<tr>
 					<th>Category</th>
@@ -39,11 +39,20 @@
 				<tbody>
 				<?php foreach ($booking as $book): ?>
 				<tr>
-					<td><?php echo $book['category']; ?></td>
+					<td>
+						<?php echo $book['category']; ?>
+						<small><br/>
+							<?php if (isset($book['products'][0]['counted_rows']) && (int)$book['products'][0]['counted_rows'] > 0): ?>
+								<a href="<?php echo base_url("products/search_by_booking/" . $book['id']); ?>"><span class="badge badge-success"><?php echo $book['products'][0]['counted_rows']; ?> products</span></a>
+							<?php endif; ?>
+							<?php if (isset($book['procedures'][0]['counted_rows']) && (int)$book['procedures'][0]['counted_rows'] > 0): ?>
+								<a href="<?php echo base_url("products/search_by_booking/" . $book['id']); ?>"><span class="badge badge-primary"><?php echo $book['procedures'][0]['counted_rows']; ?> procedures</span></a>
+							<?php endif; ?>
+						</td>
 					<td><?php echo $book['code']; ?></td>
 					<td><?php echo $book['btw']; ?> %</td>
 					<td>
-						<a href="<?php echo base_url(); ?>admin/booking_rm/<?php echo $book['id']; ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+						<a href="<?php echo base_url('admin/booking_rm/'. $book['id']); ?>" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>
@@ -60,10 +69,8 @@
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
 	$("#dataTable").DataTable();
-	$("#adminmgm").show();
 	$("#admin").addClass('active');
-	$("#adminbooking").addClass('active');
-	
+
 	$("#add").on('click',function(){
 		$("#add_form").show();
 		$(this).hide();
