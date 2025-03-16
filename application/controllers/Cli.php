@@ -174,151 +174,57 @@ class Cli extends Frontend_Controller
         // static
         $url = "https://" . $this->conf['medilab_user'] . ":". $this->conf['medilab_pasw'] . "@online.medilab.be/dokter/";
 
-        $test_id_to_names = array(
-            // hematologie - guessed
-            "11015" => "Hemoglobine",
-            "11050" => "Hematocriet",
-            "11052" => "Rode bloedcellen",
-            "11060" => "MCV",
-            "11061" => "MCH",
-            "11062" => "MCHC",
-            "11080" => "Witte bloedcellen",
-            
-            // formule
-            "11101" => "Lymfocyten",
-            "11103" => "Staafkernigen",
-            "11105" => "Segmentkernigen",
-            "11107" => "Eosinofielen",
-            "11109" => "Monocyten",
-            "11111" => "Basofielen",
-            "11113" => "Abnormale vormen",
-            "11126" => "Totale Lymfo s (ALC)",
-            "11127" => "Totale Neutr.staven",
-            "11128" => "Tot.neutrof.segm.(ANC)",
-            "11129" => "Totale monocyten",
-            "11134" => "Reticulocyten",
-            "11135" => "Trombocyten",
-            "11131" => "Totale eosinofielen",
+		$test_id_to_names = array(
+            // hematologie
+			// celhematologie
+            "88891" => "Hemoglobine",
+            "88892" => "Hematocriet",
+            "88893" => "Rode bloedcellen",
+            "88894" => "MCV",
+            "88895" => "MCH",
+            "88896" => "MCHC",
+            "88897" => "Reticulocyten",
+			
+			"88898" => "Thrombocyten",
+			"88899" => "WBC",
+			"88900" => "Neutrofielen %",
+			"88903" => "Lymfocyten %",
+			// "88930" => "aaaaaaa",
+			"89009" => "Neutrofielen absoluut",
+			"89010" => "Eosinofielen absoluut",
+			"89011" => "Baso's absoluut", // 99 certain
+			"89012" => "Lymfo's absoluut",
+			"89013" => "Mono's absoluut",
+			// "89159" => "aaaaaaa",
+			// "89160" => "aaaaaaa",
+			// "89161" => "aaaaaaa",
+			// "89162" => "aaaaaaa",
+			// "89428" => "aaaaaaa",
 
-            "12340" => "Ureum",
-            "12345" => "Creatinine",
-            "12385" => "IJzer",
-            "12405" => "Totaal Eiwit",
-            "12407" => "Albumine",
-            "12657" => "Cholesterol",
-            "12730" => "Bilirubine totaal",
-            "12732" => "Bilirubine direct",
-            "12734" => "Bilirubine indirect",
+			// biochemie
 
-            "12930" => "Amylase",
-            "12980" => "Natrium",
-            "12982" => "Kalium",
-            "13005" => "Calcium",
-            "13010" => "Fosfor",
+			// nier - lever
+			"88933" => "Bilirubine totaal",
+			// enzymen lever - gal - pancreas
+			"88923" => "SGOT (AST)",
+			"88948" => "Gamma-GT",
+			"89166" => "Galzuren",
 
-            // hemostase
-            "11511" => "Protrombinetijd",
-            "11530" => "Part.trombopl.tijd",
-            "11540" => "Fibrinogeen",
+			// DIERENGENEESKUNDE
+			"89157" => "Vetten",
+			"89156" => "Spiervezels",
+			"89155" => "Zetmeel",
+			"89154" => "Bloed",
+			"89127" => "Parasieten na concentratie",
+			"89468" => "Histologie dier",
+			"14305" => "Cortisol",
 
-            // urine
-            "15741" => "Cortisol urine (random)",
-            "15742" => "Cortisol creatinine ratio",
-            "16226" => "Creatinine (random)", // double w 16290
-            "16428" => "Eiwit creatinine ratio",
+			// toxoplasma
+			"89448" => "Toxoplasma IgG", // maybe swapped
+			"89649" => "Toxoplasma IgM",
 
-            // screening
-            "16477" => "Glucose",
-            "16478" => "Eiwit",
-            "16479" => "Ketonen",
-            "16480" => "pH",
-            "16483" => "Densiteit (S.G.)",
-            "16649" => "Bilirubine", // REPORT : N ???
-            "16486" => "Bilirubine", // REPORT : J
-            "16492" => "Urobiline", // based on req. form
-            "16655" => "Kultuur",
-            "16656" => "Identificatie",
-            "16657" => "Antibiogram (urine)",
-            
-            // Microscopie/flow cytometrie
-            "16645" => "Leukocyten",
-            "16646" => "Erythrocyten",
-            "16647" => "Plaveiselepitheel",
-            "16648" => "Kleine ronde cellen",
-            "16650" => "Gisten",
-            "16651" => "Hyaliene cylinders", // guessed
-            "16652" => "Pathologische cylinders", // guessed
-            "16653" => "Kristallen",
-
-            // FARMACA-TOXICOLOGIE-SPOORELEMENTEN
-            "14705" => "Fenobarbital",
-
-            // biochemie
-            "12210" => "Glucose nuchter",
-            "12211" => "Fructosamine",
-            "12260" => "Insuline",
-            "12776" => "Gamma GT",
-            "12780" => "Galzuren",
-
-            // ANATOMOPATHOLOGIE
-            "17809" => "oorsprong biopt",
-            "17810" => "Histologie",
-
-            // IMMUNOLOGIE
-            "11852" => "As Leishmania",
-            "11856" => "Anaplasma",
-            "11857" => "Ehrlichia",
-            "11858" => "Borrelia (Lyme)",
-            "11859" => "Dirofilaria (hartworm)",
-
-            // 
-            "12750" => "Ammoniak (ext)",
-            "12760" => "GOT (AST)",
-            "12773" => "GPT (ALT)",
-            "12361" => "SDMA",
-            "16290" => "Creatinine (random)", // double w 16226
-            "12805" => "Alkalische fosfatasen",
-            "12807" => "Alkalische fosfatasen 65",
-
-            // serum indices
-            "15000" => "Hemolyse",
-            "15001" => "Lipemie",
-            "15002" => "Icterie",
-
-            // faeces
-            "16712" => "Parvovirus in faeces",
-            "16704" => "Bloed in faeces",
-            "16713" => "Giardia screening",
-            "16807" => "Macroscopisch aspect",
-            "16810" => "Kultuur",
-            "16819" => "Campylobacter",
-            "16825" => "Parasieten",
-            "16830" => "Antibiogram",
-
-            // vertering
-            "16715" => "zetmeel",
-            "16718" => "spierweefsel",
-            "16721" => "vetten",
-
-            // Niersteen
-            "17874" => "Niersteen analyse",
-
-            // extra? 
-            "18070" => "Bijkomende bepaling",
-
-			// antibiogram
-            "17203" => "Oorsprong",
-            "17210" => "Kultuur",
-            "17215" => "Anaerobe kultuur",
-            "17220" => "Antibiogram",
-
-            // Vogels - but also dog/cat
-            "13519" => "DGGR Lipase",
-            
-            // hormonology
-            "13931" => "TSH",
-            "14130" => "Oestradiol",
-            "14141" => "Progesteron",
+			// klinische gegevens
+			"89114" => "Identificatienummer (chip)",
         );
 
         // request
@@ -351,15 +257,15 @@ class Cli extends Frontend_Controller
                                                 $internal_id,
                                                 $staal['id'], // lab_id
                                                 array(
-                                                    'resultaat'       => $line['resultaat'],  
+                                                    'resultaat'       => $line['resultaat'],
                                                     'sp_resultaat'    => (!empty($line['sp_resultaat']) ? $line['sp_resultaat'] : $line['tek_resultaat']),
-                                                    'bovenlimiet'     => $line['bovenlimiet'],  
-                                                    'onderlimiet'     => $line['onderlimiet'],  
-                                                    'rapport'         => ($line['rapport'] == "J") ? 1 : 0,  
-                                                    'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),  
-                                                    'updated_at'      => $line['updated_at'],  
-                                                    'tabulatie_code'  => $line['tabulatie_code'],  
-                                                    'lab_code_text'   => (isset($test_id_to_names[$line["tabulatie_code"]]) ? $test_id_to_names[$line["tabulatie_code"]] : '---'),  
+                                                    'bovenlimiet'     => $line['bovenlimiet'],
+                                                    'onderlimiet'     => $line['onderlimiet'],
+                                                    'rapport'         => ($line['rapport'] == "J") ? 1 : 0,
+                                                    'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),
+                                                    'updated_at'      => $line['updated_at'],
+                                                    'tabulatie_code'  => $line['test_id'],
+                                                    'lab_code_text'   => (isset($test_id_to_names[$line["test_id"]]) ? $test_id_to_names[$line["test_id"]] : '---'),  
                                                     'commentaar'      => $line['commentaar'], 
                                                 )
                                     );
@@ -374,6 +280,95 @@ class Cli extends Frontend_Controller
         else
         {
             echo date("m.d.y H:i") . " " . count($stalen) . " samples!\n";
+        }
+    }
+
+	public function medilab_debug(int $days = 14)
+	{
+		$test_id_to_names = array(
+            // hematologie
+			// celhematologie
+            "88891" => "Hemoglobine",
+            "88892" => "Hematocriet",
+            "88893" => "Rode bloedcellen",
+            "88894" => "MCV",
+            "88895" => "MCH",
+            "88896" => "MCHC",
+            "88897" => "Reticulocyten",
+			
+			"88898" => "Thrombocyten",
+			"88899" => "WBC",
+			"88900" => "Neutrofielen %",
+			"88903" => "Lymfocyten %",
+			// "88930" => "aaaaaaa",
+			"89009" => "Neutrofielen absoluut",
+			"89010" => "Eosinofielen absoluut",
+			"89011" => "Baso's absoluut", // 99 certain
+			"89012" => "Lymfo's absoluut",
+			"89013" => "Mono's absoluut",
+			// "89159" => "aaaaaaa",
+			// "89160" => "aaaaaaa",
+			// "89161" => "aaaaaaa",
+			// "89162" => "aaaaaaa",
+			// "89428" => "aaaaaaa",
+
+			// biochemie
+
+			// nier - lever
+			"88933" => "Bilirubine totaal",
+			// enzymen lever - gal - pancreas
+			"88923" => "SGOT (AST)",
+			"88948" => "Gamma-GT",
+			"89166" => "Galzuren",
+
+			// DIERENGENEESKUNDE
+			"89157" => "Vetten",
+			"89156" => "Spiervezels",
+			"89155" => "Zetmeel",
+			"89154" => "Bloed",
+			"89127" => "Parasieten na concentratie",
+			"89468" => "Histologie dier",
+			"14305" => "Cortisol",
+
+			// toxoplasma
+			"89448" => "Toxoplasma IgG", // maybe swapped
+			"89649" => "Toxoplasma IgM",
+
+			// klinische gegevens
+			"89114" => "Identificatienummer (chip)",
+        );
+
+	   // static
+        $url = "https://" . $this->conf['medilab_user'] . ":". $this->conf['medilab_pasw'] . "@online.medilab.be/dokter/";
+
+        // request
+        $request = "stalen.json?days=" . $days;
+        $json_response = $this->req_curl_json($url . $request);
+        $stalen = json_decode($json_response, true);
+
+        foreach($stalen as $staal)
+        {
+			echo "Staal : " . $staal['id'] . "\n";
+			// print_r($staal);
+			// echo "\n";
+			
+            $detail_response = $this->req_curl_json($url . "staal/" . $staal['id'] . ".json");
+            $staal = json_decode($detail_response, true);
+
+            if ($staal["resultaten"])
+            {
+               echo "Resultaten : \n";
+			   foreach($staal["resultaten"] as $line)
+			   {
+					if (isset($test_id_to_names[$line["test_id"]])) { continue; }
+				   echo (isset($test_id_to_names[$line["test_id"]]) ? $test_id_to_names[$line["test_id"]] : $line['test_id']) . " " . $line['sp_resultaat'] . " " . $line['eenheid'] . " " . $line['commentaar'] . "\n";
+				//    echo $line['test_id'] . " " . $line['resultaat'] . " " . $line['eenheid'] . " " . $line['commentaar'] . "\n";
+				//    echo "\n";
+			   }
+            }
+
+		echo "\n";
+		echo "\n";
         }
     }
 
