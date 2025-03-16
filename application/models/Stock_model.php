@@ -665,8 +665,11 @@ class Stock_model extends MY_Model
                 WHERE 
 					products.deleted_at IS NOT NULL 
 				AND 
-				stock.volume > 0
-				";
+					stock.volume > 0
+				AND 
+					stock.state = " . STOCK_IN_USE
+				;
+				
 		$products = $this->db->query($sql)->result_array();
 		foreach ($products as $product)
 		{
