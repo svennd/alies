@@ -182,8 +182,8 @@ foreach ($locations as $l)
 									<td><?php echo $this->lang->line('catalog_price'); ?></td>
 									<td>
 										<?php 
-											$price_to_show = (isset($product['wholesale']) && isset($product['wholesale']['bruto'])) ? $product['wholesale']['bruto'] : (((isset($product['buy_price'])) ? $product['buy_price'] : ""));
-											echo (isset($product['wholesale']) && isset($product['wholesale']['bruto'])) ? '' : '<i class="fa-solid fa-user-pen" title="' . $this->lang->line('price_alies') . ', ' . $product['buy_price_date'] . '"></i> ';
+											$price_to_show = ($cat_price) ? $cat_price : (((isset($product['buy_price'])) ? $product['buy_price'] : ""));
+											echo ($cat_price) ? '' : '<i class="fa-solid fa-user-pen" title="' . $this->lang->line('price_alies') . ', ' . $product['buy_price_date'] . '"></i> ';
 											echo $price_to_show;
 										?> &euro; / <?php echo (isset($product['buy_volume'])) ? $product['buy_volume']: '' ?> <?php echo (isset($product['unit_buy'])) ? $product['unit_buy']: '' ?></td>
 								</tr>

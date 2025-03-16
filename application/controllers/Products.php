@@ -96,13 +96,19 @@ class Products extends Vet_Controller
 		$local_limit_query = $this->stock_limit->fields('volume')->where(array('product_id' => $id, 'stock' => $this->_get_user_location()))->get();
 		$local_limit = ($local_limit_query) ? $local_limit_query['volume'] : 0;
 
+		$product = $this->products->
+					with_prices('fields:id, volume, price|order_inside:volume asc')->
+					with_type('fields:name')->
+					with_booking_code('fields:category, code, btw')->
+					with_stock('fields: id as stock_id, location, eol, lotnr, volume, state, created_at', 'where:`state`='. STOCK_IN_USE .' ')->
+					get($id);
+
+		# if i do with_wholesale this stock thing breaks.
+		$cat_price = ($product['wholesale']) ? $this->wholesale->fields('bruto')->get($product['wholesale'])['bruto'] : false;
+
 		$data = array(
-				'product' 		=> $this->products->
-										with_prices('fields:id, volume, price|order_inside:volume asc')->
-										with_type('fields:name')->
-										with_booking_code('fields:category, code, btw')->
-										with_stock('fields: id as stock_id, location, eol, lotnr, volume, state, created_at', 'where:`state`='. STOCK_IN_USE .' ')->
-										get($id),
+				'product' 		=> $product,
+				'cat_price'		=> $cat_price,
 				'global_stock' 	=> $global_stock,
 				'local_stock' 	=> $local_stock,
 				'local_limit' 	=> $local_limit,
