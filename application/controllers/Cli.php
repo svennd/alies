@@ -303,9 +303,9 @@ class Cli extends Frontend_Controller
 			// "88930" => "aaaaaaa",
 			"89009" => "Neutrofielen absoluut",
 			"89010" => "Eosinofielen absoluut",
-			"89011" => "Baso's absoluut", // 99 certain
-			"89012" => "Lymfo's absoluut",
-			"89013" => "Mono's absoluut",
+			"89011" => "Basos absoluut", // 99 certain
+			"89012" => "Lymfos absoluut",
+			"89013" => "Monos absoluut",
 			// "89159" => "aaaaaaa",
 			// "89160" => "aaaaaaa",
 			// "89161" => "aaaaaaa",
