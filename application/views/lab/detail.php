@@ -51,26 +51,26 @@
 						<td><?php echo $this->lang->line('lab_received'); ?></td>
 						<td><?php echo $lab_info['lab_date']; ?></td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<td>lab_id</td>
 						<td><?php echo $lab_info['lab_id']; ?></td>
-					</tr>
+					</tr> -->
 					<tr>
 						<td>lab_patient_id</td>
 						<td><?php echo $lab_info['lab_patient_id']; ?></td>
 					</tr>
 					<tr>
-						<td>lab_updated_at</td>
+						<td><?php echo $this->lang->line('last_update'); ?></td>
 						<td><?php echo $lab_info['lab_updated_at']; ?></td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<td>lab_created_at</td>
 						<td><?php echo $lab_info['lab_created_at']; ?></td>
-					</tr>
-					<tr>
+					</tr> -->
+					<!-- <tr>
 						<td><?php echo $this->lang->line('source'); ?></td>
 						<td><?php echo $lab_info['source']; ?></td>
-					</tr>
+					</tr> -->
 					<?php if(!empty($lab_info['lab_comment'])): ?>
 					<tr>
 						<td><?php echo $this->lang->line('lab_comment'); ?></td>
@@ -137,7 +137,7 @@
 							
 							<?php if($lab_info['source'] == "medilab"): ?>
 								<th><?php echo $this->lang->line('comment'); ?></th>
-								<th><?php echo $this->lang->line('lab_update'); ?></th>
+								<!-- <th><?php echo $this->lang->line('lab_update'); ?></th> -->
 							<?php endif;?>
 						</tr>
 					</thead>
@@ -183,7 +183,7 @@
 
 							<?php if($lab_info['source'] == "medilab"): ?>
 								<td><?php echo ($d["comment"] == $d["string_value"]) ? '' : $d["comment"]; ?></td>
-								<td><?php echo $d["lab_updated_at"]; ?></td>
+								<!-- <td><?php echo $d["lab_updated_at"]; ?></td> -->
 							<?php endif;?>
 
 						</tr>
