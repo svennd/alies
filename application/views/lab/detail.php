@@ -158,27 +158,23 @@
 	
 							$value = ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"];
 	
-							if (is_numeric($value) && $lower_limit !== false && $upper_limit !== false) {
-								if ($value < $lower_limit || $value > $upper_limit) {
-									$color = "red";
-									if ($value < $lower_limit) {
-										$sign = "L";
-									} else {
-										$sign = "H";
-									}
-								} else {
-									$color = "black";
-								}
-							} else {
-								$color = "black";
-							}
 
-							
+							$color = "inherit";
+							$sign = "&nbsp;&nbsp;";
+							if (
+								is_numeric($value) && 
+								$lower_limit !== false && 
+								$upper_limit !== false &&
+								($value < $lower_limit || $value > $upper_limit)
+								) {
+									$color = "red";
+									$sign = ($value < $lower_limit) ? "L" : "H";
+							}
 						?>
 						<tr class="<?php echo ($d["report"] || $lab_info["source"] != "medilab") ? "" : "table-secondary"; ?>">
-							<td data-sort="<?php echo $d['lab_code']; ?>"><?php echo $d["lab_code_text"]; ?> (<?php echo $d["lab_code"]; ?>)</td>
-							<td><?php echo ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"]; ?> <?php echo $d["unit"]; ?></td>
-							<td style="text-align:left"><small><?php echo ($color == "red") ? $sign : "&nbsp;&nbsp;"; ?></small></td>
+							<td data-sort="<?php echo $d['lab_code']; ?>"><?php echo $d["lab_code_text"]; ?> <small>(<?php echo $d["lab_code"]; ?>)</small></td>
+							<td><?php echo ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? "<span style='color:". $color ."'>".$d["string_value"] . $d["value"] . "</span>" : $d["string_value"]; ?> <?php echo $d["unit"]; ?></td>
+							<td style="text-align:left"><small><?php echo $sign; ?></small></td>
 							<td><?php echo (strlen($d["string_value"]) <= 1  && $upper_limit) ? $d["lower_limit"] . ' - ' . $d['upper_limit'] : ''; ?></td>
 
 							<?php if($lab_info['source'] == "medilab"): ?>
