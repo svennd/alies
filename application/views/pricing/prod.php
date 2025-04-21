@@ -5,8 +5,8 @@
 
 
 <?php 
-	$diff = ($product['wholesale']) ? (round((($product['wholesale']['bruto'] / $product['wholesale']['last_bruto']) * 100) - 100)) : 0;
-	$procent_diff = ($diff > 0) ? "<span class='text-danger'>+" . $diff . "%</span><br><small>(<span style='color:indianred;'>". $product['wholesale']['last_bruto'] . "</span> &euro;)</small>" : "";
+	$diff = ($product['wholesale']) ? (((($product['wholesale']['bruto'] / $product['wholesale']['last_bruto']) * 100) - 100)) : 0;
+	$procent_diff = ($diff > 0) ? "<span class='text-danger'>+" . round($diff) . "%</span><br><small>(<span style='color:indianred;'>". $product['wholesale']['last_bruto'] . "</span> &euro;)</small>" : "";
 	$date_diff = ($diff > 0) ? "<small><br/>" . $this->lang->line('since') . " ". user_format_date($product['wholesale']['last_bruto_date'], $user->user_date) . "</small>" : "";
 ?>
 
