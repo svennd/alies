@@ -612,6 +612,7 @@ class Cli extends Frontend_Controller
 				if ($netto_price_format > $bruto_price_format && $id)
 				{
 					$this->wholesale->update(array("netto_overflow" => $netto_price_format), $id);
+					$this->logs->logger(WARN, "delivery", "netto overflow: " . $netto_price_format . " > " . $bruto_price_format . " for id: " . $id);
 				}
                 $line++;
 		}

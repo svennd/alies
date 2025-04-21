@@ -108,7 +108,7 @@ class Products extends Vet_Controller
 
 		# in a corner case where the netto price is higher then the bruto price
 		# show the netto_overflow (eg. due to a extra tax on netto not shown on bruto)
-		$cat_price = ($w['bruto'] > $w['netto_overflow']) ? $w['bruto'] : $w['netto_overflow'];
+		$cat_price = ($w) ?? (($w['bruto'] > $w['netto_overflow']) ? $w['bruto'] : $w['netto_overflow']);
 
 		$data = array(
 				'product' 		=> $product,
