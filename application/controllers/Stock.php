@@ -166,7 +166,18 @@ class Stock extends Vet_Controller
 								->where(array("id" => $this->input->post('pid')))
 								->update(array("input_barcode" => $this->input->post('barcode_gs1')));
 						$this->logs->logger(INFO, "new_gs1", "pid: " . $this->input->post('pid') . " gs1:" . $this->input->post('barcode_gs1'));
-			
+					}
+
+					# in case we have no link with wholesale
+					# and the cat price is higher than the buy price
+					$product = $this->product->fields('wholesale, buy_price')->get($this->input->post('pid'));
+					if ($product['wholesale'] == 0 && $product['buy_price'] < $this->input->post('cat_price')) {
+						$this->product->update(array(
+									"buy_price" => $this->input->post('cat_price'),
+									"buy_price_date" => $this->input->post('buy_price_date')
+								), $this->input->post('pid'));
+								
+						$this->logs->logger(INFO, "update_buy_price", "not linked product: " . $this->input->post('pid') . " buy_price:" . $this->input->post('cat_price') . " old:" . $product['buy_price']);
 					}
 				}
 				$this->product->set_backorder_filled($this->input->post('pid'));
