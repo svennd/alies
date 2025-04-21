@@ -104,7 +104,11 @@ class Products extends Vet_Controller
 					get($id);
 
 		# if i do with_wholesale this stock thing breaks.
-		$cat_price = ($product['wholesale']) ? $this->wholesale->fields('bruto')->get($product['wholesale'])['bruto'] : false;
+		$w = $this->wholesale->fields('bruto, netto_overflow')->get($product['wholesale']);
+
+		# in a corner case where the netto price is higher then the bruto price
+		# show the netto_overflow (eg. due to a extra tax on netto not shown on bruto)
+		$cat_price = ($w['bruto'] > $w['netto_overflow']) ? $w['bruto'] : $w['netto_overflow'];
 
 		$data = array(
 				'product' 		=> $product,

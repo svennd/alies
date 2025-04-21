@@ -607,6 +607,12 @@ class Cli extends Frontend_Controller
 					"billing"				=> $billing
 				));
 
+				# in some weird cases
+				# eg: when a tax is added but not shown in bruto_price
+				if ($netto_price_format > $bruto_price_format && $id)
+				{
+					$this->wholesale->update(array("netto_overflow" => $netto_price_format), $id);
+				}
                 $line++;
 		}
         fclose($handle);
