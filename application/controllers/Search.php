@@ -22,6 +22,12 @@ class Search extends Vet_Controller
 		# bad query
 		if (!$query) { redirect('/'); }
 
+		# check if the first character is a a ! (bool)
+		$dead_allowed = (strpos($query, '!') === 0);
+		
+		# remove the ! from the query
+		$query = trim($query, ' !');
+
 		$first_name = $this->owners->search_by_first_name($query);
 		$street		= $this->owners->search_by_street_ex($query);
 		$breeds		= $this->breeds->search_by_name($query);
@@ -38,7 +44,8 @@ class Search extends Vet_Controller
 		}
 		else
 		{
-			$pets		= $this->pets->search_by_name($query);
+			# search limit = 250
+			$pets		= $this->pets->search_by_name($query, 250, $dead_allowed);
 			$last_name	= $this->owners->search_by_last_name($query);
 		}
 		

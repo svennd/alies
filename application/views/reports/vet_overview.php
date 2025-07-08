@@ -3,6 +3,9 @@
 			<div class="card mb-4">
 					<div class="card-header d-flex flex-row align-items-center justify-content-between">
 						<?php echo $this->lang->line('Reports'); ?>
+						<div class="dropdown no-arrow">
+							<a href="<?php echo base_url('report/search/'); ?>" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-magnifying-glass"></i> <?php echo $this->lang->line('title_search'); ?></a>
+						</div>
 					</div>
 					<div class="card-body">
 						<?php if($reports): ?>

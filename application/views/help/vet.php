@@ -57,6 +57,11 @@
                 <td>Tim => <b>Tim</b>othy, <b>Tim</b>, ... (max. 250 resultaten)</td>
             </tr>
             <tr>
+                <td>&nbsp;</td>
+                <td><span style="color:red"><b>!</b></span>input*</td>
+                <td>Inclusief overleden dieren.</td>
+            </tr>
+            <tr>
                 <td>Ras</td>
                 <td>input*</td>
                 <td>Labra => <b>Labra</b>dor, <b>Labra</b>doodle. (max. 50 resultaten)</td>

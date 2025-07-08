@@ -64,7 +64,7 @@ class Pets_model extends MY_Model
 	}
 	
 	# used in search + search pet in lab
-	public function search_by_name($query, int $limit = 250)
+	public function search_by_name($query, int $limit = 250, bool $dead_allowed = false)
 	{
 		$query = $this->db->escape_like_str($query);
 		$sql = "
@@ -78,8 +78,7 @@ class Pets_model extends MY_Model
 				owners.id = pets.owner
 			WHERE
 				name LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
-			AND
-				death = 0
+				" . ($dead_allowed ? "" : "AND pets.death = 0") . "
 			ORDER BY
 				owners.last_bill
 			DESC

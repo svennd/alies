@@ -487,4 +487,84 @@ class Events_model extends MY_Model
 
 		return $this->db->query($sql)->result_array();
 	}
+
+	/*
+		used in reports/search_event
+		search for events by anamnese and title
+	*/
+	public function search_event(string $query, $search_from, $search_to, bool $anamnese = false)
+	{
+		if ($anamnese) {
+			// search in anamnese and title
+			return $this->search_in_anamnese($query, $search_from, $search_to);
+		} else {
+			// search only in title
+			return $this->search_in_title($query, $search_from, $search_to);
+		}
+	}
+
+	private function search_in_title(string $query, $search_from, $search_to)
+	{
+		$sql = "
+			SELECT 
+				events.id, events.title, events.anamnese, events.created_at, events.updated_at,
+				pets.id as pet_id, pets.type as pet_type, pets.name as pet_name,
+				stock_location.name as loc_name,
+				owners.id as owner_id, owners.last_name as owner_name,
+				users.first_name as vet_name, users.id as vet_id,
+				1 AS title_match
+			FROM
+				events
+			JOIN pets ON pets.id = events.pet
+			JOIN stock_location ON stock_location.id = events.location
+			JOIN users ON users.id = events.vet
+			JOIN owners ON owners.id = pets.owner
+			WHERE
+				MATCH(events.title) AGAINST('" . $this->db->escape_like_str($query) . "' IN BOOLEAN MODE)
+			AND
+				events.no_history = 0
+			AND
+				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+			AND
+				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+			ORDER BY
+				events.created_at DESC
+			LIMIT 100;
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
+
+	private function search_in_anamnese(string $query, $search_from, $search_to)
+	{
+		$sql = "
+			SELECT 
+				events.id, events.title, events.anamnese, events.created_at, events.updated_at,
+				pets.id as pet_id, pets.type as pet_type, pets.name as pet_name,
+				stock_location.name as loc_name,
+				owners.id as owner_id, owners.last_name as owner_name,
+				users.first_name as vet_name, users.id as vet_id,
+				MATCH(title) AGAINST('fip') > 0 AS title_match
+			FROM
+				events
+			JOIN pets ON pets.id = events.pet
+			JOIN stock_location ON stock_location.id = events.location
+			JOIN users ON users.id = events.vet
+			JOIN owners ON owners.id = pets.owner
+			WHERE
+				MATCH(events.title, events.anamnese) AGAINST('" . $this->db->escape_like_str($query) . "' IN BOOLEAN MODE)
+			AND
+				events.no_history = 0
+			AND
+				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+			AND
+				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+			ORDER BY
+				events.created_at DESC
+			LIMIT 100;
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
+
 }
