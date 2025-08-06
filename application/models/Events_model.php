@@ -59,6 +59,12 @@ class Events_model extends MY_Model
 					'foreign_key' => 'event_id',
 					'local_key' => 'id'
 				);
+		$this->has_many['uploads'] = array(
+					'foreign_model' => 'Events_upload_model',
+					'foreign_table' => 'events_upload',
+					'foreign_key' => 'event',
+					'local_key' => 'id'
+				);
 
 		/*
 			pivot

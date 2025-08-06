@@ -50,6 +50,9 @@
 		<td data-search="<?php echo $history['type']; ?>">
 			<button class="btn btn-sm btn-outline-primary ana"><i class="fa-solid fa-eye"></i></button>
 			<a href="<?php echo base_url('events/event/' . $history['id']); ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-secondary not-allowed<?php else: ?> btn-outline-success<?php endif; ?>"><i class="fa-solid fa-pen"></i></a>
+			<?php if (isset($history['uploads'])): ?>
+				<a href="<?php echo base_url('events/event/' . $history['id'] . '#files'); ?>" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-download"></i> <?php echo $history['uploads'][0]['counted_rows'] ?></a>
+			<?php endif; ?>
 		</td>
 		<td>
 			<table width="100%">
