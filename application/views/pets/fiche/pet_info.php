@@ -54,7 +54,7 @@
 	</tr>
 	<tr>
 		<td><?php echo $this->lang->line('chip'); ?></td>
-		<td><?php echo (empty($pet['chip']) || !is_numeric($pet['chip'])) ? "?" : number_format((int)$pet['chip'], 0, '', '-'); ?></td>
+		<td><?php echo (empty($pet['chip']) || !ctype_digit($pet['chip'])) ? "---" : preg_replace('/(\d{3})(?=\d)/', '$1-', $pet['chip']); ?></td>
 	</tr>
 	<?php if (!empty($pet['nr_vac_book'])): ?>
 	<tr>
