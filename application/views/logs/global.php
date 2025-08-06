@@ -2,6 +2,7 @@
 // hard coded for now
 function enhance_log($msg, $event)
 {
+	$msg = htmlspecialchars($msg, ENT_QUOTES, 'UTF-8');
 	if ($event == 'update_product')
 	{
 		// Extract product ID

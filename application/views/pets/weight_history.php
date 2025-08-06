@@ -24,7 +24,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<?php foreach ($weight_history as $weight): ?>
+				<?php foreach (array_reverse($weight_history) as $weight): ?>
 				<tr>
 					<td><?php echo user_format_date($weight['created_at'], $user->user_date) . " (" . timespan(strtotime($weight['created_at']), time(), 1) . ")"; ?></td>
 					<td><?php echo $weight['weight']; ?></td>

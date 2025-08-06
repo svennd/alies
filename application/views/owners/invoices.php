@@ -65,7 +65,7 @@ function is_full_value($value, float $total): string
 		  <td><?php echo is_full_value($bill['card'], $bill['total_brut']); ?></td>
 		  <td><?php echo is_full_value($bill['cash'], $bill['total_brut']); ?></td>
 		  <td><?php echo is_full_value($bill['transfer'], $bill['total_brut']); ?></td>
-		  <td><?php echo $bill['vet']['first_name']; ?></td>
+		  <td><?php echo $bill['vet']['first_name'] ?? ''; ?></td>
 		  <td><?php echo ($bill['location']) ? $bill['location']['name'] : ''; ?></td>
 		</tr>
 		<?php endforeach; ?>

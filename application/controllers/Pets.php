@@ -269,9 +269,15 @@ class Pets extends Vet_Controller
 		$this->_render_page('pets/fiche', $data);
 	}
 
-	public function export($pet_id)
+	public function export(int $pet_id)
 	{
 		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
+
+		# bad link
+		if (!$pet_info) {
+			redirect('/', 'refresh');
+		}
+		
 		$pet_history = $this->
 							events->
 							with_products('fields:events_products.volume, unit_sell, name')->
