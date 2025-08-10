@@ -402,7 +402,7 @@ class Stock_model extends MY_Model
 					". (($procent != 0) ? 'AND btw_buy = '. $procent : '')  ."
 					". (($location != 0) ? 'AND location = '. $location : '')  ."
 				GROUP BY
-					lotnr, in_price
+					products.id, lotnr, in_price
 				ORDER BY
 					products.name ASC
 		";
