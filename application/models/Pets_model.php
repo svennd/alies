@@ -77,7 +77,7 @@ class Pets_model extends MY_Model
 			ON
 				owners.id = pets.owner
 			WHERE
-				name LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+				name LIKE '" . $query . "%' ESCAPE '!'
 				" . ($dead_allowed ? "" : "AND pets.death = 0") . "
 			ORDER BY
 				owners.last_bill
