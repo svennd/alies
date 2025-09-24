@@ -81,7 +81,7 @@ class Owners_model extends MY_Model
 			FROM 
 				owners
 			WHERE
-				street LIKE '%" . $this->db->escape_like_str($street) . "%' ESCAPE '!'
+				street LIKE '%" . $street . "%' ESCAPE '!'
 			ORDER BY
 				last_bill
 			DESC
