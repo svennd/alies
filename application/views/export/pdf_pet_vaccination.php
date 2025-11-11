@@ -99,7 +99,7 @@ blockquote {
 	<table>
 	<tr>
 		<td valign="top">
-			<h3>Owner</h3>
+			<h3><?php echo $this->lang->line('client'); ?></h3>
 			<hr />
 			<table class="table">
 				<tr>
@@ -113,7 +113,7 @@ blockquote {
 			</table>
 		</td>
 		<td>
-			<h3>Pet</h3>
+			<h3><?php echo $this->lang->line('pet_info'); ?></h3>
 			<hr />
 			<table class="table">
 				<tr>
@@ -121,29 +121,29 @@ blockquote {
 					<td><?php echo get_name($pet_info['type']); ?></td>
 				</tr>
 				<tr>
-					<td>Gender</td>
+					<td><?php echo $this->lang->line('gender'); ?></td>
 					<td><?php echo get_gender($pet_info['gender']); ?></td>
 				</tr>
 				<tr>
-					<td>Name</td>
+					<td><?php echo $this->lang->line('pet_name'); ?></td>
 					<td><?php echo $pet_info['name']; ?></td>
 				</tr>
 				<tr>
-					<td>Birth</td>
+					<td><?php echo $this->lang->line('birth'); ?></td>
 					<td><?php echo $pet_info['birth']; ?></td>
 				</tr>
 				<?php if ($pet_info['breed']): ?>
 				<tr>
-					<td>Breed</td>
+					<td><?php echo $this->lang->line('breed'); ?></td>
 					<td><?php echo $pet_info['breeds']['name']; ?></td>
 				</tr>
 				<?php endif; ?>
 				<tr>
-					<td>Last Weight</td>
+					<td><?php echo $this->lang->line('weight'); ?></td>
 					<td><?php echo $pet_info['last_weight']; ?> kg</td>
 				</tr>
 				<tr>
-					<td>chip</td>
+					<td><?php echo $this->lang->line('chip'); ?></td>
 					<td><?php echo $pet_info['chip']; ?></td>
 				</tr>
 			</table>
@@ -152,30 +152,35 @@ blockquote {
 	</table>
 	<br/>
 	<br/>
-	<hr>	
-		<?php  $i = 1; foreach ($pet_history as $his): 
-			if (isset($history_to_take) && !in_array($his['id'], $history_to_take)) { continue; } 
-		?>
-		<table>
-			<thead>
+        <?php if($vaccines): ?>
+			<table>
+			  <thead>
 				<tr>
-					<th>Report : <?php echo date_format(date_create_from_format ('Y-m-d H:i:s', $his['created_at']), 'd/m/Y'); ?></th>
-					<th align="right" class="vet">Vet</th>
+					<th><?php echo $this->lang->line('product'); ?></th>
+					<th><?php echo $this->lang->line('injection'); ?></th>
+					<th><?php echo $this->lang->line('vet'); ?></th>
 				</tr>
-			</thead>
-			<tr>
-				<td valign="top" style="size:1.1em;" width="75%">
-				<br/>
-				<?php echo nl2br($his['anamnese']); ?></td>
-				<td valign="top"  class="vet" align="right"><br/><?php echo $his['vet']['first_name']. ' ' . $his['vet']['last_name']; ?></td>
-			</tr>
-		</table>
+			  </thead>
+			  <tbody>
+				<?php foreach($vaccines as $vac): 
+                    if($vac['event_id'] == 0) continue;
+                ?>
+				<tr>
+					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: $vac['product']; ?></td>
+					<td><?php echo user_format_date($vac['created_at'], 'd M, Y'); ?></td>
+				  <td><?php echo substr($vac['vet']['first_name'], 0, 1) . '. '. $vac['vet']['last_name']; ?></td>
+				</tr>
+				<?php endforeach; ?>
+			  </tbody>
+			</table>
+            <?php else: ?>
+                <?php echo $this->lang->line('no_vaccines'); ?>
+            <?php endif; ?>
+			</div>
 		<br/>
-		<?php endforeach; ?>
-<br/>
-<br/>
-<br/>
-<br/>
+        <br/>
+        <br/>
+        <br/>
 
 	</body>
 

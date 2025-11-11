@@ -8,6 +8,7 @@ class Vaccine extends Vet_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->model('Owners_model', 'owners');
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Vaccine_model', 'vacs');
 
@@ -36,8 +37,42 @@ class Vaccine extends Vet_Controller
 		$this->_render_page('vaccine/overview', $data);
 	}
 
+    /*
+    * function: export_vaccine
+    * export vaccination card of a pet
+    */
+    public function export_vaccine(int $pet_id)
+	{
+		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->get($pet_id);
+
+		# bad link
+		if (!$pet_info) {
+			redirect('/', 'refresh');
+		}
+
+		$data = array(
+			"pet_info"		=> $pet_info,
+			"owner" 		=> $this->owners->get($pet_info['owner']),
+			"vaccines" 		=> $this->vacs
+											->with_vet('fields: first_name, last_name')
+											->with_product('fields: name, vaccin_freq')
+											->with_location('fields: name')
+											->where(array('pet' => $pet_id))
+											->get_all()
+		);
+
+        $this->load->library('pdf');
+
+        $filename = "export_" . $pet_id . "_vaccines_".  date("m.d.y");
+
+        $html = $this->load->view('export/pdf_pet_vaccination', $data, true);
+        
+        # content, filename, provide as download
+        $this->pdf->create($html, $filename, true);
+	}
+
 	/*
-	* function: export
+	* function: export - internal use
 	* export a filtered list if required
 	*/
 	public function export(int $month = 1)

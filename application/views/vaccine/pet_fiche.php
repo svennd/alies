@@ -7,6 +7,7 @@
 				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet_info['id']; ?>"><?php echo $pet_info['name'] ?></a> / <?php echo $this->lang->line('title_vaccines'); ?>
 			</div>
 			<div class="dropdown no-arrow d-none d-sm-block">
+				<a href="<?php echo base_url('vaccine/export_vaccine/' . $pet_info['id']); ?>" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-file-arrow-down"></i></a>
 				<a href="<?php echo base_url('vaccine/add_martian_vaccine/' . $pet_info['id']); ?>" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> <?php echo $this->lang->line('add'); ?></a>
 			</div>
 		</div>

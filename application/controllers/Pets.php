@@ -307,7 +307,7 @@ class Pets extends Vet_Controller
 
 			$filename = "export_" . $pet_id . "_".  date("m.d.y");
 
-			$html = $this->load->view('pets/export_pdf', $data, true);
+			$html = $this->load->view('export/pdf_pet_history', $data, true);
 
 			# content, filename, provide as download
 			$this->pdf->create($html, $filename, true);
