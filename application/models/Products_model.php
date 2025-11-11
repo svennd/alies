@@ -10,7 +10,7 @@ class Products_model extends MY_Model
 	public $primary_key = 'id';
 	
 	// how many products does product search return
-	const PRODUCT_SEARCH_LIMIT = 10;
+	const PRODUCT_SEARCH_LIMIT = 15;
 	
 	public function __construct()
 	{
@@ -271,16 +271,5 @@ class Products_model extends MY_Model
 			". self::PRODUCT_SEARCH_LIMIT ."
 			;";
 		return $this->db->query($sql)->result_array();
-	}
-
-	/*
-	* function: get_product_id_by_wholesale
-	* get product id by wholesale id
-	*/
-	function get_id_by_wholesale(int $wholesale_id)
-	{
-		var_dump($this->fields('id')->where(array("wholesale" => $wholesale_id))->get());
-		$product_info = $this->fields('id')->where(array("wholesale" => $wholesale_id))->get();
-		return ($product_info) ? (int) $product_info['id'] : NULL;
 	}
 }

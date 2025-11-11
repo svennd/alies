@@ -480,23 +480,10 @@ class Products extends Vet_Controller
 		# in case no results
 		if (!$result) { return $return; }
 
-		# maximum 10 results
+		# maximum 15 results
 		foreach ($result as $r) {
 			$stock = array();
-			// $prices = array();
 			$product_id = $r['id'];
-
-		# there are prices
-		// if ($r['price_volume']) {
-		// 	$volumes 	= explode(",", $r['price_volume']);
-		// 	$prices 	= explode(",", $r['price_price']);
-		// 	for($i = 0; $i < count($volumes); $i++) {
-		// 		$prices[] = array(
-		// 							"volume" 	=> $volumes[$i],
-		// 							"price" 	=> $prices[$i],
-		// 							);
-		// 	}
-		// }
 
 		$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE, "volume >" => 0))->order_by(array("location" => "ASC", "eol" => "ASC"))->get_all();
 		$list = array();
@@ -519,7 +506,6 @@ class Products extends Vet_Controller
 					"data" 	=> array(
 										"id" 				=> $r['id'],
 										"stock"				=> $list,
-										// "prices"			=> $prices,
 										"unit"				=> $r['unit_sell'],
 										"btw"				=> $r['btw_sell'],
 										"booking"			=> $r['booking_code'],
