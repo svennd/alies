@@ -46,7 +46,7 @@ class Breeds_model extends MY_Model
 				owners.id = pets.owner
 
 			WHERE
-				breeds.name LIKE '" . $this->db->escape_like_str($query) . "%' ESCAPE '!'
+                               breeds.name LIKE '" . $query . "%' ESCAPE '!'
 			AND
 				pets.death = 0
 			AND
