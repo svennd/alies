@@ -79,6 +79,7 @@ class Pets_model extends MY_Model
 			WHERE
 				name LIKE '" . $query . "%' ESCAPE '!'
 				" . ($dead_allowed ? "" : "AND pets.death = 0") . "
+                AND pets.transfered = 0
 			ORDER BY
 				owners.last_bill
 			DESC
@@ -123,6 +124,7 @@ class Pets_model extends MY_Model
 				owners.id = pets.owner
 			WHERE
 				pets.id = '" . $id . "'
+                AND pets.transfered = 0
 			ORDER BY
 				owners.last_bill
 			DESC
@@ -142,6 +144,7 @@ class Pets_model extends MY_Model
 				pets
 			where
 				death = 0
+                AND pets.transfered = 0
 			group by
 				type			
 		";
@@ -151,7 +154,12 @@ class Pets_model extends MY_Model
 	// owners
 	public function get_all_pets(int $owner)
 	{
-		return $this->with_breeds('field:name')->with_breeds2('field:name')->where(array("owner" => $owner))->order_by(array("birth, death"), "desc")->get_all();
+		return $this
+                    ->with_breeds('field:name')
+                    ->with_breeds2('field:name')
+                    ->where(array("owner" => $owner, 'transfered' => 0))
+                    ->order_by(array("birth, death"), "desc")
+                    ->get_all();
 	}
 
 	/*
@@ -188,4 +196,44 @@ class Pets_model extends MY_Model
 		$this->db->query($sql);
 		return $this->db->affected_rows();
 	}
+
+    /*
+    * function: transfer_pet
+    * transfer a pet to a new owner
+    * we have to create a hidden pet in order to make the 
+    */
+    public function transfer_pet(int $pet_id, int $new_owner_id)
+    {
+        # clone pet
+        $this->clone_pet($pet_id, $new_owner_id);
+
+        # set the old pet to hidden for old bills
+        $this->where(array('id' => $pet_id))->update(array(
+            'transfered'    => 1, 
+            'note'          => '[transfer:send:' . $new_owner_id . ']',
+            'chip'          => null, // remove chip
+            'companion'     => null, // remove companion link
+        ));
+    }
+
+    private function clone_pet(int $pet_id, int $new_owner_id)
+    {
+        $pet = $this->get($pet_id);
+
+        # remove id
+        unset($pet['id']);
+
+        # set new owner
+        $pet['owner'] = $new_owner_id;
+        $pet['note'] .= ' [transfer:owner:' . $pet['owner'] . ']'; // update note
+
+        # insert
+        $new_pet_id = $this->insert($pet);
+
+        if (!$new_pet_id) {
+            return false;
+        }
+
+        return $new_pet_id;
+    }
 }

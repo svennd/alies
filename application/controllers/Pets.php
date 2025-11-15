@@ -350,7 +350,10 @@ class Pets extends Vet_Controller
 
 	public function change_owner_complete($pet_id, $new_owner)
 	{
-		$this->pets->update(array("owner" => $new_owner), $pet_id);
+        // clone the pet and clear "identification" of old one
+        $this->pets->transfer_pet($pet_id, $new_owner);
+
+        $this->logs->logger(INFO, "transfer_pet", "pet " . $pet_id . " (new owner:". $new_owner . ")");
 		redirect('owners/detail/' . $new_owner, 'refresh');
 	}
 
