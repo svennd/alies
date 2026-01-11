@@ -57,4 +57,3 @@ $route['invoice/bill/(:num)/(:num)'] = 'invoice/bill/$1/$2';
 $route['stock/(:num)'] = 'stock/index/$1';
 $route['stock/(:num)/(:num)'] = 'stock/index/$1/$2';
 $route['stock/all'] = 'stock/index/all';
-// $route['vaccine/all'] = 'vaccine/index/all';

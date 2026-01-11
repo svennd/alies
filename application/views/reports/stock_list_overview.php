@@ -32,6 +32,10 @@
 						<a href="<?php echo base_url('reports/stock_list/1'); ?>" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-file-excel"></i> <?php echo $this->lang->line('export'); ?></a><br/><br/>
 						<a href="<?php echo base_url('reports/stock_list/1/0/6'); ?>" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-file-excel"></i> 6%</a>
 						<a href="<?php echo base_url('reports/stock_list/1/0/21'); ?>" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-file-excel"></i> 21%</a><br/>
+                        <div class="alert alert-danger mt-2" role="alert">
+                            Als de inkoopprijs 0 is -voor de volledige verpakking-, wordt er gerekend met 0,01 om fouten te voorkomen. De prijs per INKOOPPRIJS_STUK kan nog steeds 0 zijn als de afronding te groot is.  
+                            <pre>INKOOPPRIJS_STUK = (aantal producten per verpakking / verkoopsprijs verpakking)</pre>
+                        </div>
 					</td>
 				</tr>
 				<tr>

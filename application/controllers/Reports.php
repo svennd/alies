@@ -68,8 +68,6 @@ class Reports extends Admin_Controller
 		else
 		{
 			$stock = $this->stock->get_list($location, $procent);
-
-			$csv = $this->load->view('reports/stock_list', array("stock_list" => $stock), true);
 			$this->excelexporter->exportToExcel($stock, 'stock_list.xlsx');
 		}
 	}

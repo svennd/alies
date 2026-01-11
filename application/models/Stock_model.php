@@ -381,16 +381,22 @@ class Stock_model extends MY_Model
 	*/
 	public function get_list(int $location = 0, int $procent = 0) 
 	{
+        // before 0 fix
+        // ROUND( (in_price / buy_volume ), 2) as INKOOPPRIJS_STUK,
+        // ROUND( ( in_price / buy_volume ) * SUM(volume) , 2) as WAARDE,
+        // in_price as INKOOPPRIJS_VERPAKKING
+
 		$sql = "
 				SELECT
 					products.name,
-					SUM(volume) as volume,
-					products.unit_buy,
+					SUM(volume) as AANTAL,
+					products.unit_sell as VERKOOPSEENHEID,
+                    ROUND( (CASE WHEN in_price = 0 THEN 0.01 ELSE in_price END / buy_volume), 2) AS INKOOPPRIJS_STUK,
 					lotnr,
 					eol,
-					products.btw_buy,
-					ROUND( in_price / ( buy_volume / SUM(volume) ), 2) as value,
-					in_price
+					products.btw_buy as BTW,
+                    ROUND( (CASE WHEN in_price = 0 THEN 0.01 ELSE in_price END / buy_volume) * SUM(volume), 2) AS WAARDE,
+                    CASE WHEN in_price = 0 THEN 0.1 ELSE in_price END AS INKOOPPRIJS_VERPAKKING
 				FROM 
 					stock
 				JOIN
@@ -647,7 +653,6 @@ class Stock_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 
-
 	/*
 	*	called in cli/stock_clean
 	*	When a product is removed, but there remains stock in the system
@@ -680,6 +685,26 @@ class Stock_model extends MY_Model
 		return $this->db->affected_rows();
 	}
 
+	/*
+	*	update the usage count on products
+	*	based on the last 90 days 
+	* 	ran nightly by cron/cli
+	*/
+	public function recalculate_usage()
+	{
+		$sql = "
+			UPDATE products p
+			JOIN (
+				SELECT product_id, COUNT(*) AS cnt
+				FROM events_products
+				WHERE created_at >= NOW() - INTERVAL 90 DAY
+				GROUP BY product_id
+			) u ON p.id = u.product_id
+			SET p.usage_count = u.cnt;
+		";
+		$this->db->query($sql);
+		return $this->db->affected_rows();
+	}
 	/*
 		PRIVATE functions
 	*/
