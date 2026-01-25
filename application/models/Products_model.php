@@ -247,29 +247,44 @@ class Products_model extends MY_Model
 		return ($product_info) ? (int) $product_info['id']: false;
 	}
 
-	// used in products controller
-	public function get_products(string $query)
+    /*
+    * get all products even if no stock or multiple stocks
+	* note: used in products controller
+    */
+	public function get_products_stocks(string $search_query)
 	{
-		$sql = "
-		SELECT 
-			products.id, products.name, unit_sell, btw_sell, booking_code, vaccin, vaccin_freq
-		FROM 
-			products
-		LEFT JOIN
-			stock
-		ON
-			products.id = stock.product_id
-		WHERE 
-			name LIKE '%" . $query ."%' ESCAPE '!'
-		AND 
-			sellable = 1
-		AND 
-			products.deleted_at IS NULL
-		GROUP BY
-			products.name
-		LIMIT
-			". self::PRODUCT_SEARCH_LIMIT ."
-			;";
-		return $this->db->query($sql)->result_array();
+        $sql = "
+            SELECT 
+                p.id AS product_id, p.name, p.unit_sell, p.btw_sell, p.booking_code, 
+                p.vaccin, p.vaccin_freq, s.id AS stock_id, s.location, s.eol, s.lotnr, s.volume 
+            FROM 
+                products p 
+
+            LEFT JOIN 
+                stock s 
+                ON s.product_id = p.id 
+                AND s.volume > 0 
+                AND s.state = ?
+
+            WHERE 
+                p.name LIKE ? ESCAPE '!' 
+                AND p.sellable = 1 
+                AND p.deleted_at IS NULL
+
+            ORDER BY 
+                p.usage_count DESC, 
+                p.name ASC, 
+                s.location ASC, 
+                s.eol ASC 
+
+            LIMIT ?";
+
+
+			return $this->db->query($sql, 
+                        [
+                        STOCK_IN_USE,
+                        '%' . $search_query . '%', 
+                        self::PRODUCT_SEARCH_LIMIT
+                        ])->result_array();
 	}
 }

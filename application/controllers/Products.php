@@ -4,6 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Products extends Vet_Controller
 {
 
+	const SEARCH_LIMIT = 15;
+
 	# constructor
 	public function __construct()
 	{
@@ -424,9 +426,8 @@ class Products extends Vet_Controller
 			$return = $this->get_products($query, $return);
 			$return = $this->get_procedures($query, $return);
 		}
-
-		// limit to max 50 results
-		echo json_encode(array("query" => $query, "suggestions" => array_slice($return, 0, 50)));
+		# max 30 results (15+15)
+		echo json_encode(array("query" => $query, "suggestions" => $return));
 	}
 
 	# probably broken due to type switch
@@ -466,6 +467,7 @@ class Products extends Vet_Controller
 										"booking"			=> $r['booking_code'],
 										"vaccin"			=> $r['vaccin'],
 										"vaccin_freq"		=> $r['vaccin_freq'],
+                                        "is_antibiotic"     => $r['is_antibiotic'],
 										"type"				=> PRODUCT_BARCODE
 									)
 					);
@@ -473,50 +475,49 @@ class Products extends Vet_Controller
 		return $return;
 	}
 
-	private function get_products($query, $return) {
-		# products
-		$result = $this->products->get_products($query);
+    /*
+    * function to get products even if no stock or multiple stocks
+    * note: used in get_product_or_procedure
+    */
+    private function get_products(string $query, $return)
+    {
+        $rows = $this->products->get_products_stocks($query);
+        if (!$rows) { return $return; }
 
-		# in case no results
-		if (!$result) { return $return; }
+        $products = [];
 
-		# maximum 15 results
-		foreach ($result as $r) {
-			$stock = array();
-			$product_id = $r['id'];
+        foreach ($rows as $r) {
+            $pid = $r['product_id'];
 
-		$stock = $this->stock->fields('id, location, eol, lotnr, volume')->where(array("product_id" => $product_id, "state" => STOCK_IN_USE, "volume >" => 0))->order_by(array("location" => "ASC", "eol" => "ASC"))->get_all();
-		$list = array();
-		# there is stock
-		if ($stock) {
-			foreach ($stock as $s)
-			{
-				$list[] = array(
-									"id" 		=> $s['id'],
-									"location" 	=> $s['location'],
-									"eol" 		=> $s['eol'],
-									"lotnr" 	=> $s['lotnr'],
-									"volume" 	=> $s['volume']
-									);
-			}
-		}
+            if (!isset($products[$pid])) {
+                $products[$pid] = [
+                    'value' => $r['name'],
+                    'data' => [
+                        'id' => $pid,
+                        'stock' => [],
+                        'unit' => $r['unit_sell'],
+                        'btw' => $r['btw_sell'],
+                        'booking' => $r['booking_code'],
+                        'vaccin' => $r['vaccin'],
+                        'vaccin_freq' => $r['vaccin_freq'],
+                        'type' => PRODUCT
+                    ]
+                ];
+            }
 
-		$return[] = array(
-					"value" => $r['name'],
-					"data" 	=> array(
-										"id" 				=> $r['id'],
-										"stock"				=> $list,
-										"unit"				=> $r['unit_sell'],
-										"btw"				=> $r['btw_sell'],
-										"booking"			=> $r['booking_code'],
-										"vaccin"			=> $r['vaccin'],
-										"vaccin_freq"		=> $r['vaccin_freq'],
-										"type"				=> PRODUCT
-									)
-					);
-		}
-		return $return;
-	}
+            if ($r['stock_id']) {
+                $products[$pid]['data']['stock'][] = [
+                    'id' => $r['stock_id'],
+                    'location' => $r['location'],
+                    'eol' => $r['eol'],
+                    'lotnr' => $r['lotnr'],
+                    'volume' => $r['volume']
+                ];
+            }
+        }
+
+        return array_merge($return, array_values($products));
+    }
 
 	/*
 		query procedures
@@ -526,6 +527,7 @@ class Products extends Vet_Controller
 							->fields('id, name, price')
 							->with_booking_code('fields:btw')
 							->where('name', 'like', $query, true)
+							->limit(self::SEARCH_LIMIT)
 							->get_all();
 
 		if (!$result) { return $list; }
@@ -535,7 +537,6 @@ class Products extends Vet_Controller
 								"value" => $r['name'],
 								"data" 	=> array(
 												"id" 			=> $r['id'],
-												// "price"			=> $r['price'],
 												"btw"			=> (isset($r['booking_code']['btw'])) ? $r['booking_code']['btw'] : "21",
 												"booking"		=> $r['booking_code']['id'],
 												"type"			=> PROCEDURE
