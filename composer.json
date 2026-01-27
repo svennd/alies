@@ -1,6 +1,6 @@
 {
     "require": {
-        "nnnick/chartjs": "3.7.*",
+        "nnnick/chartjs": "4.5.*",
         "components/bootstrap": "4.*",
         "fortawesome/font-awesome": "7.*",
         "components/jquery": "3.*",
