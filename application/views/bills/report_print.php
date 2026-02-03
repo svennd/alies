@@ -180,7 +180,7 @@ foreach ($print as $pet_id => $event):
 			<td align="left"><?php echo $procedure['name']; ?><?php echo (strtotime($date_proc) === strtotime($bill['created_at'])) ? " <small>(" . $date_proc. ")</small>" : ""; ?></td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format($procedure['volume'], 2); ?></div>
-				<div style="display: inline-block; width:15px;">&nbsp;</div>
+				<div style="display: inline-block; width:30px;">&nbsp;</div>
 			</td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format($procedure['unit_price'], 2); ?></div>
@@ -195,7 +195,7 @@ foreach ($print as $pet_id => $event):
 			<td align="left"><?php echo $product['name']; ?></td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format($product['volume'],2); ?></div>
-				<div style="display: inline-block; width:15px;"><?php echo $product['unit_sell']; ?></div>
+				<div style="display: inline-block; width:30px;"><?php echo $product['unit_sell']; ?></div>
 			</td>
 			<td align="right">
 				<div style="display: inline-block;"><?php echo number_format($product['unit_price'], 2); ?></div>
@@ -212,7 +212,7 @@ foreach ($print as $pet_id => $event):
 </tr>
 </tbody>
 	</table>
-	<?php if($bill_lines > PUSH_TOTAL): ?><div style="page-break-before: always;"></div><hr><?php endif; ?>
+	<?php if(isset($bill_lines) && $bill_lines > PUSH_TOTAL): ?><div style="page-break-before: always;"></div><hr><?php endif; ?>
 	<table width="100%" style="border-collapse: collapse;">
         <tr>
 			<td rowspan="4" valign="top">
