@@ -11,9 +11,6 @@ class Cli extends Frontend_Controller
 	public $input;
 	public $conf = array();
 	
-	// data import constants
-	const MSLINK_DATA_OFFSET = 18;
-
 	// data paths - should be in config somewhere
 	private const RX_DIR = "data/stored/rx/";
 	private const PRICELIST_DIR = "data/stored/pricelist/";
@@ -33,17 +30,23 @@ class Cli extends Frontend_Controller
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Stock_value_model', 'stock_value');
 		$this->load->model('Events_model', 'events');
-		$this->load->model('Config_model', 'settings');
 		$this->load->model('Log_stock_model', 'log_stock');
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Rx_model', 'rx');
 
+		$this->load->model('Vamreg_index_model', 'vamreg_index');
+		$this->load->model('Vamreg_in_buffer_model', 'vamreg_in_buffer');
+
+		$this->load->model('Config_model', 'settings');
         $conf = $this->settings->get_all();
 		if ($conf) {
 			foreach ($conf as $c) {
 				$this->conf[$c['name']] = base64_decode($c['value']);
 			}
 		}
+
+		# helpers
+		$this->load->helper('file');
     }
 
 	/*
@@ -54,7 +57,6 @@ class Cli extends Frontend_Controller
 	{
 		echo "Welcome to alies, cli\n";
 		echo "functions :\n";
-		echo "  - medilab : fetch medilab samples\n";
 		echo "  - delivery [filename] : import delivery file (covetrus)\n";
 		echo "  - pricelist [filename] : import pricelist file (covetrus)\n";
 		echo "  - stock_clean : attempt to fix stock issues\n";
@@ -62,6 +64,7 @@ class Cli extends Frontend_Controller
 		echo "  - prune : prune old logs\n";
 		echo "  - auto_death : auto death pets\n";
 		echo "  - import_rx : scan files for new rx images\n";
+		echo "  - recalculate_usage : recalculate product usage\n";
 	}
 
 	/*
@@ -78,6 +81,13 @@ class Cli extends Frontend_Controller
 		$this->auto_death();
 		$this->stock_clean();
 		$this->stock_value->record_value();
+		$this->recalculate_usage();
+
+        # cleanup api rate limits
+        $this->cleanup_rate_limits();
+
+        # pull new data from vamreg + set ab status for products
+        $this->vamreg_update();
 	}
 
 	/*
@@ -165,375 +175,14 @@ class Cli extends Frontend_Controller
 		*/
 	}
 
-	/*
-	* function: medilab
-    * cron function for samples from online.medilab.be
+    /*
+    cleanup api rate limits
     */
-    public function medilab($redirect = false, int $days = 14)
+    public function cleanup_rate_limits()
     {
-        // static
-        $url = "https://" . $this->conf['medilab_user'] . ":". $this->conf['medilab_pasw'] . "@online.medilab.be/dokter/";
-
-		$test_id_to_names = array(
-            // hematologie
-			// celhematologie
-            "88891" => "Hemoglobine",
-            "88892" => "Hematocriet",
-            "88893" => "Rode bloedcellen",
-            "88894" => "MCV",
-            "88895" => "MCH",
-            "88896" => "MCHC",
-            "88897" => "Reticulocyten",
-			
-			"88898" => "Thrombocyten",
-			"88899" => "WBC",
-			"88900" => "Neutrofielen %",
-			"88903" => "Lymfocyten %",
-			// "88930" => "aaaaaaa",
-			"89009" => "Neutrofielen absoluut",
-			"89010" => "Eosinofielen absoluut",
-			"89011" => "Basos absoluut", // 99 certain
-			"89012" => "Lymfos absoluut",
-			"89013" => "Monos absoluut",
-			// "89159" => "aaaaaaa",
-			// "89160" => "aaaaaaa",
-			// "89161" => "aaaaaaa",
-			// "89162" => "aaaaaaa",
-			// "89428" => "aaaaaaa",
-
-			// biochemie
-
-			// nier - lever
-			"88933" => "Bilirubine totaal",
-			// enzymen lever - gal - pancreas
-			"88923" => "SGOT (AST)",
-			"88948" => "Gamma-GT",
-			"89166" => "Galzuren",
-
-			// DIERENGENEESKUNDE
-			"89157" => "Vetten",
-			"89156" => "Spiervezels",
-			"89155" => "Zetmeel",
-			"89154" => "Bloed",
-			"89127" => "Parasieten na concentratie",
-			"89468" => "Histologie dier",
-			"14305" => "Cortisol",
-
-			// toxoplasma
-			"89448" => "Toxoplasma IgG", // maybe swapped
-			"89649" => "Toxoplasma IgM",
-
-			// klinische gegevens
-			"89114" => "Identificatienummer (chip)",
-        );
-
-        // request
-        $request = "stalen.json?days=" . $days;
-        $json_response = $this->req_curl_json($url . $request);
-        $stalen = json_decode($json_response, true);
-
-        foreach($stalen as $staal)
-        {
-            $internal_id = $this->lab->add_sample(
-                    $staal['id'],
-                    array(
-                            "lab_date"          => $staal['datum_opname'], 
-                            "lab_patient_id"    => $staal['patient_id'], 
-                            "lab_updated_at"    => $staal['updated_at'], 
-                            "lab_created_at"    => $staal['tijd_opname'], 
-                            "lab_comment"       => $staal['extra_gegevens']
-                        ),
-                    "medilab"
-            );
-
-            $detail_response = $this->req_curl_json($url . "staal/" . $staal['id'] . ".json");
-            $staal = json_decode($detail_response, true);
-
-            if ($staal["resultaten"])
-            {
-                foreach($staal["resultaten"] as $line)
-                {
-                    $this->lab_line->add_line(
-                                                $internal_id,
-                                                $staal['id'], // lab_id
-                                                array(
-                                                    'resultaat'       => $line['resultaat'],
-                                                    'sp_resultaat'    => (!empty($line['sp_resultaat']) ? $line['sp_resultaat'] : $line['tek_resultaat']),
-                                                    'bovenlimiet'     => $line['bovenlimiet'],
-                                                    'onderlimiet'     => $line['onderlimiet'],
-                                                    'rapport'         => ($line['rapport'] == "J") ? 1 : 0,
-                                                    'eenheid'         => str_replace("Âµ", "µ", $line['eenheid']),
-                                                    'updated_at'      => $line['updated_at'],
-                                                    'tabulatie_code'  => $line['test_id'],
-                                                    'lab_code_text'   => (isset($test_id_to_names[$line["test_id"]]) ? $test_id_to_names[$line["test_id"]] : '---'),  
-                                                    'commentaar'      => $line['commentaar'], 
-                                                )
-                                    );
-                }
-            }
-    
-        }
-        if($redirect)
-        {
-            redirect('lab', 'refresh');
-        }
-        else
-        {
-            echo date("m.d.y H:i") . " " . count($stalen) . " samples!\n";
-        }
+        $this->load->model('ApiRate_model');
+        $this->ApiRate_model->cleanup();
     }
-
-	public function medilab_debug(int $days = 14)
-	{
-		$test_id_to_names = array(
-            // hematologie
-			// celhematologie
-            "88891" => "Hemoglobine",
-            "88892" => "Hematocriet",
-            "88893" => "Rode bloedcellen",
-            "88894" => "MCV",
-            "88895" => "MCH",
-            "88896" => "MCHC",
-            "88897" => "Reticulocyten",
-			
-			"88898" => "Thrombocyten",
-			"88899" => "WBC",
-			"88900" => "Neutrofielen %",
-			"88903" => "Lymfocyten %",
-			// "88930" => "aaaaaaa",
-			"89009" => "Neutrofielen absoluut",
-			"89010" => "Eosinofielen absoluut",
-			"89011" => "Basos absoluut", // 99 certain
-			"89012" => "Lymfos absoluut",
-			"89013" => "Monos absoluut",
-			// "89159" => "aaaaaaa",
-			// "89160" => "aaaaaaa",
-			// "89161" => "aaaaaaa",
-			// "89162" => "aaaaaaa",
-			// "89428" => "aaaaaaa",
-
-			// biochemie
-
-			// nier - lever
-			"88933" => "Bilirubine totaal",
-			// enzymen lever - gal - pancreas
-			"88923" => "SGOT (AST)",
-			"88948" => "Gamma-GT",
-			"89166" => "Galzuren",
-
-			// DIERENGENEESKUNDE
-			"89157" => "Vetten",
-			"89156" => "Spiervezels",
-			"89155" => "Zetmeel",
-			"89154" => "Bloed",
-			"89127" => "Parasieten na concentratie",
-			"89468" => "Histologie dier",
-			"14305" => "Cortisol",
-
-			// toxoplasma
-			"89448" => "Toxoplasma IgG", // maybe swapped
-			"89649" => "Toxoplasma IgM",
-
-			// klinische gegevens
-			"89114" => "Identificatienummer (chip)",
-        );
-
-	   // static
-        $url = "https://" . $this->conf['medilab_user'] . ":". $this->conf['medilab_pasw'] . "@online.medilab.be/dokter/";
-
-        // request
-        $request = "stalen.json?days=" . $days;
-        $json_response = $this->req_curl_json($url . $request);
-        $stalen = json_decode($json_response, true);
-
-        foreach($stalen as $staal)
-        {
-			echo "Staal : " . $staal['id'] . "\n";
-			// print_r($staal);
-			// echo "\n";
-			
-            $detail_response = $this->req_curl_json($url . "staal/" . $staal['id'] . ".json");
-            $staal = json_decode($detail_response, true);
-
-            if ($staal["resultaten"])
-            {
-               echo "Resultaten : \n";
-			   foreach($staal["resultaten"] as $line)
-			   {
-					if (isset($test_id_to_names[$line["test_id"]])) { continue; }
-				   echo (isset($test_id_to_names[$line["test_id"]]) ? $test_id_to_names[$line["test_id"]] : $line['test_id']) . " " . $line['sp_resultaat'] . " " . $line['eenheid'] . " " . $line['commentaar'] . "\n";
-				//    echo $line['test_id'] . " " . $line['resultaat'] . " " . $line['eenheid'] . " " . $line['commentaar'] . "\n";
-				//    echo "\n";
-			   }
-            }
-
-		echo "\n";
-		echo "\n";
-        }
-    }
-
-	/*
-	* function: mslink
-	* import data from mslink devices (ms4s2, IkeMS, ImMScan)
-	*/
-	public function mslink()
-	{
-		$path = "data/stored/lab/";
-		$files = glob($path . "*.txt");
-		
-		foreach($files as $file)
-		{
-			echo "Processing : " . $file . "\n";
-			$this->process_mslink_lab_file($file, $path);
-		}
-	}
-
-	/*
-	* function: process_mslink_lab_file
-	* process a single mslink lab file
-	*/
-	private function process_mslink_lab_file($file, $path)
-	{
-		// static lab_code
-		$lab_code = array(
-			"WBC" => 1, 
-			"RBC" => 2, 
-			"THR" => 3
-		);
-
-		$data = explode(";", file_get_contents($file));
-
-		// get the first line
-		list(
-			$pet_type, // dog, cat, Control, Dog, Cat, CHAT
-			$system, // BIOCH HEMATO IMMUNO
-			$start_analyse, 
-			$end_analyse, 
-			$client_name,  // name, id, phone
-			$device, // iKEMS, MS4S2, IMMSCAN
-			$pet_name, // name or id
-			$pet_id,  // name or id or client
-			$unk,
-			$unk2,
-			$empty,
-			$empty,
-			$run_id,
-			) = $data;
-
-		// determine what is most likely the pet_id
-		$pet_id = (is_numeric($pet_id)) ? $pet_id : (is_numeric($pet_name) ? $pet_name : (is_numeric($client_name) ? $client_name : NULL));
-		
-		$start 	= DateTime::createFromFormat('d/m/Y H:i:s:v', trim($start_analyse))->format('Y-m-d H:i:s');
-		$end 	= DateTime::createFromFormat('d/m/Y H:i:s:v', trim($end_analyse))->format('Y-m-d H:i:s');
-
-		
-		$internal_id = $this->lab->add_mslink_sample(
-				$run_id,
-				array(
-						"lab_date"          => $start,
-						"lab_updated_at"    => $start, 
-						"lab_created_at"    => $end, 
-						"lab_comment"       => $system . " - " . $device
-					),
-				"mslink - " . $system,
-				$pet_id
-		);
-
-		// check for duplicate
-		if ($internal_id == false)
-		{
-			echo "ERROR : ". $file . " duplicate detected\n";
-			// move the file
-			if(!$this->move_file($file, $path . 'failed/' . basename($file)))
-			{
-				echo "ERROR : issue moving file\n";
-			}
-			return;
-		}
-
-		if ($system == "HEMATO")
-		{
-			// extract the plots
-			$hemato_plot = array_slice($data, 13, 3);
-			foreach ($hemato_plot as $plot)
-			{
-				$name = explode(",", $plot)[0];
-
-				$this->lab_line->insert(array(
-					"lab_id" 			=> $internal_id,
-					"sample_id" 		=> $internal_id,
-					"lab_code"		 	=> $lab_code[$name],
-					"lab_code_text" 	=> $name,
-					"comment"			=> $plot,
-					"updated_at" 		=> $start,
-					"created_at" 		=> $end
-				));
-			}
-		}
-
-		// extract the values
-		/*
-		*	the data is always in fields of 6
-		*/
-		$anamnese = "Lab results:\n";
-		// extract the values
-		for ($i = self::MSLINK_DATA_OFFSET; $i < count($data); $i++) {
-			list(
-					$lab_name, 		// test name
-					$value, 		// test value
-					$lab_unit, 		// unit 
-					$lab_result_symbol,  // > or < (sometimes)
-					$lab_result, 		//  + or - or 0
-					$low_high
-					) = array_slice($data, $i, 6);
-			
-			// if the name is not empty
-			if ($lab_name == "") { break; }
-
-			# increase the loop
-			$i += 5;
-
-			# these we don't know what they do, so we skip them
-			if ($lab_name == "Err1") { continue; }
-			if ($lab_name == "Err2") { continue; }
-			if ($lab_name == "Err3") { continue; }
-
-			# data prep
-			if ($low_high != "")
-			{
-				$low = trim(explode("-", $low_high)[0]);
-				$high = trim(explode("-", $low_high)[1]);
-			} else {
-				$low = "";
-				$high = "";
-			}
-
-			$this->lab_line->insert(array(
-				"lab_id" 			=> $internal_id,
-				"sample_id" 		=> $internal_id,
-				"value" 			=> trim($value),
-				"upper_limit" 		=> $high,
-				"lower_limit" 		=> $low,
-				"lab_code"		 	=> hexdec(substr(md5($lab_name), 0, 4)), // need some sort of an idea
-				"lab_code_text" 	=> $lab_name,
-				"unit"				=> $lab_unit,
-				"updated_at" 		=> $start,
-				"created_at" 		=> $end
-			));
-			$anamnese .= $lab_name . " : " . $value . " " . $lab_unit . "\n";
-
-		}
-		
-		if ($pet_id && $pet_id != 0)
-		{
-			$this->lab->add_event($internal_id, $pet_id, $anamnese);
-		}
-		// move the file
-		if(!$this->move_file($file, $path . 'processed/' . basename($file)))
-		{
-			echo "ERROR : issue moving file\n";
-		}
-	}
 
 	/*
 	* function: delivery
@@ -541,6 +190,25 @@ class Cli extends Frontend_Controller
 	*/
 	public function delivery($filename)
 	{
+        /* normalize header names */
+        $map = [
+            'Besteldatum'        => 'order_date',
+            'Bestelbonnr'        => 'order_nr',
+            'Mijn Referentie'    => 'my_ref',
+            'Art. nr.'           => 'wholesale_artnr',
+            'Omschrijving'       => 'wholesale_art_name',
+            'CNK nummer'         => 'CNK_nummer',
+            'Leveringsdatum'     => 'delivery_date',
+            'Leveringsbon nummer'=> 'delivery_nr',
+            'bruto prijs'        => 'bruto_price',
+            'netto prijs'        => 'netto_price',
+            'BTW'                => 'btw',
+            'aantal'             => 'amount',
+            'Lotnummer'          => 'lotnr',
+            'Vervaldatum'        => 'due_date',
+            'Facturatie'         => 'billing',
+        ];
+
         $file = SELF::DELIVERY_DIR . $filename;
 
 		# check if the file exists
@@ -553,71 +221,93 @@ class Cli extends Frontend_Controller
 		# open the file and read line by line
 		$handle = fopen($file, 'r');
 		$line = 0;
+
 		# header 
-		fgetcsv($handle, 0, "|");
+		$header = fgetcsv($handle, 0, "|");
+        /* build index */
+        $idx = [];
+        foreach ($header as $i => $h) {
+            if (isset($map[$h])) {
+                $idx[$map[$h]] = $i;
+            }
+        }
 
-		while (($row = fgetcsv($handle, 0, "|")) !== FALSE) 
-		{
-			# get the data
-			list(
-				$order_date,
-				$order_nr,
-				$my_ref,
-				$wholesale_artnr, // could be number but we don't trust this, so we link to wholesale_id
-				$wholesale_art_name,
-				$CNK_nummer,
-				$delivery_date,
-				$delivery_nr,
-				$bruto_price,
-				$netto_price,
-				$verk_pr_apotheek, // ignored
-				$btw,
-				$amount,
-				$lotnr,
-				$due_date,
-				$billing
-				) = $row;
-				
-                $x = $this->wholesale->fields('id')->where(array("vendor_id" => $wholesale_artnr))->get();
-				$id = ($x) ? $x['id'] : null;
+		while (($row = fgetcsv($handle, 0, "|")) !== false) {
 
-                # dates
-                $dt_order_date = DateTime::createFromFormat('j/m/Y', $order_date);
-                $dt_delivery_date = DateTime::createFromFormat('j/m/Y', $delivery_date);
-                $dt_due_date = DateTime::createFromFormat('j/m/Y', $due_date);
-				
-				$netto_price_format = str_replace(',', '.', $netto_price);
-				$bruto_price_format = str_replace(',', '.', $bruto_price);
-				
-				$this->delivery->insert(array(
-					"order_date" 			=> ($dt_order_date) ? $dt_order_date->format('Y-m-d') : "",
-					"order_nr" 				=> $order_nr,
-					"my_ref" 				=> $my_ref,
-					"wholesale_artnr" 		=> $wholesale_artnr,
-					"wholesale_id"			=> $id,
-					"CNK"					=> $CNK_nummer,
-					"delivery_date" 		=> ($dt_delivery_date) ? $dt_delivery_date->format('Y-m-d') : "",
-					"delivery_nr" 			=> $delivery_nr,
-					"bruto_price" 			=> $bruto_price_format,
-					"netto_price" 			=> $netto_price_format,
-					"amount" 				=> $amount,
-					"lotnr" 				=> $lotnr,
-					"due_date" 				=> ($dt_due_date) ? $dt_due_date->format('Y-m-d') : "",
-					"btw" 					=> $btw,
-					"billing"				=> $billing
-				));
+        $order_date      = isset($idx['order_date'])      ? ($row[$idx['order_date']] ?? null) : null;
+        $order_nr        = isset($idx['order_nr'])        ? ($row[$idx['order_nr']] ?? null) : null;
+        $my_ref          = isset($idx['my_ref'])          ? ($row[$idx['my_ref']] ?? null) : null;
+        $wholesale_artnr = isset($idx['wholesale_artnr']) ? ($row[$idx['wholesale_artnr']] ?? null) : null;
+        $CNK_nummer      = isset($idx['CNK_nummer'])      ? ($row[$idx['CNK_nummer']] ?? null) : null;
+        $delivery_date   = isset($idx['delivery_date'])   ? ($row[$idx['delivery_date']] ?? null) : null;
+        $delivery_nr     = isset($idx['delivery_nr'])     ? ($row[$idx['delivery_nr']] ?? null) : null;
+        $bruto_price     = isset($idx['bruto_price'])     ? ($row[$idx['bruto_price']] ?? null) : null;
+        $bruto_price     = isset($idx['bruto_price'])     ? (str_replace(',', '.', $row[$idx['bruto_price']]) ?? null) : null;
+        $netto_price     = isset($idx['netto_price'])     ? (str_replace(',', '.', $row[$idx['netto_price']]) ?? null) : null;
+        $btw             = isset($idx['btw'])             ? ($row[$idx['btw']] ?? null) : null;
+        $amount          = isset($idx['amount'])          ? ($row[$idx['amount']] ?? null) : null;
+        $lotnr           = isset($idx['lotnr'])           ? ($row[$idx['lotnr']] ?? null) : null;
+        $due_date        = isset($idx['due_date'])        ? ($row[$idx['due_date']] ?? null) : null;
+        $billing         = isset($idx['billing'])         ? ($row[$idx['billing']] ?? null) : null;
 
-				# in some weird cases
-				# eg: when a tax is added but not shown in bruto_price
-				if ($netto_price_format > $bruto_price_format && $id)
-				{
-					$this->wholesale->update(array("netto_overflow" => $netto_price_format), $id);
-					$this->logs->logger(WARN, "delivery", "netto overflow: " . $netto_price_format . " > " . $bruto_price_format . " for id: " . $id);
-				}
-                $line++;
+
+            $x = $this->wholesale->fields('id')->where(array("vendor_id" => $wholesale_artnr))->get();
+            $id = ($x) ? $x['id'] : null;
+
+            # dates
+            $dt_order_date = DateTime::createFromFormat('j/m/Y', $order_date);
+            $dt_delivery_date = DateTime::createFromFormat('j/m/Y', $delivery_date);
+            $dt_due_date = DateTime::createFromFormat('j/m/Y', $due_date);
+                        
+            $this->delivery->insert(array(
+                "order_date" 			=> ($dt_order_date) ? $dt_order_date->format('Y-m-d') : "",
+                "order_nr" 				=> $order_nr,
+                "my_ref" 				=> $my_ref,
+                "wholesale_artnr" 		=> $wholesale_artnr,
+                "wholesale_id"			=> $id,
+                "CNK"					=> $CNK_nummer,
+                "delivery_date" 		=> ($dt_delivery_date) ? $dt_delivery_date->format('Y-m-d') : "",
+                "delivery_nr" 			=> $delivery_nr,
+                "bruto_price" 			=> $bruto_price,
+                "netto_price" 			=> $netto_price,
+                "amount" 				=> $amount,
+                "lotnr" 				=> $lotnr,
+                "due_date" 				=> ($dt_due_date) ? $dt_due_date->format('Y-m-d') : "",
+                "btw" 					=> $btw,
+                "billing"				=> $billing
+            ));
+
+            # check if this product is vamreg required
+            $hit = $this->vamreg_index->where(array("cnk" => $CNK_nummer))->get();
+
+            # it is in the list
+            if ($hit)
+            {
+                echo "FOUND A product for Vamreg CNK: " . $CNK_nummer . " id: " . $id . "\n";
+                
+                // add to buffer
+                $this->vamreg_in_buffer->insert(array(
+                    "cnk"                       => $CNK_nummer,
+                    "wholesale_id"              => $id,
+                    "in_quantity_pack_count"    => $amount,
+                    "delivery"                  => ($dt_delivery_date) ? $dt_delivery_date->format('Y-m-d') : "",
+                    "product_type"              => "BE", # assumption
+                    "provider_type"             => "DIST_BE", # assumption
+                    "status"                    => "DRAFT",
+                ));
+            }
+
+            # in some weird cases
+            # eg: when a tax is added but not shown in bruto_price
+            if ($netto_price > $bruto_price && $id && !$netto_price)
+            {
+                $this->wholesale->update(array("netto_overflow" => $netto_price), $id);
+                $this->logs->logger(WARN, "delivery", "netto overflow: " . $netto_price . " > " . $bruto_price . " for id: " . $id);
+            }
+            $line++;
 		}
         fclose($handle);
-        if(!$this->move_file($file, SELF::DELIVERY_DIR . 'processed/' . $filename))
+        if(!move_file($file, SELF::DELIVERY_DIR . 'processed/' . $filename))
         {
             echo "ERROR : issue moving file\n";
         }
@@ -625,6 +315,7 @@ class Cli extends Frontend_Controller
 
 		$this->logs->logger(INFO, "import_delivery", "file: " . $filename . " lines: " . $line);
 	}
+    
 
 	/*
 	* function: pricelist
@@ -682,7 +373,7 @@ class Cli extends Frontend_Controller
                 $line++;
 		}
         fclose($handle);
-        if(!$this->move_file($file, SELF::PRICELIST_DIR . 'processed/' . $filename))
+        if(!move_file($file, SELF::PRICELIST_DIR . 'processed/' . $filename))
         {
 			$this->logs->logger(ERROR, "import_pricelist", "issue moving file");
         }
@@ -795,6 +486,36 @@ class Cli extends Frontend_Controller
 	}
 
 	/*
+	* function: recalculate_usage
+	* recalculate usage for all products
+	* this is used to update the usage of products based on the stock history
+	*/
+	public function recalculate_usage()
+	{
+		// recalculate usage for all products
+		$affected = $this->stock->recalculate_usage();
+
+		// log this
+		$this->logs->logger(INFO, "recalculate_usage", "recalculated usage for all products (" . $affected . " affected)");
+	}
+
+    public function vamreg_update()
+    {
+
+		$this->load->library('vamreg_sync');
+		$sync_status = $this->vamreg_sync->sync_medicinal_products(
+			$this->conf['vamreg_api_key'],
+			$this->conf['vamreg_push']
+		);
+        $this->logs->logger(INFO, "vamreg", "synchronized medicinal products from Vamreg : " . ($sync_status ? "success" : "failure"));
+
+        $affected = $this->vamreg_index->set_ab_status_on_product();
+
+        // log this
+        $this->logs->logger(INFO, "vamreg", "set AB status for buffer items (" . $affected . " affected)");
+    }
+
+	/*
 	* function: import_rx
 	* scan files for new rx images
 	*/
@@ -878,19 +599,6 @@ class Cli extends Frontend_Controller
 		}
 	}
 
-	/*
-	*	function: move_file
-	*	move a file from one location to another
-	*/
-    private function move_file(string $path, string $to): bool {
-        if(copy($path, $to)){
-            unlink($path);
-            return true;
-        } else {
-            return false;
-        }
-    }
-	
 	/*
 	*	function: req_curl_json
 	*	wrapper around some curl setup

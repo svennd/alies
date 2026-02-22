@@ -105,7 +105,7 @@ class Owners extends Vet_Controller
 	public function detail(int $owner, $update = false)
 	{		
 		$data = array(			
-						"owner" 	=> $this->owners->get($owner),
+						"owner" 	=> $this->owners->with_vet('fields:first_name,last_name')->get($owner),
 						"open_bill"	=> $this->bills->get_open_bills($owner),
 						"pets" 		=> $this->pets->get_all_pets($owner),
 						"update" 	=> $update

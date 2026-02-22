@@ -209,6 +209,7 @@ class Products extends Vet_Controller
 
 		if ($this->input->post('submit') && $this->ion_auth->in_group("admin")) {
 			$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
+			$default_indication = $this->input->post('default_indication');
 
 			$input = array(
 								"name" 					=> $this->input->post('name'),
@@ -228,6 +229,10 @@ class Products extends Vet_Controller
 								"btw_sell" 				=> $booking['btw'],
 								"vaccin" 				=> (is_null($this->input->post('vaccin')) ? 0 : 1),
 								"vaccin_freq" 			=> $this->input->post('vaccin_freq'),
+								"is_antibiotic"			=> (is_null($this->input->post('is_antibiotic')) ? 0 : 1),
+								"default_indication"	=> ($default_indication == "null")? NULL : $default_indication,
+								"ab_unit"				=> $this->input->post('ab_unit'),
+								"ab_unit_volume"		=> $this->input->post('ab_unit_volume'),
 								"booking_code" 			=> $this->input->post('booking_code'),
 								"comment_admin" 		=> $this->input->post('comment_admin'),
 								"vhbcode" 				=> $this->input->post('vhbcode'),
@@ -493,25 +498,26 @@ class Products extends Vet_Controller
                 $products[$pid] = [
                     'value' => $r['name'],
                     'data' => [
-                        'id' => $pid,
-                        'stock' => [],
-                        'unit' => $r['unit_sell'],
-                        'btw' => $r['btw_sell'],
-                        'booking' => $r['booking_code'],
-                        'vaccin' => $r['vaccin'],
-                        'vaccin_freq' => $r['vaccin_freq'],
-                        'type' => PRODUCT
+                        'id'            => $pid,
+                        'stock'         => [],
+                        'unit'          => $r['unit_sell'],
+                        'btw'           => $r['btw_sell'],
+                        'booking'       => $r['booking_code'],
+                        'vaccin'        => (int)$r['vaccin'],
+                        'vaccin_freq'   => $r['vaccin_freq'],
+                        'is_antibiotic' => (int)$r['is_antibiotic'],
+                        'type'          => PRODUCT
                     ]
                 ];
             }
 
             if ($r['stock_id']) {
                 $products[$pid]['data']['stock'][] = [
-                    'id' => $r['stock_id'],
-                    'location' => $r['location'],
-                    'eol' => $r['eol'],
-                    'lotnr' => $r['lotnr'],
-                    'volume' => $r['volume']
+                    'id'        => $r['stock_id'],
+                    'location'  => $r['location'],
+                    'eol'       => $r['eol'],
+                    'lotnr'     => $r['lotnr'],
+                    'volume'    => $r['volume']
                 ];
             }
         }

@@ -28,6 +28,11 @@ class Events extends Vet_Controller
 		$this->load->model('Vaccine_model', 'vaccine');
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Product_price_model', 'prices');
+        $this->load->model('Vamreg_out_buffer_model', 'vamreg_out');
+
+		# add helper
+		$this->load->helper('vamreg');
+
 	}
 
 	// Group: Event
@@ -73,13 +78,6 @@ class Events extends Vet_Controller
 		$pet_info 			= $this->pets->get($pet_id);
 		$other_pets 		= $this->pets->other_pets($pet_info['owner'], $pet_id);
 		
-		# todo : write a custom function for this, too complex
-		$eprod 				= $this->eprod
-										->with_product('fields: id, name, unit_sell, btw_sell, vaccin, vaccin_freq')
-										->with_stock('fields: eol, lotnr, id')
-										->with_vaccine('fields: id, redo, no_rappel')
-										->where(array("event_id" => $event_id))
-										->get_all();
 		$data = array(
 			"event_state"		=> $event_info['status'],
 			"owner"				=> $this->owners->get($pet_info['owner']),
@@ -88,7 +86,7 @@ class Events extends Vet_Controller
 			"booking_codes"		=> $this->booking->get_all(),
 			"event_uploads"		=> $this->events_upload->where(array('event' => $event_id))->get_all(),
 			"drawing_temp"		=> glob("data/stored/e" . $event_id . "_*_draw.jpeg"),
-			"consumables"		=> $eprod,
+			"consumables"		=> $this->eprod->get_event_products($event_id),
 			"event_id"			=> $event_id,
 			"update" 			=> $update,
 			"other_pets"		=> $other_pets,
@@ -103,7 +101,7 @@ class Events extends Vet_Controller
 
 		if ($event_info['status'] == STATUS_OPEN ) 
 		{
-			$this->_render_page('event/main', $data);
+			$this->_render_page('event/main_open', $data);
 		}
 		else 
 		{
@@ -176,9 +174,10 @@ class Events extends Vet_Controller
 		$line 	= (int) $this->input->post('line');
 		$name 	= $this->input->post('title');
 		$volume = $this->input->post('volume');
-		$vaccin = (bool) $this->input->post('vaccin');
-		$vaccin_freq = (int) $this->input->post('vaccin_freq');
-		$stock = ($this->input->post('stock')) ? (int) $this->input->post('stock') : NULL;
+		$antibiotic 	= (bool) $this->input->post('is_antibiotic');
+		$vaccin 		= (bool) $this->input->post('vaccin');
+		$vaccin_freq 	= (int) $this->input->post('vaccin_freq');
+		$stock 			= ($this->input->post('stock')) ? (int) $this->input->post('stock') : NULL;
 
 		// verify the booking code/btw wasn't changed
 		list ($btw, $booking) = $this->check_booking(
@@ -207,6 +206,9 @@ class Events extends Vet_Controller
 			// if its a vaccine add it to this pet
 			$this->add_vaccine($vaccin, $vaccin_freq, $line, $name, $event_id, $return_id);
 
+			// check if Vamreg
+			$this->add_vamreg_out($antibiotic, $line, $event_id, $volume, $return_id);
+
 			// add stock info
 			if ($stock)
 			{
@@ -223,7 +225,8 @@ class Events extends Vet_Controller
 			array_merge(
 				array(
 					"name" 			=> $name, 
-					"vaccin" 		=> $vaccin, 
+					"vaccin" 		=> $vaccin,
+					"antibiotic" 	=> $antibiotic,
 					"volume"		=> $volume, 
 					"return"		=> $return_id, 
 					"btw" 			=> $btw,
@@ -319,6 +322,34 @@ class Events extends Vet_Controller
 								));
 	}
 
+    private function add_vamreg_out(bool $is_antibiotic, int $product_id, int $event, $volume, int $event_line) : bool
+    {
+        if (!$is_antibiotic) { return true; }
+
+        // get pet id
+        $event_info = $this->events->fields('pet')->get($event);
+        $product_info = $this->products->fields('cnk, default_indication, ab_unit_volume, ab_unit')->get($product_id);
+        $pet_info = $this->pets->fields('type')->get($event_info['pet']);
+
+		// var_dump($product_info);
+		// exit;
+		$insert = array_merge(
+			[
+				"event"          => $event,
+				"event_line"     => $event_line,
+				"out_date"       => date('H:i:s'),
+				"product_type"   => "BE",
+				"target_species" => get_vamreg_target_species($pet_info['type']),
+				"indication"     => $product_info['default_indication'],
+				"vet"            => $this->user->id,
+				"cnk"            => $product_info['cnk'],
+				"out_date"       => date('Y-m-d'),
+			],
+			get_vamreg_out_unit($product_info['ab_unit'], $product_info['ab_unit_volume'] * $volume)
+		);
+
+		return $this->vamreg_out->insert($insert);
+    }
 
 	// Group: edit actions
 	// _____________________________________
@@ -340,6 +371,15 @@ class Events extends Vet_Controller
 		redirect('events/event/' . $event_id);
 	}
 
+	/*
+	* function: set_vamreg_indication
+	* set the indication for a VAMREG line
+	*/
+	public function set_vamreg_indication(int $event_id, int $event_line)
+	{
+		$this->vamreg_out->update(['indication' => valid_vamreg_indication($this->input->post('indication'))], ['event' => $event_id, 'event_line' => $event_line]);
+		redirect('events/event/' . $event_id);
+	}
 	/*
 	* function: edit_unit_price
 	* edit the unit price of a product or procedure
@@ -537,6 +577,9 @@ class Events extends Vet_Controller
 
 		# in case its an vaccine
 		$this->vaccine->where(array('event_line' => $product_id, 'event_id' => $event_id))->delete();
+
+		# in case its a VAMREG product
+		$this->vamreg_out->where(array('event_line' => $product_id, 'event' => $event_id))->delete();
 
 		# push an event update
 		$this->events->update(array(), $event_id);

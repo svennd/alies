@@ -573,4 +573,46 @@ class Events_model extends MY_Model
 		return $this->db->query($sql)->result_array();
 	}
 
+	// used in pets
+	public function get_pet_history(int $pet_id)
+	{
+		$events = $this->db
+			->select('e.*, 
+					v.first_name AS vet_name,
+					vs1.first_name AS vet_support_1_name,
+					vs2.first_name AS vet_support_2_name,
+					sl.name AS location_name,
+					(SELECT COUNT(*) FROM events_upload eu WHERE eu.event = e.id) AS upload_count')
+			->from('events e')
+			->join('users v', 'v.id = e.vet', 'left')
+			->join('users vs1', 'vs1.id = e.vet_support_1', 'left')
+			->join('users vs2', 'vs2.id = e.vet_support_2', 'left')
+			->join('stock_location sl', 'sl.id = e.location', 'left')
+			->where('e.pet', $pet_id)
+			->where('e.no_history', 0)
+			->order_by('e.created_at', 'DESC')
+			->get()
+			->result_array();
+
+		foreach ($events as &$event) {
+			$event['products'] = $this->db
+				->select('ep.*, p.name, p.unit_sell')
+				->from('events_products ep')
+				->join('products p', 'p.id = ep.product_id', 'left')
+				->where('ep.event_id', $event['id'])
+				->get()
+				->result_array();
+
+			$event['procedures'] = $this->db
+				->select('pr.*, prc.name')
+				->from('events_procedures pr')
+				->join('procedures prc', 'prc.id = pr.procedures_id', 'left')
+				->where('pr.event_id', $event['id'])
+				->get()
+				->result_array();
+		}
+
+		return $events;
+	}
+
 }

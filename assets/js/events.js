@@ -39,6 +39,9 @@ function event_set_product(suggestion, current_location)
     $('#vaccin_or_no').val(suggestion.vaccin);
     $('#vaccin_freq').val(suggestion.vaccin_freq);
 
+    // set antibiotic flag
+    $('#antibiotic_or_no').val(suggestion.is_antibiotic);
+
     // check if there is stock
 	lotnr_volumes = {}; // reset the volumes
     if (suggestion.stock != null && suggestion.stock)
@@ -102,6 +105,7 @@ function add_line()
 			btw: $("#btw_sell").val(),
 			vaccin: $("#vaccin_or_no").val(),
 			vaccin_freq: $("#vaccin_freq").val(),
+			is_antibiotic: $("#antibiotic_or_no").val()
 		},
 		success: function(response) {
 			try {
@@ -109,7 +113,7 @@ function add_line()
 				add_table_line(parsedData);
 				enable_generate_invoice();
 				$("#remove_event_button").hide();
-				if(parsedData.vaccin == 1) { 
+				if(parsedData.vaccin == 1 || parsedData.antibiotic == 1) { 
 					// reload page
 					location.reload();
 				}
@@ -211,7 +215,7 @@ function add_table_line(info)
 
 function reset_input()
 {
-    $("#new_pid, #product_or_proc, #volume, #hidden_booking, #stock_select, #vaccin_or_no, #vaccin_freq").val("");
+    $("#new_pid, #product_or_proc, #volume, #hidden_booking, #stock_select, #vaccin_or_no, #antibiotic_or_no, #vaccin_freq").val("");
 	$('#autocomplete').val('').autocomplete('onValueChange').focus();
 	$("#stock_select").removeClass("is-invalid");
 }
@@ -242,8 +246,14 @@ document.addEventListener("DOMContentLoaded", function(){
 	// search box for products
 	$('#autocomplete').autocomplete({
 		serviceUrl: URL_PROC_OR_PROD,
+		// add icon to type
+		// formatResult: function (suggestion, currentValue) {
+		// 	let iconClass = suggestion.data.type == 1 ? 'fa-capsules' : 'fa-stethoscope';
+		// 	return '<i class="fa ' + iconClass + '" style="margin-right:5px;"></i>' +
+		// 		suggestion.value;
+		// },
 		onSelect: function (suggestion) {
-            var data = suggestion.data;
+			var data = suggestion.data;
 			
 			$('#new_pid').val(data.id);
 			$('#prod').val(data.prod);

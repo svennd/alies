@@ -41,12 +41,12 @@
 			<?php endif; ?>
 		<?php endif; ?>
 		</td>
-		<td><?php echo (isset($history['vet']['first_name'])) ? 
-							$history['vet']['first_name'] 
-							. ((isset($history['vet_1_sup'])) ? ', ' . $history['vet_1_sup']['first_name'] : '')
-							. ((isset($history['vet_2_sup'])) ? ', ' . $history['vet_2_sup']['first_name'] : '')
+		<td><?php echo (isset($history['vet_name'])) ? 
+							$history['vet_name'] 
+							. ((isset($history['vet_support_1_name'])) ? ', ' . $history['vet_support_1_name'] : '')
+							. ((isset($history['vet_support_2_name'])) ? ', ' . $history['vet_support_2_name'] : '')
 							: 'unknown' ; ?></td>
-		<td><?php echo (isset($history['location']['name'])) ? $history['location']['name'] : "unknown"; ?></td>
+		<td><?php echo (isset($history['location_name'])) ? $history['location_name'] : "unknown"; ?></td>
 		<td data-search="<?php echo $history['type']; ?>">
 			<button class="btn btn-sm btn-outline-primary ana"><i class="fa-solid fa-eye"></i></button>
 			<a href="<?php echo base_url('events/event/' . $history['id']); ?>" class="btn btn-sm <?php if($history['report'] == REPORT_DONE): ?>btn-outline-secondary not-allowed<?php else: ?> btn-outline-success<?php endif; ?>"><i class="fa-solid fa-pen"></i></a>

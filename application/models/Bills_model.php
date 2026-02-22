@@ -138,36 +138,41 @@ class Bills_model extends MY_Model
 
 		// get all pets for this owner
 		$pets = $this->pets->where(array("owner" => $owner_id))->fields(array('id', 'name'))->get_all();
+        
+        // this can happen when the pet got transfered to a new owner and no other pets are known
+        if ($pets)
+        {
+            foreach ($pets as $pet) {
+                # for easy access
+                $pet_id = $pet['id'];
 
-		foreach ($pets as $pet) {
-			# for easy access
-			$pet_id = $pet['id'];
+                # get all events for this pet and bill_id
+                # this could be multiple (consult + op) for example
+                $pet_events = $this->events
+                                        ->where(array(
+                                                "pet" 		=> $pet_id,
+                                                "payment" 	=> $bill_id
+                                        ))
+                                        ->fields("id")
+                                        ->get_all();
 
-			# get all events for this pet and bill_id
-			# this could be multiple (consult + op) for example
-			$pet_events = $this->events
-									->where(array(
-											"pet" 		=> $pet_id,
-											"payment" 	=> $bill_id
-									))
-									->fields("id")
-									->get_all();
+                # no event for this pet, skip all togheter
+                if (!$pet_events) { continue; }
 
-			# no event for this pet, skip all togheter
-			if (!$pet_events) { continue; }
+                # transform to array with only id's
+                $event_list = array_map(function($item) { return (int)$item['id']; }, $pet_events);
 
-			# transform to array with only id's
-			$event_list = array_map(function($item) { return (int)$item['id']; }, $pet_events);
-
-			# create array if there is going to be
-			# events linked to this animal
-			$print_bill[$pet_id] = array(
-				"pet"			=> $pet,
-				"events" 		=> $event_list,
-				"products" 		=> $this->events->get_printable_items($event_list, PRODUCT),
-				"procedures" 	=> $this->events->get_printable_items($event_list, PROCEDURE),
-			);
-		}
+                # create array if there is going to be
+                # events linked to this animal
+                $print_bill[$pet_id] = array(
+                    "pet"			=> $pet,
+                    "events" 		=> $event_list,
+                    "products" 		=> $this->events->get_printable_items($event_list, PRODUCT),
+                    "procedures" 	=> $this->events->get_printable_items($event_list, PROCEDURE),
+                );
+            }
+        }
+        
 		return $print_bill;
 	}
 

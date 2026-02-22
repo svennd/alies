@@ -173,14 +173,10 @@
 <script type="text/javascript">
 
 const SEARCH_BREED = '<?php echo base_url('breeds/search_breed/'); ?>';
+const SEARCH_CHIP = '<?php echo base_url('pets/check_chip/'. $pet['id'].'/'); ?>';
 
 document.addEventListener("DOMContentLoaded", function(){
-	// $("#color").select2({
-	// 	// need to map since they don't have an id
-	// 	data: $.map(simple_colors, function (obj) { obj.id = obj.id || obj.text; return obj;}),
-	// 	tags: true
-	// });
-
+    
 	$("#breeds").select2(createBreedSelect2(SEARCH_BREED));
 	$("#second_breed").select2(createBreedSelect2(SEARCH_BREED));
 

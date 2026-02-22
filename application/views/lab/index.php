@@ -36,7 +36,7 @@
 							<th><?php echo $this->lang->line('lab_id'); ?></th>
 							<th><?php echo $this->lang->line('client'); ?></th>
 							<th><?php echo $this->lang->line('lab_received'); ?></th>
-							<th><?php echo $this->lang->line('lab_update'); ?></th>
+							<!-- <th><?php echo $this->lang->line('lab_update'); ?></th> -->
 							<th><?php echo $this->lang->line('source'); ?></th>
 						</tr>
 					</thead>
@@ -56,11 +56,11 @@
 									---
 								<?php endif; ?>
 							</td>
-							<td><?php echo user_format_date($d['lab_date'], $user->user_date); ?></td>
-							<td data-sort="<?php echo strtotime($d['updated_at']) ?>">
-								<small><?php echo time_ago($d["lab_updated_at"]);?></small>
+							<!-- <td><?php echo user_format_date($d['sample_date'], $user->user_date); ?></td> -->
+							<td data-sort="<?php echo strtotime($d['sample_date']) ?>">
+								<small><?php echo time_ago($d["sample_date"]);?></small>
 							</td>
-							<td><?php echo $d["source"]; ?></td>
+							<td><?php echo $d["device"]; ?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>

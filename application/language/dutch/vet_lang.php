@@ -88,6 +88,9 @@ $lang['phone_backup_name']    = 'Telefoon Backup (info)';
 $lang['phone_backup_help']    = 'Moeder, broer, zus,...';
 $lang['owner_already_exists']  = 'Eigenaar bestaat mogelijk reeds';
 $lang['phone_number_exists']  = 'Telefoon reeds gekend';
+$lang['this_client_is_disabled']  = 'Deze klant is uitgeschakeld.';
+$lang['disabled_due_to_merge_with_client']  = 'Uitgeschakeld vanwege samenvoegen met klant';
+$lang['on_date']  = 'op datum';
 
 # change owner
 $lang['current_owner']   = 'Huidige eigenaar';

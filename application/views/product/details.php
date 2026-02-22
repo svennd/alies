@@ -2,11 +2,13 @@
 .list-group-item {
     margin-bottom: 0;
 }
-.no_vaccin_hide {
+
+.toggle-hide {
 	background-color: #e7f5e7;
 	display: none;
 }
-.no_vaccin_hide:hover {
+
+.toggle-hide:hover {
 	background-color: #e7f5e7;
 }
 </style>
@@ -14,7 +16,7 @@
 <div class="card shadow mb-4">
 	<div class="card-header">
 		<a href="<?php echo base_url('products'); ?>">Products</a> /
-		<?php echo $this->lang->line('edit'); ?> / <?php echo (isset($product['name'])) ? $product['name']: '' ?>
+		<?php echo $this->lang->line('edit'); ?> / <a href="<?php echo base_url('products/profile/' . $product['id']); ?>"><?php echo (isset($product['name'])) ? $product['name']: '' ?></a>
 	</div>
 	
 	<div class="card-body">
@@ -97,6 +99,50 @@
 					</div>
 				</div>
 			</div>
+
+<!-- 
+<div class="list-group-item list-group-item-action">
+	<div class="row align-items-center">
+		<div class="col">
+			<strong class="mb-0">State Icon</strong>
+			<p class="text-muted mb-0">Choose one icon to indicate product state</p>
+		</div>
+		<div class="col">
+			<div class="d-flex flex-wrap">
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="" checked>
+					<span class="ml-2">None</span>
+				</label>
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="fa-syringe">
+					<i style="color:#17A2B8" class="fas fa-syringe ml-2"></i>
+				</label>
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="fa-star">
+					<i style="color:#FFC107" class="fas fa-star ml-2"></i>
+				</label>
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="fa-box-open">
+					<i style="color:orange"class="fas fa-box-open ml-2"></i>
+				</label>
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="fa-tag">
+					<i style="color:#28A745" class="fas fa-tag ml-2"></i>
+				</label>
+				<label class="d-flex align-items-center mr-4">
+					<input type="radio" name="state_icon" value="fa-ban">
+					<i style="color:#6C757D" class="fas fa-ban ml-2"></i>
+				</label>
+			</div>
+		</div>
+	</div>
+</div> -->
+
+
+
+
+
+
 		</div>
 
 		<strong><?php echo $this->lang->line('wholesale'); ?></strong>
@@ -141,10 +187,20 @@
 			<div class="list-group-item list-group-item-action">
 				<div class="row align-items-center">
 					<div class="col">
-						<strong class="mb-0"><?php echo $this->lang->line('vhbcode'); ?></strong>
+						<strong class="mb-0"><?php echo $this->lang->line('vhbcode'); ?> (VHB)</strong>
 					</div>
 					<div class="col-auto">
 						<input type="text" class="form-control form-control-sm" id="vhbcode" name="vhbcode" placeholder="" value="<?php echo (isset($product['vhbcode'])) ? ($product['vhbcode']) : ''; ?>">
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item list-group-item-action">
+				<div class="row align-items-center">
+					<div class="col">
+						<strong class="mb-0"><?php echo $this->lang->line('vhbcode'); ?> (CNK)</strong>
+					</div>
+					<div class="col-auto">
+						<input type="text" class="form-control form-control-sm" id="cnk" name="cnk" placeholder="" value="<?php echo (isset($product['cnk'])) ? ($product['cnk']) : ''; ?>">
 					</div>
 				</div>
 			</div>
@@ -286,7 +342,69 @@
 		<p></p>
 
 		<div class="list-group mb-5 shadow">
-		<div class="list-group-item list-group-item-action">
+			<div class="list-group-item list-group-item-action">
+				<div class="row align-items-center">
+					<div class="col">
+						<strong class="mb-0">is_antibiotic</strong>
+					</div>
+					<div class="col-auto">
+						<div class="custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="is_antibiotic" name="is_antibiotic" <?php echo (isset($product['is_antibiotic']) && $product['is_antibiotic']) ? 'checked' : ''; ?>>
+							<label class="custom-control-label" for="is_antibiotic"></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item list-group-item-action toggle-hide no_antibiotic_hide">
+				<div class="row align-items-center">
+					<div class="col">
+						<strong class="mb-0">AB default</strong>
+					</div>
+					<div class="col-auto">
+						<select name="default_indication" class="form-control form-control-sm" id="default_indication">
+							<option value="DIGEST" <?php if($product['default_indication'] == 'DIGEST') echo 'selected'; ?>>Spijsverteringsstoornissen</option>
+							<option value="EYE" <?php if($product['default_indication'] == 'EYE') echo 'selected'; ?>>Oogproblemen</option>
+							<option value="LOCO" <?php if($product['default_indication'] == 'LOCO') echo 'selected'; ?>>Locomotorische aandoeningen</option>
+							<option value="MAST" <?php if($product['default_indication'] == 'MAST') echo 'selected'; ?>>Mastitis</option>
+							<option value="NERVE" <?php if($product['default_indication'] == 'NERVE') echo 'selected'; ?>>Zenuwstoornissen</option>
+							<option value="PERI_OP" <?php if($product['default_indication'] == 'PERI_OP') echo 'selected'; ?>>Peri-operatieve antibacteriële behandeling</option>
+							<option value="RESP" <?php if($product['default_indication'] == 'RESP') echo 'selected'; ?>>Ademhalingsaandoeningen</option>
+							<option value="DERMA" <?php if($product['default_indication'] == 'DERMA') echo 'selected'; ?>>Huidaandoeningen</option>
+							<option value="SYST" <?php if($product['default_indication'] == 'SYST') echo 'selected'; ?>>Systemische aandoeningen</option>
+							<option value="URO_GEN" <?php if($product['default_indication'] == 'URO_GEN') echo 'selected'; ?>>Urogenitale aandoeningen</option>
+							<option value="null" <?php if(is_null($product['default_indication'])) echo 'selected'; ?>>-</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item list-group-item-action toggle-hide no_antibiotic_hide">
+				<div class="row align-items-center">
+					<div class="col">
+						<strong class="mb-0">AB UNIT</strong>
+					</div>
+					<div class="col-auto">
+						
+						<div class="form-inline">
+							<div class="form-group">
+								<input type="text" name="ab_unit_volume" class="form-control form-control-sm" style="max-width:150px;" id="ab_unit_volume" value="<?php echo (isset($product['ab_unit_volume'])) ? $product['ab_unit_volume']: '' ?>" required>
+							</div>
+							<div class="form-group mx-sm-1">
+								<select name="ab_unit" class="form-control form-control-sm" id="ab_unit">
+									<option value="PACKS" <?php if($product['ab_unit'] == 'PACKS') echo 'selected'; ?>>Pack</option>
+									<option value="PIECE" <?php if($product['ab_unit'] == 'PIECE') echo 'selected'; ?>>Piece</option>
+									<option value="PRESTATION" <?php if($product['ab_unit'] == 'PRESTATION') echo 'selected'; ?>>prestation</option>
+									<option value="TUBE" <?php if($product['ab_unit'] == 'TUBE') echo 'selected'; ?>>tube</option>
+									<option value="G" <?php if($product['ab_unit'] == 'G') echo 'selected'; ?>>g</option>
+									<option value="ML" <?php if($product['ab_unit'] == 'ML') echo 'selected'; ?>>ml</option>
+								</select>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+
+			<div class="list-group-item list-group-item-action">
 				<div class="row align-items-center">
 					<div class="col">
 						<strong class="mb-0"><?php echo $this->lang->line('vaccin'); ?></strong>
@@ -300,7 +418,7 @@
 				</div>
 			</div>
 
-			<div class="list-group-item list-group-item-action no_vaccin_hide">
+			<div class="list-group-item list-group-item-action toggle-hide no_vaccin_hide">
 				<div class="row align-items-center">
 					<div class="col">
 						<strong class="mb-0"><?php echo $this->lang->line('vaccin_freq'); ?></strong>
@@ -317,7 +435,7 @@
 				</div>
 			</div>
 
-			<div class="list-group-item list-group-item-action no_vaccin_hide">
+			<div class="list-group-item list-group-item-action toggle-hide no_vaccin_hide">
 				<div class="row align-items-center">
 					<div class="col">
 						<strong class="mb-0"><?php echo $this->lang->line('vaccin_layterm'); ?></strong>
@@ -433,6 +551,21 @@ function process_datamatrix(barcode) {
 	}	
 }
 
+function toggleByCheckbox(checkbox, target) {
+    if ($(checkbox).is(':checked')) {
+        $(target).show();
+    } else {
+        $(target).hide();
+    }
+
+    $(checkbox).on('change', function () {
+        $(this).is(':checked')
+            ? $(target).slideDown()
+            : $(target).slideUp();
+    });
+}
+
+
 document.addEventListener("DOMContentLoaded", function(){
 	var _changeInterval = null;
 	var barcode = null;
@@ -448,20 +581,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			process_datamatrix(barcode);
 		}, 500);
 	});
-
-    // Initially hide the fields if 'vaccin' is not checked
-    if ($('#vaccin').is(':checked')) {
-        $('.no_vaccin_hide').show();
-    }
-
-    // Toggle visibility with animation when 'vaccin' is checked/unchecked
-    $('#vaccin').change(function() {
-        if ($(this).is(':checked')) {
-            $('.no_vaccin_hide').slideDown();
-        } else {
-            $('.no_vaccin_hide').slideUp();
-        }
-    });
+	toggleByCheckbox('#vaccin', '.no_vaccin_hide');
+	toggleByCheckbox('#is_antibiotic', '.no_antibiotic_hide');
 
 	$('#wholesale').select2({
     theme: 'bootstrap4',
@@ -475,6 +596,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		// Handle vhb and wh_name without issue
 		$("#vhbcode").val(e.params.args.data.vhb).addClass('is-valid');
+		$("#cnk").val(e.params.args.data.cnk).addClass('is-valid');
 		$("#input_wh_name").val(e.params.args.data.text).addClass('is-valid');
 
 		// Check if #input_producer is already filled in

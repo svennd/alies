@@ -136,7 +136,12 @@
                 }
             }
         ?>
-        <?php echo $this->lang->line('payed'); ?> : <?php echo $bill['total_brut']; ?> &euro; (<?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;, <?php echo $this->lang->line('transfer'); ?> : <?php echo $transfer; ?> &euro;)
+        <?php echo $this->lang->line('payed'); ?> : <?php echo $bill['total_brut']; ?> &euro; 
+        (
+            <?php if($card != 0): ?><?php echo $this->lang->line('card'); ?> : <?php echo $card; ?> &euro;, <?php endif; ?>
+            <?php if($cash != 0): ?><?php echo $this->lang->line('cash'); ?> : <?php echo $cash; ?> &euro;, <?php endif; ?> 
+            <?php if($transfer != 0): ?><?php echo $this->lang->line('transfer'); ?> : <?php echo $transfer; ?> &euro; <?php endif; ?>
+        )
         
         <div class="form-group">
             <label for="msg"><?php echo $this->lang->line('comment'); ?> (<?php echo $this->lang->line('comment_internal'); ?>)</label>

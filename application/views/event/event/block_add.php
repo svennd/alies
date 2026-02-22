@@ -43,6 +43,7 @@
 		<input type="hidden" name="booking" value="" id="booking_default">
 		<input type="hidden" name="vaccin" value="" id="vaccin_or_no">
 		<input type="hidden" name="vaccin_freq" value="" id="vaccin_freq">
+		<input type="hidden" name="antibiotic" value="" id="antibiotic_or_no">
 	</td>
 	<td class="d-none d-sm-table-cell">&nbsp;</td>
 	<td class="d-none d-sm-table-cell">&nbsp;</td>

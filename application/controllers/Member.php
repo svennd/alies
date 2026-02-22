@@ -25,7 +25,7 @@ class Member extends Admin_Controller
 		$data = array(
 						"users" => $users
 					);
-		$this->_render_page('member/index', $data);
+		$this->_render_page('admin/member/index', $data);
 	}
 	
 	# create a user
@@ -53,7 +53,8 @@ class Member extends Admin_Controller
 				$additional_data = array(
 					'first_name' => $this->input->post('first_name'),
 					'last_name'  => $this->input->post('last_name'),
-					'phone'      => $this->input->post('phone')
+					'phone'      => $this->input->post('phone'),
+					'order_nr'   => $this->input->post('order_nr'),
 				);
 				$registration_result = $this->ion_auth->register($username, $password, $email, $additional_data);
 				
@@ -87,11 +88,11 @@ class Member extends Admin_Controller
 						"warning" => $warning,
 						"registered" => $registered,
 					);
-		$this->_render_page('member/create_user', $data);
+		$this->_render_page('admin/member/create_user', $data);
 	}
 	
 	# edit user
-	public function edit_user($id)
+	public function edit_user(int $id)
 	{
 		$warning = false;
 		$update = false;
@@ -111,7 +112,8 @@ class Member extends Admin_Controller
 				'username'	 => $this->input->post('first_name'). " " . $this->input->post('last_name'),
 				'first_name' => $this->input->post('first_name'),
 				'last_name'  => $this->input->post('last_name'),
-				'phone'      => $this->input->post('phone')
+				'phone'      => $this->input->post('phone'),
+				'order_nr'   => $this->input->post('order_nr'),
 			);
 			
 			/*
@@ -152,7 +154,7 @@ class Member extends Admin_Controller
 						"groups_edit" => $groups_edit,
 						"current_groups_edit" => $currentGroups_edit,
 					);
-		$this->_render_page('member/edit_user', $data);
+		$this->_render_page('admin/member/edit_user', $data);
 	}
 	
 }

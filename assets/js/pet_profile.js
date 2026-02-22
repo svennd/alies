@@ -3,9 +3,10 @@ function get_chip_info(chip) {
       return false;
     }
   
-	var clean_chip = chip.replace(/-/g, '');
-	
+	var clean_chip = chip.replace(/-|_/g, '');
+
     if (clean_chip.length !== 15) {
+        console.log(clean_chip);
       $("#chip_info").html("Unrecognized code, not 15 numbers!");
       return;
     }
@@ -24,6 +25,20 @@ function get_chip_info(chip) {
       } else {
         $("#chip_info").html("Country code: " + countryCode);
       }
+    }
+
+    // check for duplicates
+    if (clean_chip.length == 15) {
+        $.ajax({
+            url: SEARCH_CHIP + clean_chip,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.status == "200") {
+                    $("#chip_info").append("<div class='alert alert-danger' role='alert'>Microchip already exists for pet: " + data.pet_name + " (#" + data.pet_id +"), owned by " + data.owner_name + " (#" + data.owner_id +")</div>");
+                }
+            }
+        });
     }
   }
   

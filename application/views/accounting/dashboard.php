@@ -226,6 +226,12 @@
                     'link' => 'stats',
                     'text' => $this->lang->line('stats'),
                 ),
+                array(
+                    'img' => 'tools.png',
+                    'alt' => 'Tools',
+                    'link' => 'tools',
+                    'text' => $this->lang->line('tools'),
+                ),
                 
     );
 ?>

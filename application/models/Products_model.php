@@ -256,7 +256,7 @@ class Products_model extends MY_Model
         $sql = "
             SELECT 
                 p.id AS product_id, p.name, p.unit_sell, p.btw_sell, p.booking_code, 
-                p.vaccin, p.vaccin_freq, s.id AS stock_id, s.location, s.eol, s.lotnr, s.volume 
+                p.vaccin, p.vaccin_freq, p.is_antibiotic, s.id AS stock_id, s.location, s.eol, s.lotnr, s.volume 
             FROM 
                 products p 
 

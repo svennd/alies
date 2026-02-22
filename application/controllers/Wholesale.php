@@ -160,6 +160,7 @@ class Wholesale extends Admin_Controller {
                     "distr"     => $u['distributor'],
                     "bruto"     => $u['bruto'],
                     "vhb"       => $u['VHB'],
+					"cnk"       => $u['CNK']
                 );
 		}
 

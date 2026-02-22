@@ -216,6 +216,126 @@ class Pets_model extends MY_Model
         ));
     }
 
+
+    /*
+    * function: duplicate_chips
+    * find duplicate chips in pets - should not happen
+    */
+    public function duplicate_chips()
+    {
+        $sql = "
+            SELECT 
+                GROUP_CONCAT(pets.id ORDER BY last_bill DESC) AS pet_ids,
+                COUNT(*) AS cnt,
+                chip,
+                max(owners.last_bill) AS max_last_bill,
+                pets.*,
+                owners.*
+            FROM pets
+            LEFT JOIN owners ON owners.id = pets.owner
+            WHERE
+                pets.transfered = 0
+                AND pets.chip IS NOT NULL
+                AND pets.chip <> ''
+            GROUP BY 
+                chip
+            HAVING cnt > 1
+            ORDER BY last_bill DESC;
+            ;
+        ";
+        $query = $this->db->query($sql);
+
+        return $query->result_array();
+    }
+
+    /*
+    * function: does_pet_exist
+    * check if pet exists by id - used in lab result ingestion
+    */
+    public function does_pet_exist(int $pet_id)
+    {
+        $pet = $this->where(array('id' => $pet_id))->get();
+
+        if ($pet) {
+            return $pet['id'];
+        }
+
+        return null;
+    }
+
+    /*
+    * function: findByOwnerPhoneAndPet
+    * find pets by owner phone and owner name + pet name
+    * used in lab result ingestion
+    */
+    public function findByOwnerPhoneAndPet(string $phone, string $owner, string $pet)
+    {
+        $this->db->select('
+                        pets.id        AS pet_id,
+                        owners.id      AS owner_id,
+                        pets.name      AS pet_name,
+                        owners.last_name
+                    ');
+        $this->db->join('owners', 'owners.id = pets.owner');
+        $this->db->group_start();
+            $this->db
+                    ->or_where('owners.telephone', $phone)
+                    ->or_where('owners.mobile', $phone)
+                    ->or_where('owners.phone2', $phone)
+                    ->or_where('owners.phone3', $phone);
+        $this->db->group_end();
+
+        $this->db->where('owners.last_name', strtoupper($owner));
+        $this->db->where('pets.name', strtoupper($pet));
+
+        return $this->db->get('pets')->result();
+    }
+    
+    /*
+    * function: findByOwnerAndPet
+    * find pets by owner name + pet name
+    * used in lab result ingestion
+    */
+    public function findByOwnerAndPet(string $owner, string $pet)
+    {
+        $sql = "
+            SELECT 
+                pets.id        AS pet_id,
+                owners.id      AS owner_id,
+                pets.name      AS pet_name,
+                owners.last_name
+            FROM 
+                pets
+            JOIN
+                owners
+            ON
+                owners.id = pets.owner
+            WHERE
+                owners.last_name = ?
+            AND
+                pets.name = ?
+        ";
+        $query = $this->db->query($sql, array(strtoupper($owner), strtoupper($pet)));
+  
+        return $query->result();
+    }
+
+    /*
+    * function: findByChipNumber
+    * find pets by chip number
+    * used in lab result ingestion
+    */
+    public function findByChipNumber(string $chip)
+    {
+        return $this->where('chip', $chip)->get_all();
+    }
+
+    public function findByPetName(string $pet_name)
+    {
+        # more then 1 but limit it so we don't return too much
+        return $this->where('name', $pet_name)->limit(3)->get_all();
+    }
+
     private function clone_pet(int $pet_id, int $new_owner_id)
     {
         $pet = $this->get($pet_id);

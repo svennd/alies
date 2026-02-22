@@ -97,6 +97,10 @@
 						<input type="text" name="phone" class="form-control" id="phone" value="<?php echo $user->phone; ?>">
 					</div>
 					<div class="form-group">
+						<label for="order_nr">order nr.</label>
+						<input type="text" name="order_nr" class="form-control" id="order_nr" value="<?php echo $user->order_nr; ?>">
+					</div>
+					<div class="form-group">
 						<label for="search_config"><?php echo $this->lang->line('default_search'); ?></label>
 						<select class="form-control" name="search_config" id="search_config">
 							<option value="1" <?php echo ($user->search_config == 1) ? 'selected' : ''; ?>><?php echo $this->lang->line('last_name'); ?></option>

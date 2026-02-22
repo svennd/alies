@@ -74,7 +74,7 @@
 							<i class="fa-solid fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="modified"></i>
 						<?php endif;?>
 					</td>
-					<td data-sort="<?php echo $bill['total_brut']; ?>">
+					<td  class="dt-type-numeric dt-right" data-sort="<?php echo $bill['total_brut']; ?>">
 							<?php
 								$total 	= floatval($bill['total_brut']);
 								$cash 	= floatval($bill['cash']);

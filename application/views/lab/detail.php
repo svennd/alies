@@ -1,3 +1,41 @@
+<style>
+.bar {
+    width: 150px;
+    height: 6px;
+    position: relative;
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 8px;
+    margin-bottom: 3px;
+}
+
+.seg {
+    height: 6px;
+    flex-grow: 1;
+    border-radius: 3px;
+}
+
+.seg.low {
+    background: #f8d3d3;
+}
+
+.seg.mid {
+    background: #e2f5dc;
+}
+
+.seg.high {
+    background: #f8d3d3;
+}
+
+.pos {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 10px;
+    background: #333;
+    border-radius: 2px;
+}
+</style>
 
 <div class="row">
 	<div class="col-lg-12 mb-4">
@@ -48,140 +86,54 @@
 						</td>
 					</tr>
 					<tr>
-						<td><?php echo $this->lang->line('lab_received'); ?></td>
-						<td><?php echo $lab_info['lab_date']; ?></td>
-					</tr>
-					<!-- <tr>
-						<td>lab_id</td>
-						<td><?php echo $lab_info['lab_id']; ?></td>
-					</tr> -->
-					<tr>
-						<td>lab_patient_id</td>
-						<td><?php echo $lab_info['lab_patient_id']; ?></td>
-					</tr>
-					<tr>
 						<td><?php echo $this->lang->line('last_update'); ?></td>
-						<td><?php echo $lab_info['lab_updated_at']; ?></td>
+						<td><?php echo $lab_info['sample_date']; ?></td>
 					</tr>
-					<!-- <tr>
-						<td>lab_created_at</td>
-						<td><?php echo $lab_info['lab_created_at']; ?></td>
-					</tr> -->
-					<!-- <tr>
+					<tr>
 						<td><?php echo $this->lang->line('source'); ?></td>
-						<td><?php echo $lab_info['source']; ?></td>
-					</tr> -->
+						<td><?php echo $lab_info['source_id']; ?></td>
+					</tr>
 					<?php if(!empty($lab_info['lab_comment'])): ?>
 					<tr>
 						<td><?php echo $this->lang->line('lab_comment'); ?></td>
 						<td><?php echo $lab_info['lab_comment']; ?></td>
 					</tr>
 					<?php endif; ?>
-					<tr>
-						<td><?php echo ucfirst($this->lang->line('comment')); ?></td>
-						<td>
-							<div class="form-group">
-								<textarea class="form-control" name="message" id="message" rows="3"><?php echo (isset($lab_info['comment'])) ? $lab_info['comment']: '' ?></textarea>
-							</div>
-							<button type="submit" name="submit" value="update" class="btn <?php echo ($comment_update) ? "btn-success" : "btn-outline-primary" ?>"><i class="fa-solid fa-floppy-disk"></i> <?php echo (!$comment_update) ? $this->lang->line('store') : $this->lang->line('updated') . '!'; ?></button>
-						</td>
-					</tr>
 				</table>
 				</form>
-				<?php if($lab_info['source'] == "mslink - HEMATO"): ?>
-					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-					<?php
-					foreach($lab_details as $d):
-						if ($d["lab_code"] == "1")
-						{
-							$WBC = substr($d["comment"], 4);
-						}
-						if ($d["lab_code"] == "2")
-						{
-							$RBC = substr($d["comment"], 4);
-						}
-						if ($d["lab_code"] == "3")
-						{
-							$THR = substr($d["comment"], 4);
-						}
-					endforeach;
-					?>
-					<div class="row">
-						<div class="col-4" style="height:250px;">
-							<canvas id="my-wbc"></canvas>
-						</div>
-						<div class="col-4" style="height:250px;">
-							<canvas id="my-rbc"></canvas>
-						</div>
-						<div class="col-4" style="height:250px;">
-							<canvas id="my-plt"></canvas>
-						</div>
-					</div>
-					<script>
-						// Your data
-						const wbc_data = [<?php echo $WBC; ?>];
-						const rbc_data = [<?php echo $RBC; ?>];
-						const plt_data = [<?php echo $THR; ?>];
-					</script>
 
-					<script src="<?php echo base_url('assets/js/lab.charts.js'); ?>"></script>
-				<?php endif; ?>
-
-				<table class="table table-sm" id="dataTable">
+				<table class="table table-sm">
 					<thead>
 						<tr>
 							<th><?php echo $this->lang->line('lab_code'); ?></th>
+							<th>chart</th>
 							<th><?php echo $this->lang->line('value'); ?></th>
-							<th>#</th>
 							<th><?php echo $this->lang->line('limit'); ?></th>
-							
-							<?php if($lab_info['source'] == "medilab"): ?>
-								<th><?php echo $this->lang->line('comment'); ?></th>
-								<!-- <th><?php echo $this->lang->line('lab_update'); ?></th> -->
-							<?php endif;?>
+							<th><?php echo $this->lang->line('unit'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php 
-						foreach($lab_details as $d):
-							if ($d["lab_code"] == "1") continue; // WBC
-							if ($d["lab_code"] == "2") continue; // RBC
-							if ($d["lab_code"] == "3") continue; // THR
-
-							$lower_limit = $d["lower_limit"];
-							$upper_limit = $d["upper_limit"];
-	
-							if ($upper_limit == 0 && $lower_limit == 0) {
-								$lower_limit = false;
-								$upper_limit = false;
-							}
-	
-							$value = ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? $d["string_value"] . $d["value"] : $d["string_value"];
-	
-
-							$color = "inherit";
-							$sign = "&nbsp;&nbsp;";
-							if (
-								is_numeric($value) && 
-								$lower_limit !== false && 
-								$upper_limit !== false &&
-								($value < $lower_limit || $value > $upper_limit)
-								) {
-									$color = "red";
-									$sign = ($value < $lower_limit) ? "L" : "H";
-							}
-						?>
-						<tr class="<?php echo ($d["report"] || $lab_info["source"] != "medilab") ? "" : "table-secondary"; ?>">
-							<td data-sort="<?php echo $d['lab_code']; ?>"><?php echo $d["lab_code_text"]; ?> <small>(<?php echo $d["lab_code"]; ?>)</small></td>
-							<td><?php echo ($d["value"] != 0 && strlen($d["string_value"]) <= 1) ? "<span style='color:". $color ."'>".$d["string_value"] . $d["value"] . "</span>" : $d["string_value"]; ?> <?php echo $d["unit"]; ?></td>
-							<td style="text-align:left"><small><?php echo $sign; ?></small></td>
-							<td><?php echo (strlen($d["string_value"]) <= 1  && $upper_limit) ? $d["lower_limit"] . ' - ' . $d['upper_limit'] : ''; ?></td>
-
-							<?php if($lab_info['source'] == "medilab"): ?>
-								<td><?php echo ($d["comment"] == $d["string_value"]) ? '' : $d["comment"]; ?></td>
-								<!-- <td><?php echo $d["lab_updated_at"]; ?></td> -->
-							<?php endif;?>
-
+						<?php foreach($lab_details as $d): ?>
+                            <?php 
+                                $draw_plot = ($d["value_num"] != null && $d["ref_min"] != null && $d["ref_max"] != null);
+                                $value = ($d["value_num"] != null && strlen($d["value_text"]) <= 1) ? $d["value_num"] : $d["value_text"];
+                                $is_text = ($d["value_num"] == null);
+                            ?>
+						<tr>
+							<td><?php echo $d["code"]; ?></td>
+							<?php if($d["value_text"] == null): ?>
+							<td width="30%">
+                                <?php if($draw_plot): ?>
+                                <div class="bar"><div class="seg low"></div><div class="seg mid"></div><div class="seg high"></div><div class="pos" style="left: <?php echo ((0.5+(rand(-2, 2)/10)) * 100); ?>%;"></div></div></div>
+                                <?php endif; ?>
+                            </td>
+                            <?php endif; ?>
+                            <td <?php if($is_text): ?>colspan="4"<?php endif; ?>><?php echo $value; ?></td>
+                            
+                            <?php if(!$is_text): ?>
+                            <td><?php echo (strlen($d["value_text"]) <= 1  && $d['ref_max']) ? $d["ref_min"] . ' - ' . $d['ref_max'] : ''; ?></td>
+							<td><?php echo $d["unit"]; ?></td>
+                            <?php endif; ?>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -196,7 +148,6 @@
 const URL_SELECT = "<?php echo base_url('pets/get_pet_name'); ?>";
 
 document.addEventListener("DOMContentLoaded", function(){
-	$("#dataTable").DataTable({responsive: true});
 	$("#labo").addClass('active');
 
 	/* get pet names */

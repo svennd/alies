@@ -51,7 +51,7 @@ class Admin extends Admin_Controller
 			}
 
 			# check_* don't send if not checked
-			$keys = array('autodisable', 'invoice_prefix', 'pruning', 'autdeath');
+			$keys = array('autodisable', 'invoice_prefix', 'pruning', 'autdeath', 'vamreg_push');
 			foreach ($keys as $key)
 			{
 				if ($this->input->post('check_' . $key) == "on") {

@@ -86,6 +86,9 @@ $lang['phone_backup_name']    = 'Phone Backup (info)';
 $lang['phone_backup_help']    = 'Mon, brother, sister,...';
 $lang['owner_already_exists']  = 'Owner already exists';
 $lang['phone_number_exists']  = 'Phone number already exists';
+$lang['this_client_is_disabled']  = 'This client is disabled.';
+$lang['disabled_due_to_merge_with_client']  = 'Disabled due to merge with client';
+$lang['on_date']  = 'on date';
 
 # change owner
 $lang['current_owner']   = 'Current owner';

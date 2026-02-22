@@ -291,4 +291,70 @@ class Owners_model extends MY_Model
 			
 		return $this->db->query($sql)->result_array();
 	}
+
+    public function duplicate_phone()
+    {
+        $sql = "
+            SELECT 
+                GROUP_CONCAT(id ORDER BY last_bill DESC) AS owner_ids,
+                COUNT(*) AS cnt,
+                'phone' AS match_type,
+                max(last_bill) AS max_last_bill,
+                COALESCE(telephone, mobile, phone2, phone3) AS phone,
+                owners.*
+            FROM owners
+            WHERE
+                disabled = 0
+                AND COALESCE(telephone, mobile, phone2, phone3) IS NOT NULL
+                AND COALESCE(telephone, mobile, phone2, phone3) <> ''
+                AND COALESCE(telephone, mobile, phone2, phone3) LIKE '04%'
+            GROUP BY 
+                phone
+            HAVING cnt > 1
+            ORDER BY last_bill DESC;
+            ;
+        ";
+        $query = $this->db->query($sql);
+
+        return $query->result_array();
+    }
+
+    public function duplicate_owner_street()
+    {
+        $sql = "
+            SELECT 
+                GROUP_CONCAT(owner.id ORDER BY last_bill DESC) AS owner_ids,
+                COUNT(*) AS cnt,
+                'street_name' AS match_type,
+                max(last_bill) AS max_last_bill,
+                owners.*
+            FROM owners
+            WHERE
+                disabled = 0
+            GROUP BY 
+                last_name, street, city, nr
+            HAVING cnt > 1
+            AND MAX(last_bill) >= DATE_SUB(CURDATE(), INTERVAL 5 YEAR)
+            ORDER BY last_bill DESC;
+            ;
+        ";
+        $query = $this->db->query($sql);
+
+        return $query->result_array();
+    }
+    
+    /*
+    * function: disable
+    * disable an owner record
+    */
+    public function disable(int $owner_id, int $new_owner = 0)
+    {
+        $data = ['disabled' => 1];
+
+        if ($new_owner) {
+            $data['msg'] = 'merge_id_disable:' . $new_owner . ':' . date('Y-m-d H:i:s');
+        }
+
+        $this->update($data, ['id' => $owner_id]);
+    }
 }

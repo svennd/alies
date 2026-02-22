@@ -131,6 +131,7 @@ class Vet extends Vet_Controller
 										'search_config' => $this->input->post('search_config'),
 										'user_date' 	=> $this->input->post('user_date'),
 										'phone' 		=> $this->input->post('phone'),
+										'order_nr' 		=> $this->input->post('order_nr'),
 									), $this->user->id);
 
 		redirect('vet/profile', 'refresh');

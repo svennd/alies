@@ -240,29 +240,29 @@ class Pets extends Vet_Controller
 	{
 		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->with_pets_weight()->get($pet_id);
 
-		$pet_history = $this->
-									events->
-									with_products('fields:events_products.volume, unit_sell, name')->
-									with_procedures('fields:events_procedures.volume, name')->
-									with_vet('fields:first_name')->
-									with_uploads('fields:*count*')->
-									with_vet_1_sup('fields:first_name')->
-									with_vet_2_sup('fields:first_name')->
-									with_location('fields:name')->
-									where(
-										array(
-												"pet" 			=> $pet_id,
-												"no_history" 	=> 0
-												))->
-									order_by('created_at', 'DESC')->
-									get_all();
+		// $pet_history = $this->
+		// 							events->
+		// 							with_products('fields:events_products.volume, unit_sell, name')->
+		// 							with_procedures('fields:events_procedures.volume, name')->
+		// 							with_vet('fields:first_name')->
+		// 							with_uploads('fields:*count*')->
+		// 							with_vet_1_sup('fields:first_name')->
+		// 							with_vet_2_sup('fields:first_name')->
+		// 							with_location('fields:name')->
+		// 							where(
+		// 								array(
+		// 										"pet" 			=> $pet_id,
+		// 										"no_history" 	=> 0
+		// 										))->
+		// 							order_by('created_at', 'DESC')->
+		// 							get_all();
 
 		$other_pets = $this->pets->other_pets($pet_info['owner'], $pet_id);
 
 		$data = array(
 			"pet"				=> $pet_info,
 			"owner" 			=> $this->owners->get($pet_info['owner']),
-			"pet_history"		=> $pet_history,
+			"pet_history"		=> $this->events->get_pet_history($pet_id),
 			"vaccines" 			=> $this->vacs_pet->view($pet_id),
 			"other_pets"		=> $other_pets,
 		);
@@ -395,4 +395,32 @@ class Pets extends Vet_Controller
 		}
 		echo json_encode(array("results" => $pets));
 	}
+
+    /*
+    * function: check_chip
+    * check if a chip is already in the system, but ignore current_pet
+    */
+    public function check_chip(string $current_pet, string $chip_code)
+    {
+        $pet = $this->pets
+                    ->fields('id, name, chip')
+                    ->with_owners('fields:id, last_name')
+                    ->where(array('chip' => $chip_code))
+                    ->where('id !=', $current_pet)
+                    ->get();
+
+        $response = array('status' => '404');
+        if ($pet) {
+            $response = array(
+                'status'    => '200',
+                'pet_id'    => $pet['id'],
+                'pet_name'  => $pet['name'],
+                'owner_id'  => $pet['owners']['id'],
+                'owner_name'=> $pet['owners']['last_name']
+            );
+        }
+        
+        echo json_encode($response);
+    }
+
 }

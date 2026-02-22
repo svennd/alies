@@ -8,7 +8,9 @@
 		<div class="card mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div>
-					<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> / <a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?></a> / <?php echo $this->lang->line('overview'); ?>
+					<a href="<?php echo base_url('/'); ?>"><?php echo $this->lang->line('client'); ?></a> / 
+                    <a href="<?php echo base_url('owners/detail/' . $owner['id']); ?>" <?php if($owner['disabled']): ?>class="text-danger"<?php endif; ?>><?php echo $owner['last_name'] ?></a> / 
+                    <?php echo $this->lang->line('overview'); ?>
 					<small>(#<?php echo $owner['id']; ?>)</small>
 				</div>
 				<!-- hide on small screens -->
@@ -17,8 +19,23 @@
 					<a href="<?php echo base_url('owners/invoices/' . $owner['id']); ?>" class="btn btn-outline-success btn-sm mr-3"><i class="fas fa-history fa-fw"></i><?php echo $this->lang->line('invoices'); ?></a>
 					<a href="<?php echo base_url('owners/edit/' . $owner['id']); ?>" class="btn btn-outline-info btn-sm"><i class="fas fa-user fa-fw"></i><?php echo $this->lang->line('edit_client'); ?></a>
 				</div>
+                <!-- secret: <?php echo($owner['vet']['first_name']) ?> -->
 			</div>
 			<div class="card-body">
+            <?php if($owner['disabled']): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <strong><?php echo $this->lang->line('this_client_is_disabled'); ?></strong><br/>
+                        <?php
+                            // searching for reason
+                            if (preg_match('/merge_id_disable:(\d+):([\d\- :]+)$/', $owner['msg'], $m)) :
+                                $id   = $m[1];
+                                $date = $m[2];
+                        ?>
+                        <?php echo $this->lang->line('disabled_due_to_merge_with_client'); ?> <a href="<?php echo base_url('owners/detail/' . $id); ?>"><?php echo $id; ?></a> <?php echo $this->lang->line('on_date'); ?>: <?php echo $date; ?>
+                        <?php endif; ?>
+                    </div>
+            <?php endif; ?>
+
 			<?php if (isset($update) && $update) : ?>
 					<div class="alert alert-success alert-dismissible fade show" role="alert">
 						<?php echo $this->lang->line('updated_owner'); ?>
@@ -173,14 +190,14 @@
 		<?php include "application/views/blocks/block_full_client.php"; ?>
 
 		<?php if($open_bill): ?>
-		<div class="alert alert-danger" role="alert">
-		<?php echo $this->lang->line('open_invoices'); ?> :
-			<ul>
-		<?php foreach($open_bill as $bill): ?>
-			<li><a href="<?php echo base_url(); ?>invoice/get_bill/<?php echo $bill['id']; ?>"><?php echo $bill['total_brut']; ?> &euro;</a></li>
-		<?php endforeach; ?>
-			</ul>
-		</div>
+            <div class="alert alert-danger" role="alert">
+            <?php echo $this->lang->line('open_invoices'); ?> :
+                <ul>
+            <?php foreach($open_bill as $bill): ?>
+                <li><a href="<?php echo base_url('invoice/get_bill/'. $bill['id']); ?>"><?php echo $bill['total_brut']; ?> &euro;</a></li>
+            <?php endforeach; ?>
+                </ul>
+            </div>
 		<?php endif; ?>
 	</div>
 
@@ -192,4 +209,4 @@ const LANG_WEIGHT		= '<?php echo $this->lang->line('weight'); ?>';
 const LANG_ADD_WEIGHT	= '<?php echo $this->lang->line('add_weight'); ?>';
 </script>
 
-<!-- <script src="<?php echo base_url('assets/js/owner_detail.js'); ?>"></script> -->
+<script src="<?php echo base_url('assets/js/owner_detail.js'); ?>"></script>

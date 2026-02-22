@@ -54,6 +54,43 @@ class Events_products_model extends MY_Model
 		parent::__construct();
 	}
 
+    public function get_event_products(int $event_id)
+    {
+        return $this->db
+            ->select('
+                ep.*,
+				ep.id as event_line,
+                
+                p.id AS product_id,
+                p.name AS product_name,
+                p.unit_sell AS product_unit_sell,
+                p.btw_sell AS product_btw_sell,
+                p.vaccin AS product_vaccin,
+                p.vaccin_freq AS product_vaccin_freq,
+                p.is_antibiotic AS is_antibiotic,
+                p.default_indication AS default_indication,
+                
+                s.id AS stock_id,
+                s.eol AS stock_eol,
+                s.lotnr AS stock_lotnr,
+                
+                v.id AS vaccine_id,
+                v.redo AS vaccine_redo,
+                v.no_rappel AS vaccine_no_rappel,
+
+				out.id AS vamreg_out_id,
+				out.indication AS vamreg_indication
+            ')
+            ->from('events_products ep')
+            ->join('products p', 'p.id = ep.product_id', 'left')
+            ->join('stock s', 's.id = ep.stock_id', 'left')
+            ->join('vaccine_pet v', 'v.event_line = ep.id', 'left')
+            ->join('vamreg_out_buffer out', 'out.event_line = ep.id', 'left')
+            ->where('ep.event_id', $event_id)
+            ->get()
+            ->result_array();
+    }
+
 	public function get_monthly_earning(datetime $date)
 	{
 		$sql = "
