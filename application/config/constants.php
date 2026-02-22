@@ -200,3 +200,7 @@ define('EVENTS_LINK_INTERNAL_LAB', 0);
 define('EVENTS_LINK_EXTERNAL_LAB', 1);
 define('EVENTS_LINK_RX', 2);
 define('EVENTS_LINK_UPLOAD', 3);
+
+# client types
+define('CLIENT_ALL', 0);
+define('CLIENT_COMPANY', 1);
