@@ -12,7 +12,7 @@
         "chillerlan/php-qrcode": "^5.0",
         "robinherbots/jquery.inputmask": "^5.0",
         "clegginabox/pdf-merger": "dev-master",
-        "phpoffice/phpspreadsheet": "^3.7",
+        "phpoffice/phpspreadsheet": "^5.4",
         "guzzlehttp/guzzle": "^7.9"
     }
 }
