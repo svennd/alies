@@ -72,9 +72,7 @@
 				</tbody>
 				</table>
         <?php endif;?>
-        <a href="<?php echo base_url('vamreg/reset'); ?>" class="btn btn-danger btn-sm"> Reset</a>
-        <a href="<?php echo base_url('vamreg/post_all/'. $year . '/' . $quarter); ?>" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane" style="color: #14bce6;"></i> Post All</a>
-    </div>
+       </div>
 </div>
 
 <script type="text/javascript">

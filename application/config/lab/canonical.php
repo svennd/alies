@@ -37,9 +37,9 @@ $config['canonical'] = [
 
     'RBC' => 'RBC',
 
-    'HCT' => 'HTC',
-    'Hct' => 'HTC',
-    'Hematocriet' => 'HTC',
+    'HCT' => 'HCT',
+    'Hct' => 'HCT',
+    'Hematocriet' => 'HCT',
 
     'MCV' => 'MCV',
     'MCH' => 'MCH',

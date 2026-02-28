@@ -12,11 +12,19 @@ class Lab extends Vet_Controller
 
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Owners_model', 'owners');
-		$this->load->model('Lab_model', 'lab');
-		$this->load->model('Lab_detail_model', 'lab_line');
+		// $this->load->model('Lab_model', 'lab');
+		// $this->load->model('Lab_detail_model', 'lab_line');
+
+        // new API models
+        $this->load->model('LabReport_model', 'reports');
+        $this->load->model('LabResult_model', 'lab_results');
+        $this->load->model('LabPlots_model', 'lab_plots');
 
 		// library
 		$this->load->library('pdf'); 
+
+		// helper
+		$this->load->helper('lab');
 	}
 
 	public function index()
@@ -27,49 +35,64 @@ class Lab extends Vet_Controller
 		$search_from = (!is_null($this->input->post('search_from'))) ? $this->input->post('search_from') : $dt->format('Y-m-d');
 
     	$this->_render_page('lab/index', array(
-			"data" => $this->lab->get_labs($search_from, $search_to),
+			"data" => $this->reports->get_labs($search_from, $search_to),
 			"search_from"	=> (isset($search_from)) ? $search_from : '',
 			"search_to"		=> (isset($search_to)) ? $search_to : '',
 		));
 	}
 
-    public function detail(int $lab_id)
-    {
-		# update comment
-		$comment_update = false;
-		if ($this->input->post('submit')) {
-			$this->lab->
-				update(
-					array( "pet" => (int) $this->input->post('pet_id'), "comment" => $this->input->post('message')),
-					$lab_id
-				);
-			$comment_update = true;
-			$this->logs->logger(INFO, "lab_modify", " lab_id : " . $lab_id . " data:" . var_export($this->input->post(), true));
+	public function detail(int $lab_id)
+	{
+		$lab_info    = $this->reports->with_pet('fields: name, id')->get($lab_id);
+		$pet_info    = isset($lab_info['pet']) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
+		$lab_details = $this->lab_results->where(['report_id' => $lab_id])->get_all();
+		$owner       = $pet_info ? $this->owners->where(['id' => $pet_info['owner']])->get() : false;
+		$plots_raw 	 = $this->lab_plots->where(['report_id' => $lab_id])->get_all();
+
+		$plots = [];
+		foreach ($plots_raw as $p) {
+			$plots[$p['type']] = json_decode($p['data'], true);
 		}
 
-		# check if we need to add event
-		if ($this->input->post('pet_id') && !$this->input->post('no_event'))
-		{
-			$this->add_lab_event($lab_id, (int) $this->input->post('pet_id'));
+		foreach ($lab_details as &$d) {
+
+			$d['is_text'] = ($d['value_num'] === null);
+
+			$d['value'] = (
+				!$d['is_text'] && strlen((string)$d['value_text']) <= 1
+			) ? $d['value_num'] : $d['value_text'];
+
+			$d['draw_plot'] = (
+				!$d['is_text'] &&
+				$d['ref_min'] !== null &&
+				$d['ref_max'] !== null &&
+				!($d['ref_min'] == 0 && $d['ref_max'] == 0)
+			);
+
+			if ($d['draw_plot']) {
+				$d['is_low']  = $d['value_num'] < $d['ref_min'];
+				$d['is_high'] = $d['value_num'] > $d['ref_max'];
+				$d['is_out']  = $d['is_low'] || $d['is_high'];
+				$d['limit']   = $d['ref_min'] . ' - ' . $d['ref_max'];
+				$d['pct']     = calc_pct($d['value_num'], $d['ref_min'], $d['ref_max']) * 100;
+			} else {
+				$d['is_out'] = false;
+				$d['limit']  = '';
+				$d['pct']    = null;
+			}
 		}
+		unset($d);
 
+		$data = [
+			"lab_info"    => $lab_info,
+			"pet_info"    => $pet_info,
+			"lab_details" => $lab_details,
+			"owner"       => $owner,
+			"plots"		 => $plots
+		];
 
-		$lab_info = $this->lab->with_pet('fields: name, id')->get($lab_id);
-		$pet_info = (isset($lab_info['pet'])) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
-		$lab_details = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
-
-		$owner = ($pet_info) ? $this->owners->where(array('id' => $pet_info['owner']))->get() : false;
-
-		$data = array(
-			"lab_info" 			=> $lab_info,
-			"pet_info" 			=> $pet_info,
-			"lab_details" 		=> $lab_details,
-			"owner" 			=> $owner,
-            "comment_update" 	=> $comment_update
-		);
-		
 		$this->_render_page('lab/detail', $data);
-    }
+	}
 	
 	/*
 	* function: print
@@ -77,27 +100,58 @@ class Lab extends Vet_Controller
 	*/
 	public function print(int $lab_id)
     {
-		$lab_info = $this->lab->get($lab_id);
-		$pet_info = (isset($lab_info['pet'])) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
-		$lab_details = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
+		$lab_info    = $this->reports->with_pet('fields: name, id')->get($lab_id);
+		$pet_info    = isset($lab_info['pet']) ? $this->pets->with_breeds()->get($lab_info['pet']) : false;
+		$lab_details = $this->lab_results->where(['report_id' => $lab_id])->get_all();
+		$owner       = $pet_info ? $this->owners->where(['id' => $pet_info['owner']])->get() : false;
+		$plots_raw 	 = $this->lab_plots->where(['report_id' => $lab_id])->get_all();
 
-		$owner = ($pet_info) ? $this->owners->where(array('id' => $pet_info['owner']))->get() : false;
-
-		$data = array(
-			"lab_info" 			=> $lab_info,
-			"pet_info" 			=> $pet_info,
-			"lab_details" 		=> $lab_details,
-			"owner" 			=> $owner
-		);
-
-		if ($lab_info['source'] == "mslink - HEMATO")
-		{
-			list($wbc_plot, $rbc_plot, $thr_plot) = $this->get_static_plots($lab_details);
-			$data["wbc_plot"] = $wbc_plot;
-			$data["rbc_plot"] = $rbc_plot;
-			$data["thr_plot"] = $thr_plot;
+		$plots = [];
+		$plots_base64 = [];
+		foreach ($plots_raw as $p) {
+			$plots[$p['type']] = json_decode($p['data'], true);
+			$plots_base64[$p['type']] = $this->generateBase64Chart($plots[$p['type']], $p['type']);
 		}
-		
+
+		foreach ($lab_details as &$d) {
+
+			$d['is_text'] = ($d['value_num'] === null);
+
+			$d['value'] = (
+				!$d['is_text'] && strlen((string)$d['value_text']) <= 1
+			) ? $d['value_num'] : $d['value_text'];
+
+			$d['draw_plot'] = (
+				!$d['is_text'] &&
+				$d['ref_min'] !== null &&
+				$d['ref_max'] !== null &&
+				!($d['ref_min'] == 0 && $d['ref_max'] == 0)
+			);
+
+			if ($d['draw_plot']) {
+				$d['is_low']  = $d['value_num'] < $d['ref_min'];
+				$d['is_high'] = $d['value_num'] > $d['ref_max'];
+				$d['is_out']  = $d['is_low'] || $d['is_high'];
+				$d['limit']   = $d['ref_min'] . ' - ' . $d['ref_max'];
+				$d['pct']     = calc_pct($d['value_num'], $d['ref_min'], $d['ref_max']) * 100;
+			} else {
+				$d['is_out'] = false;
+				$d['limit']  = '';
+				$d['pct']    = null;
+			}
+		}
+		unset($d);
+
+		$data = [
+			"lab_info"    => $lab_info,
+			"pet_info"    => $pet_info,
+			"lab_details" => $lab_details,
+			"owner"       => $owner,
+			"plots"		 => $plots,
+			"plots_base64" => $plots_base64
+		];
+
+		// $this->_render_page('lab/detail', $data);
 		// test code
 		// $this->load->view('lab/print', $data);
 
@@ -119,75 +173,9 @@ class Lab extends Vet_Controller
 		));
 	}
 
-	# reset the lab link
-	# in case vet made a booboo
-	public function reset_lab_link(int $lab_id)
-	{
-		$lab_info = $this->lab->get($lab_id);
-
-		# check if we have a pet
-		if (isset($lab_info['pet']))
-		{
-			$this->lab->update(array("pet" => null), $lab_id);
-			$this->events->where(array(
-						"title" => "lab:" . $lab_id,
-						"pet" 	=> $lab_info['pet']
-						))
-						->limit(1) // just to be sure
-						->delete(); 
-
-			$this->logs->logger(INFO, "lab_reset", " lab_id : " . $lab_id);
-		}
-		redirect('lab/detail/' . $lab_id);
-	}
-
-	# set the internal pet id
-	private function add_lab_event(int $lab_id, int $pet_id)
-	{
-		# generate a report for the events
-		$lines = $this->lab_line->where(array('lab_id' => $lab_id))->get_all();
-		$anamnese = "Lab results\n\n";
-		foreach ($lines as $line)
-		{
-			$anamnese .= $line['lab_code_text'] . " : " . (($line["value"] != 0 && strlen($line["string_value"]) <= 1) ? $line["string_value"] . $line["value"] : $line["string_value"]) . $line["unit"] . "\n";
-		}
-		$anamnese .= "\n";
-
-		$this->lab->add_event($lab_id, $pet_id, $anamnese);
-	}
-	
-	/*
-	* function: get_static_plots
-	* a bit of boiler plate code to generate the static plots
-	*/
-	private function get_static_plots(array $lab_details)
-	{
-
-		foreach($lab_details as $d):
-			if ($d["lab_code"] == "1")
-			{
-				$WBC = substr($d["comment"], 4);
-			}
-			if ($d["lab_code"] == "2")
-			{
-				$RBC = substr($d["comment"], 4);
-			}
-			if ($d["lab_code"] == "3")
-			{
-				$THR = substr($d["comment"], 4);
-			}
-		endforeach;
-
-		$wbc_plot = $this->generateBase64Chart($WBC, "WBC");
-		$rbc_plot = $this->generateBase64Chart($RBC, "RBC");
-		$thr_plot = $this->generateBase64Chart($THR, "THR");
-
-		return array($wbc_plot, $rbc_plot, $thr_plot);
-	}
-
-	private function generateBase64Chart($dataString, $title = "") {
+	private function generateBase64Chart($data, $title = "") {
 		// Convert the comma-separated string to an array of data points
-		$data = array_map('intval', explode(',', $dataString));
+		// $data = array_map('intval', explode(',', $dataString));
 	
 		// Create a blank image
 		$width = 150;
@@ -254,7 +242,7 @@ class Lab extends Vet_Controller
 		{
 			redirect('lab');
 		}
-		$this->lab->delete($lab_id);
+		$this->reports->delete($lab_id);
 		redirect('lab');
 	}
 }

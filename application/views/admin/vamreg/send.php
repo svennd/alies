@@ -1,7 +1,7 @@
 <?php include 'blocks/menu.php'; ?>
 <div class="card shadow mb-4">
     <div class="card-header d-flex flex-row align-items-center justify-content-between">
-        <div>Vamreg / out</div>
+        <div>Vamreg / send</div>
         <div>
             <a href="<?= base_url("vamreg/out/$prevY/$prevQ") ?>"
             class="btn btn-outline-success btn-sm">
@@ -23,39 +23,7 @@
         </div>
     </div>
 	<div class="card-body">
-		<!-- alert on post -->
-		<?php include 'blocks/vamreg_status.php'; ?>
 
-        <?php if($out_buffer): ?>
-            <table class="table table-sm" id="dataTable">
-				<thead>
-				<tr>
-					<th>Status</th>
-					<th>Volume</th>
-					<th>Product</th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php foreach ($out_buffer as $buff): ?>
-				<tr>
-					<td><?php include 'blocks/status.php'; ?></td>
-                    <td>
-						<a href="<?php echo base_url('vamreg/out_detail/' . $buff['cnk']) . '/'. $year . '/' . $quarter; ?>">
-							<?php echo $buff['total_quantity']; ?>
-							<?php echo ($buff['out_quantity_type'] == "PACKS") ? " PACKS" : " " . $buff['out_quantity_unit']; ?>
-						</a>
-						</td>
-					<td>
-						<?php if ($buff['has_negative']): ?>
-							<i class="fa-solid fa-triangle-exclamation" title="Negative quantity detected" style="color: red;"></i>
-						<?php endif; ?>
-						<?php echo $buff['wholesale_description']; ?>
-					</td>
-				</tr>
-				<?php endforeach; ?>
-				</tbody>
-				</table>
-        <?php endif;?>
  	</div>
 </div>
 
@@ -63,6 +31,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#admin").addClass('active');
 	$("#dataTable").DataTable();
-	$("#vamreg-out").addClass('active');
+	$("#vamreg-send").addClass('active');
 });
 </script>

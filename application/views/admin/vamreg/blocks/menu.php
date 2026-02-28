@@ -7,8 +7,21 @@
   position: relative;
   color: #6c757d;
   padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-tabs .nav-link i {
   transition: color 0.3s ease;
 }
+
+/* Soft icon colors */
+#vamreg-in i { color: #6fbf73; }          /* soft green */
+#vamreg-out i { color: #f08a8a; }         /* soft red */
+#vamreg-product-list i { color: #7da9f7; }/* soft blue */
+#vamreg-send i { color: #9c88ff; }        /* soft purple */
 
 .profile-tabs .nav-link::after {
   content: '';
@@ -41,12 +54,15 @@
 
 <ul class="nav mb-4 profile-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="<?php echo base_url('vamreg/index'); ?>" id="vamreg-in">Vamreg IN</a>
+    <a class="nav-link" href="<?php echo base_url('vamreg/index'); ?>" id="vamreg-in"><i class="fa-solid fa-right-to-bracket"></i> Vamreg IN</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="<?php echo base_url('vamreg/out'); ?>" id="vamreg-out">Vamreg OUT</a>
+    <a class="nav-link" href="<?php echo base_url('vamreg/out'); ?>" id="vamreg-out"><i class="fa-solid fa-right-from-bracket"></i> Vamreg OUT</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="<?php echo base_url('vamreg/product_list'); ?>" id="vamreg-product-list">Product list</a>
+    <a class="nav-link" href="<?php echo base_url('vamreg/product_list'); ?>" id="vamreg-product-list"><i class="fa-solid fa-book-atlas"></i> Product list</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="<?php echo base_url('vamreg/send'); ?>" id="vamreg-send"><i class="fa-solid fa-cloud-arrow-up"></i> Send</a>
   </li>
 </ul>

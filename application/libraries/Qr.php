@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__) . '/../../vendor/autoload.php');
 
-use SepaQr\Data;
+use SepaQr\SepaQrData;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use chillerlan\QRCode\Common\EccLevel;
@@ -17,7 +17,7 @@ class Qr extends CI_Model
     public function __construct()
 	{
 		// sepa text
-	    $this->SepaQr = new data();
+	    $this->SepaQr = new SepaQrData();
 
 		$qrOptions = new QROptions([
 			'addQuietzone' 	=> true,
@@ -40,7 +40,7 @@ class Qr extends CI_Model
 
 	public function create(float $amount, string $message)
 	{
-		$paymentData = $this->SepaQr->create()
+		$paymentData = (new SepaQrData())
 			->setName($this->sepa_name)
 			->setIban($this->sepa_iban)
 			->setRemittanceText($message)

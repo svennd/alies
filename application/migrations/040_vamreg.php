@@ -16,6 +16,7 @@ class Migration_vamreg extends CI_Migration {
 		$sql[] = "ALTER TABLE `users` ADD `order_nr` VARCHAR(6) NOT NULL AFTER `vsens`;";
 		$sql[] = "ALTER TABLE `products` ADD `ab_unit_volume` DECIMAL(10,2) NOT NULL AFTER `ab_unit`;";
 		$sql[] = "ALTER TABLE `products` CHANGE `ab_unit_volume` `ab_unit_volume` DECIMAL(10,2) NULL;";
+		$sql[] = "ALTER TABLE `lab_report` ADD `deleted_at` DATETIME NULL AFTER `updated_at`;";
 		
         # index
         $sql[] = "ALTER TABLE vamreg_index ADD COLUMN cti varchar(50) NOT NULL AFTER id, ADD UNIQUE KEY uniq_cti (cti);";

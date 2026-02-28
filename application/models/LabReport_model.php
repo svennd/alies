@@ -6,7 +6,7 @@ class LabReport_model extends MY_Model {
 
     public $table = 'lab_report';
 	public $primary_key = 'id';
-
+	public $soft_delete = true;
 
 	public function __construct()
 	{

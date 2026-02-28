@@ -118,6 +118,28 @@ class Vamreg extends Admin_Controller
 		$this->_render_page('admin/vamreg/out', $data);
     }
 
+	# sending page
+	public function send($year = null, $quarter = null, $status = null)
+    {
+		// get quarter context
+		extract($this->quarterContext($year, $quarter));
+
+		$data = array(
+                        'year'       	=> $year,
+                        'quarter'    	=> $quarter,
+                        'prevY'      	=> $prevY,
+                        'prevQ'      	=> $prevQ,
+                        'nextY'      	=> $nextY,
+                        'nextQ'      	=> $nextQ,
+                        'isCurrentQuarter' => $isCurrentQuarter,
+                        'status'     	=> $status,
+						'send_out'		=> $this->vamreg_out->send_summary($startDate, $endDate),
+						'send_in'		=> $this->vamreg_in->send_summary($startDate, $endDate)
+					);
+					
+		$this->_render_page('admin/vamreg/send', $data);
+    }
+
 	# get the detailed list for a single cnk product
 	public function out_detail(string $cnk, $year = null, $quarter = null)
 	{

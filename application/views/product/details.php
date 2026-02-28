@@ -204,6 +204,7 @@
 					</div>
 				</div>
 			</div>
+			<p id="get_info">AJAX</a>
 		</div>
 
 		<strong><?php echo $this->lang->line('limit'); ?></strong>
@@ -616,6 +617,36 @@ document.addEventListener("DOMContentLoaded", function(){
 			$("#input_producer").val(e.params.args.data.distr).addClass('is-valid');
 		}
 	});
+
+	// ajax call to populate get_info
+	$.ajax({
+		url: '/fagg/api/fagg/by-cnk/<?php echo $product['cnk']; ?>',
+		type: 'GET',
+		headers: {
+			'X-API-Key': '2a0a05b5c83d3b15d537174eabe0be09ba6fb52097d41ed318663c78cff5ac98'
+		},
+		success: function(response) {
+		const item = response && response.data ? response.data : response; // supports both shapes
+
+		var infoHtml = '<strong>FAGG Info:</strong><br>';
+		infoHtml += 'Naam: ' + (item.benaming || '-') + '<br>';
+		infoHtml += 'Werkzaam bestanddeel: ' + (item.werkzaam_bestandeel || '-') + '<br>';
+		infoHtml += 'ATC: ' + (item.atc_code || '-') + '<br>';
+		infoHtml += 'Gebruik type: ' + (item.gebruik_type || '-') + '<br>';
+		infoHtml += 'CTI: ' + (item.cti_extended || '-') + '<br>';
+		infoHtml += 'Bijsluiter: ' + (item.url_bijsluiter_nl ? '<a target="_blank" href="' + item.url_bijsluiter_nl + '">open</a>' : '-') + '<br>';
+
+		$('#get_info').html(infoHtml);
+		},
+		error: function(xhr, status, error) {
+			$('#get_info').html(
+				'<strong>AJAX Error:</strong><pre style="white-space: pre-wrap; word-break: break-word; margin-top: 8px;">' +
+				JSON.stringify({ status: status, error: error, responseText: xhr.responseText }, null, 2) +
+				'</pre>'
+			);
+		}
+	});
+
 });
 </script>
   

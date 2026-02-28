@@ -55,7 +55,6 @@
 				</div>
 			</div>
 			<div class="card-body">
-				<form action="<?php echo base_url('lab/detail/' . $lab_info['id']); ?>" method="post" autocomplete="off">
 				<table class="table table-sm">
 					<tr>
 						<td><?php echo $this->lang->line('pet_info'); ?></td>
@@ -93,52 +92,84 @@
 						<td><?php echo $this->lang->line('source'); ?></td>
 						<td><?php echo $lab_info['source_id']; ?></td>
 					</tr>
-					<?php if(!empty($lab_info['lab_comment'])): ?>
-					<tr>
-						<td><?php echo $this->lang->line('lab_comment'); ?></td>
-						<td><?php echo $lab_info['lab_comment']; ?></td>
-					</tr>
-					<?php endif; ?>
 				</table>
-				</form>
 
 				<table class="table table-sm">
 					<thead>
 						<tr>
-							<th><?php echo $this->lang->line('lab_code'); ?></th>
+							<th><?= $this->lang->line('lab_code'); ?></th>
 							<th>chart</th>
-							<th><?php echo $this->lang->line('value'); ?></th>
-							<th><?php echo $this->lang->line('limit'); ?></th>
-							<th><?php echo $this->lang->line('unit'); ?></th>
+							<th><?= $this->lang->line('value'); ?></th>
+							<th class="text-center"><?= $this->lang->line('limit'); ?></th>
+							<th><?= $this->lang->line('unit'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach($lab_details as $d): ?>
-                            <?php 
-                                $draw_plot = ($d["value_num"] != null && $d["ref_min"] != null && $d["ref_max"] != null);
-                                $value = ($d["value_num"] != null && strlen($d["value_text"]) <= 1) ? $d["value_num"] : $d["value_text"];
-                                $is_text = ($d["value_num"] == null);
-                            ?>
+						<?php foreach ($lab_details as $d): ?>
 						<tr>
-							<td><?php echo $d["code"]; ?></td>
-							<?php if($d["value_text"] == null): ?>
+							<td><?= htmlspecialchars($d['code']); ?></td>
+
 							<td width="30%">
-                                <?php if($draw_plot): ?>
-                                <div class="bar"><div class="seg low"></div><div class="seg mid"></div><div class="seg high"></div><div class="pos" style="left: <?php echo ((0.5+(rand(-2, 2)/10)) * 100); ?>%;"></div></div></div>
-                                <?php endif; ?>
-                            </td>
-                            <?php endif; ?>
-                            <td <?php if($is_text): ?>colspan="4"<?php endif; ?>><?php echo $value; ?></td>
-                            
-                            <?php if(!$is_text): ?>
-                            <td><?php echo (strlen($d["value_text"]) <= 1  && $d['ref_max']) ? $d["ref_min"] . ' - ' . $d['ref_max'] : ''; ?></td>
-							<td><?php echo $d["unit"]; ?></td>
-                            <?php endif; ?>
+								<?php if ($d['draw_plot']): ?>
+									<div class="bar">
+										<div class="seg low"></div><div class="seg mid"></div><div class="seg high"></div>
+										<div class="pos" style="left: <?= $d['pct']; ?>%;"></div>
+									</div>
+								<?php endif; ?>
+							</td>
+
+							<?php if ($d['is_text']): ?>
+								<td colspan="3"><?= htmlspecialchars($d['value']); ?></td>
+							<?php else: ?>
+								<td class="<?= $d['is_out'] ? 'text-danger font-weight-bold' : ''; ?>">
+									<?= htmlspecialchars($d['value']); ?>
+								</td>
+								<td class="text-center"><?= htmlspecialchars($d['limit']); ?></td>
+								<td><?= htmlspecialchars($d['unit']); ?></td>
+							<?php endif; ?>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php if ($lab_info['device'] == "ms4s2"): ?>
+				<?php include "plots/ms4s2.php" ?>
+				<?php endif; ?>
+				<br/>
+				<a href="#" id="showMore" class="btn btn-sm btn-link p-0">Show details</a>
 
+				<div id="moreContent" class="d-none mt-2">
+					<table class="table table-sm">
+						<tr>
+							<td>software_version</td>
+							<td><?php echo $lab_info['software_version']; ?></td>
+						</tr>
+						<?php
+						$meta = json_decode($lab_info['metadata'], true);
+
+						if (is_array($meta)) {
+							foreach ($meta as $key => $value) {
+
+								echo '<tr>';
+								echo '<td>' . htmlspecialchars($key) . '</td>';
+								echo '<td>';
+
+								if (is_array($value)) {
+									echo htmlspecialchars(implode(', ', $value));
+								} else {
+									echo htmlspecialchars($value);
+								}
+
+								echo '</td>';
+								echo '</tr>';
+							}
+						}
+						?>
+						<tr>
+							<td>source_id</td>
+							<td><?php echo $lab_info['source_id']; ?></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -160,5 +191,12 @@ document.addEventListener("DOMContentLoaded", function(){
 		},
 	});
 
+	$('#showMore').on('click', function(e){
+		e.preventDefault();
+		$('#moreContent').toggleClass('d-none');
+		$(this).text(
+			$('#moreContent').hasClass('d-none') ? 'Show details' : 'Show less details'
+		);
+	});
 });
 </script>
