@@ -76,7 +76,8 @@ class Files extends Vet_Controller
 	*/
 	public function file_complete(int $id)
 	{
-		$file_name			= $this->input->post('file_name');
+		$file_name			= (string)$this->input->post('file_name');
+		$safe 				= preg_replace('/[^A-Za-z0-9._-]/', '_', basename($file_name)); # sanitize the file name to prevent directory traversal and other issues
 		$current_file 		= $this->upload_dir . "tmp_" . $id;
 		$mimetype			= $this->get_mime_type($current_file);
 
@@ -97,10 +98,10 @@ class Files extends Vet_Controller
 		// move it from staging to finished
 		rename(
 			$current_file,
-			$this->upload_dir . "stored/f" . $id . "_" . $file_name
+			$this->upload_dir . "stored/f" . $id . "_" . $safe
 		);
 
-		echo json_encode(array('success' => true, 'file' => "f" . $id . "_" . $file_name));
+		echo json_encode(array('success' => true, 'file' => "f" . $id . "_" . $safe));
 	}
 
 	/*
@@ -112,7 +113,9 @@ class Files extends Vet_Controller
 	public function new_file_event($event_id)
 	{
 		$content = file_get_contents($_FILES['data']['tmp_name']);
-		return file_put_contents($this->upload_dir_tmp . "e" . $event_id . "_" . $this->input->post('file_name'), $content, FILE_APPEND | LOCK_EX);
+		# sanitize
+		$safe = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($this->input->post('file_name')));
+		return file_put_contents($this->upload_dir_tmp . "e" . $event_id . "_" . $safe, $content, FILE_APPEND | LOCK_EX);
 	}
 
 
@@ -123,8 +126,9 @@ class Files extends Vet_Controller
 	*/
 	public function new_file_event_complete($event_id)
 	{
-		$file_name			= $this->input->post('file_name');
-		$current_file 		= $this->upload_dir_tmp . "/e" . $event_id . "_" . $file_name;
+		$file_name			= (string)$this->input->post('file_name');
+		$safe 				= preg_replace('/[^A-Za-z0-9._-]/', '_', basename($file_name));
+		$current_file 		= $this->upload_dir_tmp . "/e" . $event_id . "_" . $safe;
 		$mimetype			= $this->get_mime_type($current_file);
 
 		# sanity check
@@ -149,7 +153,7 @@ class Files extends Vet_Controller
 
 		$this->events_upload->insert(array(
 					"event" 			=> $event_id,
-					"filename" 			=> $this->input->post('file_name'),
+					"filename" 			=> $safe,
 					"size"	 			=> $this->input->post('file_size'),
 					"user"	 			=> $this->user->id,
 					"mime"	 			=> $mimetype,
