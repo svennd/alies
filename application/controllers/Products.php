@@ -179,13 +179,9 @@ class Products extends Vet_Controller
 		get all products of a certain type
 		- ajax for datatables
 	*/
-	public function get(int $id)
+	public function get(int $type_id)
 	{
-		$x = $this->products
-			->with_booking_code()
-			->where('type', $id)
-			->where('discontinued', 0)
-			->get_all();
+		$x = $this->products->get_products_by_type_with_stock($type_id, $this->_get_user_location());
 
 		if (!$x)
 		{
@@ -195,13 +191,17 @@ class Products extends Vet_Controller
 
 		foreach($x as $product)
 		{
-			$aaData[] = array(
-				"<a href='". base_url('products/profile/' . $product['id']) ."'>" . $product['name'] . "</a>",
-				"CNK:" . $product['cnk'] . "<br/>VHB: " . $product['vhbcode'],
-				($product['sellable']) ? "<i class='fa-solid fa-bag-shopping' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>",
-				"<small>" . ($product['wholesale_name']) ? $product['wholesale_name'] : "". "</small>",
-				"<a href='". base_url('products/product/' . $product['id']) ."' class='btn btn-sm btn-outline-primary'>edit</a>"
-			);
+			$global = $product['volume_count'] + 0;
+			$local  = $product['volume_location'] + 0;
+
+		$aaData[] = array(
+			"<a href='". base_url('products/profile/' . $product['product_id']) ."'>" . $product['name'] . "</a>",
+			($global > 0 && $local > 0) ? $local . " / " . $global . " " . $product['unit_sell'] : "",
+			($product['sellable']) ? "<i class='fa-solid fa-bag-shopping' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>",
+			"",
+			"<a href='". base_url('products/product/' . $product['product_id']) ."' class='btn btn-sm btn-outline-primary'>edit</a>"
+		);
+
 		}
 		echo json_encode(array("aaData" => $aaData));
 	}

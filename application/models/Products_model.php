@@ -287,4 +287,37 @@ class Products_model extends MY_Model
                         self::PRODUCT_SEARCH_LIMIT
                         ])->result_array();
 	}
+
+	/*
+	* get all stocks for a product
+	* note: used in products controller
+	*/
+	public function get_products_by_type_with_stock(int $type_id, int $location_id = null)
+	{
+		$sql = "
+				SELECT 
+					p.id AS product_id,
+					p.sellable,
+					p.unit_sell,
+					p.name,
+					COALESCE(SUM(s.volume), 0) AS volume_count,
+					COALESCE(SUM(CASE WHEN s.location = ? THEN s.volume ELSE 0 END), 0) AS volume_location
+				FROM products p
+				LEFT JOIN stock s
+					ON s.product_id = p.id
+					AND s.volume > 0
+					AND s.state = ?
+				LEFT JOIN wholesale w
+					ON w.id = p.wholesale
+				WHERE 
+					p.type = ?
+					AND p.deleted_at IS NULL
+				GROUP BY
+					p.id, p.sellable, p.unit_sell, p.name
+
+		";
+		
+		return $this->db->query($sql, [$location_id, STOCK_IN_USE, $type_id])->result_array();
+
+	}
 }

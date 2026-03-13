@@ -17,9 +17,9 @@
 		<thead>
 		<tr>
 			<th><?php echo $this->lang->line("name"); ?></th>
-			<th>cnk/vhb</th>
+			<th><?php echo $this->lang->line('local_stock'); ?> / <?php echo $this->lang->line('global_stock'); ?></th>
 			<th>verkoopbaar</th>
-			<th><?php echo $this->lang->line("alternative_name"); ?></th>
+			<th>labels</th>
 			<th><?php echo $this->lang->line("actions"); ?></th>
 		</tr>
 		</thead>
