@@ -42,6 +42,7 @@ $lang['no_data']            = 'not enough data!';
 $lang['events']             = 'Events';
 $lang['locations']          = 'Locations';
 $lang['product_types']      = 'Product types';
+$lang['product_labels']     = 'Product labels';
 $lang['revenue_source']     = 'Revenue Sources';
 $lang['admin_tools']        = 'Admin tools';
 $lang['admin']              = 'Admin';
@@ -68,6 +69,7 @@ $lang['add_location']        = 'Add location';
 
 # product types
 $lang['add_product_type']     = 'Add Product type';
+$lang['add_product_label']    = 'Add Product label';
 
 # backup
 $lang['backup']             = 'backup';

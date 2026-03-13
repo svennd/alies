@@ -234,6 +234,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 	toggleByCheckbox('#vaccin', '.no_vaccin_hide');
 	toggleByCheckbox('#is_antibiotic', '.no_antibiotic_hide');
+	$("#product_labels").select2({
+		theme: 'bootstrap4',
+		placeholder: 'Select labels'
+	});
 
 
 

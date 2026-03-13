@@ -46,6 +46,24 @@
 	<div class="list-group-item list-group-item-action">
 		<div class="row align-items-center">
 			<div class="col">
+				<strong class="mb-0"><?php echo $this->lang->line('product_labels'); ?></strong>
+			</div>
+			<div class="col">
+				<?php $selected_labels = array_column($product_labels, 'id'); ?>
+				<select name="labels[]" class="form-control" id="product_labels" multiple="multiple" style="width: 100%;">
+					<?php foreach($labels as $label): ?>
+						<option value="<?php echo $label['id']; ?>" <?php echo in_array($label['id'], $selected_labels) ? "selected='selected'" : ""; ?>>
+							<?php echo ucfirst($label['name']); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group-item list-group-item-action">
+		<div class="row align-items-center">
+			<div class="col">
 				<strong class="mb-0"><?php echo $this->lang->line('vhbcode'); ?></strong>
 			</div>
 			<div class="col-auto">

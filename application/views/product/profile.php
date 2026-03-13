@@ -47,7 +47,13 @@ foreach ($locations as $l)
 		<div class="row">
 			<div class="col-sm-8">
 				<h2><?php echo (isset($product['name'])) ? $product['name']: '' ?> 
-					<a href="<?php echo base_url('products/product_list/' . $product['type']['id']); ?>"><span class="badge badge-secondary"><?php echo (isset($product['type']['name'])) ? $product['type']['name']: '' ?></span></a></h2>
+					<a href="<?php echo base_url('products/product_list/' . $product['type']['id']); ?>"><span class="badge badge-secondary"><?php echo (isset($product['type']['name'])) ? $product['type']['name']: '' ?></span></a>
+					<?php if (!empty($product_labels)): ?>
+						<?php foreach ($product_labels as $label): ?>
+							<span class="badge badge-info"><?php echo ucfirst($label['name']); ?></span>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</h2>
 			</div>
 			<div class="col-sm-4">
 				<div class="row">

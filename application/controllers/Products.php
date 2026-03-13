@@ -14,6 +14,7 @@ class Products extends Vet_Controller
 		# models
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Product_type_model', 'prod_type');
+		$this->load->model('Product_label_model', 'prod_label');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Product_price_model', 'pprice');
 		$this->load->model('Procedures_model', 'procedures');
@@ -114,6 +115,7 @@ class Products extends Vet_Controller
 
 		$data = array(
 				'product' 		=> $product,
+				'product_labels'=> $this->prod_label->get_for_product($id),
 				'cat_price'		=> $cat_price,
 				'global_stock' 	=> $global_stock,
 				'local_stock' 	=> $local_stock,
@@ -245,6 +247,8 @@ class Products extends Vet_Controller
 							);
 
 			$update = $this->products->update($input, $id);
+
+			$this->prod_label->replace_product_labels($id, (array) $this->input->post('labels'));
 			
 			# add or update local limits
 			$this->set_local_limits($this->input->post('limit'), $id);
@@ -260,6 +264,8 @@ class Products extends Vet_Controller
 		$data = array(
 						'product' 			=> $this->products->get($id),
 						'type' 				=> $this->prod_type->get_all(),
+						'labels'			=> $this->prod_label->order_by('name', 'ASC')->get_all(),
+						'product_labels'	=> $this->prod_label->get_for_product($id),
 						'update'			=> $update,
 						'llimit'			=> $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all(),
 						'stock_locations'	=> $this->stock_location->get_all(),

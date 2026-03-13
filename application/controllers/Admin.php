@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Admin extends Admin_Controller
 {
 	// initialize
-	public $products, $users, $setting, $stock_location, $book, $prod_type;
+	public $products, $users, $setting, $stock_location, $book, $prod_type, $prod_label;
 	
 	// ci specific
 	public $input;
@@ -17,6 +17,7 @@ class Admin extends Admin_Controller
 		# models
 		$this->load->model('Products_model', 'products');
 		$this->load->model('Product_type_model', 'prod_type');
+		$this->load->model('Product_label_model', 'prod_label');
 		$this->load->model('Booking_code_model', 'book');
 		$this->load->model('Users_model', 'users');
 		$this->load->model('Config_model', 'setting');
@@ -204,5 +205,61 @@ class Admin extends Admin_Controller
 		$this->products->where(array('type' => $id))->update(array('type' => 0));
 		
 		redirect('admin/product_types', 'refresh');
+	}
+
+	// Group: product_labels
+	// _____________________________________
+
+	/*
+	* function: product_labels
+	* manage product labels
+	*/
+	public function product_labels()
+	{
+		if ($this->input->post('submit') == "add_product_label") {
+			$name = strtolower(trim($this->input->post('name')));
+			$exists = $this->db->where('name', $name)->get('products_label')->row_array();
+
+			if ($name !== '' && !$exists) {
+				$this->prod_label->insert(array("name" => $name));
+			}
+		}
+
+		if ($this->input->post('submit') == "update_product_label") {
+			$id = (int) $this->input->post('id');
+			$name = strtolower(trim($this->input->post('name')));
+			$exists = $this->db
+				->where('name', $name)
+				->where('id !=', $id)
+				->get('products_label')
+				->row_array();
+
+			if ($name !== '' && !$exists) {
+				$this->prod_label->update(
+					array(
+						"name" => $name
+					),
+					array(
+						"id" => $id
+					)
+				);
+			}
+		}
+
+		$data = array(
+			"prod_label" => $this->prod_label->order_by('name', 'ASC')->get_all(),
+		);
+
+		$this->_render_page('admin/product_labels', $data);
+	}
+
+	/*
+	* function: product_labels_rm
+	* delete product label and unlink products
+	*/
+	public function product_labels_rm(int $id)
+	{
+		$this->prod_label->delete_with_links($id);
+		redirect('admin/product_labels', 'refresh');
 	}
 }

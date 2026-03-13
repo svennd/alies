@@ -203,6 +203,12 @@
                     'text' => $this->lang->line('product_types'),
                 ),
                 array(
+                    'img' => 'product_search.png',
+                    'alt' => 'product_labels',
+                    'link' => 'admin/product_labels',
+                    'text' => $this->lang->line('product_labels'),
+                ),
+                array(
                     'img' => 'backup.png',
                     'alt' => 'backup',
                     'link' => 'backup',

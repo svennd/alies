@@ -42,6 +42,7 @@ $lang['no_data']            = 'niet voldoende gegevens!';
 $lang['events']             = 'Raadplegingen';
 $lang['locations']          = 'Locaties';
 $lang['product_types']      = 'Product types';
+$lang['product_labels']     = 'Product labels';
 $lang['revenue_source']     = 'Omzet bronnen';
 $lang['admin_tools']        = 'Beheer tools';
 $lang['admin']              = 'Beheer';
@@ -68,6 +69,7 @@ $lang['add_location']        = 'Locatie toevoegen';
 
 # product types
 $lang['add_product_type']     = 'Type toevoegen';
+$lang['add_product_label']    = 'Label toevoegen';
 
 # backup
 $lang['backup']             = 'Backup';
