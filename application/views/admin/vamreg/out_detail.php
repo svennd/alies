@@ -28,8 +28,11 @@
 					<td><?php echo $buff['total_quantity']; ?> <?php echo $buff['unit']; ?></td>
 					<td><?php echo $buff['vet_name']; ?></td>
 					<td>
+						<?php if($buff['status'] !== 'SENT'): ?>
 						<a href="<?php echo base_url("vamreg/edit_out/". $buff['id']); ?>" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square" style="color: #0d6efd;"></i> edit</a>
-						<?php if ($buff['status'] !== 'INVALID'): ?>
+						<?php endif; ?>
+
+						<?php if ($buff['status'] !== 'INVALID' && $buff['status'] !== 'SENT'): ?>
 							<a href="<?php echo base_url("vamreg/remove/". $buff['id'] . '/' . $buff['cnk'] . '/' . $year . '/' . $quarter); ?>" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></a>
 						<?php elseif ($buff['status'] === 'INVALID'): ?>
 							<a href="<?php echo base_url("vamreg/restore/". $buff['id'] . '/' . $buff['cnk'] . '/' . $year . '/' . $quarter); ?>" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-undo" style="color: #28a745;"></i></a>
@@ -40,8 +43,6 @@
 				</tbody>
 				</table>
         <?php endif;?>
-        <a href="<?php echo base_url('vamreg/reset'); ?>" class="btn btn-danger btn-sm"> Reset</a>
-        <a href="<?php echo base_url('vamreg/post_all/'. $year . '/' . $quarter); ?>" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane" style="color: #14bce6;"></i> Post All</a>
     </div>
 </div>
 

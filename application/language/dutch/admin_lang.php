@@ -61,6 +61,7 @@ $lang['delivery_log']       = "Leverings logboek";
 $lang['logbook']            = "Algemeen logboek";
 $lang['syslog']             = "Software versie";
 $lang['delivery']           = "Levering";
+$lang['vamreg']             = "Vamreg";
 
 # location
 $lang['add_location']        = 'Locatie toevoegen';

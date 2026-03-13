@@ -283,7 +283,7 @@ class Cli extends Frontend_Controller
             # it is in the list
             if ($hit)
             {
-                echo "FOUND A product for Vamreg CNK: " . $CNK_nummer . " id: " . $id . "\n";
+                // echo "FOUND A product for Vamreg CNK: " . $CNK_nummer . " id: " . $id . "\n";
                 
                 // add to buffer
                 $this->vamreg_in_buffer->insert(array(

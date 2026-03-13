@@ -3,7 +3,7 @@
     <div class="card-header d-flex flex-row align-items-center justify-content-between">
         <div>Vamreg / in</div>
         <div>
-            <a href="<?= base_url("vamreg/index/$prevY/$prevQ") ?>"
+            <a href="<?= base_url("vamreg/in/$prevY/$prevQ") ?>"
             class="btn btn-outline-success btn-sm">
                 <i class="fas fa-angle-double-left fa-fw"></i>
                 Q<?= $prevQ ?> <?= $prevY ?>
@@ -14,7 +14,7 @@
             </span>
 
             <?php if (!$isCurrentQuarter): ?>
-                <a href="<?= base_url("vamreg/index/$nextY/$nextQ") ?>"
+                <a href="<?= base_url("vamreg/in/$nextY/$nextQ") ?>"
                 class="btn btn-outline-success btn-sm">
                     Q<?= $nextQ ?> <?= $nextY ?>
                     <i class="fas fa-angle-double-right fa-fw"></i>
@@ -45,17 +45,17 @@
                     <td><?php echo $buff['in_quantity_pack_count']; ?></td>
                     <td>
                         <?php if (isset($buff['vamreg_index'])): ?>
-                            <!-- automation possible -->
                             <?php if ( count($buff['vamreg_index']) == 1): ?>
-                                <!-- <?php echo $buff['vamreg_index']['0']['ppnNL'] ?> -->
-                                 <?php echo $buff['wholesale']['description']; ?>
-                            <!-- selection required -->
+                                <?php echo (isset($buff['wholesale']['description'])) ? $buff['vamreg_index']['0']['ppnNL'] : $buff['vamreg_index']['0']['ppnNL']; ?>
                             <?php else: ?>
-                                GROOTHANDEL : <?php echo $buff['wholesale']['description']; ?><br/>
+                                <?php echo (isset($buff['wholesale']['description'])) ? $buff['vamreg_index']['0']['ppnNL'] : $buff['vamreg_index']['0']['ppnNL']; ?><br/>
+								<ul>
                                 <?php foreach ($buff['vamreg_index'] as $prod): ?>
-                                    VAMREG : <?php echo $prod['ppnNL'] ?> - <?php echo $prod['packSize'] ?><br/>
-                                    <?php echo $prod['maName'] ?> - <?php echo $prod['maNumber'] ?><br/>
+                                    <li>VAMREG : <?php echo $prod['ppnNL'] ?> - <?php echo $prod['packSize'] ?><br/>
+                                    <small><?php echo $prod['maName'] ?> - <?php echo $prod['maNumber'] ?></small>
+									</li>
                                 <?php endforeach; ?>
+								</ul>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>

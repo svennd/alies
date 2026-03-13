@@ -339,6 +339,7 @@ class Events extends Vet_Controller
 				"event_line"     => $event_line,
 				"out_date"       => date('H:i:s'),
 				"product_type"   => "BE",
+				"status"         => ($volume > 0) ? "DRAFT" : "INVALID",
 				"target_species" => get_vamreg_target_species($pet_info['type']),
 				"indication"     => $product_info['default_indication'],
 				"vet"            => $this->user->id,

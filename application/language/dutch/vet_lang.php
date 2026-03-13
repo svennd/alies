@@ -293,6 +293,7 @@ $lang['global_limit']           = 'Limiet (globaal)';
 $lang['global_limit_explain']  = 'Minimale hoeveelheid producten over alle stock locaties.'; 
 $lang['global_use']             = 'Globaal verbruik'; 
 $lang['explain_month']      = 'Lokaal en globaal verbruik gedurende de laatste 30 dagen';
+$lang['limit_explain']      = 'Hier kunnen globale en lokale limieten ingesteld worden. Producten onder deze limieten zullen verschijnen als tekorten.';
 
 
 # product_profile
@@ -344,7 +345,7 @@ $lang['from_location']          = 'Van';
 $lang['to_location']            = 'Naar'; 
 $lang['products_remove_stock']  = 'Producten verwijderd van de stock !'; 
 $lang['updated']                = 'Aangepast';
-$lang['vhbcode']                = 'Registratienummer';
+$lang['vhbcode']                = 'VHB code';
 $lang['alternative_name']       = 'Alternatieve naam';
 
 # bills

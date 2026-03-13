@@ -290,6 +290,7 @@ $lang['global_limit']             = 'Global Limit';
 $lang['global_limit_explain']  = 'Total available amount over all stock locations'; 
 $lang['global_use']             = 'Global use'; 
 $lang['explain_month']      = 'local & global use over the last 30 days.';
+$lang['limit_explain']      = 'Here you can set global and local limits. Products under these limits will appear as shortages.';
 
 # product_profile
 $lang['consumer_price']             = 'Consumer price'; 

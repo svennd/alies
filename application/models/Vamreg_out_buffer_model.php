@@ -13,12 +13,64 @@ class Vamreg_out_buffer_model extends MY_Model
 	    parent::__construct();
 	}
 
-	public function summary(string $startDate, string $endDate)
+	public function get_all_drafts_by_date(string $startDate, string $endDate)
+	{
+		return $this->db
+			->select('out.*, u.order_nr as ordernr')
+			->from($this->table . ' out')
+			->where('out.status', 'DRAFT')
+			->where('out.out_date >=', $startDate)
+			->where('out.out_date <=', $endDate)
+			->join('users u', 'u.id = out.vet', 'left')
+			->get()
+			->result_array();
+	}
+
+	public function send_draft_aggregate(string $startDate, string $endDate): array
+	{
+		$row = $this->db
+			->select("SUM(CASE WHEN status = 'DRAFT' THEN 1 ELSE 0 END) AS draft_rows", false)
+			->from($this->table)
+			->where('out_date >=', $startDate)
+			->where('out_date <=', $endDate)
+			->get()
+			->row_array();
+
+		return [
+			'draft_rows' => (int)($row['draft_rows'] ?? 0),
+		];
+	}
+
+	public function send_summary(string $startDate, string $endDate)
 	{
 		# COALESCE -> returns the first true value (for sum)
 		return $this->db
 			->select('
 				MIN(status) AS status,
+				vamreg_out_buffer.cnk,
+				SUM(COALESCE(out_quantity_pack_count, out_quantity_unit_count)) AS total_quantity,
+				wholesale.description AS wholesale_description,
+				out_quantity_type, out_quantity_unit
+			')
+			->from('vamreg_out_buffer')
+			->where('out_date >=', $startDate)
+			->where('out_date <=', $endDate)
+			->group_by('cnk')
+			->join('wholesale', 'wholesale.cnk = vamreg_out_buffer.cnk', 'left')
+			->get()
+			->result_array();
+	}
+
+	public function summary(string $startDate, string $endDate)
+	{
+		# COALESCE -> returns the first true value (for sum)
+		return $this->db
+			->select('
+				CASE
+					WHEN SUM(status = "ERROR") > 0 THEN "ERROR"
+					WHEN SUM(status = "DRAFT") > 0 THEN "DRAFT"
+					ELSE "SENT"
+				END AS status,
 				vamreg_out_buffer.cnk,
 				SUM(COALESCE(out_quantity_pack_count, out_quantity_unit_count)) AS total_quantity,
 				MAX(CASE 
@@ -41,7 +93,7 @@ class Vamreg_out_buffer_model extends MY_Model
 	{
 		return $this->db
 			->select('
-			out.id, out.status as status, out.cnk as cnk, out.event, out.out_date, out.target_species, out.indication,
+			out.id, out.status as status, out.api_error, out.cnk as cnk, out.event, out.out_date, out.target_species, out.indication,
 			COALESCE(out_quantity_pack_count, out_quantity_unit_count) AS total_quantity,
 			COALESCE(out_quantity_unit, out_quantity_type) AS unit,
 			v.first_name as vet_name,
@@ -104,29 +156,30 @@ SELECT
   ROW_NUMBER() OVER ()                                            AS id,
   ep.event_id                                                    AS event,
   ep.id                                                          AS event_line,
-  p.cnk                                                          AS cnk,
-  CASE
-    WHEN COALESCE(p.ab_unit,'ML') = 'PACKS' THEN 'PACKS'
-    ELSE 'UNITS'
-  END                                                            AS out_quantity_type,
-  CASE
-    WHEN COALESCE(p.ab_unit,'ML') = 'PACKS' THEN ep.volume
-    ELSE NULL
-  END                                                            AS out_quantity_pack_count,
-  CASE
-    WHEN COALESCE(p.ab_unit,'ML') <> 'PACKS' THEN ep.volume
-    ELSE NULL
-  END                                                            AS out_quantity_unit_count,
-  CASE
-    WHEN COALESCE(p.ab_unit,'ML') IN ('G','ML','PIECE','TUBE','PRESTATION')
-      THEN COALESCE(p.ab_unit,'ML')
-    ELSE 'ML'
-  END                                                            AS out_quantity_unit,
+  p.cnk                                                          AS cnk,CASE
+  WHEN p.ab_unit = 'PACKS' THEN 'PACKS'
+  ELSE 'UNITS'
+	END AS out_quantity_type,
+
+	CASE
+	WHEN p.ab_unit = 'PACKS' THEN ep.volume
+	ELSE NULL
+	END AS out_quantity_pack_count,
+
+	CASE
+	WHEN p.ab_unit <> 'PACKS' OR p.ab_unit IS NULL THEN ep.volume
+	ELSE NULL
+	END AS out_quantity_unit_count,
+
+	CASE
+	WHEN p.ab_unit = 'PACKS' THEN NULL
+	ELSE p.ab_unit
+	END AS out_quantity_unit,
   DATE(ep.created_at)                                            AS out_date,
   'BE'                                                           AS product_type,
   'DOG'                                                          AS target_species,
   NULLIF(p.default_indication,'NONE')                            AS indication,
-  4                                                             AS vet,
+  4                                                              AS vet,
   'DRAFT'                                                        AS status,
   NOW()                                                          AS created_at
 FROM events_products ep

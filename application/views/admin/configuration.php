@@ -98,7 +98,6 @@
         </div>
     </div> -->
     </div>
-</div>
 
 <strong>Transfers</strong>
 <p>These settings control the transfer settings.</p>

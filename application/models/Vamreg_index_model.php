@@ -66,4 +66,17 @@ class Vamreg_index_model extends MY_Model
 		$this->db->join('products p', 'p.cnk = v.cnk', 'left');
 		return $this->db->get()->result_array();
 	}
+
+	public function get_linked_stats()
+	{
+		$this->db->select('
+			COUNT(v.cnk) as total_products,
+			SUM(CASE WHEN p.id IS NOT NULL THEN 1 ELSE 0 END) as linked_products
+		', false);
+
+		$this->db->from($this->table . ' v');
+		$this->db->join('products p', 'p.cnk = v.cnk', 'left');
+
+		return $this->db->get()->row_array();
+	}
 }

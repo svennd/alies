@@ -12,6 +12,9 @@ class Vamreg extends Admin_Controller
     const VAMREG_ERR_AUTH   = 403; # authentication error
     const VAMREG_ERR_API    = 500; # generic server error
 
+	const VAMREG_IN 		= true;
+	const VAMREG_OUT 		= false;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -36,22 +39,23 @@ class Vamreg extends Admin_Controller
 	# debug
     public function reset()
     {
+		echo "IN: <br><br>";
         $this->load->library('Vamregclient', [
             'apiKey' => $this->key,
             'prod'   => $this->conf['vamreg_prod'] ?? false,
         ]);
         
         $declarations = $this->vamreg_in
-            ->where('status', ['DRAFT', 'SENT'])
+            ->where('status', ['DRAFT', 'SENT', 'ERROR'])
             ->get_all();
 
         foreach ($declarations as $decl) {
             if (!empty($decl['api_declaration_id'])) {
-                echo "Deleting declaration ID {$decl['api_declaration_id']} from VAMREG...\n";
+                echo "Deleting declaration ID {$decl['api_declaration_id']} from VAMREG...<br>\n";
 
                 $res = $this->vamregclient->delete($decl['api_declaration_id']);
 
-                if ($res['http_code'] !== 200) 
+                if ($res['http_code'] !== "200") 
                 {
                     $this->vamreg_in
                         ->where('id', $decl['id'])
@@ -63,14 +67,80 @@ class Vamreg extends Admin_Controller
                 }
                 else
                 {
-                    echo "Failed to delete declaration ID {$decl['api_declaration_id']} from VAMREG. HTTP code: {$res['http_code']}\n";
+                    echo "Failed to delete declaration ID {$decl['api_declaration_id']} from VAMREG. HTTP code: {$res['http_code']}<br>\n";
                 }
             }
         }
+
+		echo "OUT: <br><br>";
+        $declarations = $this->vamreg_out
+            ->where('status', ['DRAFT', 'SENT', 'ERROR'])
+            ->get_all();
+		
+		foreach ($declarations as $decl) {
+            if (!empty($decl['api_declaration_id'])) {
+                echo "Deleting declaration ID {$decl['api_declaration_id']} from VAMREG...<br>\n";
+
+                $res = $this->vamregclient->delete($decl['api_declaration_id']);
+
+                if ($res['http_code'] !== 200) 
+                {
+                    $this->vamreg_out
+                        ->where('id', $decl['id'])
+                        ->update([
+                            'status'                => 'DRAFT',
+                            'api_declaration_id'    => null,
+                            'sent_at'               => null
+                        ]);
+                }
+                else
+                {
+                    echo "Failed to delete declaration ID {$decl['api_declaration_id']} from VAMREG. HTTP code: {$res['http_code']}<br>\n";
+                }
+            }
+        }
+
+		# set error to draft for all remaining
+		$this->vamreg_in->where('status', 'ERROR')->update(['status' => 'DRAFT']);
+		$this->vamreg_out->where('status', 'ERROR')->update(['status' => 'DRAFT']);
     }
 
+	# sending page
+	public function index($year = null, $quarter = null, $status = null)
+    {
+		// get quarter context
+		extract($this->quarterContext($year, $quarter));
+
+		$inAgg = $this->vamreg_in->send_draft_aggregate($startDate, $endDate);
+		$outAgg = $this->vamreg_out->send_draft_aggregate($startDate, $endDate);
+		$products = $this->vamreg_index->get_linked_stats();
+		$deadline = $this->buildSendDeadlineData($endDate);
+
+		$inAgg = is_array($inAgg) ? $inAgg : ['draft_rows' => 0];
+		$outAgg = is_array($outAgg) ? $outAgg : ['draft_rows' => 0];
+
+		$data = array(
+                        'year'       	=> $year,
+                        'quarter'    	=> $quarter,
+                        'prevY'      	=> $prevY,
+                        'prevQ'      	=> $prevQ,
+                        'nextY'      	=> $nextY,
+                        'nextQ'      	=> $nextQ,
+                        'isCurrentQuarter' => $isCurrentQuarter,
+                        'status'     	=> $status,
+						'inAgg'         => $inAgg,
+						'outAgg'        => $outAgg,
+						'products'      => $products,
+						'deadline'      => $deadline,
+						'startDate'     => $startDate,
+						'endDate'       => $endDate
+					);
+					
+		$this->_render_page('admin/vamreg/send', $data);
+    }
+	
 	# in by default
-    public function index($year = null, $quarter = null, $status = null)
+    public function in($year = null, $quarter = null, $status = null)
     {
 		// get quarter context
 		extract($this->quarterContext($year, $quarter));
@@ -78,7 +148,7 @@ class Vamreg extends Admin_Controller
 		$data = array(
 						'in_buffer' => 
                         $this->vamreg_in
-                            ->fields('id, cnk, in_quantity_pack_count, delivery, status')
+                            ->fields('id, cnk, in_quantity_pack_count, delivery, status, api_error')
                             ->with_vamreg_index('fields: ppnNL, packSize, maName, maNumber')
                             ->with_wholesale('fields: description')
                             ->where('delivery >=', $startDate)
@@ -118,27 +188,59 @@ class Vamreg extends Admin_Controller
 		$this->_render_page('admin/vamreg/out', $data);
     }
 
-	# sending page
-	public function send($year = null, $quarter = null, $status = null)
-    {
-		// get quarter context
-		extract($this->quarterContext($year, $quarter));
+	private function buildSendDeadlineData(string $quarterEndDate): array
+	{
+		$quarterEnd = (new DateTimeImmutable($quarterEndDate))->setTime(23, 59, 59);
+		$autoSendMonths = $this->resolveAutoSendMonths();
+		$autoSendDate = $quarterEnd->modify('+' . $autoSendMonths . ' month')->setTime(2, 0, 0);
+		$editWindowClose = $quarterEnd->modify('+1 month +14 days')->setTime(23, 59, 59);
+		$now = new DateTimeImmutable('now');
 
-		$data = array(
-                        'year'       	=> $year,
-                        'quarter'    	=> $quarter,
-                        'prevY'      	=> $prevY,
-                        'prevQ'      	=> $prevQ,
-                        'nextY'      	=> $nextY,
-                        'nextQ'      	=> $nextQ,
-                        'isCurrentQuarter' => $isCurrentQuarter,
-                        'status'     	=> $status,
-						'send_out'		=> $this->vamreg_out->send_summary($startDate, $endDate),
-						'send_in'		=> $this->vamreg_in->send_summary($startDate, $endDate)
-					);
-					
-		$this->_render_page('admin/vamreg/send', $data);
-    }
+		$state = 'before_quarter_close';
+		$statusLabel = 'Quarter open';
+		if ($now > $quarterEnd && $now < $autoSendDate) {
+			$state = 'edit_window';
+			$statusLabel = 'Edit window';
+		} elseif ($now >= $autoSendDate && $now <= $editWindowClose) {
+			$state = 'autosend_due';
+			$statusLabel = 'Auto-send due';
+		} elseif ($now > $editWindowClose) {
+			$state = 'closed_window';
+			$statusLabel = 'Edit window closed';
+		}
+
+		$daysToAutoSend = (int)$now->diff($autoSendDate)->format('%r%a');
+		$daysToEditWindowClose = (int)$now->diff($editWindowClose)->format('%r%a');
+
+		return [
+			'quarter_end' => $quarterEnd->format('Y-m-d'),
+			'auto_send_at' => $autoSendDate->format('Y-m-d H:i'),
+			'edit_window_closes_at' => $editWindowClose->format('Y-m-d H:i'),
+			'auto_send_months' => $autoSendMonths,
+			'days_to_auto_send' => $daysToAutoSend,
+			'days_to_edit_window_close' => $daysToEditWindowClose,
+			'state' => $state,
+			'status_label' => $statusLabel,
+		];
+	}
+
+	private function resolveAutoSendMonths(): int
+	{
+		$fallback = 1;
+		$raw = null;
+
+		if (isset($this->conf['vamreg_auto_send_months'])) {
+			$raw = $this->conf['vamreg_auto_send_months'];
+		}
+
+		if (is_array($raw) && isset($raw['value'])) {
+			$decoded = base64_decode((string)$raw['value'], true);
+			$raw = ($decoded !== false) ? $decoded : $raw['value'];
+		}
+
+		$months = (int)$raw;
+		return ($months >= 1 && $months <= 6) ? $months : $fallback;
+	}
 
 	# get the detailed list for a single cnk product
 	public function out_detail(string $cnk, $year = null, $quarter = null)
@@ -169,49 +271,82 @@ class Vamreg extends Admin_Controller
 		$this->_render_page('admin/vamreg/product_list', $data);
 	}
 
-    public function post_all($year = null, $quarter = null)
+    public function post_all($year = null, $quarter = null, string $model = "IN")
     {
         $this->load->library('Vamregclient', [
             'apiKey' => $this->key,
             'prod'   => $this->conf['vamreg_prod'] ?? false,
         ]);
 
-        $year    = $year ?? date('Y');
-        $quarter = $quarter ?? quarter_from_date();
+        $year    	= $year ?? date('Y');
+        $quarter 	= $quarter ?? quarter_from_date();
+		$repo 		= ($model === "IN") ? $this->vamreg_in : $this->vamreg_out;
 
         [$startDate, $endDate] = quarter_start_end($year, $quarter);
 
-        $drafts = $this->vamreg_in
-            ->where(['status' => 'DRAFT'])
-            ->where('delivery >=', $startDate)
-            ->where('delivery <=', $endDate)
-            ->get_all();
+		$drafts = $repo->get_all_drafts_by_date($startDate, $endDate);
 
-        if (!$drafts) {
-            redirect("vamreg/index/$year/$quarter/". self::VAMREG_NOTHING);
-            return;
-        }
+		if (!$drafts) {
+			$this->respondWithStatus(self::VAMREG_NOTHING);
+			return;
+		}
 
-        $declarations = [];
-        foreach ($drafts as $row) {
-            $declarations[] = [
-                'internal_id'       => $row['id'],
-                'register'          => 'IN',
-                'dateTime'          => (new DateTime($row['delivery']))->format('Y-m-d\TH:i:s.000\Z'),// note 'c' does not work (also p fails)
-                'productType'       => $row['product_type'],
-                'providerType'      => $row['provider_type'],
-                'cnk'               => $row['cnk'],
-                'inQuantityPackCount' => (int)$row['in_quantity_pack_count']
-            ];
-        }
+		$declarations = array_map(
+			fn($row) => $model === "IN"
+				? $this->buildInDeclaration($row)
+				: $this->buildOutDeclaration($row),
+			$drafts
+		);
 
         # upload the results
         $result = $this->vamregclient->uploadBulk($declarations);
 
         # handle the result
         # this will redirect to index
-        $this->handleVamregResult($result, $drafts, $declarations, $year, $quarter);
+        $this->handleVamregResult(
+            $result,
+            $declarations,
+            (int)$year,
+            (int)$quarter,
+            $repo
+        );
     }
+
+	public function post_all_out($year = null, $quarter = null)
+	{
+		return $this->post_all($year, $quarter, "OUT");
+	}
+
+	private function buildInDeclaration(array $row): array
+	{
+		return [
+			'internal_id'        => $row['id'],
+			'register'           => 'IN',
+			'dateTime'           => (new DateTime($row['delivery']))->format('Y-m-d\TH:i:s.000\Z'),
+			'productType'        => $row['product_type'],
+			'providerType'       => $row['provider_type'],
+			'cnk'                => $row['cnk'],
+			'inQuantityPackCount'=> (int)$row['in_quantity_pack_count'],
+		];
+	}
+
+	private function buildOutDeclaration(array $row): array
+	{
+		return [
+			'internal_id'              => $row['id'],
+			'register'                 => 'OUT',
+			'dateTime'                 => (new DateTime($row['out_date']))->format('Y-m-d\TH:i:s.000\Z'),
+			'productType'              => $row['product_type'],
+			'targetSpecies'            => $row['target_species'],
+			'indication'               => $row['indication'] ?? null,
+			'cnk'                      => $row['cnk'],
+			'veterinarianOrderNumber'  => $row['ordernr'],
+			'outQuantityType'          => $row['out_quantity_type'],
+			'outQuantityPackCount'     => $row['out_quantity_pack_count'] !== null ? (float)$row['out_quantity_pack_count'] : null,
+			'outQuantityUnitCount'     => $row['out_quantity_unit_count'] !== null ? (float)$row['out_quantity_unit_count'] : null,
+			'outQuantityUnit'          => $row['out_quantity_unit'],
+		];
+	}
 
 	/*
 	* helper to get quarter context (start/end dates, prev/next quarter info)
@@ -238,22 +373,23 @@ class Vamreg extends Admin_Controller
 		];
 	}
 
-    /*
+	/*
     * handle Vamreg result
     */
-    protected function handleVamregResult(array $result, array $drafts, array $declarations, int $year, int $quarter)
+    protected function handleVamregResult(array $result, array $declarations, int $year, int $quarter, $model)
     {
         switch ($result['http_code']) {
 
             case 200:
-                foreach ($drafts as $i => $row) {
-                    $this->vamreg_in->update([
+                foreach ($declarations as $i => $row) {
+                    $model->update([
                         'status'             => 'SENT',
                         'api_declaration_id' => $result['response'][$i]['id'] ?? null,
                         'sent_at'            => date('Y-m-d H:i:s')
-                    ], $row['id']);
+                    ], $row['internal_id']);
                 }
-                redirect("vamreg/index/$year/$quarter/". self::VAMREG_OK);
+
+				$this->respondWithStatus(self::VAMREG_OK);
                 return;
 
             case 400:
@@ -266,26 +402,47 @@ class Vamreg extends Admin_Controller
 
                 foreach (array_keys($badIdx) as $idx) {
                     if (!isset($declarations[$idx])) continue;
-                    $this->vamreg_in->update([
-                        'status'  => 'ERROR',
-                        'sent_at' => date('Y-m-d H:i:s'),
+					
+                    $model->update([
+                        'status'  	=> 'ERROR',
+						'api_error' => $this->get_vamreg_error_message($result['response'][$idx]),
+                        'sent_at' 	=> date('Y-m-d H:i:s'),
                     ], $declarations[$idx]['internal_id']);
                 }
 
-                redirect("vamreg/index/$year/$quarter/". self::VAMREG_ERR_VALID);
+				$this->respondWithStatus(self::VAMREG_ERR_VALID);
                 return;
 
             case 403:
-                log_message('error', 'VAMREG auth failure');
-                redirect("vamreg/index/$year/$quarter/". self::VAMREG_ERR_AUTH);
+				$this->respondWithStatus(self::VAMREG_ERR_AUTH);
                 return;
 
             default:
-                log_message('error', 'VAMREG API error: ' . $result['http_code']);
-                redirect("vamreg/index/$year/$quarter/". self::VAMREG_ERR_API);
+				$this->respondWithStatus(self::VAMREG_ERR_API);
                 return;
         }
     }
+
+	private function respondWithStatus(int $status): void
+	{
+		$this->output->set_content_type('application/json');
+		$statusHtml = $this->load->view('admin/vamreg/blocks/vamreg_status', ['status' => $status], true);
+		$this->output->set_output(json_encode([
+			'status' => $status,
+			'status_html' => $statusHtml,
+		]));
+	}
+
+	private function get_vamreg_error_message(array $error): string
+	{
+		if (isset($error['message'])) {
+			return $error['message'];
+		} elseif (isset($error['field']) && isset($error['englishMessage'])) {
+			return "Error in field '{$error['field']}': {$error['englishMessage']}";
+		} else {
+			return 'Unknown error';
+		}
+	}
 
     public function edit(int $id, $year = null, $quarter = null)
     {

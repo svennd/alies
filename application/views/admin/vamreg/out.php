@@ -47,7 +47,7 @@
 						</td>
 					<td>
 						<?php if ($buff['has_negative']): ?>
-							<i class="fa-solid fa-triangle-exclamation" title="Negative quantity detected" style="color: red;"></i>
+							<i class="fa-solid fa-triangle-exclamation" title="Negative quantity detected" style="color: #f8a4ab;"></i>
 						<?php endif; ?>
 						<?php echo $buff['wholesale_description']; ?>
 					</td>

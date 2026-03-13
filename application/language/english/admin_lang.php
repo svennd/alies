@@ -61,7 +61,7 @@ $lang['delivery_log']       = "delivery log";
 $lang['logbook']            = "common log";
 $lang['syslog']             = "Systeem log";
 $lang['delivery']           = "Delivery";
-
+$lang['vamreg']            = "Vamreg";
 
 # location
 $lang['add_location']        = 'Add location';

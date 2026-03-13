@@ -232,6 +232,12 @@
                     'link' => 'tools',
                     'text' => $this->lang->line('tools'),
                 ),
+                array(
+                    'img' => 'vamreg.png',
+                    'alt' => 'Vamreg',
+                    'link' => 'vamreg',
+                    'text' => $this->lang->line('vamreg'),
+                ),
                 
     );
 ?>

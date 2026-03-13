@@ -54,15 +54,15 @@
 
 <ul class="nav mb-4 profile-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="<?php echo base_url('vamreg/index'); ?>" id="vamreg-in"><i class="fa-solid fa-right-to-bracket"></i> Vamreg IN</a>
+    <a class="nav-link" href="<?php echo base_url('vamreg/'); ?>" id="vamreg-send"><i class="fa-solid fa-cloud-arrow-up"></i> Send</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="<?php echo base_url('vamreg/in'); ?>" id="vamreg-in"><i class="fa-solid fa-right-to-bracket"></i> Vamreg IN</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="<?php echo base_url('vamreg/out'); ?>" id="vamreg-out"><i class="fa-solid fa-right-from-bracket"></i> Vamreg OUT</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="<?php echo base_url('vamreg/product_list'); ?>" id="vamreg-product-list"><i class="fa-solid fa-book-atlas"></i> Product list</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="<?php echo base_url('vamreg/send'); ?>" id="vamreg-send"><i class="fa-solid fa-cloud-arrow-up"></i> Send</a>
   </li>
 </ul>

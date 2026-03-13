@@ -181,8 +181,8 @@ class Products extends Vet_Controller
 	{
 		$x = $this->products
 			->with_booking_code()
-			->with_type('fields:name')
 			->where('type', $id)
+			->where('discontinued', 0)
 			->get_all();
 
 		if (!$x)
@@ -195,9 +195,10 @@ class Products extends Vet_Controller
 		{
 			$aaData[] = array(
 				"<a href='". base_url('products/profile/' . $product['id']) ."'>" . $product['name'] . "</a>",
+				"CNK:" . $product['cnk'] . "<br/>VHB: " . $product['vhbcode'],
+				($product['sellable']) ? "<i class='fa-solid fa-bag-shopping' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>",
 				"<small>" . ($product['wholesale_name']) ? $product['wholesale_name'] : "". "</small>",
-
-				$product['type']['name']
+				"<a href='". base_url('products/product/' . $product['id']) ."' class='btn btn-sm btn-outline-primary'>edit</a>"
 			);
 		}
 		echo json_encode(array("aaData" => $aaData));
@@ -213,7 +214,6 @@ class Products extends Vet_Controller
 
 			$input = array(
 								"name" 					=> $this->input->post('name'),
-								// "short_name" 			=> $this->input->post('short_name'), // is this ever used ?
 								"wholesale_name" 		=> $this->input->post('input_wh_name'),
 								"producer" 				=> $this->input->post('producer'),
 								"supplier" 				=> $this->input->post('supplier'),
@@ -236,6 +236,8 @@ class Products extends Vet_Controller
 								"booking_code" 			=> $this->input->post('booking_code'),
 								"comment_admin" 		=> $this->input->post('comment_admin'),
 								"vhbcode" 				=> $this->input->post('vhbcode'),
+								"cnk" 					=> $this->input->post('cnk'),
+								"cti_e"					=> $this->input->post('cti_e'),
 								"wholesale"				=> $this->input->post('wholesale'),
 								"sellable" 				=> (is_null($this->input->post('sellable')) ? 0 : 1),
 								"discontinued" 			=> (is_null($this->input->post('discontinued')) ? 0 : 1),
