@@ -301,6 +301,109 @@ class Events_model extends MY_Model
 			";
 		return $this->db->query($sql)->result_array();
 	}
+
+	public function register_out_snapshot($search_from, $search_to, $snapshot_month, $generated_at)
+	{
+		$search_from_sql = $this->db->escape($search_from . ' 00:00:00');
+		$search_to_sql = $this->db->escape($search_to . ' 23:59:59');
+		$snapshot_month_sql = $this->db->escape($snapshot_month);
+		$generated_at_sql = $this->db->escape($generated_at);
+		$search_from_date_sql = $this->db->escape($search_from);
+		$search_to_date_sql = $this->db->escape($search_to);
+
+		$sql = "
+			SELECT
+				" . $snapshot_month_sql . " AS snapshot_month,
+				" . $search_from_date_sql . " AS snapshot_period_start,
+				" . $search_to_date_sql . " AS snapshot_period_end,
+				" . $generated_at_sql . " AS snapshot_generated_at,
+				
+				prod.id AS product_id,
+				prod.name AS product_name,
+				prod.vhbcode AS product_vhbcode,
+				prod.cnk AS product_cnk,
+				prod.supplier AS product_supplier,
+				ep.volume AS used_volume,
+				prod.unit_sell AS product_unit_sell,
+				prod.buy_price AS product_buy_price,
+				prod.btw_sell AS product_btw_sell,
+
+				e.id AS event_id,
+				e.created_at AS event_created_at,
+
+				ep.price_net AS total_sell_price,
+				ep.price_brut AS total_sell_price_brut,
+				ep.unit_price AS unit_sell_price,
+				ep.btw AS event_product_btw,
+
+				stock.id AS stock_id,
+				stock.lotnr AS stock_lotnr,
+				stock.eol AS stock_eol,
+				stock.in_price AS stock_in_price,
+
+				book.code AS booking_code,
+				book.category AS booking_category,
+				book.btw AS booking_btw,
+
+				vet.id AS vet_id,
+				vet.order_nr AS vet_ordernr,
+				
+				event_loc.name AS event_location_name,
+
+				pets.id AS pet_id,
+				pets.name AS pet_name,
+				pets.chip AS pet_chip,
+
+				owners.id AS owner_id,
+				owners.last_name AS owner_last_name,
+				owners.btw_nr AS owner_btw_nr
+
+			FROM
+				events_products AS ep
+			INNER JOIN
+				events AS e
+			ON
+				e.id = ep.event_id
+			LEFT JOIN
+				products AS prod
+			ON
+				prod.id = ep.product_id
+			LEFT JOIN
+				booking_codes AS book
+			ON
+				book.id = ep.booking
+			LEFT JOIN
+				users AS vet
+			ON
+				vet.id = e.vet
+			LEFT JOIN
+				pets
+			ON
+				pets.id = e.pet
+			LEFT JOIN
+				owners
+			ON
+				owners.id = pets.owner
+			LEFT JOIN
+				stock
+			ON
+				stock.id = ep.stock_id
+			LEFT JOIN
+				stock_location AS event_loc
+			ON
+				event_loc.id = e.location
+				
+			WHERE
+				e.created_at >= " . $search_from_sql . "
+			AND
+				e.created_at <= " . $search_to_sql . "
+			ORDER BY
+				e.created_at ASC,
+				ep.id ASC
+		";
+
+		return $this->db->query($sql)->result_array();
+	}
 	
 
 	// check if prices in this event have been modified by the

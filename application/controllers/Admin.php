@@ -180,12 +180,43 @@ class Admin extends Admin_Controller
 								),
 				array(
 									"id" => (int) $this->input->post('id')
-								)
+				)
 			);
+		}
+
+		if ($this->input->post('submit') == "add_product_label") {
+			$name = strtolower(trim($this->input->post('name')));
+			$exists = $this->db->where('name', $name)->get('products_label')->row_array();
+
+			if ($name !== '' && !$exists) {
+				$this->prod_label->insert(array("name" => $name));
+			}
+		}
+
+		if ($this->input->post('submit') == "update_product_label") {
+			$id = (int) $this->input->post('id');
+			$name = strtolower(trim($this->input->post('name')));
+			$exists = $this->db
+				->where('name', $name)
+				->where('id !=', $id)
+				->get('products_label')
+				->row_array();
+
+			if ($name !== '' && !$exists) {
+				$this->prod_label->update(
+					array(
+						"name" => $name
+					),
+					array(
+						"id" => $id
+					)
+				);
+			}
 		}
 		
 		$data = array(
 						"prod_type" => $this->prod_type->get_all(),
+						"prod_label" => $this->prod_label->order_by('name', 'ASC')->get_all(),
 					);
 	
 
@@ -216,41 +247,7 @@ class Admin extends Admin_Controller
 	*/
 	public function product_labels()
 	{
-		if ($this->input->post('submit') == "add_product_label") {
-			$name = strtolower(trim($this->input->post('name')));
-			$exists = $this->db->where('name', $name)->get('products_label')->row_array();
-
-			if ($name !== '' && !$exists) {
-				$this->prod_label->insert(array("name" => $name));
-			}
-		}
-
-		if ($this->input->post('submit') == "update_product_label") {
-			$id = (int) $this->input->post('id');
-			$name = strtolower(trim($this->input->post('name')));
-			$exists = $this->db
-				->where('name', $name)
-				->where('id !=', $id)
-				->get('products_label')
-				->row_array();
-
-			if ($name !== '' && !$exists) {
-				$this->prod_label->update(
-					array(
-						"name" => $name
-					),
-					array(
-						"id" => $id
-					)
-				);
-			}
-		}
-
-		$data = array(
-			"prod_label" => $this->prod_label->order_by('name', 'ASC')->get_all(),
-		);
-
-		$this->_render_page('admin/product_labels', $data);
+		redirect('admin/product_types', 'refresh');
 	}
 
 	/*
@@ -260,6 +257,6 @@ class Admin extends Admin_Controller
 	public function product_labels_rm(int $id)
 	{
 		$this->prod_label->delete_with_links($id);
-		redirect('admin/product_labels', 'refresh');
+		redirect('admin/product_types', 'refresh');
 	}
 }

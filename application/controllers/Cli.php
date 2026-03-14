@@ -15,6 +15,7 @@ class Cli extends Frontend_Controller
 	private const RX_DIR = "data/stored/rx/";
 	private const PRICELIST_DIR = "data/stored/pricelist/";
 	private const DELIVERY_DIR = "data/stored/delivery/";
+	private const MONTHLY_PRODUCT_USAGE_DIR = "data/stored/reports/monthly_product_usage/";
 	
     public function __construct() {
         parent::__construct();
@@ -65,6 +66,7 @@ class Cli extends Frontend_Controller
 		echo "  - auto_death : auto death pets\n";
 		echo "  - import_rx : scan files for new rx images\n";
 		echo "  - recalculate_usage : recalculate product usage\n";
+		echo "  - monthly_product_usage_dump [YYYY-MM] [force=0|1] : create immutable monthly product usage csv\n";
 	}
 
 	/*
@@ -83,11 +85,88 @@ class Cli extends Frontend_Controller
 		$this->stock_value->record_value();
 		$this->recalculate_usage();
 
-        # cleanup api rate limits
-        $this->cleanup_rate_limits();
+		# check if we need to run the monthly product usage dump
+		$this->monthly_product_usage_dump();
 
-        # pull new data from vamreg + set ab status for products
-        $this->vamreg_update();
+		# cleanup api rate limits
+		$this->cleanup_rate_limits();
+
+		# pull new data from vamreg + set ab status for products
+		$this->vamreg_update();
+	}
+
+	/*
+	* function: monthly_product_usage_dump
+	* create immutable monthly product usage csv
+	* note : this is a protection
+	*/
+	public function monthly_product_usage_dump($month = null, $force = 0)
+	{
+		$force = ((int) $force) === 1;
+		$headers = [];
+
+		if ($month) {
+			$period = DateTimeImmutable::createFromFormat('Y-m-d', $month . '-01');
+			if (!$period || $period->format('Y-m') !== $month) {
+				echo "Invalid month, expected YYYY-MM\n";
+				return false;
+			}
+		} else {
+			if (!$force && date('d') !== '01') {
+				echo "Skip monthly product usage dump: today is not the first of the month.\n";
+				return false;
+			}
+
+			$period = new DateTimeImmutable('first day of last month');
+		}
+
+		$search_from = $period->format('Y-m-01');
+		$search_to = $period->format('Y-m-t');
+		$snapshot_month = $period->format('Y-m');
+		$generated_at = date('Y-m-d H:i:s');
+
+		$target_dir = SELF::MONTHLY_PRODUCT_USAGE_DIR;
+		$filename = 'monthly_product_usage_' . $snapshot_month . '.csv';
+		$file = $target_dir . $filename;
+
+		if (is_file($file) && !$force) {
+			echo "Monthly product usage dump already exists: " . $file . "\n";
+			return $file;
+		}
+
+		if (!is_dir($target_dir) && !mkdir($target_dir, 0700, true) && !is_dir($target_dir)) {
+			echo "Unable to create monthly product usage directory: " . $target_dir . "\n";
+			return false;
+		}
+
+		$rows = $this->events->register_out_snapshot($search_from, $search_to, $snapshot_month, $generated_at);
+		$headers = !empty($rows) ? array_keys($rows[0]) : [];
+
+		$handle = fopen($file, 'w');
+		if ($handle === false) {
+			echo "Unable to write monthly product usage dump: " . $file . "\n";
+			return false;
+		}
+
+		fputcsv($handle, $headers);
+		foreach ($rows as $row) {
+			$line = array();
+			foreach ($headers as $header) {
+				$value = isset($row[$header]) ? $row[$header] : '';
+				if (is_string($value)) {
+					$value = preg_replace("/[\r\n]+/", ' ', $value);
+				}
+				$line[] = $value;
+			}
+			fputcsv($handle, $line);
+		}
+		fclose($handle);
+
+		$msg = 'created ' . $filename . ' with ' . count($rows) . ' rows for ' . $snapshot_month;
+		echo "Monthly product usage dump " . $msg . "\n";
+		$this->logs->logger(INFO, 'monthly_product_usage_dump', $msg);
+
+		return $file;
 	}
 
 	/*

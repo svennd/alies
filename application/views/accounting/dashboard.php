@@ -200,20 +200,15 @@
                     'img' => 'types.png',
                     'alt' => 'types',
                     'link' => 'admin/product_types',
-                    'text' => $this->lang->line('product_types'),
+                    'text' => $this->lang->line('product_types_and_labels'),
                 ),
-                array(
-                    'img' => 'product_search.png',
-                    'alt' => 'product_labels',
-                    'link' => 'admin/product_labels',
-                    'text' => $this->lang->line('product_labels'),
-                ),
-                array(
-                    'img' => 'backup.png',
-                    'alt' => 'backup',
-                    'link' => 'backup',
-                    'text' => $this->lang->line('backup'),
-                ),
+				// can't trust users to do it
+                // array(
+                //     'img' => 'backup.png',
+                //     'alt' => 'backup',
+                //     'link' => 'backup',
+                //     'text' => $this->lang->line('backup'),
+                // ),
                 array(
                     'img' => 'booking.png',
                     'alt' => 'booking',
