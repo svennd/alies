@@ -43,10 +43,11 @@
 							$total_already_payed = $bill['cash'] + (($bill['transfer_verified'] == 1 ) ? $bill['transfer'] : 0) + $bill['card'];
 							$sum = 0.0;
 							foreach ($print as $pet_id => $event_details):
-								
-								$pet 		= $event_details['pet'];
+								$pet 		= $event_details['pet'] ?? null;
 								$prod 		= $event_details['products'];
 								$proc 		= $event_details['procedures'];
+								$title		= $event_details['label'] ?? (($pet) ? ucfirst(strtolower($pet['name'])) : $this->lang->line('write_off_invoice_title'));
+								$reference	= $event_details['reference'] ?? '';
 
 								# skip if no products or procedures
 								# in the event
@@ -55,11 +56,14 @@
 							?>
 							<div class="row">
 								<div class="col-md-6">
-									<h5><?php echo ucfirst(strtolower($pet['name'])); ?>
-									<?php foreach($event_details['events'] as $event_id): ?>
-										<a href="<?php echo base_url('events/event/' . $event_id); ?>" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-circle-arrow-left"></i> <span class="d-none d-xl-inline"><?php echo $this->lang->line('consult'); ?></span></a>
-									<?php endforeach; ?>
+									<h5><?php echo $title; ?>
+									<?php if (!empty($event_details['events'])): ?>
+										<?php foreach($event_details['events'] as $event_id): ?>
+											<a href="<?php echo base_url('events/event/' . $event_id); ?>" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-circle-arrow-left"></i> <span class="d-none d-xl-inline"><?php echo $this->lang->line('consult'); ?></span></a>
+										<?php endforeach; ?>
+									<?php endif; ?>
 								</h5>
+								<?php if ($reference): ?><small class="text-muted"><?php echo $reference; ?></small><?php endif; ?>
 								</div>
 
 								<div class="col-md-6 text-right">

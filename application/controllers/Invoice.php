@@ -26,6 +26,7 @@ class Invoice extends Vet_Controller
 		$this->load->model('Payment_model', 'payment');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Events_products_model', 'events_products');
+		$this->load->model('Liquidate_model', 'liquidate');
 
 		# helpers
 		$this->load->helper('generate_bill_id_helper');
@@ -137,9 +138,21 @@ class Invoice extends Vet_Controller
 			return;
 		}
 		$bill = $this->bills->with_location('fields:name')->get($bill_id);
+		$write_off_lines = $this->liquidate->get_bill_rows($bill_id);
+
+		if ($write_off_lines) {
+			$bill_info = $bill;
+			$total_net = 0.0;
+			$total_brut = 0.0;
+			$btw_details = array(
+				"0" => array("over" => 0, "calculated" => 0),
+				"6" => array("over" => 0, "calculated" => 0),
+				"21" => array("over" => 0, "calculated" => 0)
+			);
+		}
 
 		// set all events that have no payment linked from this owner to this new bill
-		if (in_array($bill['status'], array(BILL_DRAFT, BILL_PENDING, BILL_UNPAID))) {
+		elseif (in_array($bill['status'], array(BILL_DRAFT, BILL_PENDING, BILL_UNPAID))) {
 			$this->events->set_open_events_to_bills($bill['owner_id'], $bill_id);
 
 			// generate the bill
@@ -178,6 +191,10 @@ class Invoice extends Vet_Controller
 			"bill"			=> $bill_info
 		);
 
+		if ($write_off_lines) {
+			$data = array_merge($data, $this->get_write_off_bill_data($bill_info, $write_off_lines));
+		}
+
 
 		if ($report == INVOICE_PRINT) 
 		{
@@ -208,6 +225,62 @@ class Invoice extends Vet_Controller
 			}
 			$this->_render_page('bills/report', $data);
 		}
+	}
+
+	private function get_write_off_bill_data(array $bill, array $write_off_lines): array
+	{
+		$locations = array_unique(array_filter(array_map(function ($row) {
+			return $row['location_name'];
+		}, $write_off_lines)));
+
+		$print_lines = array_map(function ($row) {
+			return array(
+				'name' => $this->format_write_off_description($row),
+				'volume' => $row['volume'],
+				'unit_sell' => $row['unit_sell'],
+				'unit_price' => 0,
+				'btw' => 0,
+				'price_net' => 0,
+				'price_brut' => 0,
+				'reduction_reason' => null,
+				'created_at' => $row['created_at'],
+			);
+		}, $write_off_lines);
+
+		return array(
+			'print' => array(
+				array(
+					'label' => $this->lang->line('write_off_invoice_title'),
+					'reference' => $this->lang->line('write_off_reference') . ': ' . count($write_off_lines),
+					'events' => array(),
+					'products' => $print_lines,
+					'procedures' => array(),
+				),
+			),
+			'is_write_off_bill' => true,
+			'bill_context_label' => $this->lang->line('write_off_invoice_title'),
+			'bill_context_reference' => count($write_off_lines),
+			'bill_context_location' => (count($locations) <= 1) ? (reset($locations) ?: '') : $this->lang->line('multiple_locations'),
+		);
+	}
+
+	private function format_write_off_description(array $row): string
+	{
+		$details = array();
+
+		// var_dump($row);
+		// if (!empty($row['reason'])) {
+		// 	$details[] = $row['reason'];
+		// }
+		if (!empty($row['lotnr'])) {
+			$details[] = 'lot ' . $row['lotnr'];
+		}
+		if (!empty($row['eol'])) {
+			$details[] = 'EOL ' . date('d-m-Y', strtotime($row['eol']));
+		}
+
+		$name = (!empty($row['product_name'])) ? $row['product_name'] : $this->lang->line('product');
+		return (!empty($details)) ? $name . ' (' . implode(' | ', $details) . ')' : $name;
 	}
 	
 	/*

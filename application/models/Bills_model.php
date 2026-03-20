@@ -311,7 +311,7 @@ class Bills_model extends MY_Model
 		return false;
 	}
 
-	public function set_invoice_id(int $bill_id)
+	public function set_invoice_id(int $bill_id, bool $use_transaction = true)
 	{
 		// if the last id has year == last_year we should reset to 1
 		// basically count + 1 and every year reset to 1
@@ -338,12 +338,23 @@ class Bills_model extends MY_Model
 				1
 			;
 		";
-		$this->db->trans_start();
-		$this->db->query($sql);
-		$this->db->trans_complete();
-		if ($this->db->trans_status() === FALSE)
+		if ($use_transaction)
 		{
-			$this->logs->logger(ERROR, "set_invoice_id", "failed to do transaction for bill_id:" . (int) $bill_id);
+			$this->db->trans_start();
+			$this->db->query($sql);
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->logs->logger(ERROR, "set_invoice_id", "failed to do transaction for bill_id:" . (int) $bill_id);
+			}
+		}
+		else
+		{
+			$result = $this->db->query($sql);
+			if (!$result)
+			{
+				$this->logs->logger(ERROR, "set_invoice_id", "failed to assign invoice id for bill_id:" . (int) $bill_id);
+			}
 		}
 	}
 

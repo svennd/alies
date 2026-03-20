@@ -133,17 +133,22 @@ define("PUSH_TOTAL", 26);
 <!-- pets name + id list -->
 <?php
 	$pets_list = "";
-	foreach ($print as $pet_id => $event_details) {
-		$pet 		= $event_details['pet'];
-		$pets_list .= '<b>'. ucfirst(strtolower($pet['name'])) . '</b> (#' . $pet['id'] . ') ';
+	if (!empty($is_write_off_bill)) {
+		$pets_list = $bill_context_reference;
+	}
+	else {
+		foreach ($print as $pet_id => $event_details) {
+			$pet 		= $event_details['pet'];
+			$pets_list .= '<b>'. ucfirst(strtolower($pet['name'])) . '</b> (#' . $pet['id'] . ') ';
+		}
 	}
 ?>
 <table width="100%">
   <tr>
 	  <td>
-		  <?php echo $this->lang->line('pet_info'); ?> : <?php echo $pets_list; ?><br/>
+		  <?php echo (!empty($is_write_off_bill)) ? $this->lang->line('write_off_reference') : $this->lang->line('pet_info'); ?> : <?php echo $pets_list; ?><br/>
 	  </td>
-	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php echo $bill['location']['name']; ?></td>
+	  <td align="right" valign="top"><?php echo $this->lang->line('bill_location'); ?> : <?php echo (!empty($is_write_off_bill)) ? $bill_context_location : $bill['location']['name']; ?></td>
   </tr>
 </table>
 
@@ -163,7 +168,7 @@ define("PUSH_TOTAL", 26);
 <?php 
 foreach ($print as $pet_id => $event): 
 
-	$pet 		= $event['pet'];
+	$pet 		= $event['pet'] ?? null;
 	$prod 		= $event['products'];
 	$proc 		= $event['procedures'];
 

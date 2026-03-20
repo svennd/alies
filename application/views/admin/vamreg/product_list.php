@@ -4,16 +4,30 @@
   white-space: normal;
   word-break: break-word;
 }
+
+.btn-loading {
+	pointer-events: none;
+}
 </style>
 <?php include 'blocks/menu.php'; ?>
 <div class="card shadow mb-4">
     <div class="card-header d-flex flex-row align-items-center justify-content-between">
         <div>Vamreg / product list</div>
 		<div>
-	 		<a href="<?= base_url("vamreg/refresh") ?>" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-arrows-rotate"></i></a>
+	 		<button
+				type="button"
+				class="btn btn-outline-success btn-sm js-vamreg-refresh"
+				data-url="<?= base_url("vamreg/refresh") ?>"
+				data-default-icon="fa-arrows-rotate"
+				title="Refresh Vamreg products"
+				aria-label="Refresh Vamreg products"
+			>
+				<i class="fa-solid fa-arrows-rotate"></i>
+			</button>
 		</div>
     </div>
 	<div class="card-body">
+		<div id="vamreg-refresh-status" class="mb-3" style="display:none;"></div>
         <?php if($products): ?>
 
             <table class="table table-sm" id="dataTable">
@@ -61,8 +75,66 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$("#admin").addClass('active');
 	$("#vamreg-product-list").addClass('active');
+	var $refreshStatus = $('#vamreg-refresh-status');
 
-		var table = $('#dataTable').DataTable({
+	function setRefreshButtonLoading($button, loading) {
+		var $icon = $button.find('i').first();
+
+		if (loading) {
+			$button.prop('disabled', true).addClass('btn-loading');
+			$icon.attr('class', 'fa-solid fa-spinner fa-spin');
+			return;
+		}
+
+		$button.prop('disabled', false).removeClass('btn-loading');
+		$icon.attr('class', 'fa-solid ' + ($button.data('defaultIcon') || 'fa-arrows-rotate'));
+	}
+
+	$('.js-vamreg-refresh').on('click', function () {
+		var $button = $(this);
+		var url = $button.data('url');
+
+		if (!url) {
+			return;
+		}
+
+		$refreshStatus.hide().empty();
+		setRefreshButtonLoading($button, true);
+
+		$.ajax({
+			url: url,
+			method: 'GET',
+			dataType: 'json',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		})
+			.done(function (payload) {
+				if (payload && payload.status === 'success') {
+					window.location.reload();
+					return;
+				}
+
+				var message = (payload && payload.message) ? payload.message : 'Product refresh failed. Please try again.';
+				$refreshStatus
+					.html('<div class="alert alert-danger" role="alert">' + message + '</div>')
+					.show();
+			})
+			.fail(function (xhr) {
+				var message = (xhr.responseJSON && xhr.responseJSON.message)
+					? xhr.responseJSON.message
+					: 'Product refresh failed. Please try again.';
+
+				$refreshStatus
+					.html('<div class="alert alert-danger" role="alert">' + message + '</div>')
+					.show();
+			})
+			.always(function () {
+				setRefreshButtonLoading($button, false);
+			});
+	});
+
+	var table = $('#dataTable').DataTable({
 		dom: '<"d-flex justify-content-between mb-2"<"filter-buttons">f>t<"d-flex justify-content-between"ip>',
 		lengthChange: false,
 		initComplete: function () {

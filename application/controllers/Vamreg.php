@@ -30,7 +30,7 @@ class Vamreg extends Admin_Controller
         $this->load->helper('cnk');
         $this->load->helper('vamreg');
 
-        $this->key = base64_decode($this->conf['vamreg_api_key']['value']) ?? null;
+        $this->key = base64_decode($this->conf['vamreg_api_key']['value'] ?? '') ?: null;
         if (!$this->key) {
             log_message('error', 'VAMREG API key missing');
         }
@@ -62,7 +62,8 @@ class Vamreg extends Admin_Controller
                         ->update([
                             'status'                => 'DRAFT',
                             'api_declaration_id'    => null,
-                            'sent_at'               => null
+                            'sent_at'               => null,
+                            'api_error'             => null,
                         ]);
                 }
                 else
@@ -108,6 +109,11 @@ class Vamreg extends Admin_Controller
 	# sending page
 	public function index($year = null, $quarter = null, $status = null)
     {
+		if($this->key === null) {
+			$this->_render_page('admin/error', ["error" => "VAMREG API key is not configured. Please set it up to use this feature."]);
+			return;
+		}
+
 		// get quarter context
 		extract($this->quarterContext($year, $quarter));
 
@@ -298,6 +304,8 @@ class Vamreg extends Admin_Controller
 			$drafts
 		);
 
+		// var_dump($declarations);
+
         # upload the results
         $result = $this->vamregclient->uploadBulk($declarations);
 
@@ -403,9 +411,11 @@ class Vamreg extends Admin_Controller
                 foreach (array_keys($badIdx) as $idx) {
                     if (!isset($declarations[$idx])) continue;
 					
+					// var_dump();
+					// log_message('error', $result['response']);
                     $model->update([
                         'status'  	=> 'ERROR',
-						'api_error' => $this->get_vamreg_error_message($result['response'][$idx]),
+						'api_error' => @$this->get_vamreg_error_message($result['response'][$idx]),
                         'sent_at' 	=> date('Y-m-d H:i:s'),
                     ], $declarations[$idx]['internal_id']);
                 }
@@ -526,6 +536,14 @@ class Vamreg extends Admin_Controller
 		);
 		$this->logs->logger(INFO, "vamreg", "user synchronized medicinal products from Vamreg : " . ($sync_status ? "success" : "failure"));
 
-		  echo ($sync_status ? json_encode(['status' => 'success']) : json_encode(['status' => 'failure']));
+		# set new status on products
+		$this->vamreg_index->set_ab_status_on_product();
+
+		$this->output->set_content_type('application/json');
+		$this->output->set_status_header($sync_status ? 200 : 500);
+		$this->output->set_output(json_encode([
+			'status' => $sync_status ? 'success' : 'failure',
+			'message' => $sync_status ? 'Product list refreshed.' : 'Product refresh failed. Please try again.',
+		]));
 	}
 }

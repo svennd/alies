@@ -1,9 +1,19 @@
 <div class="row">
-      <div class="col-lg-12 mb-4">
+	      <div class="col-lg-12 mb-4">
 
-      <div class="card shadow mb-4">
-			<div class="card-header">
-				<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('write_off_log'); ?>
+	      <div class="card shadow mb-4">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<div>
+					<a href="<?php echo base_url('accounting/dashboard/'); ?>"><?php echo $this->lang->line('admin'); ?></a> / <?php echo $this->lang->line('write_off_log'); ?>
+				</div>
+				<form action="<?php echo base_url('logs/write_off_invoice'); ?>" method="post" autocomplete="off" class="mb-0">
+					<button type="submit" class="btn btn-outline-success btn-sm" <?php echo (!$unbilled_count) ? 'disabled' : ''; ?>>
+						<i class="fa-solid fa-file-invoice"></i> <?php echo $this->lang->line('create_write_off_invoice'); ?>
+						<?php if ($unbilled_count): ?>
+							<span class="badge badge-light ml-1"><?php echo $unbilled_count; ?></span>
+						<?php endif; ?>
+					</button>
+				</form>
 			</div>
             <div class="card-body">
 			<?php if ($logs): ?>
@@ -18,6 +28,7 @@
 					<th><?php echo $this->lang->line('reason'); ?></th>
 					<th><?php echo $this->lang->line('vet'); ?></th>
 					<th><?php echo $this->lang->line('location'); ?></th>
+					<th><?php echo $this->lang->line('bill'); ?></th>
 					<th>Write off date</th>
 				</tr>
 				</thead>
@@ -31,6 +42,19 @@
 					<td><?php echo $log['reason']; ?></td>
 					<td><?php echo (!isset($log['vet'])) ? "" : $log['vet']['first_name']; ?></td>
 					<td><?php echo $log['location']['name']; ?></td>
+					<td>
+						<?php if (!empty($log['bill_id'])): ?>
+							<a href="<?php echo base_url('invoice/get_bill/' . $log['bill_id'] . '/' . INVOICE_PRINT); ?>" target="_blank">
+								<?php if (!empty($log['bill']['invoice_id'])): ?>
+									#<?php echo get_invoice_id($log['bill']['invoice_id'], $log['bill']['invoice_date'], $this->conf['invoice_prefix']['value'] ?? ''); ?>
+								<?php else: ?>
+									#<?php echo get_bill_id($log['bill_id']); ?>
+								<?php endif; ?>
+							</a>
+						<?php else: ?>
+							<span class="text-muted">-</span>
+						<?php endif; ?>
+					</td>
 					<td data-sort="<?php echo strtotime($log['created_at']); ?>"><?php echo user_format_date($log['created_at'], $user->user_date); ?></td>
 				</tr>
 				<?php endforeach; ?>
@@ -57,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function(){
             { extend:'excel', text:'<i class="fas fa-file-export"></i> Excel', className:'btn btn-outline-success btn-sm'},
             { extend:'pdf', text:'<i class="far fa-file-pdf"></i> PDF', className:'btn btn-outline-success btn-sm'}
         ],
-		"order": [[ 7, "desc" ]]
+		"order": [[ 8, "desc" ]]
 	});
 });
 </script>

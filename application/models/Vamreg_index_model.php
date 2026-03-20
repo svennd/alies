@@ -46,7 +46,9 @@ class Vamreg_index_model extends MY_Model
 							'PACKS',
 							'PIECE'
 						)
-					);
+					)
+			WHERE p.is_antibiotic = 0
+			;
 		";
         $this->db->query($sql);
         

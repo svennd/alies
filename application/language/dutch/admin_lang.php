@@ -61,6 +61,7 @@ $lang['stock_list']         = 'Stock lijst';
 $lang['settings']           = 'Configuratie';
 $lang['stock_error']        = "Stock fouten";
 $lang['write_off_log']      = "Afschrijvingen logboek";
+$lang['create_write_off_invoice'] = 'Maak 0 EUR factuur';
 $lang['delivery_log']       = "Leverings logboek";
 $lang['logbook']            = "Algemeen logboek";
 $lang['syslog']             = "Software versie";
