@@ -17,13 +17,13 @@
 						<div class="d-none d-sm-block">
 							<p class="lead mb-4"><?php echo $this->lang->line('search_product_help'); ?></p>
 						</div>
-						<div class="shadow rounded">
-						  <div class="form-group has-search">
+						<div class="shadow rounded product-search-shell">
+						  <div class="form-group has-search mb-0">
 							<span class="fa fa-search form-control-feedback"></span>
 							 <div class="input-group">
-								<input type="text" class="form-control" name="search_query" placeholder="search" value="">
+								<input type="text" class="form-control product-search-input" id="product_live_search" name="search_query" placeholder="Search products or procedures" value="<?php echo html_escape($search_q); ?>" aria-describedby="productSearchStatus">
 								<div class="input-group-append">
-								  <button class="btn btn-primary" type="submit" type="button">
+								  <button class="btn btn-primary" type="submit">
 									<div class="d-none d-sm-block"><?php echo $this->lang->line('title_search'); ?></div>
 									<div class="d-block d-sm-none d-md-none">S</div>
 								  </button>
@@ -38,20 +38,18 @@
 					</div>
 				</div>
 				</form>
-			<?php if ($search_product): ?>
-			<ul>
-				<?php foreach($search_product as $sear): ?>
-					<li class="<?php echo $sear['sellable'] ? '' : 'product-not-sellable' ?>"><a href="<?php echo base_url('products/profile/' . $sear['id']); ?>"><?php echo $sear['name']; ?></a></li>
-				<?php endforeach; ?>
-			</ul>
-			<?php endif; ?>
-			<?php if ($search_procedure): ?>
-			<ul>
-				<?php foreach($search_procedure as $sear): ?>
-					<li><?php echo $sear['name']; ?> (procedure)</li>
-				<?php endforeach; ?>
-			</ul>
-			<?php endif; ?>
+				<div class="product-search-panel">
+					<div id="product_live_results" class="product-search-results">
+						<?php
+							if (strlen($search_q) >= 2) {
+								$this->load->view('product/partials/search_results', array(
+									'results' => $search_results,
+									'is_admin' => $is_admin,
+								));
+							}
+						?>
+					</div>
+				</div>
 
 			</div>
 		</div>
@@ -147,6 +145,7 @@
 
 <script type="text/javascript">
 const URL_STOCK_LOCATION = '<?php echo base_url('products/index/'); ?>';
+const PRODUCT_SEARCH_URL = '<?php echo base_url('products/search_catalog'); ?>';
 const BUTTON_LOCATIONS = [
 			<?php foreach ($locations as $loc): ?>
             { 
@@ -167,6 +166,59 @@ const BUTTON_LOCATIONS = [
 	];
 document.addEventListener("DOMContentLoaded", function(){
 	$("#product_list").addClass('active');
+	const $searchInput = $("#product_live_search");
+	const $searchResults = $("#product_live_results");
+	const $searchStatus = $("#productSearchStatus");
+	let pendingSearch = null;
+	let searchTimer = null;
+
+	function setSearchStatus(message) {
+		$searchStatus.text(message);
+	}
+
+	function runLiveSearch(query) {
+		if (pendingSearch) {
+			pendingSearch.abort();
+		}
+
+		pendingSearch = $.ajax({
+			url: PRODUCT_SEARCH_URL,
+			method: "GET",
+			dataType: "json",
+			data: { q: query }
+		}).done(function(response) {
+			$searchResults.html(response.html);
+			setSearchStatus(response.count + " result" + (response.count === 1 ? "" : "s") + " for \"" + query + "\"");
+		}).fail(function(xhr, status) {
+			if (status === "abort") {
+				return;
+			}
+
+			$searchResults.html('<div class="product-search-empty">Search failed. Please try again.</div>');
+			setSearchStatus("Search failed.");
+		});
+	}
+
+	$searchInput.on("input", function() {
+		const query = $(this).val().trim();
+
+		window.clearTimeout(searchTimer);
+
+		if (query.length < 2) {
+			if (pendingSearch) {
+				pendingSearch.abort();
+			}
+
+			$searchResults.empty();
+			setSearchStatus(query.length === 0 ? "Type at least 2 characters to search." : "Keep typing to search.");
+			return;
+		}
+
+		setSearchStatus("Searching...");
+		searchTimer = window.setTimeout(function() {
+			runLiveSearch(query);
+		}, 220);
+	});
 
 // main table
 $("#dataTable").DataTable({

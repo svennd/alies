@@ -16,14 +16,18 @@ class Member extends Admin_Controller
 	# generate list of users
 	public function index()
 	{
-		$users = $this->users->get_all();
+		$show_inactive = (bool) $this->input->get('show_inactive');
+		$users = $show_inactive
+			? $this->users->get_all()
+			: $this->users->get_all(array('active' => 1));
 		
 		foreach ($users as $k => $user) {
 			$users[$k]['groups'] = $this->ion_auth->get_users_groups($user['id'])->result();
 		}
 
 		$data = array(
-						"users" => $users
+						"users" => $users,
+						"show_inactive" => $show_inactive,
 					);
 		$this->_render_page('admin/member/index', $data);
 	}
@@ -114,6 +118,7 @@ class Member extends Admin_Controller
 				'last_name'  => $this->input->post('last_name'),
 				'phone'      => $this->input->post('phone'),
 				'order_nr'   => $this->input->post('order_nr'),
+				'active'     => $this->input->post('active') ? 1 : 0,
 			);
 			
 			/*

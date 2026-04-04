@@ -72,6 +72,62 @@ class Products_model extends MY_Model
 	}
 
 	/*
+		search products and include local/global stock totals for live search
+	*/
+	public function search_product_with_stock(string $name, int $location, int $limit = 25)
+	{
+		if ($name === '') {
+			return array();
+		}
+
+		$escaped = $this->db->escape_like_str($name);
+		$like = '%' . $escaped . '%';
+
+		$sql = "
+			SELECT
+				p.id,
+				p.name,
+				p.sellable,
+				p.is_antibiotic,
+				p.vaccin,
+				p.unit_sell,
+				p.short_name,
+				COALESCE(SUM(CASE WHEN s.location = ? THEN s.volume ELSE 0 END), 0) AS local_stock,
+				COALESCE(SUM(s.volume), 0) AS global_stock
+			FROM
+				products p
+			LEFT JOIN
+				stock s
+			ON
+				s.product_id = p.id
+				AND s.state = ?
+			WHERE
+				p.deleted_at IS NULL
+				AND (
+					p.name LIKE ? ESCAPE '!'
+					OR p.wholesale_name LIKE ? ESCAPE '!'
+					OR p.short_name LIKE ? ESCAPE '!'
+				)
+			GROUP BY
+				p.id, p.name, p.sellable, p.unit_sell, p.short_name
+			ORDER BY
+				p.name ASC
+			LIMIT ?";
+
+		return $this->db->query(
+			$sql,
+			array(
+				$location,
+				STOCK_IN_USE,
+				$like,
+				$like,
+				$like,
+				$limit
+			)
+		)->result_array();
+	}
+
+	/*
 		update the comment on a product
 	*/
 	public function update_comment(int $pid, $msg)
@@ -294,12 +350,16 @@ class Products_model extends MY_Model
 	*/
 	public function get_products_by_type_with_stock(int $type_id, int $location_id = null)
 	{
+		$params = array($location_id, STOCK_IN_USE);
+
 		$sql = "
 				SELECT 
 					p.id AS product_id,
 					p.sellable,
 					p.unit_sell,
 					p.name,
+					p.is_antibiotic,
+					p.vaccin,
 					COALESCE(SUM(s.volume), 0) AS volume_count,
 					COALESCE(SUM(CASE WHEN s.location = ? THEN s.volume ELSE 0 END), 0) AS volume_location
 				FROM products p
@@ -310,14 +370,40 @@ class Products_model extends MY_Model
 				LEFT JOIN wholesale w
 					ON w.id = p.wholesale
 				WHERE 
-					p.type = ?
-					AND p.deleted_at IS NULL
+					p.deleted_at IS NULL
+		";
+
+		if ($type_id === 0) {
+			$sql .= "
+					AND p.sellable = 0
+			";
+		} elseif ($type_id === -1) {
+			$sql .= "
+					AND p.is_antibiotic = 1
+					AND p.sellable = 1
+			";
+		} elseif ($type_id === -2) {
+			$sql .= "
+					AND p.vaccin = 1
+					AND p.sellable = 1
+			";
+		} else {
+			$sql .= "
+					AND p.type = ?
+					AND p.sellable = 1
+			";
+			$params[] = $type_id;
+		}
+
+		$sql .= "
 				GROUP BY
 					p.id, p.sellable, p.unit_sell, p.name
+				ORDER BY
+					p.name ASC
 
 		";
 		
-		return $this->db->query($sql, [$location_id, STOCK_IN_USE, $type_id])->result_array();
+		return $this->db->query($sql, $params)->result_array();
 
 	}
 }

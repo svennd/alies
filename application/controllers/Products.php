@@ -35,9 +35,11 @@ class Products extends Vet_Controller
 					$this->stock->get_all_products_count() 
 					: 
 					$this->stock->get_all_products($clocation);
+		$search_query = trim((string) $this->input->get('search_query'));
+		$search_results = $this->build_search_results($search_query, (int) $this->_get_user_location());
 
 		$data = array(
-						"search_q"					=> $this->input->get('search_query'),
+						"search_q"					=> $search_query,
 						"types" 					=> $this->prod_type->get_all(),
 						"expired"					=> $this->stock
 																		->fields('eol, volume')
@@ -49,14 +51,37 @@ class Products extends Vet_Controller
 																		->count_rows(),
 						"locations" 			=> $this->locations,
 						"user_location"			=> $this->_get_user_location(),
+						"is_admin"				=> $this->ion_auth->in_group("admin"),
 						"success" 				=> $success,
 						"curlocation"			=> $clocation,
-						"search_product"		=> $this->products->search_product($this->input->get('search_query')),
-						"search_procedure"		=> $this->procedures->search_procedure($this->input->get('search_query')),
+						"search_results"		=> $search_results,
 						"products" 				=> $products,
 						);
 
 		$this->_render_page('product/index', $data);
+	}
+
+	public function search_catalog()
+	{
+		$query = trim((string) $this->input->get('q'));
+		$results = $this->build_search_results($query, (int) $this->_get_user_location());
+
+		$html = $this->load->view(
+			'product/partials/search_results',
+			array(
+				'results' => $results,
+				'is_admin' => $this->ion_auth->in_group("admin"),
+			),
+			true
+		);
+
+		return $this->output
+			->set_content_type('application/json')
+			->set_output(json_encode(array(
+				'query' => $query,
+				'count' => count($results),
+				'html' => $html,
+			)));
 	}
 
 	/*
@@ -167,9 +192,23 @@ class Products extends Vet_Controller
 	*/
 	public function product_list(int $id = 1)
 	{
+		$types = $this->prod_type->get_all();
+		$types[] = array(
+			'id' => 0,
+			'name' => '<i class="fa-solid fa-xmark" style="color: red;"></i> ' . $this->lang->line('saleable')
+		);
+		$types[] = array(
+			'id' => -1,
+			'name' => '<i class="fa-solid fa-bacteria" style="color: rgb(202, 112, 85);"></i> Antibiotic'
+		);
+		$types[] = array(
+			'id' => -2,
+			'name' => '<i class="fa-solid fa-syringe" style="color: rgb(95, 124, 219);"></i> Vaccin'
+		);
+
 		$data = array(
 						"query"			=> $id,
-						"types" 		=> $this->prod_type->get_all()
+						"types" 		=> $types
 					);
 
 		$this->_render_page('product/list', $data);
@@ -193,14 +232,17 @@ class Products extends Vet_Controller
 		{
 			$global = $product['volume_count'] + 0;
 			$local  = $product['volume_location'] + 0;
+			
+			$is_ab = ($product['is_antibiotic']) ? " <i class='fa-solid fa-bacteria' style='color: rgb(202, 112, 85);'></i>" : "";	
+			$is_vaccin = ($product['vaccin']) ? " <i class='fa-solid fa-syringe' style='color: rgb(95, 124, 219);'></i>" : "";
 
-		$aaData[] = array(
-			"<a href='". base_url('products/profile/' . $product['product_id']) ."'>" . $product['name'] . "</a>",
-			($global > 0 && $local > 0) ? $local . " / " . $global . " " . $product['unit_sell'] : "",
-			($product['sellable']) ? "<i class='fa-solid fa-bag-shopping' style='color: green;'></i>" : "<i class='fa-solid fa-xmark' style='color: red;'></i>",
-			"",
-			"<a href='". base_url('products/product/' . $product['product_id']) ."' class='btn btn-sm btn-outline-primary'>edit</a>"
-		);
+			$aaData[] = array(
+				"<a href='". base_url('products/profile/' . $product['product_id']) ."'>" . $product['name'] . "</a>",
+				($global > 0 && $local > 0) ? $local . " / " . $global . " " . $product['unit_sell'] : "",
+				($product['sellable']) ? "<i class='fa-solid fa-bag-shopping' style='color: green;'></i>" . $is_ab . $is_vaccin : "<i class='fa-solid fa-xmark' style='color: red;'></i>" . $is_ab . $is_vaccin,
+				"",
+				"<a href='". base_url('products/product/' . $product['product_id']) ."' class='btn btn-sm btn-outline-primary'>edit</a>"
+			);
 
 		}
 		echo json_encode(array("aaData" => $aaData));
@@ -631,5 +673,63 @@ class Products extends Vet_Controller
 	{
 		$usage = $this->eprod->get_monthly_usage($product, $months);
 		echo json_encode($usage);
+	}
+
+	private function build_search_results(string $query, int $location): array
+	{
+		if ($query === '' || strlen($query) < 2) {
+			return array();
+		}
+
+		$results = array();
+
+		foreach ($this->products->search_product_with_stock($query, $location, self::SEARCH_LIMIT) as $product) {
+			$results[] = array(
+				'id' => (int) $product['id'],
+				'type' => 'product',
+				'name' => $product['name'],
+				'sellable' => (bool) $product['sellable'],
+				'is_antibiotic' => (bool) $product['is_antibiotic'],
+				'vaccin' => (bool) $product['vaccin'],
+				'unit_sell' => $product['unit_sell'],
+				'local_stock' => $this->format_stock_volume($product['local_stock']),
+				'global_stock' => $this->format_stock_volume($product['global_stock']),
+				'profile_url' => base_url('products/profile/' . $product['id']),
+				'edit_url' => base_url('products/product/' . $product['id']),
+			);
+		}
+
+		foreach ($this->procedures->search_procedure($query, self::SEARCH_LIMIT) ?: array() as $procedure) {
+			$results[] = array(
+				'id' => (int) $procedure['id'],
+				'type' => 'procedure',
+				'name' => $procedure['name'],
+				'price' => $procedure['price'],
+				'edit_url' => base_url('pricing/proc_edit/' . $procedure['id']),
+			);
+		}
+
+		usort($results, static function ($left, $right) {
+			$left_not_sellable = ($left['type'] === 'product' && empty($left['sellable'])) ? 1 : 0;
+			$right_not_sellable = ($right['type'] === 'product' && empty($right['sellable'])) ? 1 : 0;
+
+			if ($left_not_sellable !== $right_not_sellable) {
+				return $left_not_sellable <=> $right_not_sellable;
+			}
+
+			if ($left['type'] !== $right['type']) {
+				return strcmp($left['type'], $right['type']);
+			}
+
+			return strcasecmp($left['name'], $right['name']);
+		});
+
+		return $results;
+	}
+
+	private function format_stock_volume($volume): string
+	{
+		$formatted = number_format((float) $volume, 2, '.', '');
+		return rtrim(rtrim($formatted, '0'), '.');
 	}
 }

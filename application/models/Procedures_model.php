@@ -27,12 +27,12 @@ class Procedures_model extends MY_Model
 		search a product based on name
 		search/index
 	*/
-	public function search_procedure($name)
+	public function search_procedure($name, $limit = 50)
 	{
 		return ($name) ?
 					$this->
 					like('name', $name, 'both')->
-					limit(50)->
+					limit($limit)->
 					get_all() 
 					: 
 					false;

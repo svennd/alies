@@ -26,6 +26,19 @@
 		<label for="email">Email</label>
 		<input type="mail" name="email" class="form-control" id="email" value="<?php echo $user_edit->email; ?>" disabled>
 	</div>	 
+	<div class="form-group">
+		<div class="form-check">
+			<input
+				type="checkbox"
+				class="form-check-input"
+				id="active"
+				name="active"
+				value="1"
+				<?php echo !empty($user_edit->active) ? 'checked="checked"' : ''; ?>
+			>
+			<label class="form-check-label" for="active">User is active</label>
+		</div>
+	</div>
 	 <div class="form-row">
 		<div class="form-group col-md-6">
 			<label for="password">Password</label>
