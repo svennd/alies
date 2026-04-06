@@ -40,7 +40,7 @@ class Products extends Vet_Controller
 
 		$data = array(
 						"search_q"					=> $search_query,
-						"types" 					=> $this->prod_type->get_all(),
+						"types" 					=> $this->prod_type->get_type_options(),
 						"expired"					=> $this->stock
 																		->fields('eol, volume')
 																		->where('eol < DATE_ADD(NOW(), INTERVAL +90 DAY)', null, null, false, false, true)
@@ -168,19 +168,31 @@ class Products extends Vet_Controller
 		{
 			$this->new_product_step_2($pid);
 		}
+		elseif ($this->input->post('submit') && $step == 3 && $pid)
+		{
+			$this->new_product_step_3($pid);
+		}
+		elseif ($this->input->post('submit') && $step == 4 && $pid)
+		{
+			$this->new_product_step_4($pid);
+		}
+
+		$current_step = (!$step) ? 1 : (int) $step;
+		$product = false;
+		if ($pid) {
+			$product = $this->products
+				->with_type('fields:name')
+				->get((int) $pid);
+		}
 
 		# populate the data array
 		$data = array(
-				'step'		=> (!$step) ? 1 : (int)$step,
-				'type' 		=> $this->prod_type->get_all(),
+				'step'		=> $current_step,
+				'type' 		=> $thiwhales->prod_type->get_type_options(),
 				'booking'	=> $this->booking->get_all(),
-				'product'	=> ($step) ?
-							$this->products
-								->with_prices('fields:volume, price, id|order_inside:volume asc')
-								->where(array("sellable" => 1))
-								->fields('id, name, buy_volume, buy_price, updated_at, unit_sell')
-								->get($pid)
-							: false,
+				'product'	=> $product,
+				'llimit'	=> ($product) ? $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => (int) $pid))->get_all() : array(),
+				'stock_locations' => $this->stock_location->get_all(),
 				);
 		$this->_render_page('product/product_new', $data);
 	}
@@ -192,23 +204,61 @@ class Products extends Vet_Controller
 	*/
 	public function product_list(int $id = 1)
 	{
-		$types = $this->prod_type->get_all();
-		$types[] = array(
+		$types = $this->prod_type->get_type_options();
+		$root_types = array();
+		$child_types = array();
+
+		foreach ($types as $type) {
+			if (is_null($type['root'])) {
+				$root_types[] = $type;
+				continue;
+			}
+
+			if (!isset($child_types[(int) $type['root']])) {
+				$child_types[(int) $type['root']] = array();
+			}
+			$child_types[(int) $type['root']][] = $type;
+		}
+
+		$special_types = array();
+		$special_types[] = array(
 			'id' => 0,
 			'name' => '<i class="fa-solid fa-xmark" style="color: red;"></i> ' . $this->lang->line('saleable')
 		);
-		$types[] = array(
+		$special_types[] = array(
 			'id' => -1,
 			'name' => '<i class="fa-solid fa-bacteria" style="color: rgb(202, 112, 85);"></i> Antibiotic'
 		);
-		$types[] = array(
+		$special_types[] = array(
 			'id' => -2,
 			'name' => '<i class="fa-solid fa-syringe" style="color: rgb(95, 124, 219);"></i> Vaccin'
 		);
 
+		$selected_root = null;
+		foreach ($root_types as $type) {
+			if ((int) $type['id'] === $id) {
+				$selected_root = $id;
+				break;
+			}
+		}
+
+		if (is_null($selected_root)) {
+			foreach ($child_types as $root_id => $children) {
+				foreach ($children as $child) {
+					if ((int) $child['id'] === $id) {
+						$selected_root = (int) $root_id;
+						break 2;
+					}
+				}
+			}
+		}
+
 		$data = array(
-						"query"			=> $id,
-						"types" 		=> $types
+						"query"				=> $id,
+						"root_types" 		=> $root_types,
+						"special_types" 	=> $special_types,
+						"child_types"		=> $child_types,
+						"selected_root"		=> $selected_root,
 					);
 
 		$this->_render_page('product/list', $data);
@@ -305,7 +355,7 @@ class Products extends Vet_Controller
 
 		$data = array(
 						'product' 			=> $this->products->get($id),
-						'type' 				=> $this->prod_type->get_all(),
+						'type' 				=> $this->prod_type->get_type_options(),
 						'labels'			=> $this->prod_label->order_by('name', 'ASC')->get_all(),
 						'product_labels'	=> $this->prod_label->get_for_product($id),
 						'update'			=> $update,
@@ -606,29 +656,36 @@ class Products extends Vet_Controller
 	// enter the basic details of the product in the products table
 	private function new_product_step_1()
 	{
-		$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
+		$default_booking = $this->booking->fields('id, btw')->limit(1)->get();
+		$booking_id = $default_booking ? (int) $default_booking['id'] : 1;
+		$booking_btw = $default_booking ? $default_booking['btw'] : 21;
 
 		$input = array(
 						"name" 				=> $this->input->post('name'),
-						"short_name" 		=> $this->input->post('short_name'),
+						"short_name" 		=> '',
+						"wholesale_name" 	=> $this->input->post('input_wh_name'),
 						"producer" 			=> $this->input->post('producer'),
 						"supplier" 			=> $this->input->post('supplier'),
 						"type" 				=> $this->input->post('type'),
-						"dead_volume"		=> $this->input->post('dead_volume'),
-						"vaccin_disease"	=> $this->input->post('vaccin_disease'),
-						"buy_volume" 		=> $this->input->post('buy_volume'),
-						"sell_volume" 		=> $this->input->post('sell_volume'),
+						"dead_volume"		=> 0,
+						"vaccin_disease"	=> NULL,
+						"buy_volume" 		=> 1,
+						"sell_volume" 		=> 1,
 						"buy_price"			=> 1,
-						"unit_buy" 			=> $this->input->post('unit_buy'),
-						"unit_sell" 		=> $this->input->post('unit_sell'),
+						"unit_buy" 			=> '',
+						"unit_sell" 		=> '',
 						"input_barcode" 	=> (empty($this->input->post('input_barcode')) ? NULL : $this->input->post('input_barcode')),
-						"btw_buy" 			=> $this->input->post('btw_buy'),
-						"btw_sell" 			=> $booking['btw'],
-						"vaccin" 			=> (is_null($this->input->post('vaccin')) ? 0 : 1),
-						"vaccin_freq" 		=> $this->input->post('vaccin_freq'),
-						"booking_code" 		=> $this->input->post('booking_code'),
-						"sellable" 			=> (is_null($this->input->post('sellable')) ? 0 : 1),
-						"limit_stock" 		=> $this->input->post('limit_stock')
+						"btw_buy" 			=> 0,
+						"btw_sell" 			=> $booking_btw,
+						"vaccin" 			=> 0,
+						"vaccin_freq" 		=> 0,
+						"booking_code" 		=> $booking_id,
+						"vhbcode" 			=> $this->input->post('vhbcode'),
+						"cnk" 				=> $this->input->post('cnk'),
+						"cti_e" 			=> $this->input->post('cti_e'),
+						"wholesale" 		=> (int) $this->input->post('wholesale'),
+						"sellable" 			=> 1,
+						"limit_stock" 		=> 0
 					);
 
 		# new product
@@ -641,32 +698,53 @@ class Products extends Vet_Controller
 		redirect( 'products/new/2/' . $pid );
 	}
 
-	// update the pricing of a product of a new product
 	private function new_product_step_2(int $pid)
 	{
-		# update buy_price
-		if (!empty($this->input->post('buy_price'))) {
-			$this->products->update(array("buy_price" => $this->input->post('buy_price')), $pid);
-		}
+		$booking = $this->booking->fields('btw')->get($this->input->post('booking_code'));
 
-		# modification
-		if ($this->input->post('submit') == "edit") {
-			$this->pprice
-					->where(array(
-									"id" 	=> $this->input->post('price_id')
-							))
-					->update(array(
-									"volume" => $this->input->post('volume'),
-									"price" => $this->input->post('price'),
-							));
-		# new price
-		} elseif ($this->input->post('submit') != "store_buy_price") {
-			$this->pprice->insert(array(
-										'volume' 		=> $this->input->post('volume'),
-										'price' 		=> $this->input->post('price'),
-										'product_id' 	=> $pid
-								));
-		}
+		$this->products->update(array(
+			"buy_volume" 	=> $this->input->post('buy_volume'),
+			"unit_buy" 		=> $this->input->post('unit_buy'),
+			"sell_volume" 	=> $this->input->post('sell_volume'),
+			"unit_sell" 	=> $this->input->post('unit_sell'),
+			"btw_buy" 		=> $this->input->post('btw_buy'),
+			"btw_sell" 		=> $booking ? $booking['btw'] : 21,
+			"booking_code" 	=> $this->input->post('booking_code'),
+		), $pid);
+
+		redirect('products/new/3/' . $pid);
+	}
+
+	private function new_product_step_3(int $pid)
+	{
+		$this->products->update(array(
+			"limit_stock" => $this->input->post('limit_stock'),
+		), $pid);
+
+		$this->set_local_limits((array) $this->input->post('limit'), $pid);
+
+		redirect('products/new/4/' . $pid);
+	}
+
+	private function new_product_step_4(int $pid)
+	{
+		$default_indication = $this->input->post('default_indication');
+
+		$this->products->update(array(
+			"dead_volume"		=> $this->input->post('dead_volume'),
+			"vaccin"			=> (is_null($this->input->post('vaccin')) ? 0 : 1),
+			"vaccin_freq"		=> $this->input->post('vaccin_freq'),
+			"vaccin_disease"	=> $this->input->post('vaccin_disease'),
+			"is_antibiotic"		=> (is_null($this->input->post('is_antibiotic')) ? 0 : 1),
+			"default_indication"=> ($default_indication == "null") ? NULL : $default_indication,
+			"ab_unit"			=> $this->input->post('ab_unit'),
+			"ab_unit_volume"	=> $this->input->post('ab_unit_volume'),
+			"sellable"			=> (is_null($this->input->post('sellable')) ? 0 : 1),
+			"discontinued"		=> (is_null($this->input->post('discontinued')) ? 0 : 1),
+			"comment_admin"		=> $this->input->post('comment_admin'),
+		), $pid);
+
+		redirect('products/new/5/' . $pid);
 	}
 
 	public function get_monthly_usage(int $product, int $months = 12)

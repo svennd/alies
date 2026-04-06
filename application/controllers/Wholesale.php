@@ -27,10 +27,26 @@ class Wholesale extends Admin_Controller {
 
 	public function index()
 	{
+		$search = trim((string) $this->input->get('search'));
+		$stats = $this->wholesale->get_index_stats();
+
 		$data = array(
-			"products"		=> $this->wholesale->with_product()->get_all(),
+			"products"			=> ($search !== '') ? $this->wholesale->search_index($search) : array(),
+			"recent_products"	=> ($search === '') ? $this->wholesale->get_recent_index_items(5) : array(),
+			"search"			=> $search,
+			"wholesale_count"	=> $stats['wholesale_count'],
+			"last_update"		=> $stats['last_update'],
+			"unlinked_count"	=> $stats['unlinked_count'],
 		);
 		$this->_render_page('wholesale/index', $data);
+	}
+
+	public function unlinked()
+	{
+		$data = array(
+			"products" => $this->wholesale->get_unlinked_items(),
+		);
+		$this->_render_page('wholesale/unlinked', $data);
 	}
 
 	public function delivery_overview()

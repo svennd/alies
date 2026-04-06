@@ -9,9 +9,21 @@
 	</div>
 
 	<div class="card-body">
-	<?php foreach ($types as $type): ?>
-		<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm <?php echo ($type['id'] == $query) ? 'btn-primary' : 'btn-outline-primary'; ?>" ><?php echo $type['name']; ?></a>
-	<?php endforeach; ?>
+	<div class="mb-3">
+		<?php foreach ($root_types as $type): ?>
+			<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm <?php echo ($type['id'] == $query || $type['id'] == $selected_root) ? 'btn-primary' : 'btn-outline-primary'; ?>" ><?php if (!empty($type['icon'])): ?><i class="<?php echo html_escape($type['icon']); ?> mr-1" <?php echo !empty($type['icon_color']) ? 'style="color: ' . html_escape($type['icon_color']) . ';"' : ''; ?>></i><?php endif; ?><?php echo html_escape($type['name']); ?></a>
+		<?php endforeach; ?>
+		<?php foreach ($special_types as $type): ?>
+			<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm <?php echo ($type['id'] == $query) ? 'btn-primary' : 'btn-outline-primary'; ?>" ><?php echo $type['name']; ?></a>
+		<?php endforeach; ?>
+	</div>
+	<?php if (!is_null($selected_root) && !empty($child_types[$selected_root])): ?>
+		<div class="mb-3">
+			<?php foreach ($child_types[$selected_root] as $type): ?>
+				<a href="<?php echo base_url('products/product_list/' . $type['id']); ?>" class="btn btn-sm <?php echo ($type['id'] == $query) ? 'btn-success' : 'btn-outline-success'; ?>" ><?php if (!empty($type['icon'])): ?><i class="<?php echo html_escape($type['icon']); ?> mr-1" <?php echo !empty($type['icon_color']) ? 'style="color: ' . html_escape($type['icon_color']) . ';"' : ''; ?>></i><?php endif; ?><?php echo html_escape($type['name']); ?></a>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
 	<hr/>
 		<table class="table table-sm" id="dataTable">
 		<thead>

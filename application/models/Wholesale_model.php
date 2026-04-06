@@ -195,4 +195,73 @@ class Wholesale_model extends MY_Model
 
 		return $this->db->query($sql)->result_array();
 	}
+
+	public function search_index(string $term = '', int $limit = 50)
+	{
+		$this->db
+			->select('wholesale.*, products.id as product_id, products.name as product_name')
+			->from('wholesale')
+			->join('products', 'products.wholesale = wholesale.id', 'left');
+
+		if ($term !== '') {
+			$this->db->group_start()
+				->like('wholesale.description', $term)
+				->or_like('wholesale.vendor_id', $term)
+				->or_like('wholesale.CNK', $term)
+				->or_like('wholesale.VHB', $term)
+				->or_like('wholesale.distributor', $term)
+				->or_like('products.name', $term)
+				->group_end();
+		}
+
+		return $this->db
+			->order_by('wholesale.updated_at', 'DESC')
+			->limit($limit)
+			->get()
+			->result_array();
+	}
+
+	public function get_index_stats()
+	{
+		$row = $this->db
+			->select('
+				COUNT(wholesale.id) as wholesale_count, 
+				MAX(wholesale.updated_at) as last_update, 
+				SUM(CASE WHEN products.id IS NULL THEN 1 ELSE 0 END) as unlinked_count', false)
+			->from($this->table)
+			->join('products', 'products.wholesale = wholesale.id', 'left')
+			->get()
+			->row_array();
+
+		return array(
+			'wholesale_count' => isset($row['wholesale_count']) ? (int) $row['wholesale_count'] : 0,
+			'last_update' => $row['last_update'] ?? null,
+			'unlinked_count' => isset($row['unlinked_count']) ? (int) $row['unlinked_count'] : 0,
+		);
+	}
+
+	public function get_recent_index_items(int $limit = 5)
+	{
+		return $this->db
+			->select('wholesale.*, products.id as product_id, products.name as product_name')
+			->from('wholesale')
+			->join('products', 'products.wholesale = wholesale.id', 'left')
+			->order_by('wholesale.updated_at', 'DESC')
+			->limit($limit)
+			->get()
+			->result_array();
+	}
+
+	public function get_unlinked_items(int $limit = 250)
+	{
+		return $this->db
+			->select('wholesale.*')
+			->from('wholesale')
+			->join('products', 'products.wholesale = wholesale.id', 'left')
+			->where('products.id IS NULL', null, false)
+			->order_by('wholesale.updated_at', 'DESC')
+			->limit($limit)
+			->get()
+			->result_array();
+	}
 }

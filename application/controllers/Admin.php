@@ -170,18 +170,33 @@ class Admin extends Admin_Controller
 	public function product_types()
 	{
 		if ($this->input->post('submit') == "add_product_type") {
-			$this->prod_type->insert(array("name" => $this->input->post('name')));
+			$name = trim((string) $this->input->post('name'));
+			if ($name !== '') {
+				$this->prod_type->insert(array(
+					"name" => $name,
+					"root" => $this->prod_type->normalize_root((int) $this->input->post('root')),
+					"icon" => $this->sanitize_type_icon($this->input->post('icon')),
+					"icon_color" => $this->sanitize_type_icon_color($this->input->post('icon_color'))
+				));
+			}
 		}
 		
 		if ($this->input->post('submit') == "update_product_type") {
+			$id = (int) $this->input->post('id');
+			$name = trim((string) $this->input->post('name'));
+			if ($name !== '') {
 			$this->prod_type->update(
 				array(
-									"name" 	=> $this->input->post('name')
+									"name" 	=> $name,
+									"root"	=> $this->prod_type->normalize_root((int) $this->input->post('root'), $id),
+									"icon"	=> $this->sanitize_type_icon($this->input->post('icon')),
+									"icon_color" => $this->sanitize_type_icon_color($this->input->post('icon_color'))
 								),
 				array(
-									"id" => (int) $this->input->post('id')
+									"id" => $id
 				)
 			);
+			}
 		}
 
 		if ($this->input->post('submit') == "add_product_label") {
@@ -215,7 +230,8 @@ class Admin extends Admin_Controller
 		}
 		
 		$data = array(
-						"prod_type" => $this->prod_type->get_all(),
+						"prod_type" => $this->prod_type->get_admin_listing(),
+						"prod_type_roots" => $this->prod_type->get_root_options(),
 						"prod_label" => $this->prod_label->order_by('name', 'ASC')->get_all(),
 					);
 	
@@ -229,6 +245,8 @@ class Admin extends Admin_Controller
 	*/
 	public function product_types_rm(int $id)
 	{
+		$this->prod_type->detach_children($id);
+
 		// remove type
 		$this->prod_type->delete($id);
 		
@@ -258,5 +276,31 @@ class Admin extends Admin_Controller
 	{
 		$this->prod_label->delete_with_links($id);
 		redirect('admin/product_types', 'refresh');
+	}
+
+	private function sanitize_type_icon($icon)
+	{
+		$icon = trim((string) $icon);
+		if ($icon === '') {
+			return null;
+		}
+
+		$icon = preg_replace('/[^a-z0-9\\-\\s]/i', '', $icon);
+		$icon = preg_replace('/\\s+/', ' ', $icon);
+		return ($icon === '') ? null : $icon;
+	}
+
+	private function sanitize_type_icon_color($color)
+	{
+		$color = trim((string) $color);
+		if ($color === '') {
+			return null;
+		}
+
+		if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
+			return null;
+		}
+
+		return strtolower($color);
 	}
 }

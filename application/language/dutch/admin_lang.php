@@ -74,6 +74,7 @@ $lang['add_location']        = 'Locatie toevoegen';
 # product types
 $lang['add_product_type']     = 'Type toevoegen';
 $lang['add_product_label']    = 'Label toevoegen';
+$lang['root_category']        = 'Hoofdcategorie';
 
 # backup
 $lang['backup']             = 'Backup';

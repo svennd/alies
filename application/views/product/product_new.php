@@ -31,25 +31,39 @@
 	<div class="card-body">
 		<div class="row bs-wizard" style="border-bottom:0;">
 
-			<div class="col-4 bs-wizard-step <?php if($step == 1): ?>active<?php else: ?>complete<?php endif; ?>">
+			<div class="col bs-wizard-step <?php if($step == 1): ?>active<?php elseif($step > 1): ?>complete<?php else: ?>disabled<?php endif; ?>">
 			  <div class="text-center bs-wizard-stepnum">Step 1</div>
 			  <div class="progress"><div class="progress-bar"></div></div>
 			  <a href="#" class="bs-wizard-dot"></a>
 			  <div class="bs-wizard-info text-center">Product Info</div>
 			</div>
 
-			<div class="col-4 bs-wizard-step <?php if($step == 1): ?>disabled<?php elseif($step == 3): ?>complete<?php else: ?>active<?php endif; ?>">
+			<div class="col bs-wizard-step <?php if($step < 2): ?>disabled<?php elseif($step == 2): ?>active<?php else: ?>complete<?php endif; ?>">
 			  <div class="text-center bs-wizard-stepnum">Step 2</div>
 			  <div class="progress"><div class="progress-bar"></div></div>
 			  <a href="#" class="bs-wizard-dot"></a>
-			  <div class="bs-wizard-info text-center">Pricing</div>
+			  <div class="bs-wizard-info text-center">Transaction</div>
 			</div>
 
-			<div class="col-3 bs-wizard-step <?php if($step == 3): ?>complete<?php else: ?>disabled<?php endif; ?>">
+			<div class="col bs-wizard-step <?php if($step < 3): ?>disabled<?php elseif($step == 3): ?>active<?php else: ?>complete<?php endif; ?>">
 			  <div class="text-center bs-wizard-stepnum">Step 3</div>
 			  <div class="progress"><div class="progress-bar"></div></div>
 			  <a href="#" class="bs-wizard-dot"></a>
-			  <div class="bs-wizard-info text-center">Add stock</div>
+			  <div class="bs-wizard-info text-center">Limit</div>
+			</div>
+
+			<div class="col bs-wizard-step <?php if($step < 4): ?>disabled<?php elseif($step == 4): ?>active<?php else: ?>complete<?php endif; ?>">
+			  <div class="text-center bs-wizard-stepnum">Step 4</div>
+			  <div class="progress"><div class="progress-bar"></div></div>
+			  <a href="#" class="bs-wizard-dot"></a>
+			  <div class="bs-wizard-info text-center">Advanced</div>
+			</div>
+
+			<div class="col bs-wizard-step <?php if($step < 5): ?>disabled<?php elseif($step == 5): ?>active<?php else: ?>complete<?php endif; ?>">
+			  <div class="text-center bs-wizard-stepnum">Step 5</div>
+			  <div class="progress"><div class="progress-bar"></div></div>
+			  <a href="#" class="bs-wizard-dot"></a>
+			  <div class="bs-wizard-info text-center">Finished Overview</div>
 			</div>
 		</div>
 
@@ -57,328 +71,199 @@
 		<form action="<?php echo base_url(); ?>products/new" method="post" autocomplete="off">
 			<h5>Product info</h5>
 			<hr />
-			<div class="form-row">
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Name*</label>
-				<input type="text" name="name" class="form-control" id="exampleFormControlInput3" value="" required>
-				</div>
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Abbreviation</label>
-				<input type="text" name="short_name" class="form-control" id="exampleFormControlInput3" value="">
-				</div>
-			</div>
+			<p><?php echo $this->lang->line('product_name_info'); ?></p>
 
-			<div class="form-row">
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Producer</label>
-				<input type="text" name="producer" class="form-control" id="exampleFormControlInput3" value="">
-				</div>
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Supplier</label>
-				<input type="text" name="supplier" class="form-control" id="exampleFormControlInput3" value="">
-				</div>
-			</div>
-
-			<div class="form-row">
-				<div class="col mb-3">
-
-					<label for="type">Type</label>
-					<select name="type" class="form-control" id="type">
-						<?php foreach($type as $t):?>
-							<option value="<?php echo $t['id']; ?>">
-							<?php echo $t['name']; ?></option>
-						<?php endforeach; ?>
-						<option value="0">Other</option>
-					</select>
-
-				</div>
-				<div class="col mb-3">&nbsp;
-				</div>
-			</div>
-
-			<br/>
-			<h5>Vaccin</h5>
-			<hr />
-			<div class="form-row">
-				<div class="col mb-3">
-					<div class="custom-control custom-switch">
-						<input type="checkbox" class="custom-control-input" name="vaccin" value="1" id="vaccine_switch">
-						<label class="custom-control-label" for="vaccine_switch">Vaccine</label>
-					</div>
-				</div>
-				<div class="col mb-3">
-					<div class="form-group" style="display:none;" id="is_a_vaccine">
-						<label for="exampleFormControlTextarea1">Expire *</label>
-						<input type="text" name="vaccin_freq" class="form-control" id="exampleFormControlInput3" value="0">
-						<small id="offsetHelp" class="form-text text-muted">time untill renewal is required, 0 for no expire date. (in days)</small>
-					</div>
-				</div>
-			</div>
-
-			<br/>
-			<h5>Transaction info</h5>
-			<hr />
-			<div class="form-row">
-				<div class="col mb-3">
-				<div class="custom-control custom-switch">
-				  <input type="checkbox" class="custom-control-input" id="customSwitch1" name="sellable" value="1" checked>
-				  <label class="custom-control-label" for="customSwitch1">sellable</label>
-				</div>
-				</div>
-				<div class="col mb-3">&nbsp;</div>
-			</div>
-
-			<div class="form-row">
-				<div class="col">
-				<label for="exampleFormControlInput3">Buy volume*</label>
-				<input type="text" name="buy_volume" class="form-control" id="exampleFormControlInput3" value="1" >
-				</div>
-				<div class="col-md-2">
-				<label for="exampleFormControlInput3">Buy unit*</label>
-				<input type="text" name="unit_buy" class="form-control" id="exampleFormControlInput3" value="" required>
-				<small id="unitHelp" class="form-text text-muted">kg, fles, doos</small>
-				</div>
-				<div class="col-md-1"><label for="exampleFormControlInput3">==></label></div>
-				<div class="col">
-				<label for="exampleFormControlInput3">Sell volume*</label>
-				<input type="text" name="sell_volume" class="form-control" id="exampleFormControlInput3" value="1" >
-				<small class="form-text text-muted">eg. 2 box, containing 4 strips : "8" "strips"</small>
-				</div>
-				<div class="col-md-2">
-				<label for="exampleFormControlInput3">Sell Unit*</label>
-				<input type="text" name="unit_sell" class="form-control" id="exampleFormControlInput3" value="" required>
-				</div>
-			</div>
-			<br/>
-
-			<div class="form-row">
-				<div class="col">
-				<label for="exampleFormControlInput3">BTW buy</label>
-				<div class="input-group mb-3">
-				  <input type="text" class="form-control" name="btw_buy" value="">
-				  <div class="input-group-append">
-					<span class="input-group-text" id="basic-addon2">%</span>
-				  </div>
-				</div>
-				</div>
-				<div class="col">
-				<label for="exampleFormControlInput3">BTW sell</label>
-				<div class="input-group mb-3">
-					<select name="booking_code" class="form-control" id="type">
-						<?php foreach($booking as $t): ?>
-							<option value="<?php echo $t['id']; ?>"><?php echo $t['code'] . ' ' . $t['category'] . ' ' . $t['btw']  . '%'; ?></option>
-						<?php endforeach; ?>
-					</select>
-				</div>
-				</div>
-			</div>
-
-			<div class="form-row">
-				<div class="col">
-				<label for="exampleFormControlInput3">VHB code</label>
-				<input type="text" class="form-control" name="vhbcode" value="">
-				</div>
-				<div class="col">&nbsp;
-				</div>
-			</div>
-
-			<br/>
-			<h5>Advanced</h5>
-			<hr />
-
-			<div class="form-row">
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Dead volume</label>
-				<input type="text" name="dead_volume" class="form-control" id="exampleFormControlInput3" value="">
-				<small id="dead_volumeHelp" class="form-text text-muted">Volume that is removed from stock but not injected.</small>
-				</div>
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">Min. requirement stock</label>
-				<input type="text" name="limit_stock" class="form-control" id="limits" value="">
-				<small id="limitHelp" class="form-text text-muted">Minimum sellable volumes that should be available; (global)</small>
-				</div>
-			</div>
-
-			<div class="form-row">
-				<div class="col mb-3">
-				<label for="gs1_datamatrix">Scan barcode</label>
-				<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" value="">
-				<small class="form-text text-danger">Will overwrite input_barcode! (scan with a reader)</small>
-				</div>
-				<div class="col mb-3">
-				<label for="exampleFormControlInput3">input_barcode</label>
-				<input type="text" name="input_barcode" class="form-control" id="input_barcode" value="">
-				<small class="form-text text-muted" id="extra_info">Set the barcode manually</small>
-				</div>
-			</div>
-		<br/>
-		<button type="submit" name="submit" value="add" class="btn btn-outline-success">Next</button>
-		</form>
-
-		<?php elseif ($step == "2"): ?>
-		<?php if ($product): ?>
-
-				<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
-				<h5>Catalog Price : <?php echo $product['name'] ?></h5>
-				<hr />
-				<div class="form-row">
-					<div class="col">
-						<label for="exampleFormControlInput3">Catalog Price</label>
-						<div class="input-group mb-3">
-						  <input type="text" class="form-control" name="buy_price" value="<?php echo $product['buy_price'] ?>">
-						  <div class="input-group-append">
-							<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
-						  </div>
-						</div>
-						<small id="unitHelp" class="form-text text-muted">Normal buy-in price, not taking into account reductions or promotions</small>
-					</div>
-					<div class="col">
-						<label for="exampleFormControlInput3">&nbsp;</label>
-						<div class="input-group">
-							<button type="submit" name="submit" value="store_buy_price" class="btn btn-primary">Store</button>
-						</div>
-					</div>
-				</div>
-				</form>
-
-				<br/>
-				<?php if (!is_null($product['prices'])): ?>
-				<h5>Current Sell Price</h5>
-				<hr />
-					<div class="form-row">
-						<div class="col-2">
-							<label for="exampleFormControlInput3">Volume</label>
-						</div>
-						<div class="col-3">
-							<label for="exampleFormControlInput3">Price*</label>
-						</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				<?php foreach($product['prices'] as $price):
-					$unit_price = ($product['buy_price']/$product['buy_volume']);
-					$change = round((($unit_price-$price['price'])/$unit_price)*100*-1);
-				?>
-
-					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
-					<div class="form-row">
-
-						<div class="col-2">
-							<div class="input-group mb-2 mr-sm-2">
-								<input type="text" class="form-control" id="volume" name="volume" value="<?php echo $price['volume']; ?>">
-								<div class="input-group-append">
-									<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
-								</div>
-							</div>
-							<small class="form-text text-danger"></small>
-						</div>
-
-						<div class="col-3">
-							<div class="input-group">
-								<input type="text" class="form-control" id="price" name="price" placeholder="" value="<?php echo $price['price']; ?>">
-								<div class="input-group-append">
-									<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
-								</div>
-							</div>
-
+			<div class="list-group mb-4 shadow">
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo $this->lang->line('product_name'); ?>*</strong>
+							<p class="text-muted mb-0"><?php echo $this->lang->line('product_name_base_name'); ?></p>
 						</div>
 						<div class="col">
-							<div class="input-group">
-								<input type="hidden" name="price_id" value="<?php echo $price['id']; ?>" />
-								<button type="submit" name="submit" value="edit" class="btn btn-primary">Update</button>
-								<a href="<?php echo base_url(); ?>products/remove_product_price/<?php echo $price['id']; ?>/new" class="btn btn-danger mx-1">Remove</a>
-								<small class="form-text p-2"><?php echo $change; ?>%</small>
-							</div>
+							<input type="text" class="form-control" id="product_name" name="name" value="" required>
 						</div>
 					</div>
-					</form>
-				<?php endforeach; ?>
-					<br/>
-					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
-					<h6><u>Add price</u></h6>
-					<div class="form-row">
-
-						<div class="col-2 mb-3">
-							<label for="exampleFormControlInput3">Volume</label>
-							<div class="input-group mb-2 mr-sm-2">
-								<input type="text" class="form-control" id="volume" name="volume" value="" required>
-								<div class="input-group-append">
-									<span class="input-group-text" id="basic-addon2"><?php echo $product['unit_sell']; ?></span>
-								</div>
-							</div>
-							<small class="form-text text-danger"></small>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo $this->lang->line('product_wholesale'); ?></strong>
+							<div class="btn btn-sm btn-outline-success ml-2" id="wholesale_button"><i class="fa-solid fa-link"></i></div>
 						</div>
-
-						<div class="col-3 mb-3">
-							<label for="exampleFormControlInput3">Price*</label>
-
-							<div class="input-group">
-								<input type="text" class="form-control" id="price" name="price" placeholder="" value="" required>
-								<div class="input-group-append">
-									<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
-								</div>
-							</div>
-							<small class="form-text">reduced price : per unit</small>
-						</div>
-						<div class="col mb-3">
-						<label for="exampleFormControlInput3">&nbsp;</label>
-							<div class="input-group">
-								<button type="submit" name="submit" value="store" class="btn btn-primary">Add</button>
-							</div>
+						<div class="col">
+							<input type="text" class="form-control" id="input_wh_name" name="input_wh_name" value="">
+							<input type="hidden" id="wholesale_id" name="wholesale" value="">
 						</div>
 					</div>
-					</form>
-
-				<?php else: ?>
-
-					<br/>
-
-					<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>">
-
-					<h5>Set sell price</h5>
-					<hr />
-					<div class="form-row">
-						<div class="col mb-3">
-						<label for="exampleFormControlInput3">Price*</label>
-							<div class="input-group">
-								<input type="text" class="form-control" id="price" name="price" placeholder="" required>
-								<div class="input-group-append">
-									<span class="input-group-text" id="basic-addon2">&euro; / <?php echo $product['unit_sell']; ?></span>
-								</div>
-							</div>
-
-							<small class="form-text text-danger">Sales price for a single unit</small>
-							<input type="hidden" name="volume" value="1" />
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo $this->lang->line('type'); ?></strong>
 						</div>
-						<div class="col mb-3">
-						<label for="exampleFormControlInput3">&nbsp;</label>
-							<div class="input-group">
-								<button type="submit" name="submit" value="store" class="btn btn-primary mb-2">Store</button>
-							</div>
+						<div class="col-auto">
+							<select name="type" class="form-control" id="type">
+								<?php foreach($type as $t):?>
+									<option value="<?php echo $t['id']; ?>"><?php echo html_escape(ucfirst($t['display_name'])); ?></option>
+								<?php endforeach; ?>
+								<option value="0">Other</option>
+							</select>
 						</div>
 					</div>
-					</form>
-				<?php endif; ?>
-				<?php else : ?>
-				<div class="alert alert-danger" role="alert">Product is not sellable, or can't have a price;</div>
-			<?php endif; ?>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo $this->lang->line('vhbcode'); ?></strong>
+						</div>
+						<div class="col-auto">
+							<input type="text" class="form-control" id="vhbcode" name="vhbcode" value="">
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0">CNK</strong>
+							<div class="btn btn-sm btn-outline-success ml-2" id="cnk_button"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+						</div>
+						<div class="col-auto">
+							<input type="text" class="form-control" id="cnk" name="cnk" value="">
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0">CTI-e</strong>
+						</div>
+						<div class="col-auto">
+							<input type="text" class="form-control" id="cti-e" name="cti_e" value="">
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><i class="fas fa-barcode"></i> <?php echo $this->lang->line('gs1_barcode'); ?></strong>
+							<p class="text-muted mb-0"><?php echo $this->lang->line('gs1_scan_explain'); ?></p>
+						</div>
+						<div class="col-md-4">
+							<div class="d-flex">
+								<input type="text" name="gs1_datamatrix" class="form-control" id="gs1_datamatrix" placeholder="scan code here">
+								<input type="text" name="input_barcode" class="form-control ml-2" id="input_barcode" value="">
+							</div>
+							<small class="form-text text-muted" id="extra_info">Set the barcode manually</small>
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo ucfirst($this->lang->line('supplier')); ?></strong>
+						</div>
+						<div class="col-auto">
+							<input type="text" class="form-control" id="supplier" name="supplier" value="">
+						</div>
+					</div>
+				</div>
+				<div class="list-group-item list-group-item-action">
+					<div class="row align-items-center">
+						<div class="col">
+							<strong class="mb-0"><?php echo $this->lang->line('producer'); ?></strong>
+						</div>
+						<div class="col-auto">
+							<input type="text" class="form-control" id="input_producer" name="producer" value="">
+						</div>
+					</div>
+				</div>
+			</div>
 
-			<?php if(!is_null($product['prices'])): ?>
-				<a href="<?php echo base_url(); ?>products/new/3/<?php echo $product['id']; ?>" class="btn btn-outline-success">next</a>
-			<?php endif; ?>
-		<?php elseif ($step == "3"): ?>
+			<div class="text-right">
+				<button type="submit" name="submit" value="add" class="btn btn-outline-success">Next</button>
+			</div>
+		</form>
 
+		<?php elseif ($step == "2" && $product): ?>
+		<form method="post" action="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>" autocomplete="off">
+			<h5>Transaction</h5>
+			<hr />
+			<?php include 'block/edit_transaction.php'; ?>
+			<div class="d-flex justify-content-between">
+				<a href="<?php echo base_url(); ?>products/new/1/<?php echo $product['id']; ?>" class="btn btn-outline-secondary disabled" tabindex="-1" aria-disabled="true">Previous</a>
+				<button type="submit" name="submit" value="store_transaction" class="btn btn-outline-success">Next</button>
+			</div>
+		</form>
+
+		<?php elseif ($step == "3" && $product): ?>
+		<form method="post" action="<?php echo base_url(); ?>products/new/3/<?php echo $product['id']; ?>" autocomplete="off">
+			<h5>Limit</h5>
+			<hr />
+			<?php include 'block/edit_limiet.php'; ?>
+			<div class="d-flex justify-content-between">
+				<a href="<?php echo base_url(); ?>products/new/2/<?php echo $product['id']; ?>" class="btn btn-outline-secondary">Previous</a>
+				<button type="submit" name="submit" value="store_limit" class="btn btn-outline-success">Next</button>
+			</div>
+		</form>
+
+		<?php elseif ($step == "4" && $product): ?>
+		<form method="post" action="<?php echo base_url(); ?>products/new/4/<?php echo $product['id']; ?>" autocomplete="off">
+			<h5>Advanced</h5>
+			<hr />
+			<?php include 'block/edit_advanced.php'; ?>
+			<div class="d-flex justify-content-between">
+				<a href="<?php echo base_url(); ?>products/new/3/<?php echo $product['id']; ?>" class="btn btn-outline-secondary">Previous</a>
+				<button type="submit" name="submit" value="store_advanced" class="btn btn-outline-success">Finish</button>
+			</div>
+		</form>
+
+		<?php elseif ($step == "5" && $product): ?>
 		<div class="alert alert-success" role="alert">
 		  <h4 class="alert-heading">Product added!</h4>
 		  <p>Product <i><?php echo $product['name']; ?></i> is now added.</p>
-		  <hr>
-		  <p class="mb-0">
-		  <ul>
-			<li><a href="<?php echo base_url(); ?>stock/add_stock/<?php echo $product['id']; ?>">add stock ?</a></li>
-			<li><a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>">finetune sell price</a></li>
-			<li><a href="<?php echo base_url(); ?>products/new">add another product</a></li>
-		  </ul>
-		  </p>
 		</div>
+
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<div class="card shadow-sm h-100">
+					<div class="card-header">Product info</div>
+					<div class="card-body">
+						<p class="mb-1"><strong>Name:</strong> <?php echo html_escape($product['name']); ?></p>
+						<p class="mb-1"><strong>Wholesale:</strong> <?php echo html_escape($product['wholesale_name']); ?></p>
+						<p class="mb-1"><strong>Supplier:</strong> <?php echo html_escape($product['supplier']); ?></p>
+						<p class="mb-1"><strong>Producer:</strong> <?php echo html_escape($product['producer']); ?></p>
+						<p class="mb-1"><strong>Type:</strong> <?php echo isset($product['type']['display_name']) ? html_escape($product['type']['display_name']) : ''; ?></p>
+						<p class="mb-1"><strong>VHB:</strong> <?php echo html_escape($product['vhbcode']); ?></p>
+						<p class="mb-1"><strong>CNK:</strong> <?php echo html_escape($product['cnk']); ?></p>
+						<p class="mb-0"><strong>CTI-e:</strong> <?php echo html_escape($product['cti_e']); ?></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-3">
+				<div class="card shadow-sm h-100">
+					<div class="card-header">Transaction & settings</div>
+					<div class="card-body">
+						<p class="mb-1"><strong>Buy:</strong> <?php echo html_escape($product['buy_volume'] . ' ' . $product['unit_buy']); ?></p>
+						<p class="mb-1"><strong>Sell:</strong> <?php echo html_escape($product['sell_volume'] . ' ' . $product['unit_sell']); ?></p>
+						<p class="mb-1"><strong>Buy BTW:</strong> <?php echo html_escape($product['btw_buy']); ?>%</p>
+						<p class="mb-1"><strong>Sellable:</strong> <?php echo !empty($product['sellable']) ? 'Yes' : 'No'; ?></p>
+						<p class="mb-1"><strong>Discontinued:</strong> <?php echo !empty($product['discontinued']) ? 'Yes' : 'No'; ?></p>
+						<p class="mb-1"><strong>Global limit:</strong> <?php echo html_escape($product['limit_stock']); ?></p>
+						<p class="mb-0"><strong>Dead volume:</strong> <?php echo html_escape($product['dead_volume']); ?></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="d-flex flex-wrap">
+			<a href="<?php echo base_url(); ?>stock/add_stock/<?php echo $product['id']; ?>" class="btn btn-outline-success mr-2 mb-2">Add stock</a>
+			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-outline-primary mr-2 mb-2">Set pricing</a>
+			<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>" class="btn btn-outline-secondary mr-2 mb-2">Open full edit page</a>
+			<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-dark mb-2">Add another product</a>
+		</div>
+		<?php else: ?>
+		<div class="alert alert-danger" role="alert">Product not found.</div>
 		<?php endif;?>
     </div>
 </div>
@@ -417,16 +302,55 @@ function process_datamatrix(barcode) {
 	}
 }
 
+function toggleByCheckbox(checkbox, target) {
+	if ($(checkbox).length === 0) return;
+
+	if ($(checkbox).is(':checked')) {
+		$(target).show();
+	} else {
+		$(target).hide();
+	}
+
+	$(checkbox).on('change', function () {
+		$(this).is(':checked')
+			? $(target).slideDown()
+			: $(target).slideUp();
+	});
+}
+
+function diff(label, oldVal, newVal) {
+	oldVal = oldVal || "(empty)";
+	newVal = newVal || "(empty)";
+	return oldVal === newVal
+		? "<b>" + label + ":</b> " + oldVal + " <span style='color:green'>(same)</span><br>"
+		: "<b>" + label + ":</b> " + oldVal + " → <b style='color:#d63384'>" + newVal + "</b><br>";
+}
+
+function buildDiff(map) {
+	var html = "";
+	$.each(map, function(_, field) {
+		if (!field.new) return;
+		html += diff(field.label, field.old, field.new);
+	});
+	return html || "No changes detected.";
+}
+
+function applyChanges(map) {
+	$.each(map, function(_, field) {
+		if (field.new && field.old !== field.new) {
+			$(field.selector).val(field.new).addClass("is-valid");
+		}
+	});
+}
+
 document.addEventListener("DOMContentLoaded", function(){
 	var _changeInterval = null;
 	var barcode = null;
 	$("#prd").show();
 	$("#products").addClass('active');
 	$("#product_list").addClass('active');
-
-	$("#vaccine_switch").change(function() {
-		$("#is_a_vaccine").toggle();
-	});
+	toggleByCheckbox('#vaccin', '.no_vaccin_hide');
+	toggleByCheckbox('#is_antibiotic', '.no_antibiotic_hide');
 
 	$("#gs1_datamatrix").keyup(function(){
 		barcode = this.value;
@@ -436,6 +360,141 @@ document.addEventListener("DOMContentLoaded", function(){
 			process_datamatrix(barcode);
 
 		}, 500);
+	});
+
+	$("#cnk_button").on("click", function(){
+		var cnk = $("#cnk").val().trim();
+		if (!cnk) return;
+
+		var btn = $(this);
+		var original = btn.html();
+
+		btn.html('<i class="fa-solid fa-spinner fa-spin"></i>').prop("disabled", true);
+
+		$.ajax({
+			url: '/fagg/api/fagg/by-cnk/' + cnk,
+			type: 'GET',
+			headers: {'X-API-Key':'2a0a05b5c83d3b15d537174eabe0be09ba6fb52097d41ed318663c78cff5ac98'},
+			success: function(response){
+				const item = response && response.data ? response.data : response;
+
+				var map = {
+					vhb: {
+						label: "VHB",
+						selector: "#vhbcode",
+						old: $("#vhbcode").val(),
+						new: item.VHB || ""
+					},
+					cti: {
+						label: "CTI Extended",
+						selector: "#cti-e",
+						old: $("#cti-e").val(),
+						new: item.cti_extended || ""
+					},
+					barcode: {
+						label: "Barcode",
+						selector: "#input_barcode",
+						old: $("#input_barcode").val(),
+						new: item.fdm || ""
+					}
+				};
+
+				Swal.fire({
+					title: "FAGG Update",
+					html: buildDiff(map),
+					showCancelButton: true,
+					confirmButtonText: "Apply"
+				}).then(function(result){
+					if (result.isConfirmed) applyChanges(map);
+				});
+			},
+			error: function(xhr, status, error){
+				Swal.fire({
+					icon: "error",
+					title: "API Error",
+					html: "<pre style='white-space:pre-wrap;text-align:left'>" +
+						JSON.stringify({status: status, error: error, responseText: xhr.responseText}, null, 2) +
+						"</pre>"
+				});
+			},
+			complete: function(){
+				btn.html(original).prop("disabled", false);
+			}
+		});
+	});
+
+	$("#wholesale_button").on("click", function(){
+		Swal.fire({
+			title: "Search article",
+			html: '<select id="swal_wholesale" style="width:100%"></select>',
+			showCancelButton: true,
+			confirmButtonText: "Select",
+			didOpen: function(){
+				$('#swal_wholesale').select2({
+					dropdownParent: $('.swal2-container'),
+					theme: 'bootstrap4',
+					placeholder: 'Select Article',
+					ajax: {
+						url: '<?php echo base_url("wholesale/ajax_get_articles"); ?>',
+						dataType: 'json'
+					}
+				});
+			},
+			preConfirm: function(){
+				return $('#swal_wholesale').select2('data')[0];
+			}
+		}).then(function(result){
+			if (!result.isConfirmed || !result.value) return;
+
+			var data = result.value;
+			var map = {
+				wholesale_name: {
+					label: "Wholesale",
+					selector: "#input_wh_name",
+					old: $("#input_wh_name").val(),
+					new: data.text || ""
+				},
+				vhb: {
+					label: "VHB",
+					selector: "#vhbcode",
+					old: $("#vhbcode").val(),
+					new: data.vhb || ""
+				},
+				cnk: {
+					label: "CNK",
+					selector: "#cnk",
+					old: $("#cnk").val(),
+					new: data.cnk || ""
+				},
+				producer: {
+					label: "Producer",
+					selector: "#input_producer",
+					old: $("#input_producer").val(),
+					new: data.distr || ""
+				},
+				supplier: {
+					label: "Supplier",
+					selector: "#supplier",
+					old: $("#supplier").val(),
+					new: data.distr || ""
+				},
+				id: {
+					label: "Wholesale ID",
+					selector: "#wholesale_id",
+					old: $("#wholesale_id").val(),
+					new: data.id || ""
+				}
+			};
+
+			Swal.fire({
+				title: "Confirm change",
+				html: buildDiff(map),
+				showCancelButton: true,
+				confirmButtonText: "Apply"
+			}).then(function(confirm){
+				if (confirm.isConfirmed) applyChanges(map);
+			});
+		});
 	});
 
 });

@@ -35,7 +35,7 @@
 				<select name="type" class="form-control" style="width: 225px;" id="type">
 					<?php foreach($type as $t):?>
 						<option value="<?php echo $t['id']; ?>" <?php echo ($product && $t['id'] == $product['type']) ? "selected='selected'" : ""; ?>>
-						<?php echo ucfirst($t['name']); ?></option>
+						<?php echo html_escape(ucfirst($t['display_name'])); ?></option>
 					<?php endforeach; ?>
 					<option value="0">Other</option>
 				</select>

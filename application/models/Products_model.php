@@ -351,6 +351,7 @@ class Products_model extends MY_Model
 	public function get_products_by_type_with_stock(int $type_id, int $location_id = null)
 	{
 		$params = array($location_id, STOCK_IN_USE);
+		$typeIds = array($type_id);
 
 		$sql = "
 				SELECT 
@@ -388,11 +389,16 @@ class Products_model extends MY_Model
 					AND p.sellable = 1
 			";
 		} else {
+			$CI = &get_instance();
+			$CI->load->model('Product_type_model', 'prod_type');
+			$typeIds = array_merge($typeIds, $CI->prod_type->get_descendant_ids($type_id));
+
+			$placeholders = implode(',', array_fill(0, count($typeIds), '?'));
 			$sql .= "
-					AND p.type = ?
+					AND p.type IN (" . $placeholders . ")
 					AND p.sellable = 1
 			";
-			$params[] = $type_id;
+			$params = array_merge($params, $typeIds);
 		}
 
 		$sql .= "
