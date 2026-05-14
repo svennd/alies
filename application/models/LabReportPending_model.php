@@ -20,4 +20,11 @@ class LabReportPending_model extends CI_Model {
             'created_at'   => date('Y-m-d H:i:s')
         ]);
     }
+
+	public function count_recent()
+	{
+		$dt = new DateTime();
+		$dt->modify('-14 days');
+		return $this->db->where('created_at >=', $dt->format('Y-m-d H:i:s'))->count_all_results($this->table);
+	}
 }

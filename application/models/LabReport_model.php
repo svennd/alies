@@ -29,14 +29,34 @@ class LabReport_model extends MY_Model {
         return $this->db->insert_id();
     }
 
+	# search by (device + source_id) or (source + source_id)
     public function findBySource($device, $source, $source_id)
     {
-        return $this->db
-            ->where('device', $device)
-            ->where('source', $source)
-            ->where('source_id', $source_id)
-            ->get($this->table)
-            ->row();
+		if ($source_id === null) {
+            return null;
+        }
+
+        if ($device !== null) {
+            $existing = $this->db
+                ->where('device', $device)
+                ->where('source_id', $source_id)
+                ->get($this->table)
+                ->row();
+
+            if ($existing) {
+                return $existing;
+            }
+        }
+
+        if ($source !== null) {
+            return $this->db
+                ->where('source', $source)
+                ->where('source_id', $source_id)
+                ->get($this->table)
+                ->row();
+        }
+
+        return null;
     }
     
     public function touch($report_id)

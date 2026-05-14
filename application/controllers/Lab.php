@@ -50,8 +50,10 @@ class Lab extends Vet_Controller
 		$plots_raw 	 = $this->lab_plots->where(['report_id' => $lab_id])->get_all();
 
 		$plots = [];
-		foreach ($plots_raw as $p) {
-			$plots[$p['type']] = json_decode($p['data'], true);
+		if (is_array($plots_raw)) {
+			foreach ($plots_raw as $p) {
+				$plots[$p['type']] = json_decode($p['data'], true);
+			}
 		}
 
 		foreach ($lab_details as &$d) {
@@ -84,11 +86,12 @@ class Lab extends Vet_Controller
 		unset($d);
 
 		$data = [
+			"lab_id"      => $lab_id,
 			"lab_info"    => $lab_info,
 			"pet_info"    => $pet_info,
 			"lab_details" => $lab_details,
 			"owner"       => $owner,
-			"plots"		 => $plots
+			"plots"       => $plots
 		];
 
 		$this->_render_page('lab/detail', $data);

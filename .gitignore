@@ -36,6 +36,7 @@ application/config/database.php
 *.sublime-project
 /tests/tests/
 /tests/results/
+.phpunit.cache/
 /assets/barcode/*.png
 
 # ignore custom

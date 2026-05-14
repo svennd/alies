@@ -44,13 +44,13 @@
 				<div><a href="<?php echo base_url('lab'); ?>"><?php echo $this->lang->line('Lab'); ?></a> / Lab results</div>
 				
 				<div class="dropdown no-arrow">
-					<?php if ($lab_info['source'] == "medilab"): ?>
-						<a href="https://online.medilab.be/dokter/staal/<?php echo $lab_info['lab_id']; ?>" class="btn btn-outline-primary btn-sm" target="blank"><i class="fas fa-external-link-alt"></i> <?php echo $lab_info['source'] . ' ('. $lab_info['lab_id'] . ')';  ?></a>
+					<?php if ($lab_info['device'] == "medilab"): ?>
+						<a href="https://online.medilab.be/dokter/staal/<?php echo $lab_info['source_id']; ?>" class="btn btn-outline-primary btn-sm" target="blank"><i class="fas fa-external-link-alt"></i> <?php echo $lab_info['source'] . ' ('. $lab_info['source_id'] . ')';  ?></a>
 					<?php else: ?>
-						<a href="<?php echo base_url('lab/print/' . $lab_info['id']); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
+						<a href="<?php echo base_url('lab/print/' . $lab_id); ?>" class="btn btn-outline-success btn-sm" target="blank"><i class="fa-solid fa-print"></i> print</a>
 					<?php endif; ?>
 					<?php if($this->ion_auth->is_admin()): ?>
-						<a href="<?php echo base_url('lab/delete/'. $lab_info['id']); ?>" class="btn btn-outline-danger btn-sm ml-4"><i class="fa-solid fa-trash"></i></a>
+						<a href="<?php echo base_url('lab/delete/'. $lab_id); ?>" class="btn btn-outline-danger btn-sm ml-4"><i class="fa-solid fa-trash"></i></a>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -61,7 +61,7 @@
 						<td>
 							<?php if ($lab_info['pet']): ?>
 								<a href="<?php echo base_url('pets/fiche/' . $lab_info['pet']['id']); ?>"><?php echo $lab_info['pet']['name']; ?></a>
-								<a href="<?php echo base_url('lab/reset_lab_link/' . $lab_info['id']); ?>" class="btn btn-sm btn-outline-danger spinit ml-4"><i class="fa-solid fa-rotate-right"></i></a>
+								<a href="<?php echo base_url('lab/reset_lab_link/' . $lab_id); ?>" class="btn btn-sm btn-outline-danger spinit ml-4"><i class="fa-solid fa-rotate-right"></i></a>
 								<input type="hidden" name="pet_id" value="<?php echo $lab_info['pet']['id']; ?>" />
 								<input type="hidden" name="no_event" value="1" />
 							<?php else: ?>

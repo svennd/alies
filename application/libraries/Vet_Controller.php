@@ -30,7 +30,7 @@ class Vet_Controller extends MY_Controller
 		$this->load->model('Config_model', 'settings');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Sticky_model', 'sticky');
-		$this->load->model('Lab_model', 'lab');
+		$this->load->model('LabReportPending_model', 'labPending');
 		$this->load->model('Stock_model', 'stock');
 
 		$this->lang->load('vet', 'dutch');
@@ -84,7 +84,7 @@ class Vet_Controller extends MY_Controller
 								"cnt_sticky"				=> $this->sticky->count_rows(),
 								"cnt_stock_errors"			=> $this->stock->where(array("state" => STOCK_ERROR))->count_rows(),
 								"report_count"				=> $this->events->get_open_reports($this->user->id),
-								"lab_count"					=> $this->lab->get_unassigned(),
+								"lab_count"					=> $this->labPending->count_recent(),
 						);
 
 		// $sections = array(
