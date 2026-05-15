@@ -121,23 +121,4 @@ class Lab_model extends MY_Model
 			"created_at"	=> $info['lab_created_at']
 		));
 	}
-
-	/*
-	* function: add_event
-	* adds a new event to the database based on the lab_id
-	*/
-	public function add_event($lab_id, $pet_id, $anamnese)
-	{
-		$this->events->insert(array(
-			"title" 	=> "lab:" . $lab_id,
-			"pet"		=> $pet_id,
-			"type"		=> LAB,
-			"status"	=> STATUS_CLOSED, # might require status_history
-			"payment" 	=> PAYMENT_PAID,
-			"anamnese"	=> $anamnese,
-			"location"	=> 0,
-			"vet"		=> 0,
-			"report"	=> REPORT_DONE
-		));
-	}
 }

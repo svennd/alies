@@ -241,24 +241,6 @@ class Pets extends Vet_Controller
 	public function fiche(int $pet_id)
 	{
 		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->with_pets_weight()->get($pet_id);
-
-		// $pet_history = $this->
-		// 							events->
-		// 							with_products('fields:events_products.volume, unit_sell, name')->
-		// 							with_procedures('fields:events_procedures.volume, name')->
-		// 							with_vet('fields:first_name')->
-		// 							with_uploads('fields:*count*')->
-		// 							with_vet_1_sup('fields:first_name')->
-		// 							with_vet_2_sup('fields:first_name')->
-		// 							with_location('fields:name')->
-		// 							where(
-		// 								array(
-		// 										"pet" 			=> $pet_id,
-		// 										"no_history" 	=> 0
-		// 										))->
-		// 							order_by('created_at', 'DESC')->
-		// 							get_all();
-
 		$other_pets = $this->pets->other_pets($pet_info['owner'], $pet_id);
 
 		$data = array(

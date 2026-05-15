@@ -32,14 +32,10 @@
 	<tr>
 		<td data-sort="<?php echo strtotime($history['created_at']) ?>"><?php echo user_format_date($history['created_at'], $user->user_date); ?></td>
 		<td>
-		<?php if(preg_match('/lab:(\d*)/', $history['title'], $match)): ?>
-			<a href="<?php echo base_url('lab/detail/'. (int) $match[1]); ?>" class="btn btn-sm btn-outline-success" style="padding: 0.05rem 0.5rem;" target="_blank"><?php echo get_event_type($history['type']); ?> <?php echo $this->lang->line('Lab'); ?></a>
-		<?php else: ?>
 			<?php echo get_event_type($history['type']); ?> <?php echo $history['title']; ?>
 			<?php if($history['report'] != REPORT_DONE): ?>
 				<i class="fas fa-unlock" data-toggle="tooltip" data-placement="top" title="<?php echo $this->lang->line('not_finished'); ?>"></i>
 			<?php endif; ?>
-		<?php endif; ?>
 		</td>
 		<td><?php echo (isset($history['vet_name'])) ? 
 							$history['vet_name'] 
