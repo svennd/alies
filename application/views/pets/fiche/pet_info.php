@@ -74,7 +74,12 @@
 	<div class="text-center">
 		<a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-outline-primary"><i class="fas fa-fw fa-paw"></i> <?php echo $this->lang->line('edit_pet'); ?></a>
 		<a href="<?php echo base_url('tooth/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary ml-4"><i class="fas fa-fw fa-tooth"></i> <?php echo $this->lang->line('tooth'); ?></a>
-		<a href="<?php echo base_url('rx/list/'. $pet['id'] ); ?>" class="btn btn-outline-primary ml-4"><i class="fa-solid fa-radiation"></i> <?php echo $this->lang->line('rx'); ?></a>
+		<?php if (isset($pet_has_rx) && $pet_has_rx === true): ?>
+			<a href="<?php echo base_url('rx/list/'. $pet['id'] ); ?>" class="btn btn-outline-primary ml-4"><i class="fa-solid fa-radiation"></i> <?php echo $this->lang->line('rx'); ?></a>
+		<?php endif; ?>
+		<?php if (isset($pet_has_lab) && $pet_has_lab === true): ?>
+			<a href="<?php echo base_url('lab/list_lab/'. $pet['id'] ); ?>" class="btn btn-outline-primary ml-4"><i class="fa-solid fa-flask"></i> lab</a>
+		<?php endif; ?>
 	</div>
 
 	</div>

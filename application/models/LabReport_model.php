@@ -87,5 +87,27 @@ class LabReport_model extends MY_Model {
 		return $this->db->get('lab_report')->result_array();
 	}
 
+	public function get_for_pet(int $pet_id)
+	{
+		$this->db->select('lab_report.*');
+		$this->db->where('lab_report.pet_id', $pet_id);
+		$this->db->order_by('lab_report.sample_date', 'desc');
+		$this->db->order_by('lab_report.id', 'desc');
+
+		return $this->db->get('lab_report')->result_array();
+	}
+
+	public function count_for_pet(int $pet_id): int
+	{
+		return (int) $this->db
+			->where('pet_id', $pet_id)
+			->count_all_results($this->table);
+	}
+
+	public function has_for_pet(int $pet_id): bool
+	{
+		return $this->count_for_pet($pet_id) > 0;
+	}
+
 
 }

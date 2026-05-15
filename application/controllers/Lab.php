@@ -170,9 +170,16 @@ class Lab extends Vet_Controller
 	*/
 	public function list_lab(int $pet_id)
 	{
+		$pet_info = $this->pets->with_owners('fields: id, last_name')->get($pet_id);
+
+		if (!$pet_info) {
+			redirect('/', 'refresh');
+		}
+
 		$this->_render_page('lab/list_lab', array(
 			"pet_id" 		=> $pet_id,
-			"lab_results" 	=> $this->lab->where(array('pet' => $pet_id))->get_all()
+			"pet_info" 		=> $pet_info,
+			"lab_results" 	=> $this->reports->get_for_pet($pet_id)
 		));
 	}
 

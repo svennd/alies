@@ -32,6 +32,8 @@ class Pets extends Vet_Controller
 		$this->load->model('Breeds_model', 'breeds');
 		$this->load->model('Events_model', 'events');
 		$this->load->model('Vaccine_model', 'vacs_pet');
+		$this->load->model('Rx_model', 'rx');
+		$this->load->model('LabReport_model', 'lab_reports');
 	}
 
 	public function index()
@@ -265,6 +267,8 @@ class Pets extends Vet_Controller
 			"pet_history"		=> $this->events->get_pet_history($pet_id),
 			"vaccines" 			=> $this->vacs_pet->view($pet_id),
 			"other_pets"		=> $other_pets,
+			"pet_has_rx"		=> $this->rx->has_images_for_pet($pet_id),
+			"pet_has_lab"		=> $this->lab_reports->has_for_pet($pet_id),
 		);
 
 		$this->_render_page('pets/fiche', $data);

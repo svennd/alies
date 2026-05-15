@@ -40,4 +40,16 @@ class Rx_model extends MY_Model
 
 		return $this->db->query($sql)->result_array();
 	}
+
+	public function count_for_pet(int $pet_id): int
+	{
+		return (int) $this->db
+			->where('pet_id', $pet_id)
+			->count_all_results($this->table);
+	}
+
+	public function has_images_for_pet(int $pet_id): bool
+	{
+		return $this->count_for_pet($pet_id) > 0;
+	}
 }
