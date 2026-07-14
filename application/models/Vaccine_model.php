@@ -117,7 +117,7 @@ class Vaccine_model extends MY_Model
 				owners
 			ON
 				owners.id = CASE 
-					WHEN pets.companion IS NOT NULL THEN pets.companion
+					WHEN (pets.companion IS NOT NULL AND pets.companion != 0) THEN pets.companion
 					ELSE pets.owner
 				END
 			JOIN
@@ -192,7 +192,7 @@ class Vaccine_model extends MY_Model
 				owners
 			ON
 				owners.id = CASE 
-					WHEN pets.companion IS NOT NULL THEN pets.companion
+					WHEN (pets.companion IS NOT NULL AND pets.companion != 0) THEN pets.companion
 					ELSE pets.owner
 				END
 			JOIN
@@ -216,7 +216,6 @@ class Vaccine_model extends MY_Model
 				products.id NOT IN ('" . implode("','", $excluded) . "')
 			ORDER BY vac.redo ASC
 		";
-		
 		return ($this->db->query($sql)->result_array());
 	}
 

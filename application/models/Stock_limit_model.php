@@ -33,8 +33,8 @@ class Stock_limit_model extends MY_Model
 		# was INNER JOIN but then i miss these products so i changed to LEFT JOIN
 		$sql = "
 		SELECT
-				products.id, products.name, products.unit_sell, products.limit_stock, 
-    			IFNULL(SUM(stock.volume), 0) AS all_volume,
+				products.id, products.name, products.unit_sell, products.limit_stock,
+				IFNULL(SUM(CASE WHEN stock.state = 1 THEN stock.volume ELSE 0 END), 0) AS all_volume,
 				wholesale.description as wsname, wholesale.vendor_id as wsid,
 				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 30 DAY)) as global_use_30d,
 				(select sum(events_products.volume) from events_products where product_id = products.id and events_products.created_at > DATE_ADD(NOW(), INTERVAL - 90 DAY)) as global_use_90d
@@ -66,7 +66,7 @@ class Stock_limit_model extends MY_Model
 	{
 		$sql = "
 		SELECT
-			IFNULL(sum(stock.volume), 0) as available_volume,
+			IFNULL(SUM(CASE WHEN stock.state = 1 THEN stock.volume ELSE 0 END), 0) AS available_volume,
 			stock_limit.stock,
 			stock_limit.volume as required_volume,
 			stock_limit.product_id as product_detail,
