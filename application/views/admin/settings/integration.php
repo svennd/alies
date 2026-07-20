@@ -50,5 +50,15 @@
             </div>
         </div>
     </div>
+    <div class="list-group-item list-group-item-action">
+        <div class="row align-items-center">
+            <div class="col">
+                <strong class="mb-0">Index server API key</strong>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="index_api_key" name="conf_index_api_key" placeholder="" value="<?php echo (isset($config['index_api_key'])) ? base64_decode($config['index_api_key']) : ''; ?>">
+            </div>
+        </div>
+    </div>
 
 </div>

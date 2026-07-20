@@ -1,15 +1,34 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Migration_events_lab extends CI_Migration {
+class Migration_events_labs_table extends CI_Migration {
 
-	protected $up_version = "048";
-	protected $down_version = "047";
+	protected $up_version = "050";
+	protected $down_version = "049";
 
 	public function up()
 	{
+		if (!$this->db->table_exists('events_labs'))
+		{
+			$this->db->query("
+				CREATE TABLE `events_labs` (
+					`event_id` int(11) UNSIGNED NOT NULL,
+					`lab_id` int(11) NOT NULL,
+					PRIMARY KEY (`event_id`, `lab_id`),
+					KEY `lab_id` (`lab_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+			");
+		}
+
 		if ($this->db->field_exists('lab', 'events'))
 		{
+			$this->db->query("
+				INSERT IGNORE INTO `events_labs` (`event_id`, `lab_id`)
+				SELECT `id`, `lab`
+				FROM `events`
+				WHERE `lab` > 0;
+			");
+
 			if ($this->index_exists('events', 'lab'))
 			{
 				$this->db->query("ALTER TABLE `events` DROP INDEX `lab`;");
@@ -17,8 +36,6 @@ class Migration_events_lab extends CI_Migration {
 
 			$this->db->query("ALTER TABLE `events` DROP `lab`;");
 		}
-
-		$this->db->query("DELETE FROM `events` WHERE `title` REGEXP '^lab:[0-9]+$';");
 
 		return $this->up_version;
 	}

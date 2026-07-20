@@ -188,7 +188,7 @@ class Products extends Vet_Controller
 		# populate the data array
 		$data = array(
 				'step'		=> $current_step,
-				'type' 		=> $thiwhales->prod_type->get_type_options(),
+				'type' 		=> $this->products->prod_type->get_type_options(),
 				'booking'	=> $this->booking->get_all(),
 				'product'	=> $product,
 				'llimit'	=> ($product) ? $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => (int) $pid))->get_all() : array(),
@@ -361,7 +361,8 @@ class Products extends Vet_Controller
 						'update'			=> $update,
 						'llimit'			=> $this->stock_limit->with_stock_locations('fields:name')->where(array('product_id' => $id))->get_all(),
 						'stock_locations'	=> $this->stock_location->get_all(),
-						'booking'			=> $this->booking->get_all()
+						'booking'			=> $this->booking->get_all(),
+						'index_api_key'		=> base64_decode(isset($this->conf['index_api_key']['value']) ? $this->conf['index_api_key']['value'] : null)
 						);
 		$this->_render_page('product/details', $data);
 	}

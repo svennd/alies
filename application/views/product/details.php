@@ -238,10 +238,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		theme: 'bootstrap4',
 		placeholder: 'Select labels'
 	});
-
-
-
-
 /*
 {
     "cti": "493600",
@@ -259,11 +255,6 @@ document.addEventListener("DOMContentLoaded", function(){
     "VHB": "EU/2/06/070/010"
 }
 */
-
-
-// headers: { 'X-API-Key': '2a0a05b5c83d3b15d537174eabe0be09ba6fb52097d41ed318663c78cff5ac98' },
-
-
 $("#cnk_button").on("click", function(){
 
     var cnk = $("#cnk").val().trim();
@@ -277,7 +268,7 @@ $("#cnk_button").on("click", function(){
     $.ajax({
         url:'/fagg/api/fagg/by-cnk/'+cnk,
         type:'GET',
-        headers:{'X-API-Key':'2a0a05b5c83d3b15d537174eabe0be09ba6fb52097d41ed318663c78cff5ac98'},
+        headers:{'X-API-Key':'<?php echo $index_api_key; ?>'},
 
         success:function(response){
 

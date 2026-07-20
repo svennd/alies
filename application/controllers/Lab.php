@@ -111,9 +111,11 @@ class Lab extends Vet_Controller
 
 		$plots = [];
 		$plots_base64 = [];
-		foreach ($plots_raw as $p) {
-			$plots[$p['type']] = json_decode($p['data'], true);
-			$plots_base64[$p['type']] = $this->generateBase64Chart($plots[$p['type']], $p['type']);
+		if (is_array($plots_raw)) {
+			foreach ($plots_raw as $p) {
+				$plots[$p['type']] = json_decode($p['data'], true);
+				$plots_base64[$p['type']] = $this->generateBase64Chart($plots[$p['type']], $p['type']);
+			}
 		}
 
 		foreach ($lab_details as &$d) {

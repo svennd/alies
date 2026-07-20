@@ -58,7 +58,8 @@ class Register_in_model extends MY_Model
 		$sql = "
 				select 
 					ri.volume, ri.eol, ri.in_price, ri.lotnr, ri.supplier,
-					products.name, products.unit_buy, products.buy_price, products.btw_buy, products.btw_sell, products.vhbcode, products.supplier as null_supplier,
+					products.
+					products.name, products.unit_buy, products.buy_price, products.btw_buy, products.btw_sell, products.vhbcode, products.supplier as null_supplier, producer,
 					wholesale.bruto,
 					deliv.regdate
 				from 

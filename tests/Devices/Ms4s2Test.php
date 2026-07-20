@@ -73,7 +73,7 @@ final class Ms4s2Test extends TestCase
         $this->assertSame('ms4s2', $parsed['device']);
         $this->assertSame('0006', $parsed['source_id']);
         $this->assertSame('998193', $parsed['pet_id']);
-        $this->assertSame('keppens/maurice', strtolower($parsed['owner_name']));
+        $this->assertSame('jos/maurice', strtolower($parsed['owner_name']));
         $this->assertSame('cat', $parsed['species']);
         $this->assertSame('2025-10-21', $parsed['sample_date']);
         $this->assertCount(2, $parsed['results']);

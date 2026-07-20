@@ -48,11 +48,14 @@ class Migration_lab_api_backfill extends CI_Migration {
 
 			foreach ($details as $detail)
 			{
+				$legacy_text = $this->legacy_value_text($detail);
+				if ($legacy_text == "niet medegedeeld") { continue; }
+				
 				$this->db->insert('lab_results', array(
 					'report_id'  => $report_id,
 					'code'       => $this->canonical_code($detail),
 					'value_num'  => $this->legacy_value_num($detail),
-					'value_text' => $this->legacy_value_text($detail),
+					'value_text' => $legacy_text,
 					'unit'       => $this->null_if_empty($detail['unit']),
 					'ref_min'    => $this->legacy_decimal_or_null($detail['lower_limit']),
 					'ref_max'    => $this->legacy_decimal_or_null($detail['upper_limit']),
