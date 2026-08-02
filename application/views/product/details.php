@@ -149,6 +149,9 @@ new
 
 <script type="text/javascript">
 
+const index_api_key = "<?php echo $index_api_key; ?>";
+const index_api_url = "<?php echo $index_api_url; ?>";
+
 function process_datamatrix(barcode) {
 	
 	// GS1 data matrix 
@@ -257,6 +260,7 @@ document.addEventListener("DOMContentLoaded", function(){
 */
 $("#cnk_button").on("click", function(){
 
+	
     var cnk = $("#cnk").val().trim();
     if(!cnk) return;
 
@@ -264,11 +268,12 @@ $("#cnk_button").on("click", function(){
     var original = btn.html();
 
     btn.html('<i class="fa-solid fa-spinner fa-spin"></i>').prop("disabled",true);
-
+	console.log(cnk);
+	console.log(index_api_url + '/api/fagg/by-cnk/' + cnk);
     $.ajax({
-        url:'/fagg/api/fagg/by-cnk/'+cnk,
+        url: index_api_url + '/api/fagg/by-cnk/' + cnk,
         type:'GET',
-        headers:{'X-API-Key':'<?php echo $index_api_key; ?>'},
+        headers:{'X-API-Key':index_api_key},
 
         success:function(response){
 

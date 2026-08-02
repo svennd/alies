@@ -61,4 +61,16 @@
         </div>
     </div>
 
+    <div class="list-group-item list-group-item-action">
+        <div class="row align-items-center">
+            <div class="col">
+                <strong class="mb-0">Index server API URL</strong>
+                <p class="text-muted mb-0">Base URL used to fetch index data by CNK.</p>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="index_api_url" name="conf_index_api_url" placeholder="https://example.tld/api/index/" value="<?php echo (isset($config['index_api_url'])) ? base64_decode($config['index_api_url']) : ''; ?>">
+            </div>
+        </div>
+    </div>
+
 </div>
