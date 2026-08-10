@@ -1634,16 +1634,16 @@
         },
         {
             "name": "robinherbots/jquery.inputmask",
-            "version": "5.0.9",
+            "version": "5.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobinHerbots/Inputmask.git",
-                "reference": "310a33557e2944daf86d5946a5e8c82b9118f8f7"
+                "reference": "325dde43365b7638393e5dc1a2b6463114ef14dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/310a33557e2944daf86d5946a5e8c82b9118f8f7",
-                "reference": "310a33557e2944daf86d5946a5e8c82b9118f8f7",
+                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/325dde43365b7638393e5dc1a2b6463114ef14dd",
+                "reference": "325dde43365b7638393e5dc1a2b6463114ef14dd",
                 "shasum": ""
             },
             "type": "library",
@@ -1668,7 +1668,7 @@
             ],
             "support": {
                 "issues": "https://github.com/RobinHerbots/Inputmask/issues",
-                "source": "https://github.com/RobinHerbots/Inputmask/tree/5.0.9"
+                "source": "https://github.com/RobinHerbots/Inputmask/tree/5.0.10"
             },
             "funding": [
                 {
@@ -1676,7 +1676,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-05-31T09:17:28+00:00"
+            "time": "2026-07-31T06:48:55+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
