@@ -526,19 +526,19 @@ class Events_model extends MY_Model
 			JOIN users ON users.id = events.vet
 			JOIN owners ON owners.id = pets.owner
 			WHERE
-				MATCH(events.title) AGAINST('" . $this->db->escape_like_str($query) . "' IN BOOLEAN MODE)
+				MATCH(events.title) AGAINST(? IN BOOLEAN MODE)
 			AND
 				events.no_history = 0
 			AND
-				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+				events.created_at > STR_TO_DATE(CONCAT(?, ' 00:00'), '%Y-%m-%d %H:%i')
 			AND
-				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+				events.created_at < STR_TO_DATE(CONCAT(?, ' 23:59'), '%Y-%m-%d %H:%i')
 			ORDER BY
 				events.created_at DESC
 			LIMIT 100;
 		";
 
-		return $this->db->query($sql)->result_array();
+		return $this->db->query($sql, array($query, $search_from, $search_to))->result_array();
 	}
 
 	private function search_in_anamnese(string $query, $search_from, $search_to)
@@ -558,19 +558,19 @@ class Events_model extends MY_Model
 			JOIN users ON users.id = events.vet
 			JOIN owners ON owners.id = pets.owner
 			WHERE
-				MATCH(events.title, events.anamnese) AGAINST('" . $this->db->escape_like_str($query) . "' IN BOOLEAN MODE)
+				MATCH(events.title, events.anamnese) AGAINST(? IN BOOLEAN MODE)
 			AND
 				events.no_history = 0
 			AND
-				events.created_at > STR_TO_DATE('" . $search_from . " 00:00', '%Y-%m-%d %H:%i')
+				events.created_at > STR_TO_DATE(CONCAT(?, ' 00:00'), '%Y-%m-%d %H:%i')
 			AND
-				events.created_at < STR_TO_DATE('" . $search_to . " 23:59', '%Y-%m-%d %H:%i')
+				events.created_at < STR_TO_DATE(CONCAT(?, ' 23:59'), '%Y-%m-%d %H:%i')
 			ORDER BY
 				events.created_at DESC
 			LIMIT 100;
 		";
 
-		return $this->db->query($sql)->result_array();
+		return $this->db->query($sql, array($query, $search_from, $search_to))->result_array();
 	}
 
 	// used in pets
