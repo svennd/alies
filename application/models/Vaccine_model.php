@@ -146,6 +146,23 @@ class Vaccine_model extends MY_Model
 
 	public function get_expiring_vaccines($date, $excluded = array())
 	{
+		$excluded_clean = array();
+		foreach ((array) $excluded as $excluded_id)
+		{
+			$excluded_id = (int) $excluded_id;
+
+			if ($excluded_id > 0)
+			{
+				$excluded_clean[] = $excluded_id;
+			}
+		}
+
+		$excluded_sql = '';
+		if (!empty($excluded_clean))
+		{
+			$excluded_sql = 'AND products.id NOT IN (' . implode(',', $excluded_clean) . ')';
+		}
+
 		// note don't change these names
 		// they are used in export ( view/vaccine/export.php )
 		$sql = "
@@ -212,8 +229,7 @@ class Vaccine_model extends MY_Model
 				vac.no_rappel = 0
 			AND
 				owners.disabled = 0 -- not disabled
-			AND
-				products.id NOT IN ('" . implode("','", $excluded) . "')
+			" . $excluded_sql . "
 			ORDER BY vac.redo ASC
 		";
 		
