@@ -1,8 +1,7 @@
 <div class="card shadow mb-4" style="width:100%;">
 	<div class="card-header d-flex flex-row align-items-center justify-content-between">
-		<div><?php echo $this->lang->line('vaccines'); ?>
-		</div>
-	</div>
+				<div><a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>" class=""><i class="fa-solid fa-syringe fa-fw"></i> <?php echo $this->lang->line('title_vaccines'); ?></a></div>
+			</div>
 	<div class="card-body">
 		
 <?php if($vaccines): ?>
@@ -32,7 +31,7 @@
 	<?php echo $this->lang->line('no_vaccines'); ?>
 <?php endif; ?>
 	<div class="text-center pt-3">
-		<a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>" class="btn btn-outline-primary"><i class="fa-solid fa-syringe fa-fw"></i> <?php echo $this->lang->line('title_vaccines'); ?></a>					
+							
 	</div>
 </div>
 </div>
