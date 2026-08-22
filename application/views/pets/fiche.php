@@ -4,10 +4,12 @@
 		<?php include "fiche/block_history.php"; ?>
 	</div>
 	<div class="col-lg-5 col-xl-2">
+		<span class="d-none d-sm-block">
 		<a href="<?php echo base_url('events/new_event/'. $pet['id']); ?>" class="btn btn-success btn-icon-split btn-lg mb-3">
 			<span class="icon text-white-50"><i class="fas fa-user-md"></i></span>
 			<span class="text"><?php echo $this->lang->line('new_consult'); ?></span>
 		</a>
+		</span>
 		
 		<?php include "application/views/blocks/block_full_client.php"; ?>
 
