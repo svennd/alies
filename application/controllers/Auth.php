@@ -314,7 +314,7 @@ class Auth extends CI_Controller
 		$this->session->unset_userdata('location');
 		if ($user)
 		{
-			$this->users->update(array("current_location" => 0, 'vsens' => 0), $user);
+			$this->users->update(array("current_location" => 0), $user);
 			$this->logs->logger(DEBUG, "unset_location", "user : " . $this->ion_auth->get_ident());
 		}
 		else

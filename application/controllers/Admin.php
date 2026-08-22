@@ -24,16 +24,6 @@ class Admin extends Admin_Controller
 	}
 
 	/*
-	* function: enable_vsens
-	* enable sensitive data to be visible
-	*/
-	public function enable_vsens()
-	{
-		$this->users->where(array('id' => $this->user->id))->update(array('vsens' => 1));
-		redirect('accounting/dashboard');
-	}
-
-	/*
 	* function: settings
 	* managing of site wide settings
 	*/

@@ -80,18 +80,6 @@
           <!-- Topbar Navbar -->
 
           <ul class="navbar-nav ml-auto">
-          <?php if ($this->ion_auth->in_group("admin")): ?>
-	          <li class="nav-item mx-1">
-	              <a class="nav-link" href="<?php echo base_url('admin/enable_vsens'); ?>">
-                <?php if($user->vsens): ?>
-                  <i class="fas fa-user-shield" style="color:#f6c23e;"></i>
-                <?php else: ?>
-                  <i class="fas fa-user-shield" style="color:#ff5555;"></i>
-                <?php endif; ?>
-	              </a>
-            </li>
-          <?php endif; ?>
-
           <?php if(!$this->ion_auth->in_group("accounting")): ?>
             <li class="nav-item" id="sticky_messages">
                 <a class="nav-link" href="#">

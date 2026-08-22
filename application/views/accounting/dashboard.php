@@ -16,7 +16,7 @@
     $p = (($predictie_omzet_dit_jaar - $omzet_vorig_jaar)/$predictie_omzet_dit_jaar)*100;
     $y = (($predictie_klanten_dit_jaar - $klanten_contacten_vorig_jaar)/$predictie_klanten_dit_jaar)*100;
 ?>
-<div class="row <?php echo ($user->vsens) ? '' : 'sensitive'; ?>">
+<div class="row">
     <div class="col-lg-8 mb-4">
         <div class="card shadow mb-4 h-100">
                 <div class="card-header d-flex flex-row align-items-center justify-content-between">
