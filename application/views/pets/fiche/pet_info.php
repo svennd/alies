@@ -60,8 +60,8 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="pet-profile-header-actions d-flex align-items-center ml-auto pl-2">
+			
+			<div class="pet-profile-header-actions d-none d-sm-flex align-items-center ml-auto pl-2">
 				<a href="<?php echo base_url('pets/edit/' . (int) $pet['id']); ?>" class="btn btn-outline-primary btn-sm mr-2">
 					<i class="fas fa-fw fa-pen" aria-hidden="true"></i>
 					<?php echo $this->lang->line('edit_pet'); ?>
