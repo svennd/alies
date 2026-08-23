@@ -171,6 +171,35 @@ class Pets_model extends MY_Model
 		return $this->where(array('owner' => $owner, 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, type, name')->limit($limit)->get_all();
 	}
 
+	public function replace_avatar(int $pet_id, $avatar)
+	{
+		$this->db->trans_start();
+		$pet = $this->db
+			->query('SELECT `avatar` FROM `pets` WHERE `id` = ? FOR UPDATE', array($pet_id))
+			->row_array();
+
+		if ($pet) {
+			$this->db
+				->set('avatar', $avatar)
+				->where('id', $pet_id)
+				->update('pets');
+		}
+
+		$this->db->trans_complete();
+		if (!$pet || $this->db->trans_status() === false) {
+			return false;
+		}
+
+		return array('previous' => $pet['avatar']);
+	}
+
+	public function avatar_reference_count(string $avatar): int
+	{
+		return (int) $this->db
+			->where('avatar', $avatar)
+			->count_all_results('pets');
+	}
+
 
 	/*
 		cli cron job

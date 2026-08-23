@@ -34,6 +34,8 @@ class Pets extends Vet_Controller
 		$this->load->model('Vaccine_model', 'vacs_pet');
 		$this->load->model('Rx_model', 'rx');
 		$this->load->model('LabReport_model', 'lab_reports');
+		$this->load->library('Pet_avatar');
+		$this->load->library('Pet_avatar_manager');
 	}
 
 	public function index()
@@ -241,7 +243,12 @@ class Pets extends Vet_Controller
 	public function fiche(int $pet_id)
 	{
 		$pet_info = $this->pets->with_breeds('fields: name')->with_breeds2('fields: name')->with_pets_weight()->get($pet_id);
+		if (!$pet_info) {
+			show_404();
+			return;
+		}
 		$other_pets = $this->pets->other_pets($pet_info['owner'], $pet_id);
+		$pet_avatar_path = !empty($pet_info['avatar']) ? $this->pet_avatar->path($pet_info['avatar']) : false;
 
 		$data = array(
 			"pet"				=> $pet_info,
@@ -251,9 +258,115 @@ class Pets extends Vet_Controller
 			"other_pets"		=> $other_pets,
 			"pet_has_rx"		=> $this->rx->has_images_for_pet($pet_id),
 			"pet_has_lab"		=> $this->lab_reports->has_for_pet($pet_id),
+			"pet_avatar_available" => $pet_avatar_path !== false && is_file($pet_avatar_path) && is_readable($pet_avatar_path),
+			"pet_avatar_message" => $this->session->flashdata('pet_avatar_message'),
+			"pet_avatar_message_type" => $this->session->flashdata('pet_avatar_message_type'),
+			"extra_header" => '<link href="' . base_url('assets/css/croppie.css') . '" rel="stylesheet">',
+			"extra_footer" => '<script src="' . base_url('assets/js/croppie.min.js') . '"></script>'
+				. '<script src="' . javascript('assets/js/pet-avatar.js') . '"></script>',
 		);
 
 		$this->_render_page('pets/fiche', $data);
+	}
+
+	public function save_avatar(int $pet_id)
+	{
+		$this->require_avatar_post();
+		$source = isset($_FILES['pet_avatar_source']) ? $_FILES['pet_avatar_source'] : array();
+		$result = $this->pet_avatar_manager->save(
+			$pet_id,
+			$source,
+			(string) $this->input->post('pet_avatar_crop', false)
+		);
+
+		if ($result['status'] === 'unknown') {
+			$this->set_avatar_feedback('danger', 'pet_avatar_unknown_pet');
+			redirect('/', 'refresh');
+			return;
+		}
+		if ($result['status'] === 'invalid') {
+			$this->set_avatar_feedback('danger', $this->avatar_error_language_key($result['error']));
+			redirect('/pets/fiche/' . $pet_id, 'refresh');
+			return;
+		}
+		if ($result['status'] !== 'success') {
+			$this->set_avatar_feedback('danger', 'pet_avatar_storage_error');
+			redirect('/pets/fiche/' . $pet_id, 'refresh');
+			return;
+		}
+
+		$this->set_avatar_feedback('success', $result['message_key']);
+		redirect('/pets/fiche/' . $pet_id, 'refresh');
+	}
+
+	public function remove_avatar(int $pet_id)
+	{
+		$this->require_avatar_post();
+		$result = $this->pet_avatar_manager->remove($pet_id);
+		if ($result['status'] === 'unknown') {
+			$this->set_avatar_feedback('danger', 'pet_avatar_unknown_pet');
+			redirect('/', 'refresh');
+			return;
+		}
+		if ($result['status'] !== 'success') {
+			$this->set_avatar_feedback('danger', 'pet_avatar_storage_error');
+			redirect('/pets/fiche/' . $pet_id, 'refresh');
+			return;
+		}
+
+		$this->set_avatar_feedback('success', $result['message_key']);
+		redirect('/pets/fiche/' . $pet_id, 'refresh');
+	}
+
+	public function avatar_file(int $pet_id)
+	{
+		$pet = $this->pets->fields('avatar')->get($pet_id);
+		if (!$pet || empty($pet['avatar'])) {
+			show_404();
+			return;
+		}
+
+		$path = $this->pet_avatar->path($pet['avatar']);
+		if ($path === false || !is_file($path) || !is_readable($path)) {
+			show_404();
+			return;
+		}
+
+		$this->output
+			->set_content_type('image/jpeg')
+			->set_header('X-Content-Type-Options: nosniff')
+			->set_header('Cache-Control: private, no-cache, must-revalidate')
+			->set_header('Content-Length: ' . filesize($path))
+			->set_output(file_get_contents($path));
+	}
+
+	private function require_avatar_post()
+	{
+		if ($this->input->method(true) !== 'POST') {
+			show_error($this->lang->line('pet_avatar_post_only'), 405);
+			exit;
+		}
+	}
+
+	private function set_avatar_feedback(string $type, string $language_key)
+	{
+		$this->session->set_flashdata('pet_avatar_message_type', $type);
+		$this->session->set_flashdata('pet_avatar_message', $this->lang->line($language_key));
+	}
+
+	private function avatar_error_language_key(string $error): string
+	{
+		$keys = array(
+			'size' => 'pet_avatar_too_large',
+			'type' => 'pet_avatar_invalid_type',
+			'dimensions' => 'pet_avatar_invalid_dimensions',
+			'crop' => 'pet_avatar_invalid_crop',
+			'storage' => 'pet_avatar_storage_error',
+			'processing' => 'pet_avatar_processing_error',
+			'invalid' => 'pet_avatar_invalid_image',
+		);
+
+		return isset($keys[$error]) ? $keys[$error] : 'pet_avatar_invalid_image';
 	}
 
 	public function export(int $pet_id)
