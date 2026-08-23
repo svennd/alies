@@ -138,6 +138,14 @@ $lang['vet']  = 'Dierenarts';
 $lang['location']  = 'Locatie';
 $lang['anamnese']  = 'Anamnese';
 $lang['no_pets_history']  = 'Geen historiek bekend.';
+$lang['medical_history']  = 'Medische Historiek';
+$lang['history_all_types']  = 'Alle';
+$lang['history_operations']  = 'Operaties';
+$lang['history_all_vets']  = 'Alle dierenartsen';
+$lang['history_no_matches']  = 'Geen historiek gevonden voor deze filters.';
+$lang['history_reset_filters']  = 'Filters wissen';
+$lang['history_show_more']  = 'Toon meer';
+$lang['history_treatments']  = 'Producten en procedures';
 
 ## vaccines
 $lang['no_vaccines']  = 'Geen vaccinaties bekend';

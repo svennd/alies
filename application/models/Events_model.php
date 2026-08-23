@@ -681,8 +681,11 @@ class Events_model extends MY_Model
 	{
 		$events = $this->db
 			->select('e.*, 
+					v.id AS vet_id,
 					v.first_name AS vet_name,
+					vs1.id AS vet_support_1_id,
 					vs1.first_name AS vet_support_1_name,
+					vs2.id AS vet_support_2_id,
 					vs2.first_name AS vet_support_2_name,
 					sl.name AS location_name,
 					(SELECT COUNT(*) FROM events_upload eu WHERE eu.event = e.id) AS upload_count')
@@ -698,6 +701,42 @@ class Events_model extends MY_Model
 			->result_array();
 
 		foreach ($events as &$event) {
+			$event['veterinarians'] = array();
+			$veterinarian_assignments = array(
+				array('id' => 'vet_id', 'name' => 'vet_name'),
+				array('id' => 'vet_support_1_id', 'name' => 'vet_support_1_name'),
+				array('id' => 'vet_support_2_id', 'name' => 'vet_support_2_name'),
+			);
+			$seen_veterinarian_tokens = array();
+
+			foreach ($veterinarian_assignments as $assignment) {
+				$veterinarian_id = isset($event[$assignment['id']]) ? (int) $event[$assignment['id']] : 0;
+				$veterinarian_name = isset($event[$assignment['name']]) ? trim($event[$assignment['name']]) : '';
+
+				if ($veterinarian_name === '') {
+					continue;
+				}
+
+				$normalized_name = preg_replace('/\s+/', ' ', $veterinarian_name);
+				$normalized_name = function_exists('mb_strtolower')
+					? mb_strtolower($normalized_name, 'UTF-8')
+					: strtolower($normalized_name);
+				$filter_token = ($veterinarian_id > 0)
+					? 'id:' . $veterinarian_id
+					: 'name:' . sha1($normalized_name);
+
+				if (isset($seen_veterinarian_tokens[$filter_token])) {
+					continue;
+				}
+
+				$seen_veterinarian_tokens[$filter_token] = true;
+				$event['veterinarians'][] = array(
+					'id' => $veterinarian_id,
+					'name' => $veterinarian_name,
+					'filter_token' => $filter_token,
+				);
+			}
+
 			$event['products'] = $this->db
 				->select('ep.*, p.name, p.unit_sell')
 				->from('events_products ep')

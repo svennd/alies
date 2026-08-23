@@ -136,6 +136,14 @@ $lang['vet']  = 'Vet';
 $lang['location']  = 'Location';
 $lang['anamnese']  = 'Anamnese';
 $lang['no_pets_history']  = 'No history yet.';
+$lang['medical_history']  = 'Medical History';
+$lang['history_all_types']  = 'All';
+$lang['history_operations']  = 'Operations';
+$lang['history_all_vets']  = 'All veterinarians';
+$lang['history_no_matches']  = 'No history entries match these filters.';
+$lang['history_reset_filters']  = 'Reset filters';
+$lang['history_show_more']  = 'Show more';
+$lang['history_treatments']  = 'Products and procedures';
 
 ## vaccines
 $lang['no_vaccines']  = 'No known vaccines';
