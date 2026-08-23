@@ -156,6 +156,10 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 	display: none !important;
 }
 
+.pet-history-procedure {
+	border-left: 2px solid #1cc88a;
+}
+
 @media (max-width: 767.98px) {
 	.pet-history__header {
 		align-items: stretch !important;
@@ -252,7 +256,7 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 					$is_initially_visible = ($history_index < 10);
 					?>
 					<article
-						class="pet-history__entry"
+						class="pet-history__entry <?php echo !$history['type'] ? 'pet-history-disease' : 'pet-history-procedure'; ?>"
 						data-history-type="<?php echo (int) $history['type']; ?>"
 						data-veterinarians="<?php echo html_escape(implode(',', $entry_veterinarian_tokens)); ?>"
 						<?php echo $is_initially_visible ? '' : 'hidden'; ?>
