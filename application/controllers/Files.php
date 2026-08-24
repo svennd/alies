@@ -12,7 +12,7 @@ class Files extends Vet_Controller
 	public $input;
 
 	# init
-	public $events_upload, $events;
+	public $events_upload, $events, $event_attachment_preview;
 
 	# constructor
 	public function __construct()
@@ -22,7 +22,7 @@ class Files extends Vet_Controller
 		# load librarys
 		$this->load->helper('url');
 		$this->load->helper('download');
-		$this->load->helper('base64_to_img_helper');
+		$this->load->library('event_attachment_preview');
 
 		# models
 		$this->load->model('Events_model', 'events');
@@ -163,57 +163,6 @@ class Files extends Vet_Controller
 	}
 
 	/*
-	* function: drawing
-	* paint in event
-	* filename : should not contain e_$event_id in db
-	*/
-	public function drawing(int $event_id, $final = false)
-	{
-		// check if post happened
-		if($this->input->post('drawing') === null) { return false; }
-
-		// make sure its unique
-		$timestamp = date('Hmsdmy');
-
-		// in case its auto storing data, remove older drawings
-		array_map('unlink', glob($this->upload_dir . "e" . $event_id . "_*_draw.jpeg"));
-		
-		// store
-		$image = base64_to_image($this->input->post('drawing'), $this->upload_dir, "e" . $event_id . "_" . $timestamp . '_'.  (($final) ? "fin" : "draw"));
-
-		// if auto stored don't save it to database
-		if ($final) 
-		{
-
-			list($name, $type, $size) = $image;
-	
-			$this->events_upload->insert(array(
-					"event" 			=> $event_id,
-					"filename" 			=> $timestamp . '_'. "fin.jpeg",
-					"size"	 			=> $size,
-					"user"	 			=> $this->user->id,
-					"mime"	 			=> $type,
-					"location"	 		=> $this->_get_user_location(),
-			));
-		}
-		
-		echo json_encode(array('success' => true));
-	}
-
-	/*
-	* function: reset_draw
-	* reset the drawing
-	*/
-	public function reset_draw(int $event_id)
-	{
-		// in case its auto storing data, remove older drawings
-		array_map('unlink', glob($this->upload_dir . "e" . $event_id . "_*_draw.jpeg"));
-
-		// respond
-		echo json_encode(array('success' => true));
-	}
-
-	/*
 	* function: get_file
 	* download the file
 	*/
@@ -226,6 +175,32 @@ class Files extends Vet_Controller
 				file_get_contents($this->upload_dir . "e" . $file_info['event'] . "_" . $file_info['filename']),
 				$file_info['mime']
 		);
+	}
+
+	public function preview(int $id): void
+	{
+		$file_info = $this->events_upload->get($id);
+		if (!$file_info) {
+			show_404();
+			return;
+		}
+
+		$path = $this->upload_dir . 'e' . (int) $file_info['event'] . '_' . basename($file_info['filename']);
+		$actual_mime = $this->event_attachment_preview->inspect($path, (string) $file_info['mime']);
+
+		if ($actual_mime === false) {
+			show_404();
+			return;
+		}
+
+		$download_name = str_replace(array('"', "\r", "\n"), '', basename($file_info['filename']));
+		$this->output
+			->set_content_type($actual_mime)
+			->set_header('Content-Disposition: inline; filename="' . $download_name . '"')
+			->set_header('X-Content-Type-Options: nosniff')
+			->set_header('Cache-Control: private, no-cache, must-revalidate')
+			->set_header('Content-Length: ' . filesize($path))
+			->set_output(file_get_contents($path));
 	}
 
 	/*

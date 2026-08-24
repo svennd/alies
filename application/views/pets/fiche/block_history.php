@@ -236,6 +236,7 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 					$report_text = isset($history['anamnese']) ? trim($history['anamnese']) : '';
 					$location_name = isset($history['location_name']) ? trim($history['location_name']) : '';
 					$upload_count = isset($history['upload_count']) ? (int) $history['upload_count'] : 0;
+					$lab_count = isset($history['lab_count']) ? (int) $history['lab_count'] : 0;
 					$entry_veterinarian_tokens = array();
 					$entry_veterinarian_names = array();
 
@@ -273,7 +274,21 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 								</span>
 								<span class="pet-history__title d-flex align-items-center">
 									<span class="mr-2" aria-hidden="true"><?php echo get_event_type($history['type']); ?></span>
-									<span class="pet-history__title-text"><?php echo html_escape($history['title']); ?></span>
+									<span class="pet-history__title-text"><?php echo html_escape($history['title']); ?> 
+								<?php if ($lab_count > 0): ?>
+									<a href="<?php echo base_url('events/event/' . (int) $history['id'] . '#event-lab-results'); ?>" class="btn btn-sm btn-outline-primary">
+										<i class="fas fa-flask" aria-hidden="true"></i>
+										<span class="sr-only"><?php echo $this->lang->line('event_labs'); ?>:</span>
+										<?php echo $lab_count; ?>
+									</a>
+								<?php endif; ?>
+								<?php if ($upload_count > 0): ?>
+									<a href="<?php echo base_url('events/event/' . (int) $history['id'] . '#files'); ?>" class="btn btn-sm btn-outline-success">
+										<i class="fa-solid fa-download" aria-hidden="true"></i>
+										<span class="sr-only"><?php echo $this->lang->line('attachments'); ?>:</span>
+										<?php echo $upload_count; ?>
+									</a>
+								<?php endif; ?></span>
 									<?php if ((int) $history['report'] !== REPORT_DONE): ?>
 										<i class="fas fa-unlock ml-2 text-warning" data-toggle="tooltip" data-placement="top" title="<?php echo html_escape($this->lang->line('not_finished')); ?>">
 											<span class="sr-only"><?php echo $this->lang->line('not_finished'); ?></span>
@@ -290,7 +305,7 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 									<?php endif; ?>
 								</span>
 							</button>
-							<div class="pet-history__actions<?php echo ($upload_count > 0) ? '' : ' pet-history__actions--no-mobile'; ?>">
+							<div class="pet-history__actions<?php echo ($upload_count > 0 || $lab_count > 0) ? '' : ' pet-history__actions--no-mobile'; ?>">
 								<button
 									type="button"
 									class="pet-history__eye-toggle pet-history__toggle btn btn-sm btn-outline-primary"
@@ -304,13 +319,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 									<i class="fa-solid fa-pen" aria-hidden="true"></i>
 									<span class="sr-only"><?php echo $this->lang->line('edit'); ?></span>
 								</a>
-								<?php if ($upload_count > 0): ?>
-									<a href="<?php echo base_url('events/event/' . (int) $history['id'] . '#files'); ?>" class="btn btn-sm btn-outline-success">
-										<i class="fa-solid fa-download" aria-hidden="true"></i>
-										<span class="sr-only"><?php echo $this->lang->line('attachments'); ?>:</span>
-										<?php echo $upload_count; ?>
-									</a>
-								<?php endif; ?>
 							</div>
 						</div>
 

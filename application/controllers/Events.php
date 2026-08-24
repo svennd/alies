@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Events extends Vet_Controller
 {
 	// initialize
-	public $events, $pets, $owners, $products, $stock, $procedures, $events_upload, $eproc, $eprod, $booking, $vaccine, $bills, $logs, $prices;
+	public $events, $pets, $owners, $products, $stock, $procedures, $events_upload, $eproc, $eprod, $booking, $vaccine, $bills, $logs, $prices, $events_lab, $lab_results, $lab_result_presenter;
 
 	// ci specific
 	public $input;
@@ -28,6 +28,9 @@ class Events extends Vet_Controller
 		$this->load->model('Vaccine_model', 'vaccine');
 		$this->load->model('Bills_model', 'bills');
 		$this->load->model('Product_price_model', 'prices');
+		$this->load->model('Events_lab_model', 'events_lab');
+		$this->load->model('LabResult_model', 'lab_results');
+		$this->load->library('lab_result_presenter');
         $this->load->model('Vamreg_out_buffer_model', 'vamreg_out');
 
 		# add helper
@@ -85,7 +88,6 @@ class Events extends Vet_Controller
 			"event_info"		=> $event_info,
 			"booking_codes"		=> $this->booking->get_all(),
 			"event_uploads"		=> $this->events_upload->where(array('event' => $event_id))->get_all(),
-			"drawing_temp"		=> glob("data/stored/e" . $event_id . "_*_draw.jpeg"),
 			"consumables"		=> $this->eprod->get_event_products($event_id),
 			"event_id"			=> $event_id,
 			"update" 			=> $update,
@@ -95,6 +97,8 @@ class Events extends Vet_Controller
 			"u_location"		=> $this->_get_user_location(),
 			"procedures_d"		=> $this->eproc->with_procedures()->where(array("event_id" => $event_id))->get_all(),
 			"extra_header" 		=> inject_trumbowyg('header'),
+			"event_lab_message"	=> $this->session->flashdata('event_lab_message'),
+			"event_lab_message_type" => $this->session->flashdata('event_lab_message_type'),
 			"extra_footer" 		=> '<script src="'. base_url() .'assets/js/jquery.autocomplete.min.js"></script>' .
 													inject_trumbowyg()
 		);
@@ -105,6 +109,17 @@ class Events extends Vet_Controller
 		}
 		else 
 		{
+			$linked_labs = $this->events_lab->get_linked_for_event($event_id, $pet_id);
+			$grouped_results = $this->lab_results->get_grouped_by_reports(array_column($linked_labs, 'id'));
+
+			foreach ($linked_labs as &$linked_lab) {
+				$lab_id = (int) $linked_lab['id'];
+				$linked_lab['results'] = $this->lab_result_presenter->normalize_many($grouped_results[$lab_id] ?? array());
+			}
+			unset($linked_lab);
+
+			$data['linked_labs'] = $linked_labs;
+			$data['linkable_labs'] = $this->events_lab->get_linkable_for_event($event_id, $pet_id);
 			$this->_render_page('event/main_report', $data);
 		}
 	}
@@ -148,6 +163,69 @@ class Events extends Vet_Controller
 	{
 		$this->events->update(array("status" => STATUS_CLOSED), $event_id);
 		redirect('/events/event/' . $event_id);
+	}
+
+	public function link_lab(int $event_id): void
+	{
+		$this->require_lab_post();
+		$event = $this->events->fields('id, pet, status')->get($event_id);
+		$lab_id = (int) $this->input->post('lab_id');
+
+		if (!$event) {
+			show_404();
+			return;
+		}
+
+		if ((int) $event['status'] === STATUS_OPEN || $lab_id <= 0) {
+			$this->set_lab_feedback('danger', 'event_lab_link_invalid');
+			redirect('/events/event/' . $event_id);
+			return;
+		}
+
+		if (!$this->events_lab->link($event_id, $lab_id, (int) $event['pet'])) {
+			$this->set_lab_feedback('danger', 'event_lab_link_invalid');
+			redirect('/events/event/' . $event_id);
+			return;
+		}
+
+		$this->logs->logger(INFO, 'event_lab_linked', 'event_id: ' . $event_id . ' | lab_id: ' . $lab_id);
+		$this->set_lab_feedback('success', 'event_lab_linked');
+		redirect('/events/event/' . $event_id);
+	}
+
+	public function unlink_lab(int $event_id, int $lab_id): void
+	{
+		$this->require_lab_post();
+		$event = $this->events->fields('id, status')->get($event_id);
+
+		if (!$event) {
+			show_404();
+			return;
+		}
+
+		if ((int) $event['status'] === STATUS_OPEN || !$this->events_lab->unlink($event_id, $lab_id)) {
+			$this->set_lab_feedback('danger', 'event_lab_unlink_invalid');
+			redirect('/events/event/' . $event_id);
+			return;
+		}
+
+		$this->logs->logger(INFO, 'event_lab_unlinked', 'event_id: ' . $event_id . ' | lab_id: ' . $lab_id);
+		$this->set_lab_feedback('success', 'event_lab_unlinked');
+		redirect('/events/event/' . $event_id);
+	}
+
+	private function require_lab_post(): void
+	{
+		if ($this->input->method(true) !== 'POST') {
+			show_error($this->lang->line('event_lab_post_only'), 405);
+			exit;
+		}
+	}
+
+	private function set_lab_feedback(string $type, string $language_key): void
+	{
+		$this->session->set_flashdata('event_lab_message_type', $type);
+		$this->session->set_flashdata('event_lab_message', $this->lang->line($language_key));
 	}
 
 	// Group: add actions

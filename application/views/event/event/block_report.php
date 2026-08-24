@@ -183,7 +183,7 @@ async function uploadFile(file) {
 	var procent_value = 0;
 
 	for (let start = 0; start < file.size; start += chunkSize) {
-		const chunk = file.slice(start, start + chunkSize + 1);
+		const chunk = file.slice(start, start + chunkSize);
 		const fd = new FormData();
 		fd.append('data', chunk);
 		fd.append('file_name', file.name);

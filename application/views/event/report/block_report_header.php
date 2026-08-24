@@ -1,71 +1,27 @@
-<?php 
-    $age = timespan(strtotime($pet['birth']), time(), 1); 
-    if (isset($billing_info['total_brut']))
-    {
-        $total = floatval($billing_info['total_brut']);
-        $cash = floatval($billing_info['cash']);
-        $card = floatval($billing_info['card']);
-        $transfer = floatval($billing_info['transfer']);
-    }
+<?php
+$event_cost = isset($billing_info['total_brut'])
+	? '&euro;&nbsp;' . number_format((float) $billing_info['total_brut'], 2, ',', '.')
+	: html_escape($this->lang->line('cost_unavailable'));
 ?>
-
-<div class="card shadow mb-4">
-    <div class="card-body">
-    <div class="row" style="margin-top:-15px;">
-            <div class="col-4">
-                <fieldset class="border max">
-                    <legend class="text-center topfields"><?php echo $this->lang->line('client'); ?></legend>
-                    <p class="text-center">
-                        <b class="text-uppercase"><a href="<?php echo base_url(); ?>owners/detail/<?php echo $owner['id']; ?>"><?php echo $owner['last_name'] ?> <?php echo $owner['first_name'] ?></a></b><br />
-                        <?php echo $owner['street'] . ' ' . $owner['nr'] . '<br/>' .  $owner['zip']. ' ' .  $owner['city']; ?><br>
-                    </p>
-                </fieldset>
-            </div>
-
-            <div class="col-4">
-                <fieldset class="border max">
-                    <legend class="text-center topfields"><?php echo $this->lang->line('pet_info'); ?></legend>
-                    <p class="text-center">
-                        <a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id']; ?>"><?php echo get_symbol($pet['type']); ?><?php echo $pet['name']; ?></a>
-                        <?php echo ($age < 30) ? '(' . $age . ')' : ''; ?>
-                        <br/>
-                        <?php echo get_gender($pet['gender']); ?>
-                        <?php if (isset($pet['breeds'])): ?>
-                            <?php echo $pet['breeds']['name']; ?>
-                        <?php endif; ?>
-                        <br/>
-                    </p>
-                </fieldset>
-            </div>    
-            
-            <div class="col-4">
-                <fieldset class="border max">
-                    <legend class="text-center topfields"><?php echo $this->lang->line('event'); ?></legend>
-                    <p class="text-center">
-                        <?php if($billing_info): ?>
-                            <?php echo user_format_date($billing_info['created_at'], $user->user_date) ?> (<?php echo time_ago($billing_info['created_at']); ?>)
-                            <br/>
-                            <?php echo (isset($billing_info['location']['name'])) ? $billing_info['location']['name']: 'unknown'; ?>
-                            <br/>
-                            <?php if($total == $card): ?>
-                                <?php echo "<i class='fab fa-cc-visa 'style='color:blue'></i> " . $total . "&euro; " ?>
-                            <?php elseif($total == $cash): ?>
-                                <?php echo "<i class='fa-solid fa-money-bill' style='color:green'></i> " . $total . "&euro; " ?>
-                            <?php elseif($total == $transfer): ?>
-                                <?php echo "<i class='fa-solid fa-fw fa-money-bill-transfer' style='color:tomato'></i> " . $total . "&euro; " ?>
-                            <?php else: ?>
-                                <?php echo $total . " &euro;"; ?>
-                                (
-                                <?php echo ($card != 0) ? "<i class='fab fa-cc-visa' style='color:blue'></i> " . $card . "&euro; " : ""; ?>
-                                <?php echo ($cash != 0) ? "<i class='fa-solid fa-money-bill' style='color:green'></i> " . $cash . "&euro; " : ""; ?>
-                                <?php echo ($transfer != 0) ? "<i class='fa-solid fa-fw fa-money-bill-transfer' style='color:tomato'></i> " . $transfer . "&euro; " : ""; ?>
-                                )
-                            <?php endif; ?>
-                        <?php endif; ?>
-                        <br/>
-                    </p>
-                </fieldset>
-            </div>
-        </div>
-    </div>
+<div class="card shadow-sm mb-3">
+	<div class="card-body py-2">
+		<div class="d-flex flex-nowrap align-items-center overflow-auto text-nowrap justify-content-between" aria-label="Event summary">
+			<div>
+			<a class="font-weight-bold" href="<?php echo base_url('owners/detail/' . (int) $owner['id']); ?>">
+				<i class="fas fa-user fa-fw" aria-hidden="true"></i>
+				<?php echo html_escape(trim($owner['last_name'] . ' ' . $owner['first_name'])); ?>
+			</a>
+			<span class="mx-3 text-gray-400" aria-hidden="true">&bull;</span>
+			<a class="font-weight-bold" href="<?php echo base_url('pets/fiche/' . (int) $pet['id']); ?>">
+				<i class="fas fa-paw fa-fw" aria-hidden="true"></i>
+				<?php echo html_escape($pet['name']); ?>
+			</a>
+			<span class="mx-3 text-gray-400" aria-hidden="true">&bull;</span>
+			<span><i class="far fa-calendar fa-fw" aria-hidden="true"></i> <?php echo user_format_date($event_info['created_at'], $user->user_date); ?></span>
+			<span class="mx-3 text-gray-400" aria-hidden="true">&bull;</span>
+			<span><?php echo $event_cost; ?></span>
+			</div>
+			<?php include __DIR__ . '/../event/block_header_types.php'; ?>
+		</div>
+	</div>
 </div>

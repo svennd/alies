@@ -29,4 +29,24 @@ class LabResult_model extends MY_Model {
     {
         $this->db->where('report_id', $report_id)->delete($this->table);
     }
+
+	public function get_grouped_by_reports(array $report_ids): array
+	{
+		if (!$report_ids) {
+			return array();
+		}
+
+		$rows = $this->db
+			->where_in('report_id', array_map('intval', $report_ids))
+			->order_by('id', 'ASC')
+			->get($this->table)
+			->result_array();
+		$grouped = array();
+
+		foreach ($rows as $row) {
+			$grouped[(int) $row['report_id']][] = $row;
+		}
+
+		return $grouped;
+	}
 }

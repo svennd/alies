@@ -19,6 +19,7 @@ class Lab extends Vet_Controller
         $this->load->model('LabReport_model', 'reports');
         $this->load->model('LabResult_model', 'lab_results');
         $this->load->model('LabPlots_model', 'lab_plots');
+		$this->load->library('lab_result_presenter');
 
 		// library
 		$this->load->library('pdf'); 
@@ -56,34 +57,7 @@ class Lab extends Vet_Controller
 			}
 		}
 
-		foreach ($lab_details as &$d) {
-
-			$d['is_text'] = ($d['value_num'] === null);
-
-			$d['value'] = (
-				!$d['is_text'] && strlen((string)$d['value_text']) <= 1
-			) ? $d['value_num'] : $d['value_text'];
-
-			$d['draw_plot'] = (
-				!$d['is_text'] &&
-				$d['ref_min'] !== null &&
-				$d['ref_max'] !== null &&
-				!($d['ref_min'] == 0 && $d['ref_max'] == 0)
-			);
-
-			if ($d['draw_plot']) {
-				$d['is_low']  = $d['value_num'] < $d['ref_min'];
-				$d['is_high'] = $d['value_num'] > $d['ref_max'];
-				$d['is_out']  = $d['is_low'] || $d['is_high'];
-				$d['limit']   = $d['ref_min'] . ' - ' . $d['ref_max'];
-				$d['pct']     = calc_pct($d['value_num'], $d['ref_min'], $d['ref_max']) * 100;
-			} else {
-				$d['is_out'] = false;
-				$d['limit']  = '';
-				$d['pct']    = null;
-			}
-		}
-		unset($d);
+		$lab_details = $this->lab_result_presenter->normalize_many($lab_details);
 
 		$data = [
 			"lab_id"      => $lab_id,
@@ -118,34 +92,7 @@ class Lab extends Vet_Controller
 			}
 		}
 
-		foreach ($lab_details as &$d) {
-
-			$d['is_text'] = ($d['value_num'] === null);
-
-			$d['value'] = (
-				!$d['is_text'] && strlen((string)$d['value_text']) <= 1
-			) ? $d['value_num'] : $d['value_text'];
-
-			$d['draw_plot'] = (
-				!$d['is_text'] &&
-				$d['ref_min'] !== null &&
-				$d['ref_max'] !== null &&
-				!($d['ref_min'] == 0 && $d['ref_max'] == 0)
-			);
-
-			if ($d['draw_plot']) {
-				$d['is_low']  = $d['value_num'] < $d['ref_min'];
-				$d['is_high'] = $d['value_num'] > $d['ref_max'];
-				$d['is_out']  = $d['is_low'] || $d['is_high'];
-				$d['limit']   = $d['ref_min'] . ' - ' . $d['ref_max'];
-				$d['pct']     = calc_pct($d['value_num'], $d['ref_min'], $d['ref_max']) * 100;
-			} else {
-				$d['is_out'] = false;
-				$d['limit']  = '';
-				$d['pct']    = null;
-			}
-		}
-		unset($d);
+		$lab_details = $this->lab_result_presenter->normalize_many($lab_details);
 
 		$data = [
 			"lab_info"    => $lab_info,

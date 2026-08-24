@@ -1,4 +1,3 @@
-
 <fieldset class="border max bg-light">
 	<legend class="text-center topfields"><?php echo $this->lang->line('bill'); ?></legend>
 	<div class="list-group px-2">

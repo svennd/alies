@@ -688,7 +688,13 @@ class Events_model extends MY_Model
 					vs2.id AS vet_support_2_id,
 					vs2.first_name AS vet_support_2_name,
 					sl.name AS location_name,
-					(SELECT COUNT(*) FROM events_upload eu WHERE eu.event = e.id) AS upload_count')
+					(SELECT COUNT(*) FROM events_upload eu WHERE eu.event = e.id) AS upload_count,
+					(SELECT COUNT(*)
+						FROM events_labs el
+						INNER JOIN lab_report lr ON lr.id = el.lab_id
+						WHERE el.event_id = e.id
+							AND lr.pet_id = e.pet
+							AND lr.deleted_at IS NULL) AS lab_count')
 			->from('events e')
 			->join('users v', 'v.id = e.vet', 'left')
 			->join('users vs1', 'vs1.id = e.vet_support_1', 'left')

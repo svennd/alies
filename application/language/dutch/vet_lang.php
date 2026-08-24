@@ -418,6 +418,19 @@ $lang['accept_wh_new_price']    = 'Ik heb de nieuwe groothandel prijs gezien.';
 
 # lab
 $lang['lab_report']             = 'Labo verslag'; 
+$lang['event_labs']             = 'Labresultaten';
+$lang['event_lab_link']         = 'Labresultaat koppelen';
+$lang['event_lab_choose']       = 'Kies een labresultaat';
+$lang['event_lab_empty']        = 'Er zijn geen labresultaten aan dit event gekoppeld.';
+$lang['event_lab_open']         = 'Open volledig labverslag';
+$lang['event_lab_unlink']       = 'Labresultaat ontkoppelen';
+$lang['event_lab_unlink_confirm'] = 'Dit labresultaat van het event ontkoppelen?';
+$lang['event_lab_linked']       = 'Het labresultaat werd gekoppeld.';
+$lang['event_lab_unlinked']     = 'Het labresultaat werd ontkoppeld.';
+$lang['event_lab_link_invalid'] = 'Dit labresultaat kan niet aan het event worden gekoppeld.';
+$lang['event_lab_unlink_invalid'] = 'Dit labresultaat kon niet worden ontkoppeld.';
+$lang['event_lab_post_only']    = 'Labkoppelingen kunnen alleen via een formulier worden gewijzigd.';
+$lang['cost_unavailable']       = 'Kost niet beschikbaar';
 $lang['lab_id']                 = 'Labo id'; 
 $lang['lab_comment']            = 'Labo opmerking'; 
 $lang['lab_received']           = 'Labo ontvangen'; 

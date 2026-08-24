@@ -49,3 +49,4 @@ application/config/database.php
 application/controllers/Import_private.php
 dosbox
 dosbox/*
+data/upload/*.jpg

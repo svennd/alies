@@ -9,9 +9,9 @@
 			<div class="form-group px-3">
 				<label for="mainVet"><?php echo $this->lang->line('vet'); ?></label>
 				<div class="input-group">
-					<input type="text" type="text" id="mainVet" class="form-control" value="<?php echo $event_info['vet']['first_name']; ?>" disabled>
+					<input type="text" id="mainVet" class="form-control" value="<?php echo html_escape($event_info['vet']['first_name']); ?>" disabled>
 					<div class="input-group-append">
-						<button name="show_extra_vets" id="show_extra_vets" class="btn btn-outline-success bounceit"><i class="fa-solid fa-user-plus"></i></button>
+						<button type="button" name="show_extra_vets" id="show_extra_vets" class="btn btn-outline-success bounceit"><i class="fa-solid fa-user-plus"></i></button>
 					</div>
 				</div>
 			</div>
@@ -38,10 +38,11 @@
 			<p class="text-center w-100"><i class="fas fa-cloud-upload-alt fa-3x m-2"></i><br/>Click here or drag the files here.</p>
 		</div>
 		<input type="file" style="display:none" name="manual_file_upload" id="my_old_browser" multiple />
+		<?php include 'block_attachments.php'; ?>
 		
 	</div>
 	<div class="col-md-4">
-		<?php include "block_closed_bill.php"; ?>
+		<?php include 'block_lab_results.php'; ?>
 	</div>
 </div>
 
@@ -213,7 +214,7 @@ async function uploadFile(file) {
 	var procent_value = 0;
 
 	for (let start = 0; start < file.size; start += chunkSize) {
-		const chunk = file.slice(start, start + chunkSize + 1);
+		const chunk = file.slice(start, start + chunkSize);
 		const fd = new FormData();
 		fd.append('data', chunk);
 		fd.append('file_name', file.name);
