@@ -38,8 +38,6 @@
                     <div class="chart-area">
                         <canvas id="myChart"></canvas>
                     </div>
-                    <br/>
-                    <input type="button" id="start_from_zero" class="btn btn-light btn-sm" style="color:#3080d0" name="button" value="Start (0)" />
                 </div>
             </div>
 	</div>
@@ -329,6 +327,11 @@ const config = {
   options: {
     maintainAspectRatio: false,
     responsive: true,
+	scales: {
+		y: {
+			beginAtZero: true
+		}
+	},
   },
 };
 
@@ -336,11 +339,6 @@ const myChart = new Chart(
     document.getElementById('myChart'),
     config
   );
-
-$("#start_from_zero").click(function() {
-    myChart.options.scales = { y: { min: 0}};
-    myChart.update();
-});
 
 });
 </script>
