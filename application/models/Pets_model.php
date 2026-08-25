@@ -169,7 +169,7 @@ class Pets_model extends MY_Model
 	*/
 	public function other_pets(int $owner, int $pet_id, int $limit = 5)
 	{
-		return $this->where(array('owner' => $owner, 'death' => 0, 'lost' => 0))->where('id !=', $pet_id)->fields('id, type, name')->limit($limit)->get_all();
+		return $this->where(array('owner' => $owner, 'death' => 0, 'lost' => 0, 'transfered' => 0))->where('id !=', $pet_id)->fields('id, type, name')->limit($limit)->get_all();
 	}
 
 	public function replace_avatar(int $pet_id, $avatar)
