@@ -202,13 +202,6 @@
                     'link' => 'admin/product_types',
                     'text' => $this->lang->line('product_types_and_labels'),
                 ),
-				// can't trust users to do it
-                // array(
-                //     'img' => 'backup.png',
-                //     'alt' => 'backup',
-                //     'link' => 'backup',
-                //     'text' => $this->lang->line('backup'),
-                // ),
                 array(
                     'img' => 'booking.png',
                     'alt' => 'booking',

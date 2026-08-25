@@ -52,7 +52,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = false;
-$route['backup/sql/(:any)/(:any)'] = 'backup/sql/$1/$2';
 $route['invoice/bill/(:num)/(:num)'] = 'invoice/bill/$1/$2';
 $route['stock/(:num)'] = 'stock/index/$1';
 $route['stock/(:num)/(:num)'] = 'stock/index/$1/$2';
