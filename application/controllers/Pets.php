@@ -441,7 +441,8 @@ class Pets extends Vet_Controller
 			"client"		=> $client,
 			"result"		=> $result,
 			"owner" 		=> $this->owners->get($pet_info['owner']),
-			"new_owner"		=> $new_owner_q
+			"new_owner"		=> $new_owner_q,
+			"transfer_message" => $this->session->flashdata('pet_transfer_message'),
 		);
 
 		$this->_render_page('pets/change_owner', $data);
@@ -449,11 +450,19 @@ class Pets extends Vet_Controller
 
 	public function change_owner_complete($pet_id, $new_owner)
 	{
-        // clone the pet and clear "identification" of old one
-        $this->pets->transfer_pet($pet_id, $new_owner);
+		$new_pet_id = $this->pets->transfer_pet((int) $pet_id, (int) $new_owner);
+		if (!$new_pet_id) {
+			$this->session->set_flashdata('pet_transfer_message', $this->lang->line('pet_transfer_failed'));
+			redirect('pets/change_owner/' . (int) $pet_id . '/' . (int) $new_owner, 'refresh');
+			return;
+		}
 
-        $this->logs->logger(INFO, "transfer_pet", "pet " . $pet_id . " (new owner:". $new_owner . ")");
-		redirect('owners/detail/' . $new_owner, 'refresh');
+		$this->logs->logger(
+			INFO,
+			"transfer_pet",
+			"pet " . (int) $pet_id . " (successor:" . $new_pet_id . ", new owner:" . (int) $new_owner . ")"
+		);
+		redirect('owners/detail/' . (int) $new_owner, 'refresh');
 	}
 
 	# used in lab lookups if we don't know who it is for

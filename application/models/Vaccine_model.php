@@ -134,6 +134,8 @@ class Vaccine_model extends MY_Model
 			AND
 				pets.lost = 0
 			AND
+				pets.transfered = 0
+			AND
 				vac.no_rappel = 0
 			AND
 				owners.disabled = 0 -- not disabled
@@ -208,6 +210,8 @@ class Vaccine_model extends MY_Model
 				pets.death = 0
 			AND
 				pets.lost = 0
+			AND
+				pets.transfered = 0
 			AND
 				vac.no_rappel = 0
 			AND

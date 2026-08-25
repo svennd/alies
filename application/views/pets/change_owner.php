@@ -6,6 +6,9 @@
 				<a href="<?php echo base_url(); ?>pets/fiche/<?php echo $pet['id'] ?>"><?php echo $pet['name'] ?></a> <small>(#<?php echo $pet['id']; ?>)</small> / <?php echo $this->lang->line('change_owner'); ?>
 			</div>
 			<div class="card-body">
+			<?php if (!empty($transfer_message)): ?>
+				<div class="alert alert-danger" role="alert"><?php echo html_escape($transfer_message); ?></div>
+			<?php endif; ?>
 			<table class="table">
 			<tr>
 				<th><?php echo $this->lang->line('current_owner'); ?></th>

@@ -95,6 +95,7 @@ $lang['current_owner']   = 'Current owner';
 $lang['new_owner']   = 'New owner';
 $lang['change_owner']   = 'Change owner';
 $lang['change']   = 'Change';
+$lang['pet_transfer_failed'] = 'The pet transfer failed. No records were changed.';
 
 # invoices
 $lang['title_invoice']   = 'Search invoices';

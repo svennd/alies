@@ -94,7 +94,7 @@ The system MUST perform successor creation, medical-record movement, history cop
 The system SHALL provide a one-time migration that identifies each historical source pet and its unique successor, then applies the same medical-record movement and non-billable history-copy behavior as a new transfer.
 
 #### Scenario: Historical transfer has one deterministic successor
-- **WHEN** the migration finds exactly one successor matching the stored target owner, pet identity, transfer markers, and transfer timing
+- **WHEN** the migration finds exactly one successor matching the stored target owner, pet identity, source transfer marker, and transfer timing
 - **THEN** it moves the supported direct medical records
 - **AND** it creates the eligible non-billable history copies
 - **AND** it restores eligible API laboratory event associations

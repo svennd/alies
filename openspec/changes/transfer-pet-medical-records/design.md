@@ -110,8 +110,9 @@ The next sequential migration will perform no DDL. It will construct a complete 
 - target owner parsed from the source `[transfer:send:<owner>]` marker;
 - successor owner;
 - pet name, type, and nullable birth date;
-- successor transfer marker;
 - source update and successor creation timestamps within the transfer request window.
+
+The successor note is deliberately not used as evidence because staff may edit it after transfer and a later chained transfer replaces it. The immutable source marker plus the ownership, identity, and timestamp match must still resolve to exactly one successor.
 
 Every source must resolve to exactly one successor. The migration preflight also checks dental `(pet, tooth)` uniqueness and any other update constraint that could reject the move. Any missing, ambiguous, or conflicting mapping raises an error before mutation.
 

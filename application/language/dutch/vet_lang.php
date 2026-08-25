@@ -97,6 +97,7 @@ $lang['current_owner']   = 'Huidige eigenaar';
 $lang['new_owner']   = 'Nieuwe eigenaar';
 $lang['change_owner']   = 'Wijzig eigenaar';
 $lang['change']   = 'Wijzig';
+$lang['pet_transfer_failed'] = 'De overdracht van het dier is mislukt. Er zijn geen gegevens gewijzigd.';
 
 # invoices
 $lang['title_invoice']   = 'Facturen opzoeken';
