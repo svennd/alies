@@ -9,6 +9,8 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 		'eligible' => 0,
 		'updated' => 0,
 		'unresolved' => 0,
+		'top_unresolved' => array(),
+		'endpoint' => null,
 		'skipped_reason' => null,
 	);
 
@@ -21,12 +23,14 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 			return $this->up_version;
 		}
 
-		$base_url = rtrim((string) dirname(config_item('base_url')), '/');
-		if ($base_url === '') {
-			$this->last_run_stats['skipped_reason'] = 'missing base_url config';
-			log_message('error', 'migration 049: missing base_url config, skipping medilab code resolution');
+		$base_url = $this->get_decoded_config_value('index_api_url');
+		if ($base_url === null) {
+			$this->last_run_stats['skipped_reason'] = 'missing config index_api_url';
+			log_message('error', 'migration 049: missing config index_api_url, skipping medilab code resolution');
 			return $this->up_version;
 		}
+		$base_url = rtrim($base_url, '/');
+		$this->last_run_stats['endpoint'] = $base_url . '/api/medilab/by-test-id/{test_id}';
 
 		$rows = $this->db
 			->select('lr.id, lr.code')
@@ -43,6 +47,7 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 		}
 
 		$resolved_cache = array();
+		$unresolved_codes = array();
 		$updated = 0;
 
 		foreach ($rows as $row)
@@ -56,6 +61,10 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 			$resolved_code = $resolved_cache[$test_id];
 			if ($resolved_code === null) {
 				$this->last_run_stats['unresolved']++;
+				if (!isset($unresolved_codes[$test_id])) {
+					$unresolved_codes[$test_id] = 0;
+				}
+				$unresolved_codes[$test_id]++;
 				continue;
 			}
 
@@ -68,8 +77,10 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 			}
 		}
 
-		log_message('error', 'migration 049: updated medilab result code rows=' . $updated);
+		arsort($unresolved_codes, SORT_NUMERIC);
+		$this->last_run_stats['top_unresolved'] = array_slice($unresolved_codes, 0, 10, true);
 		$this->last_run_stats['updated'] = $updated;
+		log_message('error', 'migration 049: updated medilab result code rows=' . $updated);
 		return $this->up_version;
 	}
 
@@ -86,9 +97,14 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 
 	private function get_index_api_key()
 	{
+		return $this->get_decoded_config_value('index_api_key');
+	}
+
+	private function get_decoded_config_value(string $name)
+	{
 		$row = $this->db
 			->select('value')
-			->where('name', 'index_api_key')
+			->where('name', $name)
 			->limit(1)
 			->get('config')
 			->row_array();
@@ -113,7 +129,7 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 			return null;
 		}
 
-		$url = $base_url . '/fagg/api/medilab/by-test-id/' . rawurlencode($test_id);
+		$url = $base_url . '/api/medilab/by-test-id/' . rawurlencode($test_id);
 		$ch = curl_init($url);
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

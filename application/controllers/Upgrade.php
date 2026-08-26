@@ -178,6 +178,16 @@ class Upgrade extends Frontend_Controller
 			. ", updated=" . (int) $stats['updated']
 			. ", unresolved=" . (int) $stats['unresolved']
 			. ", migration_version=" . sprintf('%03d', $version_after) . ".\n";
+		echo "Reference endpoint: " . $stats['endpoint'] . "\n";
+
+		if (!empty($stats['top_unresolved']))
+		{
+			echo "Top unresolved codes:\n";
+			foreach ($stats['top_unresolved'] as $code => $count)
+			{
+				echo "  " . $code . ": " . (int) $count . " rows\n";
+			}
+		}
 		return true;
 	}
 

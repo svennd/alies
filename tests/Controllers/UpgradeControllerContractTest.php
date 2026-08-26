@@ -13,6 +13,7 @@ final class UpgradeControllerContractTest extends TestCase
         $this->assertStringContainsString('function retry_medilab_codes()', $source);
         $this->assertStringContainsString("new Migration_medilab_result_code_resolve()", $source);
         $this->assertStringContainsString('$version_after !== $current', $source);
+        $this->assertStringContainsString('Top unresolved codes:', $source);
         $this->assertStringNotContainsString("migration->version(48)", $source);
     }
 }
