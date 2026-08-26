@@ -123,13 +123,20 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 }
 
 .pet-history__details {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.25rem;
 	padding: 1.25rem;
 	border-top: 1px solid var(--history-border);
 	background: var(--history-detail-background);
 }
 
 .pet-history__detail-group + .pet-history__detail-group {
-	margin-top: 1.25rem;
+	margin-top: 0;
+}
+
+.pet-history__detail-group:only-child {
+	grid-column: 1 / -1;
 }
 
 .pet-history__detail-heading {
@@ -140,7 +147,10 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 	letter-spacing: .04em;
 	text-transform: uppercase;
 }
-
+.pet-history__clinical-report p 
+{
+	margin: 0 0 .1rem 0;
+}
 .pet-history__clinical-report > :last-child,
 .pet-history__details ul:last-child {
 	margin-bottom: 0;
@@ -179,6 +189,10 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 	.pet-history__summary-toggle {
 		grid-template-columns: 1fr;
 		gap: .5rem;
+	}
+
+	.pet-history__details {
+		grid-template-columns: 1fr;
 	}
 
 	.pet-history__date,
