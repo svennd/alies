@@ -17,6 +17,7 @@ $lang['edit']          = 'Bewerk';
 $lang['add']          = 'Toevoegen';
 $lang['required']          = 'Verplicht';
 $lang['cancel']          = 'Annuleer';
+$lang['unit']          = 'unit';
 
 
 # welcome page

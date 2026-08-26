@@ -16,6 +16,7 @@ $lang['edit']          = 'Edit';
 $lang['add']          = 'Add';
 $lang['required']          = 'Required';
 $lang['cancel']          = 'Cancel';
+$lang['unit']          = 'unit';
 
 # welcome page
 $lang['title_welcome']  = 'Welcome';

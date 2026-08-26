@@ -320,15 +320,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 								</span>
 							</button>
 							<div class="pet-history__actions<?php echo ($upload_count > 0 || $lab_count > 0) ? '' : ' pet-history__actions--no-mobile'; ?>">
-								<button
-									type="button"
-									class="pet-history__eye-toggle pet-history__toggle btn btn-sm btn-outline-primary"
-									aria-expanded="false"
-									aria-controls="<?php echo $details_id; ?>"
-								>
-									<i class="fa-solid fa-eye" aria-hidden="true"></i>
-									<span class="sr-only"><?php echo $this->lang->line('anamnese'); ?></span>
-								</button>
 								<a href="<?php echo base_url('events/event/' . (int) $history['id']); ?>" class="pet-history__edit btn btn-sm <?php echo ((int) $history['report'] === REPORT_DONE) ? 'btn-outline-secondary not-allowed' : 'btn-outline-success'; ?>">
 									<i class="fa-solid fa-pen" aria-hidden="true"></i>
 									<span class="sr-only"><?php echo $this->lang->line('edit'); ?></span>
@@ -397,9 +388,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 			$entries.find('.pet-history__details').prop('hidden', true);
 			$entries.find('.pet-history__toggle')
 				.attr('aria-expanded', 'false');
-			$entries.find('.pet-history__eye-toggle i')
-				.removeClass('fa-eye-slash')
-				.addClass('fa-eye');
 		}
 
 		function openEntry($entry) {
@@ -408,9 +396,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 			$entry.find('.pet-history__details').prop('hidden', false);
 			$entry.find('.pet-history__toggle')
 				.attr('aria-expanded', 'true');
-			$entry.find('.pet-history__eye-toggle i')
-				.removeClass('fa-eye')
-				.addClass('fa-eye-slash');
 		}
 
 		function matchingEntries() {

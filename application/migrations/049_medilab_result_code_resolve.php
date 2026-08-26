@@ -5,17 +5,25 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 
 	protected $up_version = "049";
 	protected $down_version = "048";
+	private $last_run_stats = array(
+		'eligible' => 0,
+		'updated' => 0,
+		'unresolved' => 0,
+		'skipped_reason' => null,
+	);
 
 	public function up()
 	{
 		$api_key = $this->get_index_api_key();
 		if ($api_key === null) {
+			$this->last_run_stats['skipped_reason'] = 'missing config index_api_key';
 			log_message('error', 'migration 049: missing config index_api_key, skipping medilab code resolution');
 			return $this->up_version;
 		}
 
 		$base_url = rtrim((string) dirname(config_item('base_url')), '/');
 		if ($base_url === '') {
+			$this->last_run_stats['skipped_reason'] = 'missing base_url config';
 			log_message('error', 'migration 049: missing base_url config, skipping medilab code resolution');
 			return $this->up_version;
 		}
@@ -28,6 +36,7 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 			->where("lr.code REGEXP '^[0-9]+$'", null, false)
 			->get()
 			->result_array();
+		$this->last_run_stats['eligible'] = count($rows);
 
 		if (!$rows) {
 			return $this->up_version;
@@ -46,6 +55,7 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 
 			$resolved_code = $resolved_cache[$test_id];
 			if ($resolved_code === null) {
+				$this->last_run_stats['unresolved']++;
 				continue;
 			}
 
@@ -59,7 +69,13 @@ class Migration_medilab_result_code_resolve extends CI_Migration {
 		}
 
 		log_message('error', 'migration 049: updated medilab result code rows=' . $updated);
+		$this->last_run_stats['updated'] = $updated;
 		return $this->up_version;
+	}
+
+	public function get_last_run_stats()
+	{
+		return $this->last_run_stats;
 	}
 
 	public function down()

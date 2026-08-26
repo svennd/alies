@@ -134,6 +134,54 @@ class Upgrade extends Frontend_Controller
 	}
 
 	/*
+	* function: retry_medilab_codes
+	* rerun the idempotent data backfill from migration 049 without changing
+	* the database migration version
+	*/
+	public function retry_medilab_codes()
+	{
+		$current = $this->current_migration_version();
+		if ($current < 49)
+		{
+			echo "Migration 049 has not been applied yet. Use upgrade up instead.\n";
+			return false;
+		}
+
+		$this->load->library('migration');
+		require_once APPPATH . 'migrations/049_medilab_result_code_resolve.php';
+
+		$retry = new Migration_medilab_result_code_resolve();
+		$result = $retry->up();
+		$stats = $retry->get_last_run_stats();
+
+		if ($result !== '049')
+		{
+			echo "Medilab code retry failed. Check the application log.\n";
+			return false;
+		}
+
+		$version_after = $this->current_migration_version();
+		if ($version_after !== $current)
+		{
+			echo "Medilab code retry unexpectedly changed the migration version from "
+				. sprintf('%03d', $current) . " to " . sprintf('%03d', $version_after) . ".\n";
+			return false;
+		}
+
+		if ($stats['skipped_reason'] !== null)
+		{
+			echo "Medilab code retry skipped: " . $stats['skipped_reason'] . ".\n";
+			return false;
+		}
+
+		echo "Medilab code retry completed: eligible=" . (int) $stats['eligible']
+			. ", updated=" . (int) $stats['updated']
+			. ", unresolved=" . (int) $stats['unresolved']
+			. ", migration_version=" . sprintf('%03d', $version_after) . ".\n";
+		return true;
+	}
+
+	/*
 	* function: current_migration_version
 	* read current database migration version
 	*/
