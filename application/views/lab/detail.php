@@ -67,6 +67,9 @@
 							<?php else: ?>
 								-
 							<?php endif; ?>
+							<?php if (!isset($can_manage_lab_assignment) || $can_manage_lab_assignment): ?>
+								<a class="btn btn-outline-warning btn-sm py-0 px-1 ml-2" data-toggle="collapse" href="#reassignCard" role="button" aria-expanded="false" aria-controls="reassignCard" title="<?php echo $this->lang->line('lab_reassign_title'); ?>"><i class="fas fa-exchange-alt"></i></a>
+							<?php endif; ?>
 						</td>
 					</tr>
 					<tr>
@@ -89,7 +92,9 @@
 					</tr>
 				</table>
 
-				<div class="card border-warning mb-4">
+				<?php if (!isset($can_manage_lab_assignment) || $can_manage_lab_assignment): ?>
+				<div class="collapse mb-4" id="reassignCard">
+					<div class="card border-warning">
 						<div class="card-header py-2"><?php echo $this->lang->line('lab_reassign_title'); ?></div>
 						<div class="card-body">
 							<p class="small text-muted"><?php echo $this->lang->line('lab_reassign_warning'); ?></p>
@@ -97,13 +102,13 @@
 								<div class="form-row">
 									<div class="form-group col-md-6">
 										<label for="lab_reassign_owner_id"><?php echo $this->lang->line('client'); ?></label>
-										<select id="lab_reassign_owner_id" name="owner_id" class="form-control" required>
+										<select id="lab_reassign_owner_id" name="owner_id" class="form-control" required style="width: 100%;">
 											<?php if ($owner): ?><option value="<?php echo (int) $owner['id']; ?>" selected><?php echo html_escape(trim(($owner['first_name'] ?? '') . ' ' . ($owner['last_name'] ?? '')) . ' (#' . (int) $owner['id'] . ')'); ?></option><?php endif; ?>
 										</select>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="lab_reassign_pet_id"><?php echo $this->lang->line('pet_info'); ?></label>
-										<select id="lab_reassign_pet_id" name="pet_id" class="form-control" <?php echo $owner ? '' : 'disabled'; ?> required>
+										<select id="lab_reassign_pet_id" name="pet_id" class="form-control" <?php echo $owner ? '' : 'disabled'; ?> required style="width: 100%;">
 											<?php if ($pet_info): ?><option value="<?php echo (int) $pet_info['id']; ?>" selected><?php echo html_escape($pet_info['name'] . ' (#' . (int) $pet_info['id'] . ')'); ?></option><?php endif; ?>
 										</select>
 									</div>
@@ -111,7 +116,9 @@
 								<button type="submit" class="btn btn-warning btn-sm"><?php echo $this->lang->line('lab_reassign_submit'); ?></button>
 							</form>
 						</div>
+					</div>
 				</div>
+				<?php endif; ?>
 
 				<table class="table table-sm">
 					<thead>
@@ -209,8 +216,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	const reassignOwner = $('#lab_reassign_owner_id');
 	const reassignPet = $('#lab_reassign_pet_id');
 	if (reassignOwner.length) {
-		reassignOwner.select2({theme: 'bootstrap4', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_owner')); ?>, minimumInputLength: 1, ajax: {url: <?php echo json_encode(base_url('lab/search_owners')); ?>, dataType: 'json'}});
-		reassignPet.select2({theme: 'bootstrap4', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_pet')); ?>, ajax: {url: <?php echo json_encode(base_url('lab/search_pets')); ?>, dataType: 'json', data: function(params){ return {term: params.term || '', owner_id: reassignOwner.val()}; }}});
+		reassignOwner.select2({theme: 'bootstrap4', width: '100%', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_owner')); ?>, minimumInputLength: 1, ajax: {url: <?php echo json_encode(base_url('lab/search_owners')); ?>, dataType: 'json'}});
+		reassignPet.select2({theme: 'bootstrap4', width: '100%', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_pet')); ?>, ajax: {url: <?php echo json_encode(base_url('lab/search_pets')); ?>, dataType: 'json', data: function(params){ return {term: params.term || '', owner_id: reassignOwner.val()}; }}});
 		reassignOwner.on('change', function(){ reassignPet.val(null).trigger('change'); reassignPet.prop('disabled', !reassignOwner.val()); });
 	}
 });

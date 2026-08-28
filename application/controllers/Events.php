@@ -81,7 +81,7 @@ class Events extends Vet_Controller
 									->get($event_id);
 
 		$pet_id 			= $event_info['pet'];
-		$pet_info 			= $this->pets->get($pet_id);
+		$pet_info 			= $this->pets->with_breeds()->with_breeds2()->get($pet_id);
 		$other_pets 		= $this->pets->other_pets($pet_info['owner'], $pet_id);
 		
 		$data = array(
