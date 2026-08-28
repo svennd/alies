@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Cli extends Frontend_Controller 
 {
 	// initialize
-	public $settings, $stock, $logs, $log_stock, $wholesale, $delivery, $lab, $lab_line, $pets, $stock_value, $events, $pricetrack;
+	public $settings, $stock, $logs, $log_stock, $wholesale, $delivery, $pets, $stock_value, $events, $pricetrack;
 
 	// ci specific
 	public $input;
@@ -25,9 +25,7 @@ class Cli extends Frontend_Controller
 
 		$this->load->model('Wholesale_model', 'wholesale');
 		$this->load->model('Delivery_model', 'delivery');
-		$this->load->model('Lab_model', 'lab');
 		$this->load->model('Pets_model', 'pets');
-		$this->load->model('Lab_detail_model', 'lab_line');
 		$this->load->model('Stock_model', 'stock');
 		$this->load->model('Stock_value_model', 'stock_value');
 		$this->load->model('Events_model', 'events');

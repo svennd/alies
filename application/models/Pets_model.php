@@ -326,7 +326,6 @@ class Pets_model extends MY_Model
             'tooth' => 'pet',
             'tooth_msg' => 'pet',
             'rx' => 'pet_id',
-            'lab' => 'pet',
             'lab_report' => 'pet_id',
         );
 

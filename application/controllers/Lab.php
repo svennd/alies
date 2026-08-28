@@ -12,8 +12,6 @@ class Lab extends Vet_Controller
 
 		$this->load->model('Pets_model', 'pets');
 		$this->load->model('Owners_model', 'owners');
-		// $this->load->model('Lab_model', 'lab');
-		// $this->load->model('Lab_detail_model', 'lab_line');
 
         // new API models
         $this->load->model('LabReport_model', 'reports');

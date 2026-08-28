@@ -62,7 +62,6 @@ final class PetTransferWorkflowTest extends CodeIgniterDatabaseTestCase
         $vaccines = $this->model('Vaccine_model', 'transfer_workflow_vaccines');
         $labs = $this->model('Events_lab_model', 'transfer_workflow_labs');
         $rx = $this->model('Rx_model', 'transfer_workflow_rx');
-        $legacyLabs = $this->model('Lab_model', 'transfer_workflow_legacy_labs');
         $labReports = $this->model('LabReport_model', 'transfer_workflow_lab_reports');
         $oldOwnerId = $this->createOwner('OLD');
         $newOwnerId = $this->createOwner('NEW');
@@ -138,15 +137,6 @@ final class PetTransferWorkflowTest extends CodeIgniterDatabaseTestCase
             'description' => 'Transfer image',
             'bodypart' => 'chest',
         ]);
-        $legacyLabId = $this->insertRow('lab', [
-            'lab_id' => random_int(100000000, 999999999),
-            'lab_date' => '2024-03-04',
-            'lab_patient_id' => $petId,
-            'pet' => $petId,
-            'lab_comment' => 'Legacy transfer lab',
-            'source' => 'phpunit',
-            'comment' => '',
-        ]);
         $apiLabId = $this->insertRow('lab_report', [
             'pet_id' => $petId,
             'device' => 'phpunit-transfer',
@@ -185,15 +175,12 @@ final class PetTransferWorkflowTest extends CodeIgniterDatabaseTestCase
         $this->assertMoved('tooth', 'pet', $toothId, $petId, $newPetId);
         $this->assertMoved('tooth_msg', 'pet', $toothMessageId, $petId, $newPetId);
         $this->assertMoved('rx', 'pet_id', $rxId, $petId, $newPetId);
-        $this->assertMoved('lab', 'pet', $legacyLabId, $petId, $newPetId);
         $this->assertMoved('lab_report', 'pet_id', $apiLabId, $petId, $newPetId);
         $this->assertMoved('lab_report', 'pet_id', $unlinkedApiLabId, $petId, $newPetId);
 
         $rxRows = $rx->get_images($newPetId);
         $this->assertNotEmpty($rxRows);
         $this->assertStringContainsString($this->ci->db->where('id', $rxId)->get('rx')->row()->path, $rxRows[0]['images']);
-        $legacyLabRows = $legacyLabs->get_labs(date('Y-m-d', strtotime('-1 day')), date('Y-m-d', strtotime('+1 day')));
-        $this->assertContains($legacyLabId, array_map('intval', array_column($legacyLabRows, 'id')));
         $apiLabRows = $labReports->get_for_pet($newPetId);
         $this->assertContains($apiLabId, array_map('intval', array_column($apiLabRows, 'id')));
         $this->assertContains($unlinkedApiLabId, array_map('intval', array_column($apiLabRows, 'id')));

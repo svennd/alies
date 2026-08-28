@@ -27,7 +27,6 @@ final class PetTransferBackfillRollbackTest extends TestCase
             'tooth' => 'pet',
             'tooth_msg' => 'pet',
             'rx' => 'pet_id',
-            'lab' => 'pet',
             'lab_report' => 'pet_id',
         ] as $table => $column) {
             $references[$table] = $db
