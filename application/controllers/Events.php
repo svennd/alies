@@ -47,14 +47,17 @@ class Events extends Vet_Controller
 	*/
 	public function new_event(int $pet): void
 	{
-		# search for open events on this pet
-		$result = $this->events->where(array("pet" => $pet, "status" => STATUS_OPEN, "location" => $this->_get_user_location()))->get_all();
+		# search for open events on this pet, only within the last 14 days
+		$result = $this->events
+							->where(array("pet" => $pet, "status" => STATUS_OPEN, "location" => $this->_get_user_location()))
+							->where('created_at >= DATE_SUB(NOW(), INTERVAL 14 DAY)', null, null, false, false, true)
+							->get_all();
 
 		# there is already an event for this animal
 		# update, otherwise create it and redirect
 		if ($result > 0) {
 			$event_id = $result[0]['id'];
-			$this->events->update(array(), $event_id);
+			$this->events->update(array("vet" => $this->user->id), $event_id);
 
 			$this->logs->logger(DEBUG, "update_restart_event", "event_id: " . $event_id);
 		} else {
