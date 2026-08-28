@@ -47,19 +47,14 @@
 	overflow-wrap: anywhere;
 }
 
-.pet-profile-card .pet-profile-label {
-	display: block;
-	margin-bottom: .25rem;
-	color: #858796;
-	font-size: .7rem;
-	font-weight: 700;
-	text-transform: uppercase;
-}
-
 .pet-profile-card .pet-profile-value {
 	color: #3a3b45;
 }
 
+.no-border th, .no-border td 
+{
+	border-top: 0;
+}
 @media (max-width: 575.98px) {
 	.pet-profile-card .pet-profile-header-actions {
 		width: 100%;
@@ -118,8 +113,11 @@
 					<i class="fas fa-fw fa-pen" aria-hidden="true"></i>
 					<?php echo $this->lang->line('edit_pet'); ?>
 				</a>
-
-				<a href="<?php echo base_url('tooth/fiche/' . (int) $pet['id']); ?>" class="btn btn-outline-primary btn-sm mr-2">
+				<a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm mr-2">
+					<i class="fa-solid fa-syringe fa-fw" aria-hidden="true"></i>
+					<?php echo $this->lang->line('title_vaccines'); ?>
+				</a>
+				<a href="<?php echo base_url('tooth/fiche/' . (int) $pet['id']); ?>" class="btn btn-outline-warning btn-sm mr-2">
 					<i class="fas fa-fw fa-tooth" aria-hidden="true"></i>
 					<?php echo $this->lang->line('tooth'); ?>
 				</a>
@@ -155,70 +153,95 @@
 		</div>
 
 		<div class="row border-top mt-4 pt-4">
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label"><?php echo $this->lang->line('breed'); ?></span>
-				<div class="pet-profile-value">
-					<?php echo isset($pet['breeds']['name']) ? html_escape($pet['breeds']['name']) : '?'; ?>
-					<?php echo isset($pet['breeds2']['name']) ? ' x ' . html_escape($pet['breeds2']['name']) : ''; ?>
-				</div>
-			</div>
-
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label">Type</span>
-				<div class="pet-profile-value"><?php echo get_name($pet['type']); ?></div>
-			</div>
-
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label"><?php echo $this->lang->line('gender'); ?></span>
-				<div class="pet-profile-value"><?php echo get_gender($pet['gender']); ?></div>
-			</div>
-
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label"><?php echo $this->lang->line('weight'); ?></span>
-				<div class="pet-profile-value font-weight-bold">
-					<a href="<?php echo base_url('pets/history_weight/' . (int) $pet['id']); ?>">
-						<?php echo ($pet['last_weight'] == 0) ? '---' : html_escape($pet['last_weight']) . ' kg'; ?>
-					</a>
-				</div>
-			</div>
-
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label"><?php echo $this->lang->line('birth'); ?></span>
-				<div class="pet-profile-value">
-					<?php echo html_escape(user_format_date($pet['birth'], $user->user_date)); ?>
-					<?php if (!$pet['death']): ?>
-						<small class="d-block text-muted"><?php echo html_escape(timespan(strtotime($pet['birth']), time(), 1)); ?></small>
-					<?php endif; ?>
-				</div>
-			</div>
-
-			<div class="col-6 col-md-4 mb-4">
-				<span class="pet-profile-label"><?php echo $this->lang->line('chip'); ?></span>
-				<div class="pet-profile-value">
-					<?php echo (empty($pet['chip']) || !ctype_digit($pet['chip'])) ? '---' : preg_replace('/(\d{3})(?=\d)/', '$1-', $pet['chip']); ?>
-				</div>
-			</div>
-
+			
+			<div class="col-6 col-md-6 mb-4">
+				
+			<table class="table table-sm no-border">
+			<tr	>
+				<td width="40%">ID</td>
+				<td class="pet-profile-value">#<?php echo $pet['id']; ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('breed'); ?></td>
+				<td class="pet-profile-value">
+					<?php echo get_symbol($pet['type']); ?>
+					<?php echo isset($pet['breeds']['name']) ? $pet['breeds']['name'] : "?"; ?>
+					<?php echo isset($pet['breeds2']['name']) ? 'x ' . $pet['breeds2']['name'] : ""; ?>
+				</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td class="pet-profile-value"><?php echo get_name($pet['type']); ?></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('gender'); ?></td>
+				<td class="pet-profile-value"><?php echo get_gender($pet['gender']); ?></td>
+			</tr>
 			<?php if (!empty($pet['color'])): ?>
-				<div class="col-6 col-md-4 mb-4">
-					<span class="pet-profile-label"><?php echo $this->lang->line('haircolor'); ?></span>
-					<div class="pet-profile-value"><?php echo html_escape($pet['color']); ?></div>
-				</div>
+			<tr>
+				<td><?php echo $this->lang->line('haircolor'); ?></td>
+				<td class="pet-profile-value"><?php echo empty($pet['color']) ? "?" : $pet['color']; ?></td>
+			</tr>
 			<?php endif; ?>
-
 			<?php if (!empty($pet['hairtype'])): ?>
-				<div class="col-6 col-md-4 mb-4">
-					<span class="pet-profile-label"><?php echo $this->lang->line('hairtype'); ?></span>
-					<div class="pet-profile-value"><?php echo html_escape($pet['hairtype']); ?></div>
-				</div>
+			<tr>
+				<td><?php echo $this->lang->line('hairtype'); ?></td>
+				<td class="pet-profile-value"><?php echo empty($pet['hairtype']) ? "?" : $pet['hairtype']; ?></td>
+			</tr>
 			<?php endif; ?>
-
+			<tr>
+				<td><?php echo $this->lang->line('weight'); ?></td>
+				<td class="pet-profile-value"><a href="<?php echo base_url('pets/history_weight/' . $pet['id']); ?>"><?php echo ($pet['last_weight'] == 0) ? "---" : $pet['last_weight'] . 'kg'; ?></a></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('birth'); ?></td>
+				<td class="pet-profile-value"><?php echo user_format_date( $pet['birth'], $user->user_date); ?><br/><small><?php if(!$pet['death']): ?><?php echo timespan(strtotime($pet['birth']), time(), 1); ?><?php endif; ?></small></td>
+			</tr>
+			<tr>
+				<td><?php echo $this->lang->line('chip'); ?></td>
+				<td class="pet-profile-value"><?php echo (empty($pet['chip']) || !ctype_digit($pet['chip'])) ? "---" : preg_replace('/(\d{3})(?=\d)/', '$1-', $pet['chip']); ?></td>
+			</tr>
 			<?php if (!empty($pet['nr_vac_book'])): ?>
-				<div class="col-6 col-md-4 mb-4">
-					<span class="pet-profile-label"><?php echo $this->lang->line('vacc_nr'); ?></span>
-					<div class="pet-profile-value"><?php echo html_escape($pet['nr_vac_book']); ?></div>
-				</div>
+			<tr>
+				<td><?php echo $this->lang->line('vacc_nr'); ?></td>
+				<td class="pet-profile-value"><?php echo empty($pet['nr_vac_book']) ? "?" : $pet['nr_vac_book']; ?></td>
+			</tr>
 			<?php endif; ?>
+			</table>
+
+			</div>
+			<div class="col-6 col-md-6 mb-4" style="border-left: 1px solid #e3e6f0;">
+				<?php if ($vaccines): ?>
+					<?php
+					$today = new DateTime('today');
+					$warning_boundary = (clone $today)->modify('+3 months');
+					?>
+					<table class="table table-sm no-border">
+						<?php foreach ($vaccines as $vac): ?>
+							<?php
+							$rappel_date = new DateTime($vac['max_rappel']);
+							$rappel_date->setTime(0, 0, 0);
+
+							if ($rappel_date < $today) {
+								$status = 'danger';
+							} elseif ($rappel_date <= $warning_boundary) {
+								$status = 'warning';
+							} else {
+								// $status = 'success';
+								$status = '';
+							}
+							?>
+							<tr class="table-<?php echo $status; ?>">
+								<td class="pet-profile-value"><?php echo html_escape($vac['name']); ?></td>
+								<td class="pet-profile-value"><?php echo html_escape(user_format_date($vac['max_injection'], $user->user_date)); ?> <i class="fas fa-arrow-right mx-2" aria-hidden="true"></i> <?php echo html_escape(user_format_date($vac['max_rappel'], $user->user_date)); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</table>
+				<?php else: ?>
+					<?php echo $this->lang->line('no_vaccines'); ?>
+				<?php endif; ?>
+			</div>
+
 		</div>
 
 		<?php if (!empty($pet['note'])): ?>
