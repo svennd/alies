@@ -89,8 +89,7 @@
 					</tr>
 				</table>
 
-				<?php if (!empty($can_manage_lab_assignment)): ?>
-					<div class="card border-warning mb-4">
+				<div class="card border-warning mb-4">
 						<div class="card-header py-2"><?php echo $this->lang->line('lab_reassign_title'); ?></div>
 						<div class="card-body">
 							<p class="small text-muted"><?php echo $this->lang->line('lab_reassign_warning'); ?></p>
@@ -112,8 +111,7 @@
 								<button type="submit" class="btn btn-warning btn-sm"><?php echo $this->lang->line('lab_reassign_submit'); ?></button>
 							</form>
 						</div>
-					</div>
-				<?php endif; ?>
+				</div>
 
 				<table class="table table-sm">
 					<thead>

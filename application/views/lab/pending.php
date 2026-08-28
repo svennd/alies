@@ -3,7 +3,6 @@
 		<div class="card shadow mb-4">
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div><a href="<?php echo base_url('lab'); ?>"><?php echo $this->lang->line('Lab'); ?></a> / <?php echo $this->lang->line('lab_pending_title'); ?></div>
-				<a href="<?php echo base_url('lab'); ?>" class="btn btn-sm btn-outline-primary"><?php echo $this->lang->line('lab_all_results'); ?></a>
 			</div>
 			<div class="card-body">
 				<?php if (!empty($pending_message)): ?>
@@ -17,7 +16,6 @@
 						<table class="table table-sm" id="pendingLabTable">
 							<thead>
 								<tr>
-									<th><?php echo $this->lang->line('lab_id'); ?></th>
 									<th><?php echo $this->lang->line('lab_received'); ?></th>
 									<th><?php echo $this->lang->line('source'); ?></th>
 									<th><?php echo $this->lang->line('lab_pending_identifiers'); ?></th>
@@ -28,7 +26,7 @@
 							<tbody>
 								<?php foreach ($pending_results as $pending): ?>
 									<tr>
-										<td><?php echo (int) $pending['id']; ?></td>
+										<!-- <td><?php echo (int) $pending['id']; ?></td> -->
 										<td data-sort="<?php echo strtotime($pending['created_at']); ?>"><?php echo html_escape($pending['created_at']); ?></td>
 										<td>
 											<?php echo html_escape($pending['device'] ?: $pending['source'] ?: '-'); ?>

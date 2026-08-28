@@ -48,7 +48,6 @@ class Lab extends Vet_Controller
 
 		$this->_render_page('lab/pending', array(
 			'pending_results' => $pending_rows,
-			'can_manage_pending' => $this->can_manage_pending(),
 			'pending_message' => $this->session->flashdata('pending_lab_message'),
 			'pending_message_type' => $this->session->flashdata('pending_lab_message_type'),
 		));
@@ -56,7 +55,6 @@ class Lab extends Vet_Controller
 
 	public function pending_detail(int $pending_id): void
 	{
-		$this->require_pending_access();
 		$pending = $this->labPending->get_active_by_id($pending_id);
 		if (!$pending) {
 			show_404();
@@ -80,7 +78,6 @@ class Lab extends Vet_Controller
 
 	public function search_owners(): void
 	{
-		$this->require_pending_access();
 		$term = trim((string) $this->input->get('term'));
 		$results = array();
 		if ($term !== '') {
@@ -98,7 +95,6 @@ class Lab extends Vet_Controller
 
 	public function search_pets(): void
 	{
-		$this->require_pending_access();
 		$owner_id = (int) $this->input->get('owner_id');
 		$term = trim((string) $this->input->get('term'));
 		$results = array();
@@ -155,27 +151,10 @@ class Lab extends Vet_Controller
 		redirect('lab/pending');
 	}
 
-	private function can_manage_pending(): bool
-	{
-		return $this->ion_auth->is_admin() || $this->ion_auth->in_group('vet');
-	}
-
-	private function require_pending_access(): void
-	{
-		if (!$this->can_manage_pending()) {
-			show_error($this->lang->line('lab_pending_forbidden'), 403);
-			exit;
-		}
-	}
-
 	private function require_pending_mutation(): void
 	{
 		if ($this->input->method(true) !== 'POST') {
 			show_error($this->lang->line('lab_pending_post_only'), 405);
-			exit;
-		}
-		if (!$this->can_manage_pending()) {
-			show_error($this->lang->line('lab_pending_forbidden'), 403);
 			exit;
 		}
 	}
@@ -224,7 +203,6 @@ class Lab extends Vet_Controller
 			"lab_details" => $lab_details,
 			"owner"       => $owner,
 			"plots"       => $plots,
-			"can_manage_lab_assignment" => $this->can_manage_pending(),
 			"lab_message" => $this->session->flashdata('pending_lab_message'),
 			"lab_message_type" => $this->session->flashdata('pending_lab_message_type'),
 		];

@@ -21,21 +21,22 @@ final class LabPendingControllerContractTest extends TestCase
         $this->assertStringNotContainsString("'raw_payload'", $pendingMethod);
     }
 
-    public function testMutationsArePostOnlyAndLimitedToVetsAndAdmins(): void
+    public function testMutationsArePostOnlyAndRelyOnVetControllerAccess(): void
     {
-		$this->assertMatchesRegularExpression('/function pending_detail\(int \$pending_id\).*?require_pending_access\(\).*?get_active_by_id.*?lab_pending_preview->build.*?_render_page\(\'lab\/pending_detail\'/s', $this->source);
+		$this->assertStringContainsString('class Lab extends Vet_Controller', $this->source);
+		$this->assertMatchesRegularExpression('/function pending_detail\(int \$pending_id\).*?get_active_by_id.*?lab_pending_preview->build.*?_render_page\(\'lab\/pending_detail\'/s', $this->source);
 		$this->assertMatchesRegularExpression('/function recover_pending\(int \$pending_id\).*?require_pending_mutation\(\).*?post\(\'owner_id\'\).*?post\(\'pet_id\'\).*?recover_pending\(\$pending_id, \$owner_id, \$pet_id/s', $this->source);
         $this->assertMatchesRegularExpression('/function delete_pending\(int \$pending_id\).*?require_pending_mutation\(\).*?soft_delete_pending\(\$pending_id/s', $this->source);
 		$this->assertMatchesRegularExpression('/function reassign\(int \$lab_id\).*?require_pending_mutation\(\).*?reassign_report\(\$lab_id, \$owner_id, \$pet_id\)/s', $this->source);
         $this->assertStringContainsString("method(true) !== 'POST'", $this->source);
-        $this->assertStringContainsString("is_admin() || \$this->ion_auth->in_group('vet')", $this->source);
-        $this->assertStringContainsString("show_error(\$this->lang->line('lab_pending_forbidden'), 403)", $this->source);
+		$this->assertStringNotContainsString('can_manage_pending', $this->source);
+		$this->assertStringNotContainsString('require_pending_access', $this->source);
     }
 
     public function testSuccessfulActionsAreAuditedWithoutPayloadContent(): void
     {
         $recover = $this->methodSource('recover_pending', 'delete_pending');
-        $delete = $this->methodSource('delete_pending', 'can_manage_pending');
+		$delete = $this->methodSource('delete_pending', 'set_pending_feedback');
 
         $this->assertStringContainsString("'pending_lab_recovered'", $recover);
         $this->assertStringContainsString("'pending_id: '", $recover);
@@ -50,8 +51,8 @@ final class LabPendingControllerContractTest extends TestCase
 
 	public function testOwnerAndPetLookupsAreSeparateAndOwnerScoped(): void
 	{
-		$this->assertMatchesRegularExpression('/function search_owners\(\).*?require_pending_access\(\).*?search_for_lab_assignment/s', $this->source);
-		$this->assertMatchesRegularExpression('/function search_pets\(\).*?require_pending_access\(\).*?get\(\'owner_id\'\).*?search_assignable_for_owner\(\$owner_id/s', $this->source);
+		$this->assertMatchesRegularExpression('/function search_owners\(\).*?search_for_lab_assignment/s', $this->source);
+		$this->assertMatchesRegularExpression('/function search_pets\(\).*?get\(\'owner_id\'\).*?search_assignable_for_owner\(\$owner_id/s', $this->source);
 	}
 
 	public function testReassignmentAuditsPreviousAndReplacementAssociationsWithoutPayload(): void
