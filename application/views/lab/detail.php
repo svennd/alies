@@ -55,22 +55,17 @@
 				</div>
 			</div>
 			<div class="card-body">
+				<?php if (!empty($lab_message)): ?>
+					<div class="alert alert-<?php echo html_escape($lab_message_type ?: 'info'); ?>"><?php echo html_escape($lab_message); ?></div>
+				<?php endif; ?>
 				<table class="table table-sm">
 					<tr>
 						<td><?php echo $this->lang->line('pet_info'); ?></td>
 						<td>
 							<?php if ($lab_info['pet']): ?>
 								<a href="<?php echo base_url('pets/fiche/' . $lab_info['pet']['id']); ?>"><?php echo $lab_info['pet']['name']; ?></a>
-								<a href="<?php echo base_url('lab/reset_lab_link/' . $lab_id); ?>" class="btn btn-sm btn-outline-danger spinit ml-4"><i class="fa-solid fa-rotate-right"></i></a>
-								<input type="hidden" name="pet_id" value="<?php echo $lab_info['pet']['id']; ?>" />
-								<input type="hidden" name="no_event" value="1" />
 							<?php else: ?>
-								<select name="pet_id" style="width:100%" id="pet_id" data-allow-clear="1">
-									<?php if($lab_info['pet']): ?>
-									<option value="<?php echo $lab_info['pet']['id']; ?>" selected></option>
-									<?php endif; ?>
-								</select>
-								<input type="hidden" name="no_event" value="0" />
+								-
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -93,6 +88,32 @@
 						<td><?php echo $lab_info['source_id']; ?></td>
 					</tr>
 				</table>
+
+				<?php if (!empty($can_manage_lab_assignment)): ?>
+					<div class="card border-warning mb-4">
+						<div class="card-header py-2"><?php echo $this->lang->line('lab_reassign_title'); ?></div>
+						<div class="card-body">
+							<p class="small text-muted"><?php echo $this->lang->line('lab_reassign_warning'); ?></p>
+							<form action="<?php echo base_url('lab/reassign/' . (int) $lab_id); ?>" method="post" id="labReassignForm" onsubmit="return confirm(<?php echo htmlspecialchars(json_encode($this->lang->line('lab_reassign_confirm')), ENT_QUOTES, 'UTF-8'); ?>);">
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="lab_reassign_owner_id"><?php echo $this->lang->line('client'); ?></label>
+										<select id="lab_reassign_owner_id" name="owner_id" class="form-control" required>
+											<?php if ($owner): ?><option value="<?php echo (int) $owner['id']; ?>" selected><?php echo html_escape(trim(($owner['first_name'] ?? '') . ' ' . ($owner['last_name'] ?? '')) . ' (#' . (int) $owner['id'] . ')'); ?></option><?php endif; ?>
+										</select>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="lab_reassign_pet_id"><?php echo $this->lang->line('pet_info'); ?></label>
+										<select id="lab_reassign_pet_id" name="pet_id" class="form-control" <?php echo $owner ? '' : 'disabled'; ?> required>
+											<?php if ($pet_info): ?><option value="<?php echo (int) $pet_info['id']; ?>" selected><?php echo html_escape($pet_info['name'] . ' (#' . (int) $pet_info['id'] . ')'); ?></option><?php endif; ?>
+										</select>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-warning btn-sm"><?php echo $this->lang->line('lab_reassign_submit'); ?></button>
+							</form>
+						</div>
+					</div>
+				<?php endif; ?>
 
 				<table class="table table-sm">
 					<thead>
@@ -176,20 +197,8 @@
 </div>
 
 <script type="text/javascript">
-const URL_SELECT = "<?php echo base_url('pets/get_pet_name'); ?>";
-
 document.addEventListener("DOMContentLoaded", function(){
 	$("#labo").addClass('active');
-
-	/* get pet names */
-	$('#pet_id').select2({
-		theme: 'bootstrap4',
-		placeholder: 'Select Pet',
-		ajax: {
-			url: URL_SELECT,
-			dataType: 'json'
-		},
-	});
 
 	$('#showMore').on('click', function(e){
 		e.preventDefault();
@@ -198,5 +207,13 @@ document.addEventListener("DOMContentLoaded", function(){
 			$('#moreContent').hasClass('d-none') ? 'Show details' : 'Show less details'
 		);
 	});
+
+	const reassignOwner = $('#lab_reassign_owner_id');
+	const reassignPet = $('#lab_reassign_pet_id');
+	if (reassignOwner.length) {
+		reassignOwner.select2({theme: 'bootstrap4', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_owner')); ?>, minimumInputLength: 1, ajax: {url: <?php echo json_encode(base_url('lab/search_owners')); ?>, dataType: 'json'}});
+		reassignPet.select2({theme: 'bootstrap4', placeholder: <?php echo json_encode($this->lang->line('lab_pending_select_pet')); ?>, ajax: {url: <?php echo json_encode(base_url('lab/search_pets')); ?>, dataType: 'json', data: function(params){ return {term: params.term || '', owner_id: reassignOwner.val()}; }}});
+		reassignOwner.on('change', function(){ reassignPet.val(null).trigger('change'); reassignPet.prop('disabled', !reassignOwner.val()); });
+	}
 });
 </script>

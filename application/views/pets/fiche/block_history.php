@@ -1,23 +1,4 @@
 
-<?php
-$history_veterinarians = array();
-
-foreach ((array) $pet_history as $history_item) {
-	foreach ((isset($history_item['veterinarians']) ? $history_item['veterinarians'] : array()) as $veterinarian) {
-		$filter_token = isset($veterinarian['filter_token']) ? $veterinarian['filter_token'] : '';
-		$veterinarian_name = isset($veterinarian['name']) ? trim($veterinarian['name']) : '';
-
-		if ($filter_token !== '' && $veterinarian_name !== '') {
-			$history_veterinarians[$filter_token] = $veterinarian_name;
-		}
-	}
-}
-
-uasort($history_veterinarians, function ($first_name, $second_name) {
-	return strcasecmp($first_name, $second_name);
-});
-?>
-
 <!-- phone only links -->
 <a href="<?php echo base_url(); ?>events/new_event/<?php echo $pet['id']; ?>" class="btn btn-success mb-3 d-block d-sm-none d-md-none"><i class="fas fa-user-md"></i> <?php echo $this->lang->line('consult'); ?></a>
 <a href="<?php echo base_url('pets/edit/'. $pet['id']); ?>" class="btn btn-info mb-3 d-block d-sm-none d-md-none"><i class="fas fa-paw"></i> <?php echo $this->lang->line('edit_pet'); ?></a>
@@ -228,14 +209,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 					<option value="<?php echo DISEASE; ?>"><?php echo ucfirst($this->lang->line('disease')); ?></option>
 					<option value="<?php echo OPERATION; ?>"><?php echo $this->lang->line('history_operations'); ?></option>
 				</select>
-
-				<label class="sr-only" for="pet-history-vet-filter"><?php echo $this->lang->line('vet'); ?></label>
-				<select class="pet-history__filter form-control form-control-sm" id="pet-history-vet-filter">
-					<option value="all"><?php echo $this->lang->line('history_all_vets'); ?></option>
-					<?php foreach ($history_veterinarians as $veterinarian_id => $veterinarian_name): ?>
-						<option value="<?php echo html_escape($veterinarian_id); ?>"><?php echo html_escape($veterinarian_name); ?></option>
-					<?php endforeach; ?>
-				</select>
 			</div>
 		<?php endif; ?>
 	</div>
@@ -251,16 +224,10 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 					$location_name = isset($history['location_name']) ? trim($history['location_name']) : '';
 					$upload_count = isset($history['upload_count']) ? (int) $history['upload_count'] : 0;
 					$lab_count = isset($history['lab_count']) ? (int) $history['lab_count'] : 0;
-					$entry_veterinarian_tokens = array();
 					$entry_veterinarian_names = array();
 
 					foreach ((isset($history['veterinarians']) ? $history['veterinarians'] : array()) as $veterinarian) {
-						$filter_token = isset($veterinarian['filter_token']) ? $veterinarian['filter_token'] : '';
 						$veterinarian_name = isset($veterinarian['name']) ? trim($veterinarian['name']) : '';
-
-						if ($filter_token !== '' && !in_array($filter_token, $entry_veterinarian_tokens, true)) {
-							$entry_veterinarian_tokens[] = $filter_token;
-						}
 
 						if ($veterinarian_name !== '' && !in_array($veterinarian_name, $entry_veterinarian_names, true)) {
 							$entry_veterinarian_names[] = $veterinarian_name;
@@ -273,7 +240,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 					<article
 						class="pet-history__entry <?php echo !$history['type'] ? 'pet-history-disease' : 'pet-history-procedure'; ?>"
 						data-history-type="<?php echo (int) $history['type']; ?>"
-						data-veterinarians="<?php echo html_escape(implode(',', $entry_veterinarian_tokens)); ?>"
 						<?php echo $is_initially_visible ? '' : 'hidden'; ?>
 					>
 						<div class="pet-history__summary">
@@ -378,7 +344,6 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 		var $history = $('#pet-medical-history');
 		var $entries = $history.find('.pet-history__entry');
 		var $typeFilter = $('#pet-history-type-filter');
-		var $veterinarianFilter = $('#pet-history-vet-filter');
 		var $emptyState = $history.find('.pet-history__empty-filter');
 		var $showMore = $history.find('.pet-history__show-more');
 		var visibleLimit = 10;
@@ -400,15 +365,10 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 
 		function matchingEntries() {
 			var selectedType = $typeFilter.val();
-			var selectedVeterinarian = $veterinarianFilter.val();
 
 			return $entries.filter(function () {
 				var $entry = $(this);
-				var typeMatches = selectedType === 'all' || $entry.attr('data-history-type') === selectedType;
-				var veterinarianIds = ($entry.attr('data-veterinarians') || '').split(',');
-				var veterinarianMatches = selectedVeterinarian === 'all' || veterinarianIds.indexOf(selectedVeterinarian) !== -1;
-
-				return typeMatches && veterinarianMatches;
+				return selectedType === 'all' || $entry.attr('data-history-type') === selectedType;
 			});
 		}
 
@@ -437,14 +397,13 @@ uasort($history_veterinarians, function ($first_name, $second_name) {
 			}
 		});
 
-		$typeFilter.add($veterinarianFilter).on('change', function () {
+		$typeFilter.on('change', function () {
 			visibleLimit = 10;
 			updateHistory(true);
 		});
 
 		$history.on('click', '.pet-history__reset', function () {
 			$typeFilter.val('all');
-			$veterinarianFilter.val('all');
 			visibleLimit = 10;
 			updateHistory(true);
 			$typeFilter.trigger('focus');

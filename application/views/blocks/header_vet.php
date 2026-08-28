@@ -63,15 +63,14 @@
       <li class="nav-item" id="labo">
         <a class="nav-link" href="<?php echo base_url('lab'); ?>">
         <i class="fas fa-flask fa-fw"></i>
-          <span><?php echo $this->lang->line('Lab'); ?></span>
-          <?php if ($lab_count > 0): ?>
-            <span class="counter" style="background-color: #72a751cb;"><?php echo $lab_count; ?></span>
-          <?php endif; ?>
-        </a>
+          <span><?php echo $this->lang->line('Lab'); ?></span></a>
+        <?php if ($lab_count > 0): ?>
+          <a href="<?php echo base_url('lab/pending'); ?>" class="counter" style="background-color: #72a751cb;" aria-label="<?php echo html_escape($this->lang->line('lab_pending_title')); ?>"><?php echo (int) $lab_count; ?></a>
+        <?php endif; ?>
       </li>
 
       <li class="nav-item" id="help">
       <a class="nav-link" href="<?php echo base_url('help/vet'); ?>">
           <i class="fa-regular fa-fw fa-circle-question"></i>
           <span>Help</span></a>
-      </li> 
+      </li>

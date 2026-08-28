@@ -194,6 +194,35 @@ class Owners_model extends MY_Model
 		}
 		return $result;
 	}
+
+	public function search_for_lab_assignment(string $term, int $limit = 20): array
+	{
+		$this->db
+			->select('id, first_name, last_name, street, nr, zip')
+			->from($this->table)
+			->where('deleted_at IS NULL', null, false)
+			->group_start();
+
+		if (ctype_digit($term)) {
+			$this->db->or_where('id', (int) $term);
+		}
+		$this->db
+			->or_like('first_name', $term, 'after')
+			->or_like('last_name', $term, 'after')
+			->group_end()
+			->order_by('last_bill', 'DESC')
+			->limit($limit);
+
+		return $this->db->get()->result_array();
+	}
+
+	public function is_assignable(int $owner_id): bool
+	{
+		return $owner_id > 0 && $this->db
+			->where('id', $owner_id)
+			->where('deleted_at IS NULL', null, false)
+			->count_all_results($this->table) === 1;
+	}
 	
 	public function search_by_street($street)
 	{

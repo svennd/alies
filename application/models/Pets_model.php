@@ -480,6 +480,42 @@ class Pets_model extends MY_Model
         return null;
     }
 
+	public function search_assignable_for_owner(int $owner_id, string $term = '', int $limit = 20): array
+	{
+		$this->db
+			->select('id, name, type')
+			->from($this->table)
+			->where('owner', $owner_id)
+			->where('death', 0)
+			->where('transfered', 0)
+			->where('deleted_at IS NULL', null, false);
+
+		if ($term !== '') {
+			$this->db->group_start();
+			if (ctype_digit($term)) {
+				$this->db->or_where('id', (int) $term);
+			}
+			$this->db->or_like('name', $term, 'after')->group_end();
+		}
+
+		return $this->db
+			->order_by('name', 'ASC')
+			->limit($limit)
+			->get()
+			->result_array();
+	}
+
+	public function is_assignable_to_owner(int $pet_id, int $owner_id): bool
+	{
+		return $pet_id > 0 && $owner_id > 0 && $this->db
+			->where('id', $pet_id)
+			->where('owner', $owner_id)
+			->where('death', 0)
+			->where('transfered', 0)
+			->where('deleted_at IS NULL', null, false)
+			->count_all_results($this->table) === 1;
+	}
+
     /*
     * function: findByOwnerPhoneAndPet
     * find pets by owner phone and owner name + pet name

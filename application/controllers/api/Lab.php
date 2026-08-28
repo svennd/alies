@@ -7,11 +7,12 @@ class Lab extends API_Controller
     {
         parent::__construct();
         $this->load->library('LabResultService');
+		$this->load->library('lab_device_adapter_factory');
     }
 
     public function import($device)
     {
-        $adapter = $this->adapterFactory($device);
+        $adapter = $this->lab_device_adapter_factory->create($device);
 
         if (!$adapter) show_404();
 
@@ -35,25 +36,5 @@ class Lab extends API_Controller
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
 
-    }
-
-    private function adapterFactory($device)
-    {
-        switch ($device) {
-            case 'ms4s2':
-                require_once APPPATH.'third_party/api/devices/Ms4s2.php';
-                return new Ms4s2();
-            case 'ikems':
-                require_once APPPATH.'third_party/api/devices/Ikems.php';
-                return new Ikems();
-            case 'lmscan':
-                require_once APPPATH.'third_party/api/devices/Lmscan.php';
-                return new Lmscan();
-            case 'medilab':
-                require_once APPPATH.'third_party/api/devices/Medilab.php';
-                return new Medilab();
-        }
-
-        return null;
     }
 }

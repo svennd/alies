@@ -5,6 +5,9 @@
 			<div class="card-header d-flex flex-row align-items-center justify-content-between">
 				<div><?php echo $this->lang->line('Lab'); ?></div>
 				<div class="dropdown no-arrow">
+					<a href="<?php echo base_url('lab/pending'); ?>" class="btn btn-sm <?php echo $lab_count > 0 ? 'btn-warning' : 'btn-outline-secondary'; ?>">
+						<i class="fa-solid fa-triangle-exclamation"></i> <?php echo $this->lang->line('lab_pending_title'); ?><?php if ($lab_count > 0): ?> (<?php echo (int) $lab_count; ?>)<?php endif; ?>
+					</a>
 				</div>
 			</div>
 			<div class="card-body">

@@ -38,6 +38,41 @@ final class PetMedicalHistoryViewTest extends CodeIgniterDatabaseTestCase
         $this->assertStringNotContainsString('pet-history__actions pet-history__actions--no-mobile', $html);
     }
 
+    public function testMultipleVeterinariansRemainVisibleInEntrySummary(): void
+    {
+        $html = $this->renderHistory(0, 0, [
+            ['id' => 4, 'name' => 'Alice', 'filter_token' => 'id:4'],
+            ['id' => 7, 'name' => 'Bob', 'filter_token' => 'id:7'],
+        ]);
+
+        $this->assertMatchesRegularExpression('/pet-history__vets[\s\S]*Alice, Bob[\s\S]*pet-history__location/', $html);
+    }
+
+    public function testHistoryOffersOnlyTheEventTypeFilter(): void
+    {
+        $html = $this->renderHistory(0, 0);
+
+        $this->assertStringContainsString('id="pet-history-type-filter"', $html);
+        $this->assertMatchesRegularExpression('/<option value="all">Alle<\/option>/', $html);
+        $this->assertMatchesRegularExpression('/<option value="0">Ziekte<\/option>/', $html);
+        $this->assertMatchesRegularExpression('/<option value="1">Operaties<\/option>/', $html);
+        $this->assertStringNotContainsString('pet-history-vet-filter', $html);
+        $this->assertStringNotContainsString('data-veterinarians', $html);
+        $this->assertStringNotContainsString('Alle dierenartsen', $html);
+    }
+
+    public function testTypeFilterOwnsMatchingResetAndIncrementalDisplay(): void
+    {
+        $html = $this->renderHistory(0, 0);
+
+        $this->assertStringContainsString("return selectedType === 'all' || \$entry.attr('data-history-type') === selectedType;", $html);
+        $this->assertStringContainsString("\$typeFilter.on('change'", $html);
+        $this->assertStringContainsString("\$typeFilter.val('all');", $html);
+        $this->assertStringContainsString('visibleLimit += 10;', $html);
+        $this->assertStringContainsString('pet-history__empty-filter', $html);
+        $this->assertStringContainsString('pet-history__show-more', $html);
+    }
+
     public function testFinalizedLabPanelProvidesExactlyOneFragmentTarget(): void
     {
         $html = $this->ci->load->view('event/report/block_lab_results', [
@@ -68,7 +103,7 @@ final class PetMedicalHistoryViewTest extends CodeIgniterDatabaseTestCase
         $this->assertStringContainsString('event-lab-result-out', $html);
     }
 
-    private function renderHistory(int $labCount, int $uploadCount): string
+    private function renderHistory(int $labCount, int $uploadCount, array $veterinarians = []): string
     {
         return $this->ci->load->view('pets/fiche/block_history', [
             'pet' => ['id' => 11],
@@ -83,7 +118,7 @@ final class PetMedicalHistoryViewTest extends CodeIgniterDatabaseTestCase
                 'location_name' => 'Clinic',
                 'upload_count' => $uploadCount,
                 'lab_count' => $labCount,
-                'veterinarians' => [],
+                'veterinarians' => $veterinarians,
                 'products' => [],
                 'procedures' => [],
             ]],

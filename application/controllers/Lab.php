@@ -20,12 +20,172 @@ class Lab extends Vet_Controller
         $this->load->model('LabResult_model', 'lab_results');
         $this->load->model('LabPlots_model', 'lab_plots');
 		$this->load->library('lab_result_presenter');
+		$this->load->library('LabResultService');
+		$this->load->library('lab_pending_preview');
 
 		// library
 		$this->load->library('pdf'); 
 
 		// helper
 		$this->load->helper('lab');
+	}
+
+	public function pending()
+	{
+		$pending_rows = array();
+		foreach ($this->labPending->get_active() as $row) {
+			$identifiers = json_decode((string) $row['identifiers'], true);
+			$pending_rows[] = array(
+				'id' => (int) $row['id'],
+				'device' => $row['device'],
+				'source' => $row['source'],
+				'source_id' => $row['source_id'],
+				'reason' => $row['reason'],
+				'created_at' => $row['created_at'],
+				'identifiers' => is_array($identifiers) ? array_filter($identifiers, static function ($value) {
+					return $value !== null && $value !== '';
+				}) : array(),
+			);
+		}
+
+		$this->_render_page('lab/pending', array(
+			'pending_results' => $pending_rows,
+			'can_manage_pending' => $this->can_manage_pending(),
+			'pending_message' => $this->session->flashdata('pending_lab_message'),
+			'pending_message_type' => $this->session->flashdata('pending_lab_message_type'),
+		));
+	}
+
+	public function pending_detail(int $pending_id): void
+	{
+		$this->require_pending_access();
+		$pending = $this->labPending->get_active_by_id($pending_id);
+		if (!$pending) {
+			show_404();
+			return;
+		}
+
+		$identifiers = json_decode((string) $pending['identifiers'], true);
+		$built = $this->lab_pending_preview->build($pending);
+		$this->_render_page('lab/pending_detail', array(
+			'pending' => $pending,
+			'identifiers' => is_array($identifiers) ? array_filter($identifiers, static function ($value) {
+				return $value !== null && $value !== '';
+			}) : array(),
+			'preview' => $built['preview'],
+			'preview_warning' => $built['warning'],
+			'raw_json' => $built['raw_json'],
+			'pending_message' => $this->session->flashdata('pending_lab_message'),
+			'pending_message_type' => $this->session->flashdata('pending_lab_message_type'),
+		));
+	}
+
+	public function search_owners(): void
+	{
+		$this->require_pending_access();
+		$term = trim((string) $this->input->get('term'));
+		$results = array();
+		if ($term !== '') {
+			foreach ($this->owners->search_for_lab_assignment($term) as $owner) {
+				$name = trim(($owner['first_name'] ?? '') . ' ' . ($owner['last_name'] ?? ''));
+				$address = trim(($owner['street'] ?? '') . ' ' . ($owner['nr'] ?? '') . ' ' . ($owner['zip'] ?? ''));
+				$results[] = array(
+					'id' => (int) $owner['id'],
+					'text' => $name . ' (#' . (int) $owner['id'] . ')' . ($address !== '' ? ' - ' . $address : ''),
+				);
+			}
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode(array('results' => $results)));
+	}
+
+	public function search_pets(): void
+	{
+		$this->require_pending_access();
+		$owner_id = (int) $this->input->get('owner_id');
+		$term = trim((string) $this->input->get('term'));
+		$results = array();
+		if ($this->owners->is_assignable($owner_id)) {
+			foreach ($this->pets->search_assignable_for_owner($owner_id, $term) as $pet) {
+				$results[] = array(
+					'id' => (int) $pet['id'],
+					'text' => $pet['name'] . ' (#' . (int) $pet['id'] . ')',
+				);
+			}
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode(array('results' => $results)));
+	}
+
+	public function recover_pending(int $pending_id): void
+	{
+		$this->require_pending_mutation();
+		$owner_id = (int) $this->input->post('owner_id');
+		$pet_id = (int) $this->input->post('pet_id');
+		$result = $this->labresultservice->recover_pending($pending_id, $owner_id, $pet_id, (int) $this->user->id);
+
+		if ($result['status'] === 'ok') {
+			$this->logs->logger(
+				INFO,
+				'pending_lab_recovered',
+				'pending_id: ' . $pending_id . ' | report_id: ' . (int) $result['report_id'] . ' | owner_id: ' . $owner_id . ' | pet_id: ' . $pet_id . ' | user_id: ' . (int) $this->user->id
+			);
+			$this->set_pending_feedback('success', $this->lang->line('lab_pending_recovered'));
+			redirect('lab/detail/' . (int) $result['report_id']);
+			return;
+		} else {
+			$this->set_pending_feedback('danger', $result['message']);
+		}
+
+		redirect('lab/pending_detail/' . $pending_id);
+	}
+
+	public function delete_pending(int $pending_id): void
+	{
+		$this->require_pending_mutation();
+		$result = $this->labresultservice->soft_delete_pending($pending_id, (int) $this->user->id);
+
+		if ($result['status'] === 'ok') {
+			$this->logs->logger(
+				INFO,
+				'pending_lab_deleted',
+				'pending_id: ' . $pending_id . ' | user_id: ' . (int) $this->user->id
+			);
+			$this->set_pending_feedback('success', $this->lang->line('lab_pending_deleted'));
+		} else {
+			$this->set_pending_feedback('danger', $result['message']);
+		}
+
+		redirect('lab/pending');
+	}
+
+	private function can_manage_pending(): bool
+	{
+		return $this->ion_auth->is_admin() || $this->ion_auth->in_group('vet');
+	}
+
+	private function require_pending_access(): void
+	{
+		if (!$this->can_manage_pending()) {
+			show_error($this->lang->line('lab_pending_forbidden'), 403);
+			exit;
+		}
+	}
+
+	private function require_pending_mutation(): void
+	{
+		if ($this->input->method(true) !== 'POST') {
+			show_error($this->lang->line('lab_pending_post_only'), 405);
+			exit;
+		}
+		if (!$this->can_manage_pending()) {
+			show_error($this->lang->line('lab_pending_forbidden'), 403);
+			exit;
+		}
+	}
+
+	private function set_pending_feedback(string $type, string $message): void
+	{
+		$this->session->set_flashdata('pending_lab_message_type', $type);
+		$this->session->set_flashdata('pending_lab_message', $message);
 	}
 
 	public function index()
@@ -65,10 +225,42 @@ class Lab extends Vet_Controller
 			"pet_info"    => $pet_info,
 			"lab_details" => $lab_details,
 			"owner"       => $owner,
-			"plots"       => $plots
+			"plots"       => $plots,
+			"can_manage_lab_assignment" => $this->can_manage_pending(),
+			"lab_message" => $this->session->flashdata('pending_lab_message'),
+			"lab_message_type" => $this->session->flashdata('pending_lab_message_type'),
 		];
 
 		$this->_render_page('lab/detail', $data);
+	}
+
+	public function reassign(int $lab_id): void
+	{
+		$this->require_pending_mutation();
+		$owner_id = (int) $this->input->post('owner_id');
+		$pet_id = (int) $this->input->post('pet_id');
+		$result = $this->labresultservice->reassign_report($lab_id, $owner_id, $pet_id);
+
+		if ($result['status'] === 'ok') {
+			$this->logs->logger(
+				INFO,
+				'lab_report_reassigned',
+				'report_id: ' . $lab_id
+				. ' | old_owner_id: ' . (int) $result['old_owner_id']
+				. ' | old_pet_id: ' . (int) $result['old_pet_id']
+				. ' | owner_id: ' . (int) $result['owner_id']
+				. ' | pet_id: ' . (int) $result['pet_id']
+				. ' | removed_event_links: ' . (int) $result['removed_event_links']
+				. ' | user_id: ' . (int) $this->user->id
+			);
+			$this->set_pending_feedback('success', $this->lang->line('lab_reassigned'));
+		} elseif ($result['status'] === 'noop') {
+			$this->set_pending_feedback('info', $this->lang->line('lab_reassign_noop'));
+		} else {
+			$this->set_pending_feedback('danger', $result['message']);
+		}
+
+		redirect('lab/detail/' . $lab_id);
 	}
 	
 	/*
