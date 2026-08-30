@@ -13,7 +13,7 @@ final class LabPendingDetailViewTest extends CodeIgniterDatabaseTestCase
 	public function testDetailShowsPreviewTwoStepAssignmentDeleteAndCollapsedEscapedRawPayload(): void
 	{
 		$html = $this->ci->load->view('lab/pending_detail', [
-			'pending' => ['id' => 44, 'device' => 'lmscan', 'source' => 'remote', 'source_id' => 'S-44', 'reason' => 'pet_not_found', 'created_at' => '2026-08-27 10:00:00'],
+			'pending' => ['id' => 44, 'device' => 'lmscan', 'source' => 'remote', 'source_id' => 'S-44', 'reason' => 'pet_not_found', 'created_at' => '2026-08-27 10:00:00', 'last_received_at' => '2026-08-27 11:00:00'],
 			'identifiers' => ['owner_name' => 'Owner', 'pet_name' => 'Fido'],
 			'preview' => [
 				'device' => 'lmscan', 'source' => 'remote', 'source_id' => 'S-44', 'sample_date' => '2026-08-27', 'software_version' => '1.0',
@@ -26,6 +26,10 @@ final class LabPendingDetailViewTest extends CodeIgniterDatabaseTestCase
 		], true);
 
 		$this->assertStringContainsString('GLU', $html);
+		$this->assertStringContainsString('2026-08-27 10:00:00', $html);
+		$this->assertStringContainsString('2026-08-27 11:00:00', $html);
+		$this->assertStringContainsString('Eerst ontvangen', $html);
+		$this->assertStringContainsString('Laatst ontvangen', $html);
 		$this->assertStringContainsString('mmol/L', $html);
 		$this->assertStringContainsString('sample_type', $html);
 		$this->assertStringContainsString('name="owner_id"', $html);

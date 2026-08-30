@@ -24,7 +24,9 @@
 					<div class="col-md-6">
 					<h4>Details</h4>
 					<table class="table table-sm">
-						<tr><th><?php echo $this->lang->line('lab_received'); ?></th><td><?php echo html_escape($pending['created_at']); ?></td></tr>
+						<?php $last_received_at = $pending['last_received_at'] ?? $pending['created_at']; ?>
+						<tr><th><?php echo $this->lang->line('lab_first_received'); ?></th><td><?php echo html_escape($pending['created_at']); ?></td></tr>
+						<?php if ($last_received_at !== $pending['created_at']): ?><tr><th><?php echo $this->lang->line('lab_last_received'); ?></th><td><?php echo html_escape($last_received_at); ?></td></tr><?php endif; ?>
 						<tr><th><?php echo $this->lang->line('source'); ?></th><td><?php echo html_escape($preview['device'] ?: $preview['source'] ?: '-'); ?><?php if (!empty($preview['source_id'])): ?> (#<?php echo html_escape($preview['source_id']); ?>)<?php endif; ?></td></tr>
 						<tr><th><?php echo $this->lang->line('reason'); ?></th><td><?php echo html_escape($pending['reason']); ?></td></tr>
 						<tr><th><?php echo $this->lang->line('last_update'); ?></th><td><?php echo html_escape($preview['sample_date'] ?: '-'); ?></td></tr>

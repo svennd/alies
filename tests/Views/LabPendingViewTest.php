@@ -16,6 +16,7 @@ final class LabPendingViewTest extends CodeIgniterDatabaseTestCase
             'pending_results' => [[
                 'id' => 44, 'device' => 'medilab', 'source' => 'remote', 'source_id' => 'S-22',
                 'reason' => 'pet_not_found', 'created_at' => '2026-08-27 10:00:00',
+				'last_received_at' => '2026-08-27 11:00:00',
                 'identifiers' => ['owner_name' => 'Example Owner', 'pet_name' => 'Fido'],
             ]],
             'can_manage_pending' => true,
@@ -27,6 +28,8 @@ final class LabPendingViewTest extends CodeIgniterDatabaseTestCase
         $this->assertStringContainsString('Fido', $html);
         $this->assertStringContainsString('medilab', $html);
         $this->assertStringContainsString('S-22', $html);
+		$this->assertStringContainsString('2026-08-27 11:00:00', $html);
+		$this->assertStringNotContainsString('2026-08-27 10:00:00', $html);
 		$this->assertStringContainsString('lab/pending_detail/44', $html);
 		$this->assertStringNotContainsString('lab/recover_pending/44', $html);
 		$this->assertStringNotContainsString('name="pet_id"', $html);
@@ -50,7 +53,7 @@ final class LabPendingViewTest extends CodeIgniterDatabaseTestCase
             'pending_message' => null, 'pending_message_type' => null,
         ], true);
 
-        $this->assertStringContainsString('Er zijn geen niet-gekoppelde labresultaten.', $empty);
+		$this->assertStringContainsString('Alle labresultaten zijn toegewezen.', $empty);
         $this->assertStringContainsString('legacy_missing_pet', $readOnly);
 		$this->assertStringContainsString('lab/pending_detail/45', $readOnly);
 		$this->assertStringNotContainsString('lab/recover_pending/45', $readOnly);
@@ -86,7 +89,8 @@ final class LabPendingViewTest extends CodeIgniterDatabaseTestCase
             'lab_pending_delete_confirm', 'lab_pending_read_only', 'lab_pending_recovered',
             'lab_pending_deleted', 'lab_pending_post_only', 'lab_pending_forbidden', 'lab_all_results',
 			'lab_pending_inspect', 'lab_pending_back', 'lab_pending_results', 'lab_pending_no_results',
-			'lab_pending_metadata', 'lab_pending_plots', 'lab_pending_assign', 'lab_pending_raw_json',
+            'lab_pending_metadata', 'lab_pending_plots', 'lab_pending_assign', 'lab_pending_raw_json',
+			'lab_first_received', 'lab_last_received',
 			'lab_reassign_title', 'lab_reassign_warning', 'lab_reassign_confirm', 'lab_reassign_submit',
 			'lab_reassigned', 'lab_reassign_noop',
         ];

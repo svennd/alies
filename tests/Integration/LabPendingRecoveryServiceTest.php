@@ -28,6 +28,7 @@ final class LabPendingRecoveryServiceTest extends PHPUnit\Framework\TestCase
             $this->ci->db->where_in('id', $reportIds)->delete('lab_report');
         }
         $this->ci->db->like('source_id', 'ut_lab_', 'after')->delete('lab_report_pending');
+		$this->ci->db->like('raw_payload', 'ut_lab_', 'both')->delete('lab_report_pending');
         $this->ci->db->db_debug = true;
         parent::tearDown();
     }
@@ -44,6 +45,170 @@ final class LabPendingRecoveryServiceTest extends PHPUnit\Framework\TestCase
         $this->assertSame($this->prefix, $pending['source_id']);
         $this->assertSame('{"original":"payload"}', $pending['raw_payload']);
     }
+
+	public function testRepeatedUnmatchedIngestionRefreshesOnePendingRow(): void
+	{
+		$adapter = new LabPendingSourceAdapter($this->prefix, null);
+		$this->assertSame(['status' => 'pending'], $this->ci->labresultservice->ingest($adapter, ['version' => 1]));
+		$first = $this->ci->db->where('source_id', $this->prefix)->get('lab_report_pending')->row_array();
+		$this->assertSame(['status' => 'pending'], $this->ci->labresultservice->ingest($adapter, ['version' => 2]));
+		$second = $this->ci->db->where('source_id', $this->prefix)->get('lab_report_pending')->row_array();
+
+		$this->assertSame((int) $first['id'], (int) $second['id']);
+		$this->assertSame(1, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report_pending'));
+		$this->assertSame('{"version":2}', $second['raw_payload']);
+		$this->assertSame($first['created_at'], $second['created_at']);
+		$this->assertNotNull($second['last_received_at']);
+	}
+
+	public function testExistingReportRefreshUsesItsAssignedPetBeforePayloadMatching(): void
+	{
+		$petId = $this->existingPetId();
+		$first = $this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, $petId, true, '5.5'), []);
+		$report = $this->ci->db->where('source_id', $this->prefix)->get('lab_report')->row_array();
+		$second = $this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, null, true, '6.5'), []);
+		$refreshed = $this->ci->db->where('source_id', $this->prefix)->get('lab_report')->row_array();
+		$result = $this->ci->db->where('report_id', $report['id'])->get('lab_results')->row_array();
+
+		$this->assertSame(['status' => 'ok'], $first);
+		$this->assertSame(['status' => 'ok'], $second);
+		$this->assertSame((int) $report['id'], (int) $refreshed['id']);
+		$this->assertSame($petId, (int) $refreshed['pet_id']);
+		$this->assertSame(6.5, (float) $result['value_num']);
+		$this->assertSame(0, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report_pending'));
+	}
+
+	public function testNormalReportLookupPreservesSourceFallbackWhenDeviceCandidateMisses(): void
+	{
+		$petId = $this->existingPetId();
+		$this->ci->db->insert('lab_report', [
+			'pet_id' => $petId, 'device' => 'original-device', 'source' => 'remote',
+			'source_id' => $this->prefix, 'sample_date' => '2026-08-30 10:00:00',
+			'created_at' => '2026-08-30 10:00:00',
+		]);
+		$reportId = (int) $this->ci->db->insert_id();
+
+		$response = $this->ci->labresultservice->ingest(new LabSourceFallbackAdapter($this->prefix), []);
+		$report = $this->ci->db->where('id', $reportId)->get('lab_report')->row_array();
+		$result = $this->ci->db->where('report_id', $reportId)->get('lab_results')->row_array();
+
+		$this->assertSame(['status' => 'ok'], $response);
+		$this->assertSame($petId, (int) $report['pet_id']);
+		$this->assertSame(6.5, (float) $result['value_num']);
+		$this->assertSame(1, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report'));
+	}
+
+	public function testLaterAutomaticMatchResolvesPendingWithoutHumanActor(): void
+	{
+		$petId = $this->existingPetId();
+		$this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, null), ['phase' => 'pending']);
+		$pending = $this->ci->db->where('source_id', $this->prefix)->get('lab_report_pending')->row_array();
+
+		$response = $this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, $petId), ['phase' => 'matched']);
+		$resolved = $this->ci->db->where('id', $pending['id'])->get('lab_report_pending')->row_array();
+
+		$this->assertSame(['status' => 'ok'], $response);
+		$this->assertNotNull($resolved['resolved_at']);
+		$this->assertNull($resolved['resolved_by']);
+		$this->assertSame($petId, (int) $resolved['resolved_pet_id']);
+		$this->assertGreaterThan(0, (int) $resolved['report_id']);
+	}
+
+	public function testFailedAutomaticMatchRollsBackReportAndPendingResolution(): void
+	{
+		$petId = $this->existingPetId();
+		$this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, null), ['phase' => 'pending']);
+		$pending = $this->ci->db->where('source_id', $this->prefix)->get('lab_report_pending')->row_array();
+
+		try {
+			$this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, $petId, false), ['phase' => 'invalid']);
+			$this->fail('Expected invalid result persistence to fail.');
+		} catch (UnexpectedValueException $error) {
+			$this->assertStringContainsString('code', $error->getMessage());
+		}
+
+		$active = $this->ci->db->where('id', $pending['id'])->get('lab_report_pending')->row_array();
+		$this->assertNull($active['resolved_at']);
+		$this->assertNull($active['deleted_at']);
+		$this->assertSame(0, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report'));
+	}
+
+	public function testDismissedRepeatStaysSuppressedButLaterMatchCanImport(): void
+	{
+		$petId = $this->existingPetId();
+		$userId = $this->existingUserId();
+		$adapter = new LabPendingSourceAdapter($this->prefix, null);
+		$this->ci->labresultservice->ingest($adapter, ['version' => 1]);
+		$pending = $this->ci->db->where('source_id', $this->prefix)->get('lab_report_pending')->row_array();
+		$this->assertSame('ok', $this->ci->labresultservice->soft_delete_pending((int) $pending['id'], $userId)['status']);
+
+		$this->assertSame(['status' => 'pending'], $this->ci->labresultservice->ingest($adapter, ['version' => 2]));
+		$dismissed = $this->ci->db->where('id', $pending['id'])->get('lab_report_pending')->row_array();
+		$this->assertSame('{"version":1}', $dismissed['raw_payload']);
+		$this->assertSame(0, $this->ci->db->where('source_id', $this->prefix)->where('resolved_at IS NULL', null, false)->where('deleted_at IS NULL', null, false)->count_all_results('lab_report_pending'));
+
+		$this->assertSame(['status' => 'ok'], $this->ci->labresultservice->ingest(new LabPendingSourceAdapter($this->prefix, $petId), ['version' => 3]));
+		$this->assertSame(1, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report'));
+		$this->assertNotNull($this->ci->db->where('id', $pending['id'])->get('lab_report_pending')->row_array()['deleted_at']);
+	}
+
+	public function testIdentitylessUnmatchedDeliveriesRemainSeparate(): void
+	{
+		$adapter = new LabIdentitylessSourceAdapter($this->prefix);
+		$this->ci->labresultservice->ingest($adapter, ['marker' => $this->prefix, 'version' => 1]);
+		$this->ci->labresultservice->ingest($adapter, ['marker' => $this->prefix, 'version' => 2]);
+
+		$this->assertSame(2, $this->ci->db->like('raw_payload', $this->prefix, 'both')->count_all_results('lab_report_pending'));
+	}
+
+	public function testConcurrencyGuardsArePresentAroundCrossTableIdentityClaims(): void
+	{
+		$service = file_get_contents(APPPATH . 'libraries/LabResultService.php');
+		$report = file_get_contents(APPPATH . 'models/LabReport_model.php');
+		$pending = file_get_contents(APPPATH . 'models/LabReportPending_model.php');
+
+		$this->assertStringContainsString('GET_LOCK', $service);
+		$this->assertStringContainsString('RELEASE_LOCK', $service);
+		$this->assertStringContainsString('FOR UPDATE', $report);
+		$this->assertStringContainsString('ON DUPLICATE KEY UPDATE', $report);
+		$this->assertStringContainsString('ON DUPLICATE KEY UPDATE', $pending);
+	}
+
+	public function testConcurrentMatchedDeliveriesLeaveOneCompleteReport(): void
+	{
+		$petId = $this->existingPetId();
+		$results = $this->runConcurrentIngestion([
+			[$this->prefix, (string) $petId, '5.5'],
+			[$this->prefix, (string) $petId, '6.5'],
+		]);
+
+		$this->assertSame([['status' => 'ok'], ['status' => 'ok']], $results);
+		$report = $this->ci->db->where('source_id', $this->prefix)->get('lab_report')->row_array();
+		$this->assertNotNull($report);
+		$this->assertSame(1, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report'));
+		$this->assertSame(1, $this->ci->db->where('report_id', $report['id'])->count_all_results('lab_results'));
+		$this->assertSame(1, $this->ci->db->where('report_id', $report['id'])->count_all_results('lab_plots'));
+		$this->assertSame(0, $this->ci->db->where('source_id', $this->prefix)->where('resolved_at IS NULL', null, false)->where('deleted_at IS NULL', null, false)->count_all_results('lab_report_pending'));
+	}
+
+	public function testConcurrentMatchedAndUnmatchedDeliveriesDoNotLeaveContradictoryPendingState(): void
+	{
+		$petId = $this->existingPetId();
+		$results = $this->runConcurrentIngestion([
+			[$this->prefix, '-', '5.5'],
+			[$this->prefix, (string) $petId, '6.5'],
+		]);
+
+		$statuses = array_column($results, 'status');
+		$this->assertContains('ok', $statuses);
+		$this->assertContains($statuses[0] === 'ok' ? $statuses[1] : $statuses[0], ['ok', 'pending']);
+		$report = $this->ci->db->where('source_id', $this->prefix)->get('lab_report')->row_array();
+		$this->assertNotNull($report);
+		$this->assertSame(1, $this->ci->db->where('source_id', $this->prefix)->count_all_results('lab_report'));
+		$this->assertSame(1, $this->ci->db->where('report_id', $report['id'])->count_all_results('lab_results'));
+		$this->assertSame(1, $this->ci->db->where('report_id', $report['id'])->count_all_results('lab_plots'));
+		$this->assertSame(0, $this->ci->db->where('source_id', $this->prefix)->where('resolved_at IS NULL', null, false)->where('deleted_at IS NULL', null, false)->count_all_results('lab_report_pending'));
+	}
 
     public function testMatchedIngestionPersistsResultsAndPlotsAtomically(): void
     {
@@ -262,11 +427,43 @@ final class LabPendingRecoveryServiceTest extends PHPUnit\Framework\TestCase
 	{
 		return (int) $this->ci->db->select('owner')->where('id', $petId)->get('pets')->row_array()['owner'];
 	}
+
+	private function runConcurrentIngestion(array $jobs): array
+	{
+		$processes = array();
+		foreach ($jobs as $job) {
+			$command = array_merge([PHP_BINARY, __DIR__ . '/../Support/LabIngestionWorker.php'], $job);
+			$pipes = array();
+			$process = proc_open($command, [
+				0 => ['pipe', 'r'],
+				1 => ['pipe', 'w'],
+				2 => ['pipe', 'w'],
+			], $pipes, dirname(__DIR__, 2));
+			$this->assertIsResource($process);
+			fclose($pipes[0]);
+			$processes[] = array($process, $pipes);
+		}
+
+		$results = array();
+		foreach ($processes as [$process, $pipes]) {
+			$stdout = stream_get_contents($pipes[1]);
+			$stderr = stream_get_contents($pipes[2]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			$exitCode = proc_close($process);
+			$this->assertSame(0, $exitCode, $stderr);
+			$decoded = json_decode(trim($stdout), true);
+			$this->assertIsArray($decoded, $stdout . $stderr);
+			$results[] = $decoded;
+		}
+
+		return $results;
+	}
 }
 
 final class LabPendingSourceAdapter implements DeviceAdapterInterface
 {
-    public function __construct(private string $sourceId, private ?int $petId, private bool $valid = true) {}
+    public function __construct(private string $sourceId, private ?int $petId, private bool $valid = true, private string $value = '5.5') {}
 
     public function parse(array $input)
     {
@@ -274,10 +471,40 @@ final class LabPendingSourceAdapter implements DeviceAdapterInterface
             'device' => 'phpunit', 'source' => 'remote', 'source_id' => $this->sourceId,
             'pet_id' => $this->petId, 'sample_date' => '2026-08-27 12:00:00',
             'results' => [[
-                'code' => $this->valid ? 'GLU' : null, 'value' => '5.5', 'unit' => 'mmol/L',
+				'code' => $this->valid ? 'GLU' : null, 'value' => $this->value, 'unit' => 'mmol/L',
                 'ref_min' => 4.0, 'ref_max' => 7.0,
             ]],
             'plots' => ['curve' => [1, 2, 3]],
         ];
     }
+}
+
+final class LabIdentitylessSourceAdapter implements DeviceAdapterInterface
+{
+	public function __construct(private string $marker) {}
+
+	public function parse(array $input)
+	{
+		return [
+			'device' => null, 'source' => null, 'source_id' => null,
+			'owner_name' => $this->marker, 'results' => [[
+				'code' => 'GLU', 'value' => '5.5', 'unit' => 'mmol/L', 'ref_min' => 4.0, 'ref_max' => 7.0,
+			]],
+		];
+	}
+}
+
+final class LabSourceFallbackAdapter implements DeviceAdapterInterface
+{
+	public function __construct(private string $sourceId) {}
+
+	public function parse(array $input)
+	{
+		return [
+			'device' => 'replacement-device', 'source' => 'remote', 'source_id' => $this->sourceId,
+			'results' => [[
+				'code' => 'GLU', 'value' => '6.5', 'unit' => 'mmol/L', 'ref_min' => 4.0, 'ref_max' => 7.0,
+			]],
+		];
+	}
 }

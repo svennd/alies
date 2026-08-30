@@ -40,6 +40,8 @@ class Lab extends Vet_Controller
 				'source_id' => $row['source_id'],
 				'reason' => $row['reason'],
 				'created_at' => $row['created_at'],
+				'first_received_at' => $row['created_at'],
+				'last_received_at' => $row['last_received_at'] ?: $row['created_at'],
 				'identifiers' => is_array($identifiers) ? array_filter($identifiers, static function ($value) {
 					return $value !== null && $value !== '';
 				}) : array(),

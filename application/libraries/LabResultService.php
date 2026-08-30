@@ -17,6 +17,7 @@ class LabResultService
 		$this->CI->load->model('Owners_model');
         $this->CI->load->library('lab_device_adapter_factory');
         $this->CI->load->library('lab_legacy_pending_mapper');
+		$this->CI->load->library('lab_source_identity');
 
         $this->CI->config->load('lab/canonical', true);
         $this->canonical_map = (array) $this->CI->config->item('canonical', 'lab/canonical');
@@ -25,30 +26,71 @@ class LabResultService
     public function ingest(DeviceAdapterInterface $adapter, array $payload)
     {
         $data = $adapter->parse($payload);
-        $pet_id = $this->resolvePetId($data);
+		$identity = $this->CI->lab_source_identity->derive(
+			$data['device'] ?? null,
+			$data['source'] ?? null,
+			$data['source_id'] ?? null
+		);
+		$identity_candidates = $this->CI->lab_source_identity->candidates(
+			$data['device'] ?? null,
+			$data['source'] ?? null,
+			$data['source_id'] ?? null
+		);
+		$lock_names = $this->acquire_identity_locks(array_column($identity_candidates, 'hash'));
 
-        if ($pet_id === null) {
-            $this->CI->LabReportPending_model->create(array(
-                'device' => $data['device'] ?? null,
-                'source' => $data['source'] ?? null,
-                'source_id' => $data['source_id'] ?? null,
-                'raw_payload' => json_encode($payload),
-                'identifiers' => json_encode(array(
-                    'pet_id' => $data['pet_id'] ?? null,
-                    'owner_name' => $data['owner_name'] ?? null,
-                    'pet_name' => $data['pet_name'] ?? null,
-                    'chip' => $data['chip'] ?? null,
-                    'phone' => $data['phone'] ?? null,
-                )),
-                'reason' => 'pet_not_found',
-            ));
-
-            return array('status' => 'pending');
-        }
-
-        $this->CI->db->trans_begin();
+		$this->CI->db->trans_begin();
         try {
-            $this->persist_report((int) $pet_id, $data);
+			$existing = $this->CI->LabReport_model->findBySource(
+				$data['device'] ?? null,
+				$data['source'] ?? null,
+				$data['source_id'] ?? null,
+				true
+			);
+			if ($existing) {
+				$pet_id = (int) $existing->pet_id;
+				$report_id = $this->persist_report($pet_id, $data);
+				$this->resolve_pending_identity($identity, $report_id, $pet_id);
+				$this->commit_ingestion();
+				return array('status' => 'ok');
+			}
+
+			$pet_id = $this->resolvePetId($data);
+			if ($pet_id === null) {
+				$this->CI->LabReportPending_model->create_or_refresh(array(
+					'device' => $data['device'] ?? null,
+					'source' => $data['source'] ?? null,
+					'source_id' => $data['source_id'] ?? null,
+					'raw_payload' => json_encode($payload),
+					'identifiers' => json_encode(array(
+						'pet_id' => $data['pet_id'] ?? null,
+						'owner_name' => $data['owner_name'] ?? null,
+						'pet_name' => $data['pet_name'] ?? null,
+						'chip' => $data['chip'] ?? null,
+						'phone' => $data['phone'] ?? null,
+					)),
+					'reason' => 'pet_not_found',
+				));
+
+				$existing = $this->CI->LabReport_model->findBySource(
+					$data['device'] ?? null,
+					$data['source'] ?? null,
+					$data['source_id'] ?? null,
+					true
+				);
+				if ($existing) {
+					$pet_id = (int) $existing->pet_id;
+					$report_id = $this->persist_report($pet_id, $data);
+					$this->resolve_pending_identity($identity, $report_id, $pet_id);
+					$this->commit_ingestion();
+					return array('status' => 'ok');
+				}
+
+				$this->commit_ingestion();
+				return array('status' => 'pending');
+			}
+
+			$report_id = $this->persist_report((int) $pet_id, $data);
+			$this->resolve_pending_identity($identity, $report_id, (int) $pet_id);
             if ($this->CI->db->trans_status() === false) {
                 throw new RuntimeException('Lab report persistence failed.');
             }
@@ -56,6 +98,8 @@ class LabResultService
         } catch (Throwable $error) {
             $this->CI->db->trans_rollback();
             throw $error;
+		} finally {
+			$this->release_identity_locks($lock_names);
         }
 
         return array('status' => 'ok');
@@ -232,7 +276,7 @@ class LabResultService
                 throw new RuntimeException('Could not refresh existing lab report.');
             }
         } else {
-            $report_id = (int) $this->CI->LabReport_model->create(array(
+			$report_id = (int) $this->CI->LabReport_model->claimSource(array(
                 'pet_id' => $pet_id,
                 'device' => $data['device'] ?? null,
                 'source' => $data['source'] ?? null,
@@ -245,6 +289,22 @@ class LabResultService
             if ($report_id <= 0) {
                 throw new RuntimeException('Could not create lab report.');
             }
+			$claimed = $this->CI->db->where('id', $report_id)->get('lab_report')->row();
+			if (!$claimed) {
+				throw new RuntimeException('Could not reload claimed lab report.');
+			}
+			if ((int) $claimed->pet_id !== $pet_id) {
+				throw new DomainException('A report with this source identity already belongs to another pet.');
+			}
+			$updated = $this->CI->db->where('id', $report_id)->update('lab_report', array(
+				'sample_date' => $data['sample_date'] ?? $claimed->sample_date,
+				'software_version' => $data['software_version'] ?? $claimed->software_version,
+				'metadata' => array_key_exists('metadata', $data) ? json_encode($data['metadata']) : $claimed->metadata,
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+			if (!$updated || !$this->CI->LabResult_model->deleteByReport($report_id)) {
+				throw new RuntimeException('Could not refresh claimed lab report.');
+			}
         }
 
         if (!$this->CI->db->where('report_id', $report_id)->delete('lab_plots')) {
@@ -268,6 +328,51 @@ class LabResultService
 
         return $report_id;
     }
+
+	private function resolve_pending_identity(?array $identity, int $report_id, int $pet_id): void
+	{
+		if (!$this->CI->LabReportPending_model->resolve_active_identity(
+			$identity['hash'] ?? null,
+			$report_id,
+			$pet_id,
+			null
+		)) {
+			throw new RuntimeException('Could not resolve the matching pending lab report.');
+		}
+	}
+
+	private function commit_ingestion(): void
+	{
+		if ($this->CI->db->trans_status() === false) {
+			throw new RuntimeException('Lab report ingestion failed.');
+		}
+		$this->CI->db->trans_commit();
+	}
+
+	private function acquire_identity_locks(array $identity_hashes): array
+	{
+		$names = array_values(array_unique(array_map(static function (string $identity_hash): string {
+			return 'lab:' . substr($identity_hash, 0, 60);
+		}, array_filter($identity_hashes))));
+		sort($names, SORT_STRING);
+		$acquired = array();
+		foreach ($names as $name) {
+			$row = $this->CI->db->query('SELECT GET_LOCK(?, 5) AS `acquired`', array($name))->row_array();
+			if (!$row || (int) $row['acquired'] !== 1) {
+				$this->release_identity_locks($acquired);
+				throw new RuntimeException('Could not lock the lab report source identity.');
+			}
+			$acquired[] = $name;
+		}
+		return $acquired;
+	}
+
+	private function release_identity_locks(array $lock_names): void
+	{
+		foreach (array_reverse($lock_names) as $lock_name) {
+			$this->CI->db->query('SELECT RELEASE_LOCK(?)', array($lock_name));
+		}
+	}
 
     private function canonical(array $result): array
     {

@@ -435,6 +435,8 @@ $lang['cost_unavailable']       = 'Kost niet beschikbaar';
 $lang['lab_id']                 = 'Labo id'; 
 $lang['lab_comment']            = 'Labo opmerking'; 
 $lang['lab_received']           = 'Labo ontvangen'; 
+$lang['lab_first_received']     = 'Eerst ontvangen';
+$lang['lab_last_received']      = 'Laatst ontvangen';
 $lang['lab_update']             = 'Laatste update'; 
 $lang['source']                 = 'Bron'; 
 

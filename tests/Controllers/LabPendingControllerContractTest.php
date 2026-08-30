@@ -18,6 +18,8 @@ final class LabPendingControllerContractTest extends TestCase
         $this->assertMatchesRegularExpression('/function pending\(\).*?get_active\(\).*?json_decode.*?identifiers.*?_render_page\(\'lab\/pending\'/s', $this->source);
         $pendingMethod = $this->methodSource('pending', 'recover_pending');
         $this->assertStringContainsString("'identifiers'", $pendingMethod);
+		$this->assertStringContainsString("'first_received_at'", $pendingMethod);
+		$this->assertStringContainsString("'last_received_at'", $pendingMethod);
         $this->assertStringNotContainsString("'raw_payload'", $pendingMethod);
     }
 

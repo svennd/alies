@@ -16,7 +16,7 @@
 						<table class="table table-sm" id="pendingLabTable">
 							<thead>
 								<tr>
-									<th><?php echo $this->lang->line('lab_received'); ?></th>
+									<th><?php echo $this->lang->line('lab_last_received'); ?></th>
 									<th><?php echo $this->lang->line('source'); ?></th>
 									<th><?php echo $this->lang->line('lab_pending_identifiers'); ?></th>
 									<th><?php echo $this->lang->line('reason'); ?></th>
@@ -27,7 +27,8 @@
 								<?php foreach ($pending_results as $pending): ?>
 									<tr>
 										<!-- <td><?php echo (int) $pending['id']; ?></td> -->
-										<td data-sort="<?php echo strtotime($pending['created_at']); ?>"><?php echo html_escape($pending['created_at']); ?></td>
+										<?php $received_at = $pending['last_received_at'] ?? $pending['created_at']; ?>
+										<td data-sort="<?php echo strtotime($received_at); ?>"><?php echo html_escape($received_at); ?></td>
 										<td>
 											<?php echo html_escape($pending['device'] ?: $pending['source'] ?: '-'); ?>
 											<?php if (!empty($pending['source_id'])): ?><br><small>#<?php echo html_escape($pending['source_id']); ?></small><?php endif; ?>

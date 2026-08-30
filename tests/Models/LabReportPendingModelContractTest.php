@@ -25,7 +25,12 @@ final class LabReportPendingModelContractTest extends TestCase
     {
         $source = file_get_contents(APPPATH . 'models/LabReportPending_model.php');
 
-        $this->assertStringContainsString("'source'       => \$data['source'] ?? null", $source);
-        $this->assertStringContainsString("'source_id'    => \$data['source_id'] ?? null", $source);
+		$this->assertStringContainsString('function create_or_refresh(array $data)', $source);
+		$this->assertStringContainsString("\$data['source'] ?? null", $source);
+		$this->assertStringContainsString("\$data['source_id'] ?? null", $source);
+		$this->assertStringContainsString('ON DUPLICATE KEY UPDATE', $source);
+		$this->assertStringContainsString('LAST_INSERT_ID(`id`)', $source);
+		$this->assertStringContainsString('last_received_at', $source);
+		$this->assertStringContainsString('COALESCE(last_received_at, created_at)', $source);
     }
 }
