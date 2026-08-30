@@ -151,7 +151,7 @@ $lang['history_treatments']  = 'Producten en procedures';
 ## vaccines
 $lang['no_vaccines']  = 'Geen vaccinaties bekend';
 $lang['vaccines']  = 'Vaccin';
-$lang['title_vaccines']  = 'Vaccins';
+$lang['title_vaccines']  = 'Vaccins & Preventie';
 $lang['exp_date']  = 'Vervaldatum';
 $lang['rappel_date']  = 'Rappel';
 $lang['disable']  = 'Uit';

@@ -1,3 +1,12 @@
+<style>
+.no-border th, .no-border td 
+{
+	border-top: 0;
+}
+.table-danger th, .table-danger td {
+	background-color: #f8d7da;
+}
+</style>
 <div class="row">
 	<div class="col-lg-12 mb-4">
       <div class="card shadow mb-4">
@@ -13,7 +22,7 @@
 		</div>
             <div class="card-body">
 			<?php if($vaccines): ?>
-			<table class="table table-sm" id="dataTable">
+			<table class="table table-sm no-border" id="dataTable">
 			  <thead>
 				<tr>
 					<th><?php echo $this->lang->line('vaccines'); ?></th>
@@ -26,8 +35,25 @@
 				</tr>
 			  </thead>
 			  <tbody>
+					<?php
+					$today = new DateTime('today');
+					$warning_boundary = (clone $today)->modify('+3 months');
+					?>
+
+				
 				<?php foreach($vaccines as $vac): ?>
-				<tr>
+
+				<?php
+				$rappel_date = new DateTime($vac['redo']);
+				$rappel_date->setTime(0, 0, 0);
+				$status = '';
+				if ($rappel_date < $today) {
+					$status = 'danger';
+				} elseif ($rappel_date <= $warning_boundary) {
+					$status = 'warning';
+				}
+				?>
+				<tr class="table-<?php echo $status; ?>">
 					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: $vac['product']; ?></td>
 					<td data-sort="<?php echo strtotime($vac['created_at']); ?>"><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
 					<td data-sort="<?php echo strtotime($vac['redo']); ?>">

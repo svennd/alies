@@ -115,7 +115,7 @@
 				</a>
 				<a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>" class="btn btn-outline-info btn-sm mr-2">
 					<i class="fa-solid fa-syringe fa-fw" aria-hidden="true"></i>
-					<?php echo $this->lang->line('title_vaccines'); ?>
+					<?php echo $this->lang->line('vaccines'); ?>
 				</a>
 				<a href="<?php echo base_url('tooth/fiche/' . (int) $pet['id']); ?>" class="btn btn-outline-warning btn-sm mr-2">
 					<i class="fas fa-fw fa-tooth" aria-hidden="true"></i>
@@ -212,6 +212,7 @@
 			</div>
 			<div class="col-6 col-md-6 mb-4" style="border-left: 1px solid #e3e6f0;">
 				<?php if ($vaccines): ?>
+					<h6 class="h6 mb-2 font-weight-bold text-gray-900"><a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>"><?php echo $this->lang->line('title_vaccines'); ?></a></h6>
 					<?php
 					$today = new DateTime('today');
 					$warning_boundary = (clone $today)->modify('+3 months');
@@ -221,14 +222,11 @@
 							<?php
 							$rappel_date = new DateTime($vac['max_rappel']);
 							$rappel_date->setTime(0, 0, 0);
-
+							$status = '';
 							if ($rappel_date < $today) {
 								$status = 'danger';
 							} elseif ($rappel_date <= $warning_boundary) {
 								$status = 'warning';
-							} else {
-								// $status = 'success';
-								$status = '';
 							}
 							?>
 							<tr class="table-<?php echo $status; ?>">

@@ -105,7 +105,7 @@
 
 .pet-history__details {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 2fr 1fr;
 	gap: 1.25rem;
 	padding: 1.25rem;
 	border-top: 1px solid var(--history-border);
