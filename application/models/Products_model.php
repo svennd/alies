@@ -309,38 +309,38 @@ class Products_model extends MY_Model
     */
 	public function get_products_stocks(string $search_query)
 	{
-        $sql = "
-            SELECT 
-                p.id AS product_id, p.name, p.unit_sell, p.btw_sell, p.booking_code, 
-                p.vaccin, p.vaccin_freq, p.is_antibiotic, s.id AS stock_id, s.location, s.eol, s.lotnr, s.volume 
-            FROM 
-                products p 
+		$sql = "
+			SELECT
+				p.id AS product_id, p.name, p.unit_sell, p.btw_sell, p.booking_code,
+				p.vaccin, p.vaccin_freq, p.is_antibiotic,
+				s.id AS stock_id, s.location, s.eol, s.lotnr, s.volume
+			FROM (
+				SELECT *
+				FROM products
+				WHERE name LIKE ? ESCAPE '!'
+				AND sellable = 1
+				AND deleted_at IS NULL
+				ORDER BY usage_count DESC, name ASC
+				LIMIT ?
+			) p
 
-            LEFT JOIN 
-                stock s 
-                ON s.product_id = p.id 
-                AND s.volume > 0 
-                AND s.state = ?
+			LEFT JOIN stock s
+				ON s.product_id = p.id
+				AND s.volume > 0
+				AND s.state = ?
 
-            WHERE 
-                p.name LIKE ? ESCAPE '!' 
-                AND p.sellable = 1 
-                AND p.deleted_at IS NULL
-
-            ORDER BY 
-                p.usage_count DESC, 
-                p.name ASC, 
-                s.location ASC, 
-                s.eol ASC 
-
-            LIMIT ?";
-
+			ORDER BY
+				p.usage_count DESC,
+				p.name ASC,
+				s.location ASC,
+				s.eol ASC
+		";
 
 			return $this->db->query($sql, 
                         [
-                        STOCK_IN_USE,
                         '%' . $search_query . '%', 
-                        self::PRODUCT_SEARCH_LIMIT
+                        self::PRODUCT_SEARCH_LIMIT,
+                        STOCK_IN_USE
                         ])->result_array();
 	}
 
