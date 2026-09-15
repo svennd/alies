@@ -7,7 +7,7 @@ class Procedures_model extends MY_Model
 {
 	public $table = 'procedures';
 	public $primary_key = 'id';
-	public $delete_cache_on_save = true;
+	// public $delete_cache_on_save = true;
 	
 	public function __construct()
 	{
