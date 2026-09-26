@@ -2,6 +2,8 @@
 
 class Vet extends Vet_Controller
 {
+	private $avatar_dir = 'data/upload/avatars/';
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -195,7 +197,10 @@ class Vet extends Vet_Controller
 			// store it
 			$time = time();
 			$data['time'] = $time;
-			imagepng($resized_img, 'assets/public/user_' . $this->user->id . '_'. $time .'.check.png');
+			if (!is_dir($this->avatar_dir)) {
+				mkdir($this->avatar_dir, 0777, true);
+			}
+			imagepng($resized_img, $this->avatar_dir . 'user_' . $this->user->id . '_'. $time .'.check.png');
 
 			// read it
 			imagepng($resized_img);
@@ -209,10 +214,10 @@ class Vet extends Vet_Controller
 			$submit = ($this->input->post('submit') == "Accept") ? true : false;
 			$timetag = $this->input->post('timetag');
 			if ($submit) {
-				if (file_exists('assets/public/user_' . $this->user->id . '_'. $timetag .'.check.png')) {
+				if (file_exists($this->avatar_dir . 'user_' . $this->user->id . '_'. $timetag .'.check.png')) {
 					rename(
-						'assets/public/user_' . $this->user->id . '_'. $timetag .'.check.png',
-						'assets/public/user_' . $this->user->id . '_'. $timetag .'.png'
+						$this->avatar_dir . 'user_' . $this->user->id . '_'. $timetag .'.check.png',
+						$this->avatar_dir . 'user_' . $this->user->id . '_'. $timetag .'.png'
 					);
 					$this->users->update(array('image' => 'user_' . $this->user->id . '_'. $timetag . '.png'), $this->user->id);
 					$data['image_updated_info'] = "Accepted new image";
@@ -267,7 +272,7 @@ class Vet extends Vet_Controller
 
 		# get images user uploaded previously
 		if($user_id) {
-			foreach (glob("assets/public/user_" . (int) $user_id . "_*.png") as $filename) {
+			foreach (glob($this->avatar_dir . "user_" . (int) $user_id . "_*.png") as $filename) {
 				if(substr($filename, -9, 9) == "check.png") { continue; }
 				$image_list['user'][] = array( 'img' => $filename, 'id' => $i );
 				$i++;
@@ -275,7 +280,7 @@ class Vet extends Vet_Controller
 		}
 
 		# get all premade images
-		foreach (glob("assets/public/pre_*.png") as $filename) {
+		foreach (glob($this->avatar_dir . "pre_*.png") as $filename) {
 			$image_list['pre'][] = array( 'img' => $filename, 'id' => $i );
 			$i++;
 		}

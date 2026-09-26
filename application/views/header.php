@@ -96,7 +96,7 @@
                 <?php if (date('m') == 2 && date('d') == 14): ?>
                   <i class="fa-solid fa-heart fa-lg" style="color: #ff708d;"></i>
                 <?php else: ?>
-                  <img class="img-profile rounded" src="<?php echo base_url('assets/public/') . (!empty($user->image) && is_readable('assets/public/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
+                  <img class="img-profile rounded" src="<?php echo base_url('data/upload/avatars/') . (!empty($user->image) && is_readable('data/upload/avatars/' . $user->image) ? $user->image : 'unknown.jpg' ) ; ?>" />
                 <?php endif; ?>
               </a>
               <!-- Dropdown - User Information -->

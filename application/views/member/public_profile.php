@@ -7,7 +7,7 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col">
-						<img class="img-profile rounded" src="<?php echo base_url() . 'assets/public/' . (!empty($profile['image']) ? $profile['image'] : 'unknown.jpg' ) ; ?>" />
+						<img class="img-profile rounded" src="<?php echo base_url() . 'data/upload/avatars/' . (!empty($profile['image']) ? $profile['image'] : 'unknown.jpg' ) ; ?>" />
 					</div>
 					<div class="col">
 					<table class="table">

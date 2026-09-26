@@ -1,0 +1,9 @@
+services:
+  php:
+    image: ${IMAGE_NAME}
+    container_name: alies-php
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - "${DATA_DIR}:/var/www/html/data:Z"

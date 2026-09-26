@@ -48,12 +48,12 @@
 								<input type="file" id="upload" value="Choose a file" accept="image/*" />
 							</a>
 							<?php if (empty($user->image)): ?>
-								<img class="my-image" id="upload-demo" src="<?php echo base_url(); ?>assets/public/unknown.jpg" />
+								<img class="my-image" id="upload-demo" src="<?php echo base_url(); ?>data/upload/avatars/unknown.jpg" />
 							<?php else : ?>
 								<?php if (isset($uploaded_image)): ?>
-									<img class="my-image" id="upload-demo" src="<?php echo base_url() . 'assets/public/' . $uploaded_image; ?>" />
+									<img class="my-image" id="upload-demo" src="<?php echo base_url() . 'data/upload/avatars/' . $uploaded_image; ?>" />
 								<?php else: ?>
-									<img class="my-image" id="upload-demo" src="<?php echo base_url() . 'assets/public/' . $user->image; ?>" />
+									<img class="my-image" id="upload-demo" src="<?php echo base_url() . 'data/upload/avatars/' . $user->image; ?>" />
 								<?php endif; ?>
 							<?php endif; ?>
 						</div>
