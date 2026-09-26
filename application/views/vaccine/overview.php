@@ -5,6 +5,8 @@
 			<div>Vaccines - <?php echo $month . ' ' . $year; ?> (<?php echo count($expiring_vacs); ?>)</div>
 			<div class="dropdown no-arrow">
 				<a href="<?php echo base_url('vaccine/export/' . (int)$month_int); ?>" class="btn btn-outline-success btn-sm"><i class="fas fa-file-export"></i> export</a>
+                <?php $this->lang->load('documents', $this->config->item('language')); ?>
+                <a href="<?= base_url('documents/reminders/' . (int) $month_int) ?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-file-pdf"></i> <?= html_escape($this->lang->line('doc_reminder_button')) ?></a>
 			</div>
 		</div>
             <div class="card-body">

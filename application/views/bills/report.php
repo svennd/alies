@@ -16,6 +16,7 @@
 			<div class="dropdown no-arrow">
 
 				<a href="<?php echo base_url('invoice/get_bill/' . $bill['id'] . '/' . INVOICE_PRINT); ?>" target="_blank" class="btn btn-outline-success btn-sm d-none d-xl-inline"><i class="fas fa-print"></i> print</a> 
+                <a href="<?= base_url('documents/invoice/' . (int) $bill['id']) ?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-file-pdf"></i> Typst PDF</a>
 
 				<?php if($bill['mail'] == 0): ?>
 					<a href="#" <?php if(!empty($owner['mail'])): ?>id="sendmail"<?php else: ?>id="get_mail"<?php endif; ?> class="btn <?php echo (!empty($owner['mail'])) ? "btn-outline-primary" : "btn-outline-secondary"; ?> btn-sm ml-1">

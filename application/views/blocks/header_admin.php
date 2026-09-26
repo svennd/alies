@@ -3,6 +3,11 @@
 
 <div class="sidebar-heading"><?php echo $this->lang->line('Administration'); ?></div>
 
+<?php $this->lang->load('documents', $this->config->item('language')); ?>
+<li class="nav-item">
+    <a class="nav-link" href="<?= base_url('document_center') ?>"><i class="fas fa-fw fa-file-pdf"></i> <span><?= html_escape($this->lang->line('doc_center')) ?></span></a>
+</li>
+
 <li class="nav-item" id="admin">
 <a class="nav-link" href="<?php echo base_url('accounting/dashboard'); ?>">
     <i class="fas fa-fw fa-user-shield"></i>
