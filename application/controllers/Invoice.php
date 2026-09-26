@@ -140,6 +140,12 @@ class Invoice extends Vet_Controller
 		$bill = $this->bills->with_location('fields:name')->get($bill_id);
 		$write_off_lines = $this->liquidate->get_bill_rows($bill_id);
 
+		# in case an event points to a bill that has been soft deleted.
+		if (!$bill) {
+			$this->_render_page('bills/invalid', array());
+			return;
+		}
+
 		if ($write_off_lines) {
 			$bill_info = $bill;
 			$total_net = 0.0;

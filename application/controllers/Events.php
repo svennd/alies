@@ -145,14 +145,27 @@ class Events extends Vet_Controller
 		# the bill was created but not a final report
 		elseif ($info['status'] != REPORT_FINAL)
 		{
+			$this->db->trans_start();
+
 			# bills are soft-delete
 			$affected = $this->bills->where(array("status" => BILL_PENDING, "id" => $info['payment']))->where('invoice_id IS NULL', NULL, FALSE,FALSE,FALSE,TRUE)->delete();
+
+			# release the other events when their pending bill was removed
+			$released = 0;
+			if ($affected === 1) {
+				$released = $this->events
+					->where(array('payment' => $info['payment']))
+					->where('id !=', $event_id)
+					->update(array('payment' => PAYMENT_OPEN));
+			}
 
 			# then delete the event
 			$this->events->delete($event_id);
 
+			$this->db->trans_complete();
+
 			# def log this
-			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment'] . " | affected :" . $affected);
+			$this->logs->logger(WARN, "remove_event_with_bill", "event_id: " . $event_id . " | bill_id: " . $info['payment'] . " | affected :" . $affected . " | released: " . $released);
 		}
 
 		redirect('/owners/detail/' . $owner_id);
