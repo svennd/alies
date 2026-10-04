@@ -215,23 +215,25 @@
 					<h6 class="h6 mb-2 font-weight-bold text-gray-900"><a href="<?php echo base_url('vaccine/fiche/' . $pet['id']); ?>"><?php echo $this->lang->line('title_vaccines'); ?></a></h6>
 					<?php
 					$today = new DateTime('today');
-					$warning_boundary = (clone $today)->modify('+3 months');
+					$warning_start = (clone $today)->modify('-3 months');
+					$warning_end = (clone $today)->modify('+2 months');
 					?>
 					<table class="table table-sm no-border">
 						<?php foreach ($vaccines as $vac): ?>
 							<?php
 							$rappel_date = new DateTime($vac['max_rappel']);
 							$rappel_date->setTime(0, 0, 0);
-							$status = '';
-							if ($rappel_date < $today) {
-								$status = 'danger';
-							} elseif ($rappel_date <= $warning_boundary) {
-								$status = 'warning';
-							}
+							$is_warning = !$vac['min_no_rappel']
+								&& $rappel_date >= $warning_start
+								&& $rappel_date <= $warning_end;
 							?>
-							<tr class="table-<?php echo $status; ?>">
+							<tr<?php echo $is_warning ? ' class="table-warning"' : ''; ?>>
 								<td class="pet-profile-value"><?php echo html_escape($vac['name']); ?></td>
-								<td class="pet-profile-value"><?php echo html_escape(user_format_date($vac['max_injection'], $user->user_date)); ?> <i class="fas fa-arrow-right mx-2" aria-hidden="true"></i> <?php echo html_escape(user_format_date($vac['max_rappel'], $user->user_date)); ?></td>
+								<td class="pet-profile-value">
+									<?php if(!$vac['min_no_rappel']): ?>
+										<?php echo html_escape(user_format_date($vac['max_rappel'], $user->user_date)); ?>
+									<?php endif; ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</table>

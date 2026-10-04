@@ -77,15 +77,10 @@ class Vaccine_model extends MY_Model
 				products.id = vac.product_id
 			WHERE 
 				pet = " . (int) $pet_id . "
-			AND
-				vac.no_rappel = 0
-			AND
-				vac.redo >= vac.created_at
 			group by 
 				product_id
 			order by 
-				max_injection 
-			desc
+				max_rappel desc, no_rappel asc
 		";
 		
 		return ($this->db->query($sql)->result_array());

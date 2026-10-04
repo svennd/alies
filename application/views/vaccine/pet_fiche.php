@@ -3,9 +3,6 @@
 {
 	border-top: 0;
 }
-.table-danger th, .table-danger td {
-	background-color: #f8d7da;
-}
 </style>
 <div class="row">
 	<div class="col-lg-12 mb-4">
@@ -37,7 +34,8 @@
 			  <tbody>
 					<?php
 					$today = new DateTime('today');
-					$warning_boundary = (clone $today)->modify('+3 months');
+					$warning_start = (clone $today)->modify('-3 months');
+					$warning_end = (clone $today)->modify('+2 months');
 					?>
 
 				
@@ -46,14 +44,11 @@
 				<?php
 				$rappel_date = new DateTime($vac['redo']);
 				$rappel_date->setTime(0, 0, 0);
-				$status = '';
-				if ($rappel_date < $today) {
-					$status = 'danger';
-				} elseif ($rappel_date <= $warning_boundary) {
-					$status = 'warning';
-				}
+				$is_warning = !$vac['no_rappel']
+					&& $rappel_date >= $warning_start
+					&& $rappel_date <= $warning_end;
 				?>
-				<tr class="table-<?php echo $status; ?>">
+				<tr<?php echo $is_warning ? ' class="table-warning"' : ''; ?>>
 					<td><?php echo (isset($vac['product']['name'])) ? $vac['product']['name']: $vac['product']; ?></td>
 					<td data-sort="<?php echo strtotime($vac['created_at']); ?>"><?php echo user_format_date($vac['created_at'], $user->user_date); ?></td>
 					<td data-sort="<?php echo strtotime($vac['redo']); ?>">
@@ -86,21 +81,8 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-
-	const current_date = new Date();
-
 	$("#dataTable").DataTable({
-			"order": [[ 1, "desc" ]],
-			"createdRow": function( row, data, dataIndex){
-				var product_date = new Date(data[2]["@data-sort"]*1000);
-				date_diff = (current_date - product_date);
-				if( date_diff > 0){
-					$(row).addClass("table-secondary");
-				/* 30 days */
-				} else if (date_diff > -(1000*60*60*24*30)) {
-					$(row).addClass("table-danger");
-				}
-			}
+			"order": [[ 1, "desc" ]]
 	});
 });
 </script>
