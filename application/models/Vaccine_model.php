@@ -65,9 +65,9 @@ class Vaccine_model extends MY_Model
 		$sql = "
 			SELECT 
 				GROUP_CONCAT(event_id) as event_ids,
-				MAX(vac.redo) as max_rappel,
+				MAX(CASE WHEN vac.no_rappel = 0 THEN vac.redo END) as max_rappel,
 				MAX(vac.created_at) as max_injection,
-				MIN(no_rappel) as min_no_rappel,
+				MIN(vac.no_rappel) as min_no_rappel,
 				products.name
 			FROM 
 				" . $this->table . " as vac
@@ -80,7 +80,7 @@ class Vaccine_model extends MY_Model
 			group by 
 				product_id
 			order by 
-				max_rappel desc, no_rappel asc
+				min_no_rappel asc, max_rappel desc
 		";
 		
 		return ($this->db->query($sql)->result_array());

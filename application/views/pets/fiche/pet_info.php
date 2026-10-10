@@ -221,11 +221,12 @@
 					<table class="table table-sm no-border">
 						<?php foreach ($vaccines as $vac): ?>
 							<?php
-							$rappel_date = new DateTime($vac['max_rappel']);
-							$rappel_date->setTime(0, 0, 0);
-							$is_warning = !$vac['min_no_rappel']
-								&& $rappel_date >= $warning_start
-								&& $rappel_date <= $warning_end;
+							$is_warning = false;
+							if (!$vac['min_no_rappel'] && $vac['max_rappel']) {
+								$rappel_date = new DateTime($vac['max_rappel']);
+								$rappel_date->setTime(0, 0, 0);
+								$is_warning = $rappel_date >= $warning_start && $rappel_date <= $warning_end;
+							}
 							?>
 							<tr<?php echo $is_warning ? ' class="table-warning"' : ''; ?>>
 								<td class="pet-profile-value"><?php echo html_escape($vac['name']); ?></td>
