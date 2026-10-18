@@ -258,7 +258,7 @@
 
 		<div class="d-flex flex-wrap">
 			<a href="<?php echo base_url(); ?>stock/add_stock/<?php echo $product['id']; ?>" class="btn btn-outline-success mr-2 mb-2">Add stock</a>
-			<a href="<?php echo base_url(); ?>products/product_price/<?php echo $product['id']; ?>" class="btn btn-outline-primary mr-2 mb-2">Set pricing</a>
+			<a href="<?php echo base_url(); ?>pricing/prod/<?php echo $product['id']; ?>" class="btn btn-outline-primary mr-2 mb-2">Set pricing</a>
 			<a href="<?php echo base_url(); ?>products/product/<?php echo $product['id']; ?>" class="btn btn-outline-secondary mr-2 mb-2">Open full edit page</a>
 			<a href="<?php echo base_url(); ?>products/new" class="btn btn-outline-dark mb-2">Add another product</a>
 		</div>
@@ -470,12 +470,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					label: "Producer",
 					selector: "#input_producer",
 					old: $("#input_producer").val(),
-					new: data.distr || ""
-				},
-				supplier: {
-					label: "Supplier",
-					selector: "#supplier",
-					old: $("#supplier").val(),
 					new: data.distr || ""
 				},
 				id: {

@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Products extends Vet_Controller
 {
 
-	const SEARCH_LIMIT = 15;
+	const SEARCH_LIMIT = 30;
 
 	# constructor
 	public function __construct()

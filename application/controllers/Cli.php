@@ -376,6 +376,7 @@ class Cli extends Frontend_Controller
 
             # in some weird cases
             # eg: when a tax is added but not shown in bruto_price
+			# this can no longer happen since they removed netto from the export
             if ($netto_price > $bruto_price && $id && !$netto_price)
             {
                 $this->wholesale->update(array("netto_overflow" => $netto_price), $id);
