@@ -1,0 +1,44 @@
+{
+  "source": "medilab",
+  "source_id": "ML-2026-87219",
+  "patient": "PEETERS, (MILO)",
+  "sample_date": "2026-08-24",
+  "results": [
+    {
+      "lab_code": "1001",
+      "lab_name": "Hemoglobine",
+      "value": "14.2",
+      "text_value": "14.2",
+      "unit": "g/dL",
+      "min": "12",
+      "max": "18"
+    },
+    {
+      "lab_code": "2002",
+      "lab_name": "Interpretation",
+      "value": "",
+      "text_value": "normal",
+      "unit": "",
+      "min": "",
+      "max": ""
+    },
+    {
+      "lab_code": "3003",
+      "lab_name": "Glucose",
+      "value": "5",
+      "text_value": "Niet Medegedeeld",
+      "unit": "mmol/L",
+      "min": "3",
+      "max": "7"
+    },
+    {
+      "lab_code": "89114",
+      "lab_name": "Chip",
+      "value": "",
+      "text_value": " 981000000000123 ",
+      "unit": "",
+      "min": "",
+      "max": ""
+    }
+  ]
+}

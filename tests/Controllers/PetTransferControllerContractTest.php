@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+#[Group('ci3-only')]
 final class PetTransferControllerContractTest extends TestCase
 {
     public function testControllerLogsAndRedirectsOnlyAfterCommittedTransfer(): void

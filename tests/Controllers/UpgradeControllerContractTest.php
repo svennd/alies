@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+#[Group('ci3-only')]
 final class UpgradeControllerContractTest extends TestCase
 {
     public function testMedilabRetryRunsMigrationWithoutChangingMigrationVersion(): void

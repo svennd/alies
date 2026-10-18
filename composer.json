@@ -20,6 +20,14 @@
         "phpunit/phpunit": "^13"
     },
     "scripts": {
-        "test": "phpunit --testdox"
+        "test": [
+            "@test:pure",
+            "@test:model",
+            "@test:http"
+        ],
+        "test:pure": "phpunit -c phpunit.pure.xml.dist --testdox",
+        "test:model": "phpunit -c phpunit.xml.dist --testsuite model --testdox",
+        "test:http": "phpunit -c phpunit.http.xml.dist --testdox",
+        "test:stable": "phpunit -c phpunit.xml.dist --exclude-group ci3-only --exclude-group known-bug --testdox"
     }
 }

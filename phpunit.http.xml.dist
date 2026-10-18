@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Black-box tests: they talk to the running application (tests/bin/serve.sh start, or APP_URL) and
+    read the database through PDO. No CodeIgniter code is loaded, so the same tests can run against
+    the CodeIgniter 4 version.
+-->
+<phpunit
+    bootstrap="tests/bootstrap-light.php"
+    cacheDirectory=".phpunit.cache"
+    colors="true"
+>
+    <testsuites>
+        <testsuite name="http">
+            <directory>tests/Http</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

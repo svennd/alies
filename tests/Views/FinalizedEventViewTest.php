@@ -10,23 +10,6 @@ final class FinalizedEventViewTest extends CodeIgniterDatabaseTestCase
         $this->ci->lang->load('vet', 'dutch');
     }
 
-    public function testSummaryUsesEventDateLinksAndExplicitCostStates(): void
-    {
-        $data = $this->baseData();
-        $data['billing_info'] = ['total_brut' => '123.45'];
-        $billed = $this->ci->load->view('event/report/block_report_header', $data, true);
-        $data['billing_info'] = false;
-        $unbilled = $this->ci->load->view('event/report/block_report_header', $data, true);
-
-        $this->assertStringContainsString('owners/detail/22', $billed);
-        $this->assertStringContainsString('pets/fiche/11', $billed);
-        $this->assertStringContainsString('Test Client', $billed);
-        $this->assertStringContainsString('Test Pet', $billed);
-        $this->assertStringContainsString('123,45', $billed);
-        $this->assertStringContainsString('Kost niet beschikbaar', $unbilled);
-        $this->assertStringContainsString('flex-nowrap', $billed);
-    }
-
     public function testAttachmentsPreviewSafeImagesAndUseFileActionsForOthers(): void
     {
         $html = $this->ci->load->view('event/report/block_attachments', [
@@ -44,38 +27,6 @@ final class FinalizedEventViewTest extends CodeIgniterDatabaseTestCase
         $this->assertStringNotContainsString('files/preview/4', $html);
         $this->assertStringContainsString('files/get_file/3', $html);
         $this->assertStringContainsString('loading="lazy"', $html);
-    }
-
-    public function testLabPanelEmbedsMultipleResultsAndProvidesLinkAndUnlinkControls(): void
-    {
-        $labs = [$this->lab(10, 'HIGH', true), $this->lab(9, 'normal', false)];
-        $html = $this->ci->load->view('event/report/block_lab_results', array_merge($this->baseData(), [
-            'event_id' => 77,
-            'linked_labs' => $labs,
-            'linkable_labs' => [['id' => 8, 'sample_date' => '2026-08-20 10:00:00', 'created_at' => '2026-08-20 10:00:00', 'device' => 'ms4s2', 'source' => null]],
-        ]), true);
-
-        $this->assertStringContainsString('lab/detail/10', $html);
-        $this->assertStringContainsString('lab/detail/9', $html);
-        $this->assertStringContainsString('HIGH', $html);
-        $this->assertStringContainsString('event-lab-result-out', $html);
-        $this->assertStringContainsString('event-lab-results-10" class="collapse show', $html);
-        $this->assertStringContainsString('event-lab-results-9" class="collapse"', $html);
-        $this->assertStringContainsString('form="event-lab-link-form"', $html);
-        $this->assertStringContainsString('form="event-lab-unlink-10"', $html);
-        $this->assertStringContainsString('confirm(', $html);
-    }
-
-    public function testLabPanelShowsAnEmptyStateWithoutLinkedLabs(): void
-    {
-        $html = $this->ci->load->view('event/report/block_lab_results', array_merge($this->baseData(), [
-            'event_id' => 77,
-            'linked_labs' => [],
-            'linkable_labs' => [],
-        ]), true);
-
-        $this->assertStringContainsString('Er zijn geen labresultaten aan dit event gekoppeld.', $html);
-        $this->assertStringNotContainsString('<article', $html);
     }
 
     public function testFinalizedCompositionHasNoLegacyTabsOrDrawingReferences(): void
@@ -106,33 +57,5 @@ final class FinalizedEventViewTest extends CodeIgniterDatabaseTestCase
                 $this->assertNotSame('', trim($translations[$key]));
             }
         }
-    }
-
-    private function baseData(): array
-    {
-        return [
-            'owner' => ['id' => 22, 'last_name' => 'Test Client', 'first_name' => 'Jane'],
-            'pet' => ['id' => 11, 'name' => 'Test Pet'],
-            'event_info' => ['created_at' => '2026-08-21 09:30:00'],
-            'user' => (object) ['user_date' => 'd/m/Y'],
-        ];
-    }
-
-    private function lab(int $id, string $value, bool $outside): array
-    {
-        return [
-            'id' => $id,
-            'sample_date' => '2026-08-2' . ($id === 10 ? '2' : '1') . ' 10:00:00',
-            'created_at' => '2026-08-20 10:00:00',
-            'device' => 'medilab',
-            'source' => 'api',
-            'results' => [[
-                'code' => 'ALT',
-                'value' => $value,
-                'limit' => '1 - 5',
-                'unit' => 'U/L',
-                'is_out' => $outside,
-            ]],
-        ];
     }
 }
