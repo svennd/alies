@@ -96,7 +96,7 @@ class Vaccine extends Vet_Controller
 		if ($this->input->post('submit'))
 		{
 			// do download
-			$exclusion = $this->input->post('excluded_products') ?? array();
+			$exclusion = array_filter(array_map('intval', (array) $this->input->post('excluded_products')));
 			$data['expiring_vacs'] = $this->vacs->get_expiring_vaccines($date->format('Y-m-d H:i:s'), $exclusion);
 			$data['date_format'] = $this->input->post('date_format');
 
