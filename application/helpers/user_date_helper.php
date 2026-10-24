@@ -4,7 +4,7 @@
   wrapper written do deal with null datetimes in php 8
   format given in user : $user->user_date
 */
-function user_format_date(string $datetime = null, string $format)
+function user_format_date(?string $datetime, string $format)
 {
   return (!$datetime || $datetime == "0000-00-00") ? '---' : date_format(date_create($datetime), $format);
 }
@@ -13,7 +13,7 @@ function user_format_date(string $datetime = null, string $format)
 /*
   say time as x ... ago
 */
-function time_ago(string $date = null)
+function time_ago(?string $date = null)
 {
   if ($date == null) { return "never"; }
 
