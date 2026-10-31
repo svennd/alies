@@ -93,7 +93,6 @@ return [
 
     // reports, statistics, logs, accounting
     'report',
-    'reports/accounting',
     'reports/stock_list',
     'reports/clients_list',
     'reports/usage/4001',

@@ -68,11 +68,6 @@ Date windows in Export use `> from 00:00` and `< to 23:59`. As a result, rows at
 
 ## Reports (`Reports.php`)
 
-### T270 — Accounting by booking code
-- **File:** `tests/Http/Reports/AccountingReportTest.php`.
-- **Assert:** a POST to `reports/accounting` with `search_from`, `search_to` and `booking=<id>` lists the product and procedure usage on CLOSED events for that code.
-- **Assert:** `reports/accounting/{from}/{to}/{id}/1` returns a CSV download named `accounting_code_{id}.csv`. Pin the header and the row format against `views/reports/accounting_csv.php`.
-
 ### T271 — Stock list XLSX
 - **File:** `tests/Http/Reports/StockListXlsxTest.php`.
 - **Assert:** `reports/stock_list` shows the location picker.

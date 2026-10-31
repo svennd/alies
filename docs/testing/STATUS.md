@@ -15,7 +15,7 @@ Each batch is a set of consecutive IDs from the same spec file, sized for one pr
 | B02 | T005, T006, T007, T008 | [01-helpers-pure.md](01-helpers-pure.md) |
 | B03 | T009, T010, T011, T012 | [01-helpers-pure.md](01-helpers-pure.md) |
 | B04 | T013, T014, T015, T016 | [01-helpers-pure.md](01-helpers-pure.md) |
-| B05 | T017, T018, T020, T021 | [01-helpers-pure.md](01-helpers-pure.md) |
+| B05 | T017, T018, T021 | [01-helpers-pure.md](01-helpers-pure.md) |
 | B06 | T022, T023, T024, T025 | [01-helpers-pure.md](01-helpers-pure.md) |
 | B07 | T030, T031, T032, T033 | [02-auth-access.md](02-auth-access.md) |
 | B08 | T034, T035, T036, T037 | [02-auth-access.md](02-auth-access.md) |
@@ -58,7 +58,7 @@ Each batch is a set of consecutive IDs from the same spec file, sized for one pr
 | B45 | T243, T250, T251, T252 | [06-clinical.md](06-clinical.md) |
 | B46 | T253, T254, T255 | [06-clinical.md](06-clinical.md) |
 | B47 | T260, T261, T262, T263 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
-| B48 | T264, T265, T270, T271 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
+| B48 | T264, T265, T271 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
 | B49 | T272, T273, T274, T275 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
 | B50 | T276, T280, T281, T282 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
 | B51 | T283, T284, T285, T290 | [07-reports-export-vamreg.md](07-reports-export-vamreg.md) |
@@ -108,7 +108,6 @@ Each batch is a set of consecutive IDs from the same spec file, sized for one pr
 | T016 | Lmscan adapter | P | [01](01-helpers-pure.md) | done | `tests/Pure/Devices/LmscanTest.php` | fixture tests/Fixtures/lmscan_payload.json from API.md |
 | T017 | Medilab adapter | P | [01](01-helpers-pure.md) | done | `tests/Pure/Devices/MedilabTest.php` | fixture tests/Fixtures/medilab_payload.json; 2 known quirks pinned (numeric value without text_value is lost, chip row stays in results) |
 | T018 | Ikems and Ms4s2 (extend the existing tests) | P | [01](01-helpers-pure.md) | done | `tests/Pure/Devices/IkemsTest.php, tests/Pure/Devices/Ms4s2Test.php` | Ikems date parsing rolls impossible dates over (31/02 -> 03-03) |
-| T020 | Bcrypt | P | [01](01-helpers-pure.md) | done | `tests/Pure/Libraries/BcryptTest.php` | library is unused: deletion candidate |
 | T021 | Lab_result_presenter (extend the existing test) | P | [01](01-helpers-pure.md) | done | `tests/Pure/Libraries/LabResultPresenterTest.php` |  |
 | T022 | Lab_source_identity, Lab_device_adapter_factory and Event_attachment_preview | P | [01](01-helpers-pure.md) | done | `tests/Pure/Libraries/LabSourceIdentityTest.php, LabDeviceAdapterFactoryCreateTest.php, EventAttachmentPreviewTest.php` | factory source-pattern test left in tests/Libraries as ci3-only |
 | T023 | ExcelExporter | P | [01](01-helpers-pure.md) | done | `tests/Pure/Libraries/ExcelExporterTest.php` | runs in a subprocess (method calls exit); formula injection pinned as known-bug |
@@ -270,7 +269,6 @@ Each batch is a set of consecutive IDs from the same spec file, sized for one pr
 | T263 | Bills CSV export | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Export/BillsCsvTest.php` |  |
 | T264 | Kluwer (Expert/M) XML export | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Export/KluwerXmlTest.php` | golden file golden_export_kluwer.xml (not yet reviewed by a human) |
 | T265 | Merged invoice PDF | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Export/InvoicesPdfTest.php` |  |
-| T270 | Accounting by booking code | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Reports/AccountingReportTest.php` | report is BROKEN (selects columns that no longer exist) |
 | T271 | Stock list XLSX | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Reports/StockListXlsxTest.php` |  |
 | T272 | Client list XLSX | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Reports/ClientListXlsxTest.php`, `ClientListEmptyXlsxTest.php` |  |
 | T273 | Product usage reports | H | [07](07-reports-export-vamreg.md) | done | `tests/Http/Reports/UsageReportTest.php` |  |
@@ -325,7 +323,7 @@ Each batch is a set of consecutive IDs from the same spec file, sized for one pr
 | T366 | ApiKey_model and ApiRate_model | M | [09](09-model-layer.md) | done | `tests/Models/ApiAndLabModelsTest.php` |  |
 | T367 | LabReport_model and LabResult_model | M | [09](09-model-layer.md) | done | `tests/Models/ApiAndLabModelsTest.php` |  |
 | T368 | Liquidate_model | M | [09](09-model-layer.md) | done | `tests/Models/LiquidateModelTest.php` |  |
-| T369 | Register_in, Booking_code and Delivery models | M | [09](09-model-layer.md) | done | `tests/Models/RegisterInDeliveryModelsTest.php` | get_usage_detail and Delivery_model::record fail (columns that do not exist) |
+| T369 | Register_in model | M | [09](09-model-layer.md) | done | `tests/Models/RegisterInDeliveryModelsTest.php` |  |
 | T370 | Events products and procedures aggregates | M | [09](09-model-layer.md) | done | `tests/Models/EventsLinesAggregatesTest.php` |  |
 | T371 | Wholesale_model | M | [09](09-model-layer.md) | done | `tests/Models/WholesaleModelTest.php` |  |
 | T372 | Product_price_model | M | [09](09-model-layer.md) | done | `tests/Models/ProductPriceModelTest.php` |  |

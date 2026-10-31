@@ -8,10 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
  * T360 Owners statistics and duplicates.   Source: application/models/Owners_model.php
  *
  * Rules in plain words:
- *  - get_per_city / get_per_province count owners per main_city / province (no filter: disabled and soft deleted
- *    owners are counted too).
- *  - last_bill_by_year_month_init_vet(5): per year of last_bill and initial vet, only years after (this year - 5)
- *    up to this year.
+ *  - get_per_province counts owners per province (no filter: disabled and soft deleted owners are counted too).
  *  - duplicate_phone: active owners whose first non-null of telephone/mobile/phone2/phone3 starts with 04, shared by
  *    more than one owner.
  *  - disable(id, newOwner) sets disabled=1; with a new owner it also writes a merge message into msg.
@@ -40,36 +37,6 @@ final class OwnersStatisticsTest extends CodeIgniterDatabaseTestCase
         return null;
     }
 
-    private function yearTotal(int $year, string $vet): int
-    {
-        $sum = 0;
-        foreach ($this->owners->last_bill_by_year_month_init_vet(5) as $row) {
-            if ((int) $row['y'] === $year && $row['vet'] === $vet) {
-                $sum += (int) $row['total'];
-            }
-        }
-
-        return $sum;
-    }
-
-    public function testGetPerCityCountsOwnersPerMainCity(): void
-    {
-        $city = Factory::unique('City');
-        Factory::owner(['main_city' => $city]);
-        Factory::owner(['main_city' => $city]);
-        Factory::owner(['main_city' => $city, 'disabled' => 1]);
-        Factory::owner(['main_city' => $city, 'deleted_at' => Factory::raw('NOW()')]);
-        $other = Factory::unique('City');
-        Factory::owner(['main_city' => $other]);
-
-        $rows = $this->owners->get_per_city();
-
-        // pinned: disabled and soft deleted owners are counted as well
-        $this->assertSame(4, (int) $this->byKey($rows, 'main_city', $city)['amount']);
-        $this->assertSame(1, (int) $this->byKey($rows, 'main_city', $other)['amount']);
-        $this->assertSame(['main_city', 'amount'], array_keys($rows[0]));
-    }
-
     public function testGetPerProvinceCountsOwnersPerProvince(): void
     {
         $province = Factory::unique('Prov');
@@ -82,45 +49,6 @@ final class OwnersStatisticsTest extends CodeIgniterDatabaseTestCase
 
         $this->assertSame(2, (int) $this->byKey($rows, 'province', $province)['amount']);
         $this->assertSame(1, (int) $this->byKey($rows, 'province', $other)['amount']);
-    }
-
-    public function testLastBillByYearCountsPerYearAndVetWithinTheWindow(): void
-    {
-        $now = (int) date('Y');
-        // the first name of user 6 as stored now (other test classes may rename users)
-        $vet = (string) $this->ci->db->where('id', Fixtures::USER_VET2)->get('users')->row()->first_name;
-        $before = [
-            $now => $this->yearTotal($now, $vet),
-            $now - 4 => $this->yearTotal($now - 4, $vet),
-            $now - 5 => $this->yearTotal($now - 5, $vet),
-            $now + 1 => $this->yearTotal($now + 1, $vet),
-        ];
-
-        Factory::owner(['initial_vet' => Fixtures::USER_VET2, 'last_bill' => $now . '-01-15']);
-        Factory::owner(['initial_vet' => Fixtures::USER_VET2, 'last_bill' => $now . '-02-15']);
-        Factory::owner(['initial_vet' => Fixtures::USER_VET2, 'last_bill' => ($now - 4) . '-06-01']);
-        Factory::owner(['initial_vet' => Fixtures::USER_VET2, 'last_bill' => ($now - 5) . '-06-01']);
-        Factory::owner(['initial_vet' => Fixtures::USER_VET2, 'last_bill' => ($now + 1) . '-06-01']);
-
-        $this->assertSame($before[$now] + 2, $this->yearTotal($now, $vet));
-        $this->assertSame($before[$now - 4] + 1, $this->yearTotal($now - 4, $vet));
-        // y > YEAR(today - 5 years): the year five back is out, next year is out as well
-        $this->assertSame(0, $this->yearTotal($now - 5, $vet));
-        $this->assertSame(0, $this->yearTotal($now + 1, $vet));
-        $this->assertSame(0, $before[$now - 5] + $before[$now + 1]);
-    }
-
-    public function testLastBillByYearOrdersByYearAscending(): void
-    {
-        Factory::owner(['last_bill' => (date('Y') - 3) . '-01-01']);
-        Factory::owner(['last_bill' => date('Y') . '-01-01']);
-
-        $years = array_map('intval', array_column($this->owners->last_bill_by_year_month_init_vet(5), 'y'));
-
-        $sorted = $years;
-        sort($sorted);
-        $this->assertSame($sorted, $years);
-        $this->assertContains((int) date('Y') - 3, $years);
     }
 
     public function testDuplicatePhoneFindsActiveOwnersSharingAMobileNumber(): void

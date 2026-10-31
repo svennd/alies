@@ -81,66 +81,6 @@ class Stock_model extends MY_Model
 	}
 
 	/*
-		called in admin_invoice/rm_bill
-	*/
-	public function increase_stock(int $product_id, float $volume, int $location, string $barcode, bool $add_dead_volume = true)
-	{
-		// in case we need to "reverse" an action
-		if ($add_dead_volume)
-		{
-			// this is always set to 0 if not applicable
-			// we increase the stock with 
-			$volume += $this->get_dead_volume($product_id);
-		}
-
-		# if logging is required also log this 
-		$this->logs->stock(DEBUG, "increase_stock", $product_id, $volume, $location);
-
-		// we first try to add to the "active" stock
-		$sql = "UPDATE 
-					stock 
-				SET 
-					volume=volume+" . $volume. ",
-    				updated_at = NOW()
-				WHERE 
-					product_id = '". $product_id ."'
-					and
-					barcode = '" . $barcode . "' 
-					and 
-					location = '" . $location . "' 
-					and 
-					state = '" . STOCK_IN_USE . "' 
-				limit 1;";
-		$this->db->query($sql);
-
-		if(!$this->db->affected_rows())
-		{
-			$this->logs->logger(INFO, "increase_stock", "update failed for pid:" . $product_id . " volume:" . $volume . " barcode:" . $barcode . " from:" . $location);
-
-			// the current stock doesn't contain any STOCK_IN_USE with the same info
-			// so we search for one and 're-activate' this one
-			// alternativly we create a new one, but this would definitly lack some info
-			// add to the largest volume (in hope we don't pull out of STOCK_ERROR)
-			$sql = "UPDATE stock SET volume=volume+" . $volume. ", state = '" . STOCK_IN_USE . "', updated_at = NOW() WHERE barcode = '" . $barcode . "' and location = '" . $location . "' ORDER BY volume LIMIT 1;";
-			$this->db->query($sql);
-
-			# this is bad :( so just insert a new line
-			if(!$this->db->affected_rows())
-			{
-				$this->logs->logger(WARN, "increase_stock", "no RECORD found (adding one now) for pid:" . $product_id . " volume:" . $volume . " barcode:" . $barcode . " from:" . $location);
-				// to little info
-				$this->stock->insert(array(
-					"product_id" 	=> $product_id,
-					"location" 		=> $location,
-					"volume" 		=> $volume,
-					"barcode" 		=> $barcode,
-				));
-			}
-
-		}
-	}
-
-	/*
 	* function: reduce
 	* reduce the stock with a given volume and a specified stock_id
 	* optional location(int), enable_dead_volume(bool)
@@ -185,65 +125,6 @@ class Stock_model extends MY_Model
 	}
 
 	/*
-		called in invoice
-		* take care to deal with dead volume
-	*/
-	public function reduce_stock(int $product_id, $volume, $location = false, $barcode = false)
-	{
-		# we aint doing that
-		if ($volume == 0) { return false; }
-
-		// if there is dead volume, add this to be removed from stock
-		$volume += $this->get_dead_volume($product_id);
-
-		# if we get a barcode and a location, we can substract easy
-		if ($barcode && $location) {
-			$affected = $this->reduce_product($barcode, $location, $volume);
-
-			# TODO : what if there is no stock there ! (this would pass) testing ...
-			# woops there was no barcode here (it must have been from somewhere else)
-			if ($affected == 0) {
-				$this->logs->stock(ERROR, "reduce_stock_barcode_location", $product_id, -$volume, $location);
-				$this->stock->insert(array(
-							"product_id" 	=> $product_id,
-							"location" 		=> $location,
-							"volume" 		=>	-$volume,
-							"barcode" 		=> $barcode,
-							"state"			=> STOCK_ERROR
-						));
-			}
-		} elseif ($location) {
-			# check if for this product there is only one stock;
-			$result = $this->stock->where(array("product_id" => $product_id, "location" => $location))->fields('barcode')->get_all();
-
-			if ($result && count($result) == 1) {
-				$this->reduce_product($result[0]['barcode'], $location, $volume);
-			} else {
-				$this->logs->stock(ERROR, "reduce_stock_location", $product_id, -$volume, $location);
-				$this->insert(array("product_id" => $product_id, "volume" => -$volume, "location" => $location, "state" => STOCK_ERROR));
-			}
-		}
-		# no location
-		else {
-			$this->logs->stock(ERROR, "reduce_stock_unknown", $product_id, -$volume, $location);
-			$this->insert(array("product_id" => $product_id, "volume" => -$volume, "state" => STOCK_ERROR));
-		}
-
-		$this->maintain_stock_state($product_id);
-	}
-
-	private function maintain_stock_state($product_id)
-	{
-		# check for empty bottles
-		$sql = "UPDATE stock SET state = " . STOCK_HISTORY . ", updated_at = NOW() WHERE product_id='" . $product_id . "' AND state = " . STOCK_IN_USE . " AND volume = '0';";
-		$this->db->query($sql);
-
-		# check for issues
-		$sql = "UPDATE stock SET state = " . STOCK_ERROR . ", updated_at = NOW() WHERE product_id='" . $product_id . "' AND volume < '0' AND state != " . STOCK_ERROR . ";";
-		$this->db->query($sql);
-	}
-
-	/*
 	* function: move
 	* move a product from one location to another
 	* called in stock/move
@@ -252,6 +133,14 @@ class Stock_model extends MY_Model
 	{
 		if ($volume == 0) { 
 			$this->logs->logger(DEBUG, "move_stock", "detected 0 unit move " . $from . " to " . $to . " pid:" . $pid . " volume:" . $volume);
+			return false;
+		}
+
+		# the source row can be gone (removed or merged since the form was opened), nothing to move then
+		$original_stock = $this->get($stock_id);
+		if (!$original_stock)
+		{
+			$this->logs->logger(ERROR, "move_stock", "source stock not found, id:" . $stock_id . " from " . $from . " to " . $to . " pid:" . $pid . " volume:" . $volume);
 			return false;
 		}
 
@@ -282,68 +171,7 @@ class Stock_model extends MY_Model
 
 			# we can't find any stock at $to 
 			# so create a new one based on the original one (irrelevant of the current state)
-			$original_stock = $this->get($stock_id);
-
 			$this->new($pid, $to, $volume, $original_stock['lotnr'], $original_stock['in_price'], $original_stock['eol'], $original_stock['supplier']);
-		}
-	}
-
-	/*
-		called in stock/move_stock
-	*/
-	public function reduce_product($barcode, $from, $value, $info = NULL)
-	{
-		# if logging is required also log this remove
-		if ($this->logs->min_log_level == DEBUG)
-		{
-			$infox = $this->stock->fields('product_id')->where(array("barcode" => $barcode))->get();
-			$this->logs->stock(DEBUG, ($value < 0) ? "reduce_product/add": "reduce_product", $infox['product_id'], -$value, $from);
-		}
-
-		$sql = "UPDATE stock 
-							SET 
-								state = CASE
-									WHEN (volume - " . $value . ") < 0 THEN '" . STOCK_ERROR . "'
-									WHEN (volume - " . $value . ") = 0 THEN '" . STOCK_HISTORY . "'
-									ELSE '" . STOCK_IN_USE . "'
-								END,
-								updated_at = NOW(),
-								volume = volume-" . $value. "
-								". (($info) ? ', info = "' . $info .'" ': '') ."
-							WHERE 
-								barcode = '" . $barcode . "' 
-								AND 
-								location = '" . $from . "' 
-								AND
-								state = '" . STOCK_IN_USE . "'
-							limit 1;";
-		$this->db->query($sql);
-
-		return $this->db->affected_rows();
-	}
-
-	public function add_product_to_stock($barcode, $from, $to, $value)
-	{
-		# check if there is already stock there, if so increase
-		# else add new
-		$product_on_to = $this->where(array("barcode" => $barcode, "location" => $to, "state" => STOCK_IN_USE))->get();
-
-		if ($product_on_to) {
-			$this->reduce_product($barcode, $to, -$value);
-		} else {
-			$from_info = $this->where(array("barcode" => $barcode, "location" => $from))->get();
-			
-			$this->logs->stock(DEBUG, "add_to_stock", $from_info['product_id'], $value, $to);
-			$this->insert(array(
-								"product_id" 	=> $from_info['product_id'],
-								"eol" 			=> $from_info['eol'],
-								"location" 		=> $to,
-								"in_price" 		=> $from_info['in_price'],
-								"lotnr" 		=> $from_info['lotnr'],
-								"volume" 		=> $value,
-								"barcode" 		=> $barcode,
-								"state"			=> STOCK_IN_USE
-								));
 		}
 	}
 

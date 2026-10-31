@@ -186,21 +186,6 @@ final class WholesaleModelTest extends CodeIgniterDatabaseTestCase
         $this->assertFalse($this->wh->get_wh_id('WHID-NOPE'));
     }
 
-    public function testPriceDiffListsChangedPricesWithinTheDays(): void
-    {
-        $recent = Factory::wholesale(['bruto' => 12, 'last_bruto' => 10, 'last_bruto_date' => date('Y-m-d', strtotime('-5 days'))]);
-        $old = Factory::wholesale(['bruto' => 12, 'last_bruto' => 10, 'last_bruto_date' => date('Y-m-d', strtotime('-40 days'))]);
-        $same = Factory::wholesale(['bruto' => 10, 'last_bruto' => 10, 'last_bruto_date' => date('Y-m-d')]);
-
-        $ids30 = array_map('intval', array_column($this->wh->get_price_diff(), 'id'));
-        $ids60 = array_map('intval', array_column($this->wh->get_price_diff(60), 'id'));
-
-        $this->assertContains($recent, $ids30);
-        $this->assertNotContains($old, $ids30);
-        $this->assertNotContains($same, $ids30);
-        $this->assertContains($old, $ids60);
-    }
-
     public function testSearchIndexFindsByDescriptionVendorIdAndProductName(): void
     {
         $token = Factory::unique('Zq');

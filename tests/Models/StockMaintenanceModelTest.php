@@ -173,7 +173,7 @@ final class StockMaintenanceModelTest extends CodeIgniterDatabaseTestCase
         $positive = Factory::stock($pid, ['volume' => 3, 'state' => STOCK_IN_USE]);
         $negHistory = Factory::stock($pid, ['volume' => -2, 'state' => STOCK_HISTORY]);
         $negCheck = Factory::stock($pid, ['volume' => -2, 'state' => STOCK_CHECK]);
-        // ERROR rows that cannot be joined to a location: reduce_stock without location stores ''
+        // ERROR rows that cannot be joined to a location: fallback_reduce without location stores ''
         $noLocation = Factory::stock($pid, ['volume' => -4, 'state' => STOCK_ERROR, 'location' => '']);
         $badLocation = Factory::stock($pid, ['volume' => -5, 'state' => STOCK_ERROR, 'location' => '99']);
 

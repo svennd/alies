@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\Attributes\Group;
-
 /**
- * T369  Sources: application/models/Register_in_model.php, Booking_code_model.php, Delivery_model.php
+ * T369  Source: application/models/Register_in_model.php
  *
  * Rules in plain words:
  *  - Register_in_model::get_last_net_brut(pid) = [in_price, cat_price, 'd-m-Y'] of the delivery slip with the
@@ -13,10 +11,6 @@ use PHPUnit\Framework\Attributes\Group;
  *  - date_lookup(from, to) lists register_in rows with created_at strictly after "from 00:00" and strictly
  *    before "to 23:59" (so a row at exactly 00:00:00 of the first day, or after 23:59:00 of the last day, is missed).
  *  - get_delivery(date) lists the rows of the slips with that regdate.
- *  - KNOWN BUGS: Booking_code_model::get_usage_detail and Delivery_model::record select/insert columns that do
- *    not exist in the schema (events_products.net_price/calc_net_price/barcode, delivery.product_id), so both end
- *    in a database error (1054). The tests switch db_debug off to observe that instead of dying.
- *    The spec said record() stores a NULL created_at; in fact the INSERT does not run at all.
  */
 final class RegisterInDeliveryModelsTest extends CodeIgniterDatabaseTestCase
 {
@@ -171,78 +165,5 @@ final class RegisterInDeliveryModelsTest extends CodeIgniterDatabaseTestCase
         $this->assertEqualsWithDelta(3.0, (float) $rows[0]['volume'], 0.001);
         $this->assertEqualsWithDelta(2.0, (float) $rows[0]['in_price'], 0.001);
         $this->assertSame([], $this->registerIn->get_delivery('2017-08-17'));
-    }
-
-    // ---------------------------------------------------------------- Booking_code_model
-
-    #[Group('known-bug')]
-    public function testBookingUsageDetailFailsBecauseItSelectsColumnsThatDoNotExist(): void
-    {
-        // KNOWN BUG: selects ep.net_price, ep.calc_net_price and ep.barcode, none of which exist in
-        // events_products (migration 009 renamed them), so the report query is a database error 1054
-        // — decide in CI4 whether to repair the query (intended: [products, procedures] of CLOSED events only)
-        $booking = $this->model('Booking_code_model', 'booking_t369');
-        $this->ci->db->db_debug = false;
-        try {
-            $caught = null;
-            try {
-                $booking->get_usage_detail(Fixtures::BOOKING_PRODUCTS, '2017-01-01', '2017-12-31');
-            } catch (Throwable $e) {
-                $caught = $e;
-            }
-            $error = $this->ci->db->error();
-        } finally {
-            $this->ci->db->db_debug = true;
-            $this->ci->db->trans_rollback();
-        }
-
-        $this->assertNotNull($caught, 'result_array() is called on the false the failed query returns');
-        $this->assertSame(1054, (int) $error['code']);
-        $this->assertStringContainsString('net_price', $error['message']);
-    }
-
-    // ---------------------------------------------------------------- Delivery_model
-
-    #[Group('known-bug')]
-    public function testDeliveryRecordUpdatesTheWholesalePriceButTheInsertFails(): void
-    {
-        $wh = Factory::wholesale(['vendor_id' => 'DEL-1', 'bruto' => 10.00]);
-        $product = Factory::product(['wholesale' => $wh]);
-        $delivery = $this->model('Delivery_model', 'delivery_t369');
-        $before = (int) $this->ci->db->count_all_results('delivery');
-        $this->ci->db->db_debug = false;
-        try {
-            $result = $delivery->record([
-                'bruto_price' => '12,50',
-                'netto_price' => '9,75',
-                'wholesale_artnr' => 'DEL-1',
-                'order_date' => '01/03/2017', 'order_nr' => '77', 'my_ref' => 'ref',
-                'delivery_date' => '02/03/2017', 'delivery_nr' => '88',
-                'amount' => '3', 'lotnr' => 'L1', 'due_date' => '01/04/2017',
-            ]);
-            $error = $this->ci->db->error();
-            $this->ci->db->db_debug = true;
-            // read inside the (failed) transaction, it is rolled back right after
-            $bruto = (float) $this->ci->db->where('id', $wh)->get('wholesale')->row()->bruto;
-            $history = $this->ci->db->where('art_nr', 'DEL-1')->get('wholesale_price')->result_array();
-            $deliveries = (int) $this->ci->db->count_all_results('delivery');
-        } finally {
-            $this->ci->db->db_debug = true;
-            $this->ci->db->trans_rollback();
-        }
-
-        // KNOWN BUG: the INSERT names a column delivery.product_id that does not exist (and puts
-        // "created_at = ..." in the VALUES list), so no delivery row is stored at all, not even one with
-        // a NULL created_at — Delivery_model::record is unused, consider removing it in CI4
-        $this->assertSame(1054, (int) $error['code']);
-        $this->assertStringContainsString('product_id', $error['message']);
-        $this->assertSame(0, $result['id']);
-        // the part before the INSERT did run: wholesale price changed 10.00 -> 12.50 and the old price was stored
-        $this->assertTrue($result['updated_bruto_price']);
-        $this->assertEqualsWithDelta(12.50, $bruto, 0.001);
-        $this->assertSame($before, $deliveries);
-        $this->assertCount(1, $history);
-        $this->assertEqualsWithDelta(10.00, (float) $history[0]['bruto'], 0.001);
-        $this->assertGreaterThan(0, $product);
     }
 }

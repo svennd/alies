@@ -212,11 +212,6 @@ Rules for every task in this file:
 
 ## Pure libraries
 
-### T020 — Bcrypt
-- **File:** `tests/Pure/Libraries/BcryptTest.php`.
-- **Assert:** `hash` returns 60 characters starting with `$2y$07$`; `verify` returns true for the right input and false for the wrong one.
-- The library is unused. Add a note that it is a deletion candidate in CI4.
-
 ### T021 — Lab_result_presenter (extend the existing test)
 - **Assert:** `normalize` returns `is_text`, `value`, `draw_plot`, `is_low`, `is_high`, `is_out`, `limit` and `pct` for these rows:
   - a numeric value inside the range;

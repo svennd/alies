@@ -134,23 +134,6 @@ class Pets_model extends MY_Model
 		
 		return $this->db->query($sql)->result_array();
 	}
-		
-	public function get_per_type()
-	{
-		$pets_sql = "
-			select 
-				type,
-				count(id) as amount
-			from 
-				pets
-			where
-				death = 0
-                AND pets.transfered = 0
-			group by
-				type			
-		";
-		return $this->db->query($pets_sql)->result_array();
-	}
 
 	// owners
 	public function get_all_pets(int $owner)

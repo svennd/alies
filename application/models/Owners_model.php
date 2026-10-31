@@ -223,61 +223,6 @@ class Owners_model extends MY_Model
 			->where('deleted_at IS NULL', null, false)
 			->count_all_results($this->table) === 1;
 	}
-	
-	public function search_by_street($street)
-	{
-		$result = array();
-		$sql = "
-			SELECT 
-				* 
-			FROM 
-				owners
-			WHERE
-				street LIKE '%" . $this->db->escape_like_str($street) . "%' ESCAPE '!'
-				
-			ORDER BY
-				last_bill
-			DESC
-		";
-		
-		$prime = $this->db->query($sql)->result_array();
-		if ($prime) {
-			foreach ($prime as $owners) {
-				$pets_sql = "
-					SELECT
-					*
-					FROM 
-						pets
-					WHERE
-						pets.owner = " . $owners['id'] . "
-					AND
-						pets.death = 0
-					AND
-						pets.lost = 0
-					LIMIT
-						0,2
-				";
-				$owners['pets'] = $this->db->query($pets_sql)->result_array();
-				$result[] = $owners;
-			}
-		}
-		return $result;
-	}
-	
-	public function get_per_city()
-	{
-		$get_per_city = "
-			select 
-				main_city,
-				count(id) as amount
-			from 
-				owners
-			group by
-				main_city			
-		";
-		
-		return $this->db->query($get_per_city)->result_array();
-	}
 
 	public function get_per_province()
 	{
@@ -294,33 +239,6 @@ class Owners_model extends MY_Model
 		return $this->db->query($get_per_province)->result_array();
 	}
 	
-	public function last_bill_by_year_month_init_vet($year = 5)
-	{
-		$sql = "
-			select 
-				year(last_bill) as y,
-				count(owners.id) as total,
-				users.first_name as vet
-			from 
-				owners 
-			join 
-				users
-			on 
-				users.id = owners.initial_vet
-			group by 
-				year(last_bill), 
-				initial_vet
-			having 
-				y > YEAR(CURDATE() - INTERVAL " . $year . " YEAR)
-			and
-				y <= YEAR(CURDATE())
-			order by
-				y asc
-				";
-			
-		return $this->db->query($sql)->result_array();
-	}
-
     public function duplicate_phone()
     {
         $sql = "

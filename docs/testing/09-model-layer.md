@@ -57,11 +57,11 @@ The CI4 models must reproduce these semantics, or every caller has to be changed
 ## Remaining model methods (not covered by earlier tasks)
 
 ### T360 — Owners statistics
-- **Methods:** `get_per_city`, `get_per_province`, `last_bill_by_year_month_init_vet(5)`, `duplicate_phone` and `disable(id, newOwner)`.
+- **Methods:** `get_per_province`, `duplicate_phone` and `disable(id, newOwner)`.
 - **Pin (`known-bug`):** `duplicate_owner_street` throws a DB error.
 
 ### T361 — Pets statistics and duplicates
-- **Methods:** `get_per_type` counts only alive, non-transferred pets. `duplicate_chips` ignores empty chips and transferred pets.
+- **Methods:** `duplicate_chips` ignores empty chips and transferred pets.
 - **`format_transfer_history`:**
   - quantities `1.50` → `1.5`, `2.00` → `2`, and `-0` → `0`;
   - item names are HTML-escaped;
@@ -101,13 +101,11 @@ The CI4 models must reproduce these semantics, or every caller has to be changed
 - **`assign_bill`:** an empty array returns false. Rows that already have a bill are not reassigned.
 - **`get_bill_rows`:** check the columns, and that `unit_sell` is `''` (COALESCE) when the product has no unit.
 
-### T369 — Register_in, Booking_code and Delivery models
+### T369 — Register_in model
 - **`Register_in_model`:**
   - `get_last_net_brut(pid)` returns `[in_price, cat_price, 'd-m-Y']` from the latest slip, or `[0,0,0]`;
   - `date_lookup`;
   - `get_delivery(date)`.
-- **`Booking_code_model::get_usage_detail`:** returns `[products, procedures]` for CLOSED events only.
-- **Pin (`known-bug`):** `Delivery_model::record` is unused and stores a NULL `created_at`. Document this, and consider removing it in CI4.
 
 ### T370 — Events products and procedures aggregates
 - **`Events_products_model`:**
@@ -120,7 +118,7 @@ The CI4 models must reproduce these semantics, or every caller has to be changed
 - **`get_bruto_increase`:** only price increases, with the percentage rounded to 1 decimal.
 - **`update_price`:** returns false when the price is unchanged. Otherwise it inserts a history row with the **old** bruto.
 - **`update_record`:** check both the insert path and the update path (see T326).
-- **Other methods:** `get_price_diff`, `search_index`, `get_index_stats`, `get_unlinked_items` and `get_wh_id`.
+- **Other methods:** `search_index`, `get_index_stats`, `get_unlinked_items` and `get_wh_id`.
 
 ### T372 — Product_price_model
 - **Assert:** `add_price` returns the new ID and writes an `add_price` log row.

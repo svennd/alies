@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\Attributes\Group;
-
 /**
  * T361 Pets statistics, duplicate chips and format_transfer_history.   Source: application/models/Pets_model.php
  *
  * Rules in plain words:
- *  - get_per_type counts pets per type, only alive (death = 0) and not transferred pets.
  *  - duplicate_chips lists chips used by more than one pet; empty chips and transferred pets are ignored.
  *  - format_transfer_history appends "Overgenomen producten/procedures" lists to a report: quantity 1.50 -> 1.5,
  *    2.00 -> 2, -0 -> 0; names and units are HTML escaped; an <hr> separates it from a report that is not blank.
@@ -22,45 +19,6 @@ final class PetsStatisticsTest extends CodeIgniterDatabaseTestCase
         parent::setUp();
         Factory::useMysqli($this->ci->db->conn_id);
         $this->pets = $this->model('Pets_model', 'pets_stat');
-    }
-
-    private function perType(int $type): int
-    {
-        foreach ($this->pets->get_per_type() as $row) {
-            if ((int) $row['type'] === $type) {
-                return (int) $row['amount'];
-            }
-        }
-
-        return 0;
-    }
-
-    public function testGetPerTypeCountsOnlyAliveAndNotTransferredPets(): void
-    {
-        $type = 77; // not used by the seed
-        $before = $this->perType($type);
-        $owner = Factory::owner();
-        Factory::pet($owner, ['type' => $type]);
-        Factory::pet($owner, ['type' => $type]);
-        Factory::pet($owner, ['type' => $type, 'death' => 1]);
-        Factory::pet($owner, ['type' => $type, 'transfered' => 1]);
-
-        $this->assertSame($before + 2, $this->perType($type));
-        $rows = $this->pets->get_per_type();
-        $this->assertSame(['type', 'amount'], array_keys($rows[0]));
-    }
-
-    public function testGetPerTypeDoesNotListATypeWhoseOnlyPetsAreDeadOrTransferred(): void
-    {
-        $type = 78;
-        $this->assertSame(0, $this->perType($type));
-        $owner = Factory::owner();
-        Factory::pet($owner, ['type' => $type, 'death' => 1]);
-        Factory::pet($owner, ['type' => $type, 'transfered' => 1]);
-
-        $this->assertSame(0, $this->perType($type));
-        Factory::pet($owner, ['type' => $type]);
-        $this->assertSame(1, $this->perType($type), 'positive control');
     }
 
     public function testDuplicateChipsListsSharedChipsAndIgnoresTransferredPets(): void
