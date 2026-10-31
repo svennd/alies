@@ -130,6 +130,16 @@ class Files extends Vet_Controller
 			return $this->_chunk_response(false, 'chunk not received');
 		}
 
+		# diagnostics: an all-zero chunk can be legit (blank data) but is also what a damaged transfer looks like
+		$received = file_get_contents($chunk['tmp_name']);
+		if ($received === false || strlen($received) !== (int) $chunk['size']) {
+			$this->logs->logger(WARN, "chunk upload", "chunk unreadable/short for " . $safe . " at offset " . $offset . " (files/new_file_event)");
+			return $this->_chunk_response(false, 'chunk arrived damaged');
+		}
+		if ($chunk['size'] > 0 && trim($received, "\0") === '') {
+			$this->logs->logger(WARN, "chunk upload", "chunk of only zeros arrived for " . $safe . " at offset " . $offset . " (files/new_file_event)");
+		}
+
 		# write at the exact offset, a retried chunk can not shift or duplicate data
 		$target = $this->upload_dir_tmp . "e" . $event_id . "_" . $safe;
 		$in = fopen($chunk['tmp_name'], 'rb');
@@ -143,6 +153,13 @@ class Files extends Vet_Controller
 		}
 		if ($in) { fclose($in); }
 		if ($out) { fclose($out); }
+
+		# read it back, the data on disk must be what arrived
+		$check = @file_get_contents($target, false, null, $offset, strlen($received));
+		if ($written === (int) $chunk['size'] && $check !== $received) {
+			$this->logs->logger(WARN, "chunk upload", "chunk on disk differs from received for " . $safe . " at offset " . $offset . " (files/new_file_event)");
+			return $this->_chunk_response(false, 'chunk not stored correctly');
+		}
 
 		if ($written !== (int) $chunk['size']) {
 			$this->logs->logger(WARN, "chunk upload", "chunk write failed for " . $safe . " at offset " . $offset . " (files/new_file_event)");
