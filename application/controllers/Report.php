@@ -28,8 +28,14 @@ class Report extends Vet_Controller
 	{
 		$query = $this->input->post('search_query');
 
-		$search_from 	= (is_null($this->input->post('search_from'))) ? date("Y-m-d", strtotime("-3 year")) : $this->input->post('search_from');
-		$search_to 		= (is_null($this->input->post('search_to'))) ? date("Y-m-d") : $this->input->post('search_to');
+		$search_from = $this->normalize_search_date(
+			$this->input->post('search_from'),
+			date("Y-m-d", strtotime("-3 year"))
+		);
+		$search_to = $this->normalize_search_date(
+			$this->input->post('search_to'),
+			date("Y-m-d")
+		);
 
 		$anamnese 		= (bool)$this->input->post('anamnese');
 
@@ -51,6 +57,21 @@ class Report extends Vet_Controller
 			);
 		}
 		$this->_render_page('reports/search_event', $data);
+	}
+
+	private function normalize_search_date($value, string $default): string
+	{
+		if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+			return $default;
+		}
+
+		$date = \DateTime::createFromFormat('Y-m-d', $value);
+
+		if ($date === false || $date->format('Y-m-d') !== $value) {
+			return $default;
+		}
+
+		return $value;
 	}
 
 }
