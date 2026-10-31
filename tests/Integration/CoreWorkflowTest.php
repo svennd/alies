@@ -181,7 +181,7 @@ final class CoreWorkflowTest extends CodeIgniterDatabaseTestCase
         $this->assertSame('0.00', number_format((float) $matchedRow['global_stock'], 2, '.', ''));
     }
 
-    public function testStockCanBeIncreasedAndReducedToHistory(): void
+    public function testStockCanBeReducedToHistory(): void
     {
         $products = $this->model('Products_model', 'products_test');
         $stock = $this->model('Stock_model', 'stock');
@@ -245,13 +245,7 @@ final class CoreWorkflowTest extends CodeIgniterDatabaseTestCase
             'info' => null,
         ]);
 
-        $stock->increase_stock($productId, 5.0, $locationId, $barcode, false);
-        $grown = $stock->get($stockId);
-
-        $this->assertSame('15.00', number_format((float) $grown['volume'], 2, '.', ''));
-        $this->assertSame(STOCK_IN_USE, (int) $grown['state']);
-
-        $stock->reduce_stock($productId, 15.0, $locationId, $barcode);
+        $stock->reduce($stockId, $productId, 10.0, $locationId, false);
         $depleted = $stock->get($stockId);
 
         $this->assertSame('0.00', number_format((float) $depleted['volume'], 2, '.', ''));

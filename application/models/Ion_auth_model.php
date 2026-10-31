@@ -177,6 +177,41 @@ class Ion_auth_model extends CI_Model
 	protected $error_end_delimiter;
 
 	/**
+	 * message start delimiter
+	 *
+	 * @var string
+	 */
+	protected $message_start_delimiter;
+
+	/**
+	 * message end delimiter
+	 *
+	 * @var string
+	 */
+	protected $message_end_delimiter;
+
+	/**
+	 * name of the column used as identity (from config)
+	 *
+	 * @var string
+	 */
+	public $identity_column;
+
+	/**
+	 * join column names of the users_groups table (from config)
+	 *
+	 * @var array
+	 */
+	public $join = [];
+
+	/**
+	 * password hash options (from config)
+	 *
+	 * @var mixed
+	 */
+	public $hash_method;
+
+	/**
 	 * caching of users and their groups
 	 *
 	 * @var array

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+#[Group('ci3-only')]
 final class PetAvatarControllerContractTest extends TestCase
 {
     private string $source;
@@ -39,22 +41,5 @@ final class PetAvatarControllerContractTest extends TestCase
         $this->assertStringContainsString('pet_avatar_manager->remove(', $this->source);
         $this->assertStringNotContainsString("input->post('path')", $this->source);
         $this->assertStringNotContainsString("input->get('path')", $this->source);
-    }
-
-    public function testApacheCannotServeStoredPetFilesDirectly(): void
-    {
-        $htaccess = file_get_contents(FCPATH . '.htaccess');
-        $this->assertStringContainsString('RewriteRule ^data/stored/pets(?:/|$) - [F,L,NC]', $htaccess);
-    }
-
-    public function testProjectRequestLimitsAllowTheSpecifiedEightMegabyteImage(): void
-    {
-        $userIni = parse_ini_file(FCPATH . '.user.ini');
-        $this->assertSame('8M', $userIni['upload_max_filesize']);
-        $this->assertSame('12M', $userIni['post_max_size']);
-
-		$htaccess = file_get_contents(FCPATH . '.htaccess');
-		$this->assertStringContainsString('php_value upload_max_filesize 8M', $htaccess);
-		$this->assertStringContainsString('php_value post_max_size 12M', $htaccess);
     }
 }

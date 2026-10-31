@@ -131,7 +131,7 @@ $(".file_line")
 $("#my_old_browser")
 	.on( "change", function(e) {
 
-			$("#upload_field").addClass('drag-over').html("");
+			$("#upload_field").removeClass('d-flex align-items-center').addClass('drag-over').html("");
 
 			var filelist = $(this)[0].files;
 			var file;
@@ -174,7 +174,7 @@ $("#upload_field")
 	})
 	.on( "drop", function(e) {
 		$(this).addClass('drag-over');
-		$(this).html("");
+		$(this).removeClass('d-flex align-items-center').html("");
 
 		e.preventDefault();
 		e.stopPropagation();
@@ -199,8 +199,7 @@ $("#upload_field")
 ;
 
 async function uploadFile(file) {
-	// const chunkSize = 40000;
-	const chunkSize = 40000;
+	const chunkSize = 512 * 1024;
 	const url = '<?php echo base_url(); ?>files/new_file_event/<?php echo $event_id; ?>?nocache=' + new Date().getTime();
 	const url_complete = '<?php echo base_url(); ?>files/new_file_event_complete/<?php echo $event_id; ?>';
 
@@ -210,41 +209,58 @@ async function uploadFile(file) {
 	var progress = $('div[id="bar_' + file.name + '"]');
 	var text_status = $('span[id="text_status_' + file.name + '"]');
 
-	var total = (file.size/chunkSize);
-	var procent_value = 0;
+	progress.css('transition', 'width .25s ease-out').addClass('progress-bar-striped progress-bar-animated');
+	text_status.html('Uploading... 0%');
 
-	for (let start = 0; start < file.size; start += chunkSize) {
-		const chunk = file.slice(start, start + chunkSize);
-		const fd = new FormData();
-		fd.append('data', chunk);
-		fd.append('file_name', file.name);
-		fd.append('file_size', file.size);
+	try {
+		for (let start = 0; start < file.size; start += chunkSize) {
+			const chunk = file.slice(start, start + chunkSize);
+			const fd = new FormData();
+			fd.append('data', chunk);
+			fd.append('file_name', file.name);
+			fd.append('file_size', file.size);
+			fd.append('offset', start);
 
-		/* send file chunk */
-		var respons = await fetch(url, {method: 'POST', body: fd}).then(res => res.text());
+			/* send file chunk, retry a few times before giving up */
+			var sent = false;
+			for (var attempt = 0; attempt < 3 && !sent; attempt++) {
+				try {
+					const res = await fetch(url, {method: 'POST', body: fd});
+					sent = res.ok;
+				} catch (e) { sent = false; }
+			}
+			if (!sent) { throw new Error('Upload failed'); }
 
-		/* calculate & visualize progress */
-		procent_value = Math.ceil((((start + chunkSize)/chunkSize)/total) * 100);
-		progress.attr('aria-valuenow', procent_value).css('width', procent_value +'%');
+			/* calculate & visualize progress */
+			var procent_value = Math.min(100, Math.round((start + chunk.size) / file.size * 100));
+			progress.attr('aria-valuenow', procent_value).css('width', procent_value +'%');
+			text_status.html('Uploading... ' + procent_value + '%');
+		}
+
+		/* server side processing */
+		progress.css('width', '100%').attr('aria-valuenow', 100).addClass('bg-info');
+		text_status.html('Processing...');
+		const compl = new FormData();
+			compl.append('file_name', file.name);
+			compl.append('file_size', file.size);
+
+		const response = await fetch(url_complete, {method: 'POST', body: compl}).then(r => r.json());
+		progress.removeClass('progress-bar-striped progress-bar-animated bg-info');
+		if (response.success)
+		{
+			text_status.html("Complete!");
+			progress.addClass("bg-success");
+		}
+		else
+		{
+			text_status.html(response.error);
+			progress.addClass("bg-danger");
+		}
 	}
-
-	/* send file completion */
-	const compl = new FormData();
-		compl.append('file_name', file.name);
-		compl.append('file_size', file.size);
-
-	/* send file chunk */
-	var response = await fetch(url_complete, {method: 'POST', body: compl}).then(response => response.json());
-	// console.log(response);
-	if (response.success)
+	catch (err)
 	{
-		text_status.html("Complete!");
-		progress.addClass("bg-success");
-	}
-	else
-	{
-		text_status.html(response.error);
-		progress.addClass("bg-danger");
+		progress.removeClass('progress-bar-striped progress-bar-animated').addClass("bg-danger");
+		text_status.html(err.message);
 	}
 }
 

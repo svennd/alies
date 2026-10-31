@@ -104,7 +104,6 @@
 						<th><?php echo $this->lang->line('lotnr'); ?></th>
 						<th><?php echo $this->lang->line('volume'); ?></th>
 						<th><?php echo $this->lang->line('type'); ?></th>
-						<th><?php echo $this->lang->line('barcode'); ?></th>
 						<th><?php echo $this->lang->line('last_update'); ?></th>
 					</tr>
 					</thead>
@@ -124,7 +123,6 @@
 						<td><?php echo $product['lotnr']; ?></td>
 						<td><?php echo $product['volume']; ?> <?php echo $product['unit_sell']; ?></td>
 						<td><?php echo $product['type']; ?></td>
-						<td><?php echo $product['barcode']; ?></td>
 						<td><?php echo user_format_date(
 							is_null($product['updated_at']) ? $product['created_at'] : $product['updated_at'], 
 							$user->user_date); ?></td>
@@ -228,10 +226,7 @@ $("#dataTable").DataTable({
     scroller:       true,
 	dom: "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 	buttons: BUTTON_LOCATIONS,
-	"columnDefs": [
-		{ "visible": false, "targets": [5]}
-	],
-	order : [[6, 'asc']]
+	order : [[5, 'asc']]
 });
 
 // if selected "ALL" -> less columns

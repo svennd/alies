@@ -176,26 +176,6 @@ class Wholesale_model extends MY_Model
 		}
 	}
 
-	/*
-	*	function: get_price_diff
-	* 	get the price difference between the last price and the current price
-	*/
-	public function get_price_diff(int $days = 30)
-	{
-		$sql = "
-			SELECT 
-				id, bruto, last_bruto, last_bruto_date
-			FROM
-				wholesale
-			WHERE
-				bruto != last_bruto
-			AND
-				last_bruto_date >= DATE_SUB(CURDATE(), INTERVAL " . $days . " DAY)
-		";
-
-		return $this->db->query($sql)->result_array();
-	}
-
 	public function search_index(string $term = '', int $limit = 50)
 	{
 		$this->db

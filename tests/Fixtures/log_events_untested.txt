@@ -1,0 +1,16 @@
+# Log events that the application writes but that no test mentions yet (see tests/Pure/LogEventCoverageTest.php).
+# One name per line. Remove a line when a test covers the event; the list may only shrink.
+# models/Stock_model.php
+# controllers/Vaccine.php
+change_vaccine
+# libraries/Vet_Controller.php (the check compares the session with itself, it can never fire)
+detected_diff_location
+# controllers/Breeds.php
+edit_breed
+# models/Stock_model.php
+# models/Bills_model.php (only written when the invoice number update fails)
+set_invoice_id
+# controllers/Products.php
+unset_product_in_backorder
+# controllers/Events_report.php
+update_report

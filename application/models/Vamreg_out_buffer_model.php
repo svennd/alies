@@ -41,26 +41,6 @@ class Vamreg_out_buffer_model extends MY_Model
 		];
 	}
 
-	public function send_summary(string $startDate, string $endDate)
-	{
-		# COALESCE -> returns the first true value (for sum)
-		return $this->db
-			->select('
-				MIN(status) AS status,
-				vamreg_out_buffer.cnk,
-				SUM(COALESCE(out_quantity_pack_count, out_quantity_unit_count)) AS total_quantity,
-				wholesale.description AS wholesale_description,
-				out_quantity_type, out_quantity_unit
-			')
-			->from('vamreg_out_buffer')
-			->where('out_date >=', $startDate)
-			->where('out_date <=', $endDate)
-			->group_by('cnk')
-			->join('wholesale', 'wholesale.cnk = vamreg_out_buffer.cnk', 'left')
-			->get()
-			->result_array();
-	}
-
 	public function summary(string $startDate, string $endDate)
 	{
 		# COALESCE -> returns the first true value (for sum)

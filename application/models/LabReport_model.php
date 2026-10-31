@@ -89,15 +89,7 @@ class LabReport_model extends MY_Model {
 
 		return (int) $this->db->insert_id();
 	}
-    
-    public function touch($report_id)
-    {
-        $this->db
-            ->where('id', $report_id)
-            ->update($this->table, ['updated_at' => date('Y-m-d H:i:s')]);
-    }
-
-
+	
 	/*
 	* function: get_labs
 	* get all lab results w/ pets & owners

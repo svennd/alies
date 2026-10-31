@@ -2,22 +2,16 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Source-pattern test, only meaningful for the CodeIgniter 3 controller. The factory itself is
+ * tested in tests/Pure/Libraries/LabDeviceAdapterFactoryCreateTest.php.
+ */
+#[Group('ci3-only')]
 final class LabDeviceAdapterFactoryTest extends TestCase
 {
-    public function testFactoryResolvesEverySupportedDeviceAndRejectsUnknownDevice(): void
-    {
-        require_once APPPATH . 'libraries/Lab_device_adapter_factory.php';
-        $factory = new Lab_device_adapter_factory();
-
-        $this->assertInstanceOf(Ms4s2::class, $factory->create('ms4s2'));
-        $this->assertInstanceOf(Ikems::class, $factory->create('ikems'));
-        $this->assertInstanceOf(Lmscan::class, $factory->create('lmscan'));
-        $this->assertInstanceOf(Medilab::class, $factory->create('medilab'));
-        $this->assertNull($factory->create('unknown'));
-    }
-
     public function testApiControllerUsesSharedFactory(): void
     {
         $source = file_get_contents(APPPATH . 'controllers/api/Lab.php');
